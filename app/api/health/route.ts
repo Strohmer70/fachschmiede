@@ -1,15 +1,38 @@
 import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
 
 export async function GET() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  try {
+    const { data: pages, error } = await supabase
+      .from('landing_pages')
+      .select('slug, status')
+      .limit(5)
 
-  return NextResponse.json({
-    status: 'debug',
-    url_set: !!supabaseUrl,
-    url_value: supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'MISSING',
-    key_set: !!supabaseKey,
-    key_value: supabaseKey ? supabaseKey.substring(0, 20) + '...' : 'MISSING',
-    all_env_keys: Object.keys(process.env).filter(k => k.includes('SUPABASE') || k.includes('PUBLIC'))
-  })
+    if (error) {
+      return NextResponse.json({
+        status: 'error',
+        step: 'supabase_query',
+        message: error.message,
+      }, { status: 500 })
+    }
+
+    if (!pages || pages.length === 0) {
+      return NextResponse.json({
+        status: 'warning',
+        message: 'Supabase connected but no landing_pages found',
+      })
+    }
+
+    return NextResponse.json({
+      status: 'ok',
+      pages_found: pages.length,
+      pages: pages.map(p => p.slug),
+    })
+
+  } catch (err: any) {
+    return NextResponse.json({
+      status: 'error',
+      message: err.message,
+    }, { status: 500 })
+  }
 }
