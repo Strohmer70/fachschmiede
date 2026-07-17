@@ -1,46 +1,15 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 
 export async function GET() {
-  try {
-    // Test 1: Supabase connection
-    const { data: pages, error } = await supabase
-      .from('landing_pages')
-      .select('slug, status')
-      .limit(5)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-    if (error) {
-      return NextResponse.json({
-        status: 'error',
-        step: 'supabase_query',
-        message: error.message,
-        hint: 'Check Supabase URL and Anon Key in Vercel Environment Variables'
-      }, { status: 500 })
-    }
-
-    // Test 2: Check if data exists
-    if (!pages || pages.length === 0) {
-      return NextResponse.json({
-        status: 'warning',
-        step: 'data_exists',
-        message: 'Supabase connected but no landing_pages found',
-        hint: 'Run the schema.sql in Supabase SQL Editor to seed data'
-      }, { status: 200 })
-    }
-
-    return NextResponse.json({
-      status: 'ok',
-      pages_found: pages.length,
-      pages: pages.map(p => p.slug),
-      message: 'Everything is working!'
-    })
-
-  } catch (err: any) {
-    return NextResponse.json({
-      status: 'error',
-      step: 'unknown',
-      message: err.message,
-      hint: 'Unexpected error occurred'
-    }, { status: 500 })
-  }
+  return NextResponse.json({
+    status: 'debug',
+    url_set: !!supabaseUrl,
+    url_value: supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'MISSING',
+    key_set: !!supabaseKey,
+    key_value: supabaseKey ? supabaseKey.substring(0, 20) + '...' : 'MISSING',
+    all_env_keys: Object.keys(process.env).filter(k => k.includes('SUPABASE') || k.includes('PUBLIC'))
+  })
 }
