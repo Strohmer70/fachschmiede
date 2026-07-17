@@ -39,7 +39,7 @@ export default function Home() {
             {POPULAR_COMBOS.map((combo) => (
               <Link 
                 key={`${combo.trade}-${combo.city}`}
-                href={`/${combo.trade}/${combo.city}`}
+                href={`/g/${combo.trade}/${combo.city}`}
                 className="bg-slate-50 p-6 rounded-lg border border-slate-200 hover:border-orange-500 hover:shadow-lg transition"
               >
                 <h3 className="font-semibold text-lg mb-2">
