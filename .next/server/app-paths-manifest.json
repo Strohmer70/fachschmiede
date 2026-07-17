@@ -1,0 +1,12 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/[trade]/[city]/page": "app/[trade]/[city]/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/leads/[pageId]/route": "app/api/leads/[pageId]/route.js",
+  "/api/rent/route": "app/api/rent/route.js",
+  "/api/tenant-login/route": "app/api/tenant-login/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/api/update-customization/route": "app/api/update-customization/route.js",
+  "/mieten/[slug]/page": "app/mieten/[slug]/page.js",
+  "/page": "app/page.js"
+}

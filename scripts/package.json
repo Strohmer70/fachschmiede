@@ -1,0 +1,20 @@
+{
+  "name": "fachschmiede-automation",
+  "version": "1.0.0",
+  "description": "Automation scripts for FachSchmiede rank & rent empire",
+  "scripts": {
+    "generate": "node scripts/generate-pages.js",
+    "generate:all": "node scripts/generate-pages.js --trade=all --batch-size=50",
+    "generate:dachdecker": "node scripts/generate-pages.js --trade=dachdecker --cities=berlin,muenchen,koeln,hamburg,frankfurt",
+    "deploy": "node scripts/deploy.js",
+    "deploy:prod": "node scripts/deploy.js --env=production",
+    "update-content": "node scripts/update-content.js",
+    "create-trade": "node scripts/create-trade.js",
+    "add-city": "node scripts/add-city.js",
+    "batch:generate-and-deploy": "npm run generate:all && npm run deploy:prod"
+  },
+  "dependencies": {
+    "vercel": "latest",
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
