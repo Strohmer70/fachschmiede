@@ -8,11 +8,23 @@ interface PageProps {
   }
 }
 
+export async function generateStaticParams() {
+  const { data: pages } = await supabase
+    .from('landing_pages')
+    .select('slug')
+    .eq('status', 'available')
+
+  return (pages || []).map((page) => ({
+    slug: page.slug,
+  }))
+}
+
 export async function generateMetadata({ params }: PageProps) {
+  const cleanSlug = params.slug?.replace(/\/$/, '') || params.slug
   const { data: page } = await supabase
     .from('landing_pages')
     .select('title, trade:trades(name), city:cities(name)')
-    .eq('slug', params.slug)
+    .eq('slug', cleanSlug)
     .single()
 
   if (!page) return { title: 'Seite nicht gefunden' }
@@ -28,6 +40,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function RentPage({ params }: PageProps) {
+  const cleanSlug = params.slug?.replace(/\/$/, '') || params.slug
   const { data: page } = await supabase
     .from('landing_pages')
     .select(`
@@ -35,7 +48,7 @@ export default async function RentPage({ params }: PageProps) {
       trade:trades(*),
       city:cities(*)
     `)
-    .eq('slug', params.slug)
+    .eq('slug', cleanSlug)
     .single()
 
   if (!page) notFound()

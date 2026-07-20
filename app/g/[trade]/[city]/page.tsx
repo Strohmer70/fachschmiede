@@ -246,7 +246,7 @@ export default async function LandingPage({ params }: PageProps) {
         <p>© 2026 fachschmiede.de — {trade.name} {city.name}</p>
         {isAvailable && (
           <p className="mt-2">
-            <Link href={`/mieten/${params.trade}/${params.city}`} className="text-orange-400 hover:text-orange-300">
+            <Link href={`/mieten/${page.slug}`} className="text-orange-400 hover:text-orange-300">
               Sind Sie {trade.name}? Diese Seite mieten →
             </Link>
           </p>
