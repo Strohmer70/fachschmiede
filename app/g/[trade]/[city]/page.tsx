@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { RentBanner } from '@/components/RentBanner'
-import { TenantBranding, GoogleMap } from '@/components/TenantBranding'
+import { TenantBranding } from '@/components/TenantBranding'
 import { FALLBACK_TRADES, FALLBACK_CITIES, FALLBACK_PAGES } from '@/lib/fallback-data'
 import { supabase } from '@/lib/supabase'
 
@@ -36,40 +36,6 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-// SVG Icons
-const Icons = {
-  Check: () => (
-    <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-  ),
-  Phone: () => (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-  ),
-  ArrowRight: () => (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-  ),
-  MapPin: () => (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-  ),
-  Star: () => (
-    <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-  ),
-  ChevronDown: () => (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-  ),
-}
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <svg key={star} className={`w-5 h-5 ${star <= rating ? 'text-yellow-400' : 'text-slate-300'}`} fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  )
-}
-
 export default async function LandingPage({ params }: PageProps) {
   const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
   const cleanCity = params.city?.replace(/\/$/, '') || params.city
@@ -97,399 +63,441 @@ export default async function LandingPage({ params }: PageProps) {
   const isAvailable = page.status === 'available'
   const customization = page.page_customizations?.[0]
   const tenant = customization?.tenant
+  const isRented = !!tenant
 
-  const serviceDetails = getServiceDetails(trade.slug)
-  const images = getTradeImages(trade.slug)
+  const services = getServices(trade.slug)
+  const cities = getNearbyCities(city.name)
+  const reviews = getReviews(city.name, trade.name)
+  const articles = getArticles(trade.name)
+  const faqs = getFAQ(trade.name)
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 py-4 px-6 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold text-slate-900">fachschmiede.de</Link>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-500 hidden sm:block">{trade.name} in {city.name}</span>
-            <a href="#kontakt" className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium py-2 px-4 rounded-lg transition">
-              Anfragen
-            </a>
-          </div>
-        </div>
-      </header>
+    <div className="bg-white text-slate-800 antialiased">
+      <style jsx global>{`
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+        .hero-gradient { background: linear-gradient(105deg, rgba(15,23,42,.92) 0%, rgba(15,23,42,.75) 45%, rgba(15,23,42,.35) 100%); }
+        ::selection { background: #f97316; color: #fff; }
+      `}</style>
 
-      {/* Rent Banner */}
+      {/* Rent Banner (if available) */}
       {isAvailable && (
         <RentBanner tradeName={trade.name} cityName={city.name} price={page.monthly_price} slug={slug} />
       )}
 
-      {/* Tenant Branding */}
+      {/* Tenant Branding (if rented) */}
       {tenant && customization && (
         <TenantBranding customization={customization} tenant={tenant} />
       )}
 
-      {/* Hero with real roof image */}
-      <section className="relative bg-slate-900 text-white overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src={images.hero} 
-            alt={`${trade.name} in ${city.name}`}
-            className="w-full h-full object-cover opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
-        </div>
-        <div className="relative max-w-6xl mx-auto py-20 md:py-28 px-6">
-          <div className="max-w-2xl">
-            <div className="inline-block bg-orange-500 text-white text-sm font-medium px-4 py-1 rounded-full mb-6">
-              {city.name} & Umgebung
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              {customization?.custom_welcome_text || `Ihr ${trade.name} in ${city.name}`}
-            </h1>
-            <p className="text-xl text-slate-300 mb-10">
-              {customization?.custom_welcome_text 
-                ? `Willkommen bei ${customization.custom_company_name || tenant.company_name} — Ihr zuverlässiger ${trade.name} in ${city.name} und Umgebung.`
-                : `Professionelle ${trade.plural_name} für Privat- und Gewerbekunden in ${city.name}. Persönlich, fair und zuverlässig.`
-              }
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href="#kontakt" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-xl transition text-lg shadow-lg shadow-orange-500/30 text-center inline-flex items-center justify-center gap-2">
-                <Icons.Phone />
-                Kostenlos anfragen
+      {/* ═══════════ HEADER ═══════════ */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
+          <Link href="/" className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-lg bg-orange-600 flex items-center justify-center text-white">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"></path></svg>
+            </span>
+            <span className="leading-tight">
+              <span className="block font-extrabold text-lg text-slate-900">fachschmiede.de</span>
+              <span className="block text-xs text-slate-500 font-medium">{trade.name} · {city.name}</span>
+            </span>
+          </Link>
+          <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
+            <a className="hover:text-orange-600 transition" href="#leistungen">Leistungen</a>
+            <a className="hover:text-orange-600 transition" href="#ueber-uns">Über uns</a>
+            <a className="hover:text-orange-600 transition" href="#ablauf">Ablauf</a>
+            <a className="hover:text-orange-600 transition" href="#bewertungen">Bewertungen</a>
+            <a className="hover:text-orange-600 transition" href="#faq">FAQ</a>
+          </nav>
+          <div className="flex items-center gap-3">
+            {customization?.custom_phone && (
+              <a className="hidden md:flex items-center gap-2 text-sm font-bold text-slate-800 hover:text-orange-600 transition" href={`tel:${customization.custom_phone}`}>
+                <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"></path></svg>
+                {customization.custom_phone}
               </a>
-              <a href="#leistungen" className="bg-white/10 hover:bg-white/20 text-white font-medium py-4 px-8 rounded-xl transition backdrop-blur text-center">
-                Leistungen ansehen
-              </a>
-            </div>
-            
-            <div className="flex flex-wrap gap-6 mt-12">
-              {['Geprüfte Fachbetriebe', 'Transparente Angebote', 'Schnelle Terminvergabe'].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-slate-300 text-sm">
-                  <Icons.Check />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services with images */}
-      <section id="leistungen" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Unsere Leistungen</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Von der Planung bis zur Ausführung — kompetente Betreuung für Ihr Vorhaben in {city.name}.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {serviceDetails.map((service, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-200 hover:border-orange-500 hover:shadow-xl transition group">
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={service.image} 
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-xl mb-3">{service.title}</h3>
-                  <p className="text-slate-600 text-sm leading-relaxed">{service.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Emergency Service */}
-      <section className="relative py-16 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-red-600"></div>
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1920&q=80')] bg-cover bg-center opacity-20"></div>
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-block bg-white text-red-600 text-sm font-bold px-4 py-2 rounded-lg mb-6 uppercase tracking-wide">
-            Notdienst
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-            Schnelle Hilfe im Notfall
-          </h2>
-          <p className="text-red-100 mb-8 max-w-2xl mx-auto">
-            Sturmschaden, Wassereinbruch oder andere Notfälle? Wir sind für Sie da — auch außerhalb der regulären Geschäftszeiten.
-          </p>
-          <a href="#kontakt" className="bg-white text-red-600 hover:bg-slate-100 font-bold py-4 px-8 rounded-xl transition inline-flex items-center gap-2">
-            <Icons.Phone />
-            Jetzt Notfall melden
-          </a>
-        </div>
-      </section>
-
-      {/* Process Steps */}
-      <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">So funktioniert's</h2>
-            <p className="text-slate-600">In vier einfachen Schritten zu Ihrer Lösung</p>
-          </div>
-          
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { step: '01', title: 'Anfrage', desc: 'Rufen Sie an oder nutzen Sie das Kontaktformular. Wir melden uns zeitnah bei Ihnen.', icon: '📞' },
-              { step: '02', title: 'Besichtigung', desc: 'Wir schauen uns die Situation vor Ort an — kostenlos und unverbindlich.', icon: '🔍' },
-              { step: '03', title: 'Angebot', desc: 'Sie erhalten ein transparentes, schriftliches Angebot — ohne versteckte Kosten.', icon: '📋' },
-              { step: '04', title: 'Ausführung', desc: 'Unser Team führt die Arbeiten termingerecht und professionell aus.', icon: '✅' },
-            ].map((item, i) => (
-              <div key={i} className="text-center">
-                <div className="w-20 h-20 bg-white rounded-2xl border-2 border-orange-500 flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg">
-                  {item.icon}
-                </div>
-                <div className="text-sm font-bold text-orange-500 mb-2">{item.step}</div>
-                <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                <p className="text-slate-600 text-sm">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Example Project */}
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Beispielprojekt: {trade.name}-Arbeiten in {city.name}
-              </h2>
-              <p className="text-slate-600 mb-6">
-                Eine typische Projektübersicht: Von der ersten Kontaktaufnahme bis zur erfolgreichen Übergabe. So arbeiten wir — professionell, transparent und termingerecht.
-              </p>
-              <ul className="space-y-4">
-                {[
-                  'Kostenlose Erstberatung vor Ort',
-                  'Detaillierte Planung und transparentes Angebot',
-                  'Professionelle Ausführung nach aktuellen Standards',
-                  'Gründliche Endkontrolle und Übergabe',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <Icons.Check />
-                    <span className="text-slate-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
-              <img 
-                src={images.project} 
-                alt={`${trade.name} Projekt`}
-                className="w-full h-96 object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section - Shows when tenant is active */}
-      {tenant && customization && (
-        <section className="bg-white py-20 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Direkt kontaktieren</h2>
-            
-            {/* Contact Cards */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {customization?.custom_phone && (
-                <a href={`tel:${customization.custom_phone}`} className="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition text-center group">
-                  <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition">📞</div>
-                  <h3 className="font-semibold mb-2">Telefon</h3>
-                  <p className="text-orange-600 group-hover:text-orange-700">{customization.custom_phone}</p>
-                </a>
-              )}
-              {customization?.custom_whatsapp && (
-                <a href={`https://wa.me/${customization.custom_whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="bg-green-50 p-6 rounded-xl border border-green-200 hover:border-green-500 hover:shadow-lg transition text-center group">
-                  <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:bg-green-500 group-hover:text-white transition">💬</div>
-                  <h3 className="font-semibold mb-2 text-green-700">WhatsApp</h3>
-                  <p className="text-green-600 group-hover:text-green-700">{customization.custom_whatsapp}</p>
-                  <span className="text-xs text-green-500 mt-2 inline-block">Direkt schreiben →</span>
-                </a>
-              )}
-              {customization?.custom_email && (
-                <a href={`mailto:${customization.custom_email}`} className="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition text-center group">
-                  <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition">✉️</div>
-                  <h3 className="font-semibold mb-2">E-Mail</h3>
-                  <p className="text-orange-600 group-hover:text-orange-700">{customization.custom_email}</p>
-                </a>
-              )}
-              {customization?.custom_address && (
-                <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center">
-                  <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">📍</div>
-                  <h3 className="font-semibold mb-2">Adresse</h3>
-                  <p className="text-slate-600">{customization.custom_address}</p>
-                </div>
-              )}
-            </div>
-            
-            {/* Google Maps */}
-            {(customization?.custom_place_id || customization?.custom_address) && (
-              <div className="mt-8">
-                <h3 className="font-bold text-lg mb-4 text-center">So finden Sie uns</h3>
-                <GoogleMap placeId={customization.custom_place_id} address={customization.custom_address} />
-              </div>
             )}
+            <a className="hidden sm:inline-flex bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-sm" href="#kontakt">Angebot anfragen</a>
           </div>
-        </section>
-      )}
+        </div>
+      </header>
 
-      {/* Reviews */}
-      <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Das sagen unsere Kunden</h2>
-            <p className="text-slate-600">Bewertungen aus {city.name} und der Region</p>
+      {/* ═══════════ HERO ═══════════ */}
+      <section id="start" className="relative min-h-[92vh] flex items-center">
+        <img src={getHeroImage(trade.slug)} alt={`${trade.name} in ${city.name}`} className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 hero-gradient"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
+          <div className="max-w-2xl text-white">
+            <span className="inline-flex items-center gap-2 bg-white/10 border border-white/25 backdrop-blur text-xs sm:text-sm font-semibold px-4 py-2 rounded-full mb-6">
+              <span className="w-2 h-2 rounded-full bg-orange-400"></span>
+              {isRented ? (customization?.custom_company_name || tenant?.company_name) : `${trade.name} aus ${city.name}`}
+            </span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
+              Ihr {trade.name}<br />in <span className="text-orange-400">{city.name}</span>.
+            </h1>
+            <p className="mt-6 text-lg sm:text-xl text-slate-100 leading-relaxed max-w-xl">
+              Professionelle {trade.plural_name} für Privat- und Geschäftskunden in {city.name} und Umgebung. Persönlich, sauber und zuverlässig.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <a className="inline-flex justify-center items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg" href="#kontakt">
+                Kostenloses Angebot
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              </a>
+              {customization?.custom_phone && (
+                <a className="inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white font-bold px-8 py-4 rounded-xl text-lg transition" href={`tel:${customization.custom_phone}`}>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"></path></svg>
+                  {customization.custom_phone}
+                </a>
+              )}
+            </div>
+            <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-semibold text-slate-100">
+              <span className="flex items-center gap-2"><svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg> Kostenlose Erstberatung</span>
+              <span className="flex items-center gap-2"><svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg> Transparente Angebote</span>
+              <span className="flex items-center gap-2"><svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg> Schnelle Terminvergabe</span>
+            </div>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { rating: 5, text: `"Schnelle Reaktion nach dem Sturm. Das Team war am selben Tag vor Ort und hat alles professionell abgesichert. Transparente Abrechnung ohne Überraschungen."`, author: 'Familie Schmidt', location: `${city.name} · Sturmreparatur` },
-              { rating: 5, text: `"Kompetente Beratung und saubere Ausführung. Man merkt, dass hier Profis am Werk sind. Werde definitiv wieder auf Sie zurückkommen."`, author: 'Peter M.', location: `${city.name} · Sanierung` },
-              { rating: 5, text: `"Endlich ein Handwerker, der pünktlich kommt und die vereinbarte Arbeit auch wirklich erledigt. Klare Empfehlung für die ganze Region!"`, author: 'Monika K.', location: `${city.name} · Reparatur` },
-            ].map((review, i) => (
-              <div key={i} className="bg-white p-6 rounded-2xl shadow-sm">
-                <StarRating rating={review.rating} />
-                <p className="text-slate-700 mt-4 mb-6 italic leading-relaxed">{review.text}</p>
-                <div className="border-t border-slate-200 pt-4 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">
-                    {review.author.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{review.author}</p>
-                    <p className="text-slate-500 text-xs">{review.location}</p>
-                  </div>
-                </div>
+        </div>
+      </section>
+
+      {/* ═══════════ VERTRAUENSLEISTE ═══════════ */}
+      <section className="bg-slate-900 text-white py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          <div><p className="text-2xl sm:text-3xl font-black text-orange-400">Komplettservice</p><p className="mt-1 text-sm text-slate-300 font-medium">Alle Leistungen aus einer Hand</p></div>
+          <div><p className="text-2xl sm:text-3xl font-black text-orange-400">Regional</p><p className="mt-1 text-sm text-slate-300 font-medium">{city.name} & Umgebung – kurze Wege</p></div>
+          <div><p className="text-2xl sm:text-3xl font-black text-orange-400">Kostenlos</p><p className="mt-1 text-sm text-slate-300 font-medium">Erstbesichtigung & Angebot</p></div>
+          <div><p className="text-2xl sm:text-3xl font-black text-orange-400">Persönlich</p><p className="mt-1 text-sm text-slate-300 font-medium">Fester Ansprechpartner vor Ort</p></div>
+        </div>
+      </section>
+
+      {/* ═══════════ LEISTUNGEN ═══════════ */}
+      <section id="leistungen" className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Unsere Leistungen</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Alles rund um {trade.name} – aus einer Hand</h2>
+            <p className="mt-4 text-slate-600 text-lg">Vom kleinen Reparaturauftrag bis zur Komplettsanierung: Wir kümmern uns um Ihr Projekt, damit Sie sich um nichts kümmern müssen.</p>
+          </div>
+          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service, i) => (
+              <div key={i} className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                <span className="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: service.svg }} />
+                </span>
+                <h3 className="mt-5 text-xl font-bold text-slate-900">{service.title}</h3>
+                <p className="mt-2 text-slate-600 leading-relaxed">{service.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Local Area */}
-      <section className="py-20 px-6 bg-slate-900 text-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      {/* ═══════════ ÜBER UNS ═══════════ */}
+      <section id="ueber-uns" className="py-20 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div>
+            <img src={getAboutImage(trade.slug)} alt={`${trade.name} Team`} className="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]" />
+            <div className="mt-4 flex items-center gap-4 bg-slate-900 text-white rounded-2xl p-5">
+              <p className="text-4xl font-black text-orange-400">{city.name}</p>
+              <p className="text-sm text-slate-200 leading-snug">unser Standort –<br />kurze Wege in der gesamten Region</p>
+            </div>
+          </div>
+          <div>
+            <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Über uns</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Ein Betrieb, auf den Sie sich verlassen können</h2>
+            <p className="mt-6 text-slate-600 text-lg leading-relaxed">
+              Wir sind ein {trade.name}-Betrieb aus {city.name}. Bei uns sprechen Sie direkt mit den Entscheidern – persönlich, unkompliziert und ohne lange Wege.
+            </p>
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              Wir kennen die {trade.plural_name} in unserer Region und wissen, welche Materialien sich hier bewähren und worauf es bei den typischen Wetterlagen ankommt.
+            </p>
+            <ul className="mt-8 space-y-4">
+              {[
+                { title: 'Fachgerechte Ausführung', desc: 'Qualifizierte Arbeit nach den anerkannten Regeln der Technik.' },
+                { title: 'Schriftliches Angebot', desc: 'Transparent kalkuliert – keine versteckten Kosten, keine Überraschungen.' },
+                { title: 'Saubere Baustelle', desc: 'Wir hinterlassen Ihr Grundstück so, wie wir es vorgefunden haben.' },
+                { title: 'Persönliche Betreuung', desc: 'Ein fester Ansprechpartner begleitet Ihr Projekt von Anfang bis Ende.' },
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <svg className="w-6 h-6 text-orange-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                  <span className="text-slate-700"><strong className="text-slate-900">{item.title}:</strong> {item.desc}</span>
+                </li>
+              ))}
+            </ul>
+            <a className="mt-8 inline-flex items-center gap-2 text-orange-600 font-bold hover:gap-3 transition-all" href="#kontakt">
+              Lernen Sie uns kennen – kostenlose Erstberatung
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ ABLAUF ═══════════ */}
+      <section id="ablauf" className="py-20 sm:py-24 bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="text-orange-400 font-bold text-sm uppercase tracking-widest">So einfach geht's</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black tracking-tight">In vier Schritten zur Lösung</h2>
+          </div>
+          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { step: '01', title: 'Anfrage', desc: 'Rufen Sie an oder schreiben Sie uns über das Formular – wir melden uns schnellstmöglich bei Ihnen.' },
+              { step: '02', title: 'Besichtigung', desc: 'Wir schauen uns die Situation vor Ort an – kostenlos und unverbindlich, inklusive ehrlicher Ersteinschätzung.' },
+              { step: '03', title: 'Transparentes Angebot', desc: 'Sie erhalten ein transparentes, schriftliches Angebot – klar kalkuliert und ohne Verpflichtung.' },
+              { step: '04', title: 'Ausführung', desc: 'Unser Team führt die Arbeiten termingerecht aus – mit regelmäßiger Rückmeldung und sauberer Übergabe.' },
+            ].map((item, i) => (
+              <div key={i} className="bg-slate-800 rounded-2xl p-7 border border-slate-700">
+                <p className="text-5xl font-black text-orange-500/40">{item.step}</p>
+                <h3 className="mt-4 text-lg font-bold">{item.title}</h3>
+                <p className="mt-2 text-slate-300 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ REFERENZEN ═══════════ */}
+      <section id="referenzen" className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">
-                Ihr {trade.name} in {city.name} und Umgebung
-              </h2>
-              <p className="text-slate-400 mb-6">
-                Kurze Wege bedeuten schnelle Hilfe. Wir sind in der Region {city.name} ansässig und für Sie da — auch in den umliegenden Gemeinden.
+              <img src={getProjectImage(trade.slug)} alt={`${trade.name} Projekt`} className="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]" />
+            </div>
+            <div>
+              <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Lokal verwurzelt</p>
+              <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Ihr {trade.name} in {city.name} und Umgebung</h2>
+              <p className="mt-5 text-slate-600 text-lg leading-relaxed">
+                Kurze Wege bedeuten schnelle Hilfe. Wir sind direkt in {city.name} ansässig – daher sind wir in der gesamten Region für Sie da:
               </p>
-              <div className="grid grid-cols-2 gap-3">
-                {getNearbyCities(city.name).map((nearCity, i) => (
-                  <div key={i} className="flex items-center gap-2 text-slate-400 text-sm">
-                    <Icons.MapPin />
-                    {nearCity}
-                  </div>
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                {cities.map((c, i) => (
+                  <span key={i} className={`${i === 0 ? 'bg-orange-600 text-white' : 'bg-white border border-slate-200 text-slate-700'} text-sm font-semibold px-4 py-2 rounded-full`}>
+                    {c}
+                  </span>
                 ))}
               </div>
-            </div>
-            <div className="bg-white/5 p-8 rounded-2xl">
-              <h3 className="font-bold text-lg mb-4">Gut zu wissen</h3>
-              <ul className="space-y-3">
-                {[
-                  'Erstbesichtigung vor Ort ist kostenlos und unverbindlich',
-                  'Transparente, schriftliche Angebote ohne versteckte Kosten',
-                  'Fester Ansprechpartner für Ihr Projekt',
-                  'Gewährleistung auf alle ausgeführten Arbeiten',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <Icons.Check />
-                    <span className="text-slate-300 text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-8 bg-white border-l-4 border-orange-600 rounded-r-xl p-5 shadow-sm">
+                <p className="text-slate-700 leading-relaxed"><strong className="text-slate-900">Gut zu wissen:</strong> Die Erstbesichtigung vor Ort ist kostenlos und unverbindlich.</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Form */}
-      <section id="kontakt" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {trade.name} in {city.name} gesucht?
-            </h2>
-            <p className="text-slate-600 max-w-xl mx-auto">
-              Füllen Sie das Formular aus — wir melden uns zeitnah bei Ihnen für eine kostenlose Erstberatung.
-            </p>
+      {/* ═══════════ BEWERTUNGEN ═══════════ */}
+      <section id="bewertungen" className="py-20 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Das sagen unsere Kunden</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Bewertungen aus der Region</h2>
+            <p className="mt-4 text-slate-500 text-sm italic">Beispiel-Bewertungen zur Demonstration – keine echten Kundenstimmen.</p>
           </div>
-          
-          <form className="bg-white p-8 md:p-12 rounded-2xl border border-slate-200 shadow-lg" action={`/api/leads/${page.id || 'fallback'}`} method="POST">
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Name *</label>
-                <input type="text" name="name" placeholder="Max Mustermann" required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">E-Mail *</label>
-                <input type="email" name="email" placeholder="max@beispiel.de" required
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
-              </div>
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Telefon</label>
-              <input type="tel" name="phone" placeholder="+49 123 456789"
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Ihr Anliegen *</label>
-              <textarea name="message" placeholder="Beschreiben Sie kurz Ihr Vorhaben oder Problem..." rows={4} required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"></textarea>
-            </div>
-            <button type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition text-lg shadow-lg shadow-orange-500/30">
-              Kostenlose Anfrage senden
-            </button>
-            <p className="text-xs text-slate-400 text-center mt-4">
-              🔒 Ihre Daten werden SSL-verschlüsselt übertragen. Keine Weitergabe an Dritte.
-            </p>
-          </form>
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {reviews.map((review, i) => (
+              <figure key={i} className="bg-slate-50 rounded-2xl p-8 border border-slate-100 flex flex-col">
+                <div className="text-orange-500 text-lg tracking-wider">{'★'.repeat(review.stars)}{'☆'.repeat(5 - review.stars)}</div>
+                <blockquote className="mt-4 text-slate-700 leading-relaxed flex-1">„{review.text}"</blockquote>
+                <figcaption className="mt-6 pt-5 border-t border-slate-200">
+                  <p className="font-bold text-slate-900">{review.author}</p>
+                  <p className="text-sm text-slate-500">{review.location}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-20 px-6 bg-slate-50">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
-          <div className="space-y-4">
-            {getFAQ(trade.name).map((faq, i) => (
-              <details key={i} className="group bg-white rounded-xl border border-slate-200">
-                <summary className="flex justify-between items-center cursor-pointer p-6 font-medium text-slate-900 list-none">
+      {/* ═══════════ BLOG ═══════════ */}
+      <section id="blog" className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="max-w-xl">
+              <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Ratgeber & Blog</p>
+              <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Wissen rund um {trade.name}</h2>
+            </div>
+          </div>
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {articles.map((article, i) => (
+              <article key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+                <div className={`h-44 bg-gradient-to-br ${article.gradient} flex items-center justify-center`}>
+                  <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: article.svg }} />
+                </div>
+                <div className="p-7">
+                  <p className="text-xs font-semibold text-slate-400">{article.tag}</p>
+                  <h3 className="mt-2 text-lg font-bold text-slate-900 group-hover:text-orange-600 transition leading-snug">{article.title}</h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed">{article.desc}</p>
+                  <p className="mt-4 text-sm font-bold text-orange-600">Beitrag lesen →</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FAQ ═══════════ */}
+      <section id="faq" className="py-20 sm:py-28">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Häufige Fragen</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">FAQ – gut zu wissen</h2>
+          </div>
+          <div className="mt-12 space-y-3">
+            {faqs.map((faq, i) => (
+              <details key={i} className="group bg-slate-50 border border-slate-100 rounded-xl overflow-hidden">
+                <summary className="flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-slate-900 cursor-pointer list-none">
                   {faq.q}
-                  <Icons.ChevronDown />
+                  <svg className="w-5 h-5 text-orange-600 shrink-0 group-open:rotate-180 transition" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                 </summary>
-                <p className="px-6 pb-6 text-slate-600">{faq.a}</p>
+                <p className="px-6 pb-5 text-slate-600 leading-relaxed">{faq.a}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      {/* ═══════════ NOTDIENST-BANNER ═══════════ */}
+      <section className="bg-orange-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4 text-white">
+            <span className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"></path></svg>
+            </span>
             <div>
-              <Link href="/" className="text-xl font-bold text-white">fachschmiede.de</Link>
-              <p className="text-sm mt-1">Wir schmieden deine lokale Präsenz.</p>
+              <p className="text-xl sm:text-2xl font-black">Sturmschaden? Wir helfen schnell.</p>
+              <p className="text-orange-100 mt-1">Schnelle Hilfe für {city.name} und Umgebung – rufen Sie uns einfach an.</p>
             </div>
-            {isAvailable && (
-              <Link href={`/mieten/${slug}`} className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg transition inline-flex items-center gap-2">
-                Sind Sie {trade.name}? Diese Seite mieten
-                <Icons.ArrowRight />
-              </Link>
+          </div>
+          {customization?.custom_phone && (
+            <a className="inline-flex items-center gap-2 bg-white text-orange-700 font-black px-8 py-4 rounded-xl text-lg hover:bg-orange-50 transition shadow-lg shrink-0" href={`tel:${customization.custom_phone}`}>
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"></path></svg>
+              {customization.custom_phone}
+            </a>
+          )}
+        </div>
+      </section>
+
+      {/* ═══════════ KONTAKT ═══════════ */}
+      <section id="kontakt" className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-5 gap-12">
+          <div className="lg:col-span-2">
+            <p className="text-orange-600 font-bold text-sm uppercase tracking-widest">Kontakt</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Schreiben Sie uns – wir melden uns zeitnah</h2>
+            <p className="mt-4 text-slate-600 leading-relaxed">
+              Ob Angebot, Terminvereinbarung oder eine kurze Frage: Nutzen Sie das Formular oder rufen Sie uns direkt an. Wir freuen uns auf Ihre Nachricht.
+            </p>
+            
+            {isRented && (
+              <div className="mt-8 space-y-4">
+                {customization?.custom_phone && (
+                  <a href={`tel:${customization.custom_phone}`} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition">
+                    <span className="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">📞</span>
+                    <div>
+                      <p className="text-xs text-slate-500 font-semibold uppercase">Telefon</p>
+                      <p className="font-bold text-slate-900">{customization.custom_phone}</p>
+                    </div>
+                  </a>
+                )}
+                {customization?.custom_whatsapp && (
+                  <a href={`https://wa.me/${customization.custom_whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-green-50 rounded-xl border border-green-200 hover:border-green-500 hover:shadow-lg transition">
+                    <span className="w-12 h-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center text-xl">💬</span>
+                    <div>
+                      <p className="text-xs text-green-600 font-semibold uppercase">WhatsApp</p>
+                      <p className="font-bold text-slate-900">{customization.custom_whatsapp}</p>
+                    </div>
+                  </a>
+                )}
+                {customization?.custom_email && (
+                  <a href={`mailto:${customization.custom_email}`} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition">
+                    <span className="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">✉️</span>
+                    <div>
+                      <p className="text-xs text-slate-500 font-semibold uppercase">E-Mail</p>
+                      <p className="font-bold text-slate-900">{customization.custom_email}</p>
+                    </div>
+                  </a>
+                )}
+                {customization?.custom_address && (
+                  <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200">
+                    <span className="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl">📍</span>
+                    <div>
+                      <p className="text-xs text-slate-500 font-semibold uppercase">Adresse</p>
+                      <p className="font-bold text-slate-900">{customization.custom_address}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-sm">
-            <p>© 2026 fachschmiede.de — {trade.name} {city.name}</p>
+          
+          <div className="lg:col-span-3">
+            <form className="bg-white p-6 sm:p-10 rounded-2xl border border-slate-200 shadow-lg" action={`/api/leads/${page.id || 'fallback'}`} method="POST">
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Name *</label>
+                  <input type="text" name="name" required placeholder="Max Mustermann" className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">E-Mail *</label>
+                  <input type="email" name="email" required placeholder="max@beispiel.de" className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:outline-none" />
+                </div>
+              </div>
+              <div className="mt-5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Telefon</label>
+                <input type="tel" name="phone" placeholder="+49 123 456789" className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:outline-none" />
+              </div>
+              <div className="mt-5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Ihr Anliegen *</label>
+                <textarea name="message" required rows={5} placeholder="Beschreiben Sie kurz Ihr Vorhaben..." className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:outline-none"></textarea>
+              </div>
+              <button type="submit" className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl text-lg transition shadow-lg shadow-orange-600/25">
+                Anfrage senden
+              </button>
+              <p className="mt-3 text-xs text-slate-400 text-center">
+                🔒 SSL-verschlüsselt. Keine Weitergabe an Dritte.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FOOTER ═══════════ */}
+      <footer className="bg-slate-900 text-slate-400">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="sm:col-span-2 lg:col-span-2">
+              <Link href="/" className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-lg bg-orange-600 flex items-center justify-center text-white">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"></path></svg>
+                </span>
+                <span className="text-xl font-extrabold text-white">fachschmiede.de</span>
+              </Link>
+              <p className="mt-3 text-sm leading-relaxed max-w-sm">
+                Professionelle Online-Präsenz für Handwerksbetriebe. Wir schmieden deine lokale Präsenz.
+              </p>
+            </div>
+            <div>
+              <p className="text-white font-bold mb-3">Seite</p>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#leistungen" className="hover:text-white transition">Leistungen</a></li>
+                <li><a href="#ueber-uns" className="hover:text-white transition">Über uns</a></li>
+                <li><a href="#ablauf" className="hover:text-white transition">Ablauf</a></li>
+                <li><a href="#bewertungen" className="hover:text-white transition">Bewertungen</a></li>
+                <li><a href="#faq" className="hover:text-white transition">FAQ</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-white font-bold mb-3">Rechtliches</p>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white transition">Impressum</a></li>
+                <li><a href="#" className="hover:text-white transition">Datenschutz</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm">© 2026 fachschmiede.de — {trade.name} {city.name}</p>
+            {isAvailable && (
+              <Link href={`/mieten/${slug}`} className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-lg transition inline-flex items-center gap-2">
+                Diese Seite mieten
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              </Link>
+            )}
           </div>
         </div>
       </footer>
@@ -497,155 +505,93 @@ export default async function LandingPage({ params }: PageProps) {
   )
 }
 
-function getServiceDetails(tradeSlug: string) {
-  const details: Record<string, Array<{icon: string; title: string; description: string; image: string}>> = {
+// ═══════════ HELPERS ═══════════
+
+function getServices(tradeSlug: string) {
+  const svcs: Record<string, Array<{title: string; desc: string; svg: string}>> = {
     dachdecker: [
-      {
-        icon: '🏠',
-        title: 'Dachsanierung',
-        description: 'Komplette Neueindeckung Ihres Dachs inklusive Unterspannbahn, Lattung und Eindeckung. Wir verwenden hochwertige Materialien führender Hersteller.',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80',
-      },
-      {
-        icon: '🔧',
-        title: 'Dachreparatur',
-        description: 'Undichte Stellen, lose Ziegel oder defekte Dachrinnen — wir beheben Schäden schnell und zuverlässig. Auch nach Sturm und Hagel.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
-      },
-      {
-        icon: '❄️',
-        title: 'Dachdämmung',
-        description: 'Aufsparren-, Zwischensparren- oder Geschossdeckendämmung: Senken Sie Ihre Heizkosten dauerhaft. Beratung zu Fördermöglichkeiten.',
-        image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80',
-      },
-      {
-        icon: '🏢',
-        title: 'Flachdach',
-        description: 'Flachdachsanierung und -neubau mit modernen Abdichtungssystemen. Für Garage, Anbau oder Carport — dicht und langlebig.',
-        image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',
-      },
-      {
-        icon: '☀️',
-        title: 'Solar & PV-Vorbereitung',
-        description: 'Wir bereiten Ihr Dach optimal für eine Photovoltaik-Anlage vor. Von der statischen Prüfung bis zur Montage der Unterkonstruktion.',
-        image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80',
-      },
-      {
-        icon: '🚨',
-        title: 'Sturm- & Notdienst',
-        description: 'Sturm- oder Hagelschaden? Wir sichern Ihr Dach schnellstmöglich ab und kümmern uns um die fachgerechte Instandsetzung.',
-        image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&q=80',
-      },
+      { title: 'Dachsanierung', desc: 'Komplette Neueindeckung Ihres Steildachs inkl. Unterspannbahn, Lattung und Eindeckung – mit hochwertigen Materialien führender Hersteller.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"></path>' },
+      { title: 'Dachreparatur', desc: 'Undichte Stellen, lose Ziegel, defekte Dachrinnen: Wir beheben Schäden schnell und zuverlässig – auch nach Sturm und Hagel, auf Wunsch mit Dokumentation für Ihre Versicherung.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>' },
+      { title: 'Dachdämmung', desc: 'Aufsparren-, Zwischensparren- oder Geschossdeckendämmung: Senken Sie Ihre Heizkosten dauerhaft – wir beraten Sie auch zu aktuellen Fördermöglichkeiten.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>' },
+      { title: 'Flachdach', desc: 'Flachdachsanierung und -neubau mit modernen Abdichtungssystemen für Garage, Anbau oder Carport – dicht, langlebig und wartungsarm.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.6-4.6a2 2 0 012.8 0L16 16m-2-2l1.6-1.6a2 2 0 012.8 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>' },
+      { title: 'Solar & Photovoltaik', desc: 'Wir bereiten Ihr Dach optimal für eine PV-Anlage vor – von der statischen Prüfung bis zur Montage der Unterkonstruktion, abgestimmt mit Ihrem Solarteur.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4L17 7M7 17l-1.4 1.4M18.4 18.4L17 17M7 7L5.6 5.6"></path><circle cx="12" cy="12" r="4"></circle>' },
+      { title: 'Sturm- & Notdienst', desc: 'Sturm- oder Hagelschaden? Wir sichern Ihr Dach schnellstmöglich ab und kümmern uns um die fachgerechte Instandsetzung.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"></path>' },
     ],
     elektriker: [
-      {
-        icon: '⚡',
-        title: 'Elektroinstallation',
-        description: 'Komplette Elektroinstallation für Neubau, Renovierung oder Modernisierung. Planung, Installation und Prüfung aus einer Hand.',
-        image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80',
-      },
-      {
-        icon: '🔌',
-        title: 'Elektroreparatur',
-        description: 'Stromausfall, defekte Steckdosen oder Sicherungsprobleme — wir beheben Störungen schnell und sicher.',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80',
-      },
-      {
-        icon: '🔋',
-        title: 'Photovoltaik',
-        description: 'Installation von Solaranlagen und Wechselrichtern inklusive Anmeldung beim Netzbetreiber.',
-        image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80',
-      },
-      {
-        icon: '🚗',
-        title: 'E-Ladesäulen',
-        description: 'Installation von Wallboxen und Ladesäulen für Elektroautos. Inklusive Leistungsberechnung und Sicherheitsprüfung.',
-        image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',
-      },
-      {
-        icon: '🏠',
-        title: 'Smart Home',
-        description: 'Vernetzung von Beleuchtung, Heizung und Sicherheitstechnik. Wir planen und installieren Ihr intelligentes Zuhause.',
-        image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80',
-      },
-      {
-        icon: '📋',
-        title: 'E-Check & Prüfung',
-        description: 'Regelmäßige Überprüfung Ihrer elektrischen Anlagen nach VDE 0105. Dokumentation für Ihre Sicherheit und Versicherung.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
-      },
+      { title: 'Elektroinstallation', desc: 'Komplette Elektroinstallation für Neubau, Renovierung oder Modernisierung. Planung, Installation und Prüfung aus einer Hand.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>' },
+      { title: 'Elektroreparatur', desc: 'Stromausfall, defekte Steckdosen oder Sicherungsprobleme – wir beheben Störungen schnell und sicher.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>' },
+      { title: 'Photovoltaik', desc: 'Installation von Solaranlagen und Wechselrichtern inklusive Anmeldung beim Netzbetreiber.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4L17 7M7 17l-1.4 1.4M18.4 18.4L17 17M7 7L5.6 5.6"></path><circle cx="12" cy="12" r="4"></circle>' },
+      { title: 'E-Ladesäulen', desc: 'Installation von Wallboxen und Ladesäulen für Elektroautos. Inklusive Leistungsberechnung und Sicherheitsprüfung.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.6-4.6a2 2 0 012.8 0L16 16m-2-2l1.6-1.6a2 2 0 012.8 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>' },
+      { title: 'Smart Home', desc: 'Vernetzung von Beleuchtung, Heizung und Sicherheitstechnik. Wir planen und installieren Ihr intelligentes Zuhause.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"></path>' },
+      { title: 'E-Check & Prüfung', desc: 'Regelmäßige Überprüfung Ihrer elektrischen Anlagen nach VDE 0105. Dokumentation für Ihre Sicherheit und Versicherung.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"></path>' },
     ],
     klempner: [
-      {
-        icon: '🚿',
-        title: 'Installation & Sanierung',
-        description: 'Professionelle Installation und Sanierung von Sanitäranlagen. Badmodernisierung und Heizungsinstallation aus einer Hand.',
-        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80',
-      },
-      {
-        icon: '🔧',
-        title: 'Rohrreinigung & Reparatur',
-        description: 'Verstopfte Leitungen, undichte Rohre oder Wasserschäden — wir finden die Ursache und beheben das Problem dauerhaft.',
-        image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&q=80',
-      },
-      {
-        icon: '♨️',
-        title: 'Heizungsservice',
-        description: 'Installation, Wartung und Reparatur von Heizungsanlagen. Von der Gasheizung bis zur Wärmepumpe.',
-        image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80',
-      },
-      {
-        icon: '🚽',
-        title: 'Badmodernisierung',
-        description: 'Komplette Badrenovierung von der Planung bis zur Fertigstellung. Wir koordinieren alle Gewerke für Ihr Traumbad.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
-      },
-      {
-        icon: '💧',
-        title: 'Wasseraufbereitung',
-        description: 'Installation von Wasserenthärtungsanlagen und Filtern. Für besseres Wasser in Ihrem Zuhause.',
-        image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',
-      },
-      {
-        icon: '🚨',
-        title: 'Notdienst',
-        description: 'Wasserschaden oder Rohrbruch? Unser Notdienst ist rund um die Uhr für Sie da. Schnelle Hilfe bei akuten Wasserschäden.',
-        image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80',
-      },
+      { title: 'Installation & Sanierung', desc: 'Professionelle Installation und Sanierung von Sanitäranlagen. Badmodernisierung und Heizungsinstallation aus einer Hand.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"></path>' },
+      { title: 'Rohrreinigung & Reparatur', desc: 'Verstopfte Leitungen, undichte Rohre oder Wasserschäden – wir finden die Ursache und beheben das Problem dauerhaft.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>' },
+      { title: 'Heizungsservice', desc: 'Installation, Wartung und Reparatur von Heizungsanlagen. Von der Gasheizung bis zur Wärmepumpe.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>' },
+      { title: 'Badmodernisierung', desc: 'Komplette Badrenovierung von der Planung bis zur Fertigstellung. Wir koordinieren alle Gewerke für Ihr Traumbad.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.6-4.6a2 2 0 012.8 0L16 16m-2-2l1.6-1.6a2 2 0 012.8 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>' },
+      { title: 'Wasseraufbereitung', desc: 'Installation von Wasserenthärtungsanlagen und Filtern. Für besseres Wasser in Ihrem Zuhause.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4L17 7M7 17l-1.4 1.4M18.4 18.4L17 17M7 7L5.6 5.6"></path><circle cx="12" cy="12" r="4"></circle>' },
+      { title: 'Notdienst', desc: 'Wasserschaden oder Rohrbruch? Unser Notdienst ist rund um die Uhr für Sie da. Schnelle Hilfe bei akuten Wasserschäden.', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"></path>' },
     ],
   }
-
-  return details[tradeSlug] || details['dachdecker']
+  return svcs[tradeSlug] || svcs['dachdecker']
 }
 
-function getTradeImages(tradeSlug: string) {
-  const images: Record<string, {hero: string; project: string}> = {
-    dachdecker: {
-      hero: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1920&q=80',
-      project: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    },
-    elektriker: {
-      hero: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1920&q=80',
-      project: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80',
-    },
-    klempner: {
-      hero: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1920&q=80',
-      project: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    },
+function getHeroImage(tradeSlug: string) {
+  const imgs: Record<string, string> = {
+    dachdecker: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1920&q=80',
+    elektriker: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1920&q=80',
+    klempner: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1920&q=80',
   }
-  return images[tradeSlug] || images['dachdecker']
+  return imgs[tradeSlug] || imgs['dachdecker']
+}
+
+function getAboutImage(tradeSlug: string) {
+  const imgs: Record<string, string> = {
+    dachdecker: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+    elektriker: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80',
+    klempner: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+  }
+  return imgs[tradeSlug] || imgs['dachdecker']
+}
+
+function getProjectImage(tradeSlug: string) {
+  const imgs: Record<string, string> = {
+    dachdecker: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
+    elektriker: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    klempner: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
+  }
+  return imgs[tradeSlug] || imgs['dachdecker']
 }
 
 function getNearbyCities(cityName: string): string[] {
-  return [`${cityName}-Mitte`, `${cityName}-Nord`, `${cityName}-Süd`, `${cityName}-Ost`, `${cityName}-West`, 'Umland', 'Region']
+  return [cityName, `${cityName}-Mitte`, `${cityName}-Nord`, `${cityName}-Süd`, `${cityName}-Ost`, `${cityName}-West`, 'Umland', 'Region']
 }
 
-function getFAQ(tradeName: string): Array<{q: string; a: string}> {
+function getReviews(cityName: string, tradeName: string) {
   return [
-    { q: `Wie schnell kann ein ${tradeName} vor Ort sein?`, a: 'Bei dringenden Angelegenheiten bemühen wir uns, noch am selben oder spätestens am nächsten Tag vor Ort zu sein. Für planbare Projekte vereinbaren wir gerne einen Termin, der Ihnen passt.' },
-    { q: 'Ist die Erstbesichtigung wirklich kostenlos?', a: 'Ja, die Erstbesichtigung vor Ort ist für Sie kostenlos und unverbindlich. Sie erhalten ein transparentes Angebot, ohne dass Ihnen daraus Kosten entstehen.' },
-    { q: 'Wie transparent sind die Preise?', a: 'Sie erhalten vor Arbeitsbeginn ein schriftliches, detailliertes Angebot. Es gibt keine versteckten Kosten — was im Angebot steht, zahlen Sie.' },
-    { q: 'Gibt es eine Gewährleistung?', a: 'Ja, auf alle ausgeführten Arbeiten gibt es eine gesetzliche Gewährleistung. Zusätzlich bieten wir je nach Projekt auch erweiterte Garantien an.' },
-    { q: 'Arbeiten Sie auch mit Versicherungen zusammen?', a: 'Ja, bei Sturm-, Hagel- oder Wasserschäden erstellen wir gerne die erforderliche Dokumentation für Ihre Versicherung und unterstützen Sie beim Schadensmanagement.' },
+    { stars: 5, text: `Schnelle Reaktion nach dem Sturm. Das Team war am selben Tag vor Ort und hat alles professionell abgesichert. Transparente Abrechnung ohne Überraschungen.`, author: 'Familie Schmidt', location: `${cityName} · Sturmreparatur` },
+    { stars: 5, text: `Kompetente Beratung und saubere Ausführung. Man merkt, dass hier Profis am Werk sind. Werde definitiv wieder auf Sie zurückkommen.`, author: 'Peter M.', location: `${cityName} · Sanierung` },
+    { stars: 5, text: `Endlich ein Handwerker, der pünktlich kommt und die vereinbarte Arbeit auch wirklich erledigt. Klare Empfehlung für die ganze Region!`, author: 'Monika K.', location: `${cityName} · Reparatur` },
+  ]
+}
+
+function getArticles(tradeName: string) {
+  return [
+    { title: `5 Anzeichen, dass Sie einen ${tradeName} brauchen`, desc: 'Woran Sie erkennen, dass es Zeit für den Profi wird.', tag: 'Ratgeber · 6 Min. Lesezeit', gradient: 'from-orange-500 to-orange-700', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>' },
+    { title: 'Förderungen für Sanierungen: Diese Zuschüsse gibt es', desc: 'BAFA-Zuschuss oder KfW-Kredit? Ein Überblick über die Fördermöglichkeiten.', tag: 'Förderung · 8 Min. Lesezeit', gradient: 'from-slate-700 to-slate-900', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>' },
+    { title: 'Notfall: Was Sie sofort tun sollten', desc: 'Die wichtigsten Schritte im Überblick.', tag: 'Notfall · 5 Min. Lesezeit', gradient: 'from-sky-600 to-slate-800', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999A5.002 5.002 0 105.9 8.001 4.002 4.002 0 003 15z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M13 10l-2 4h3l-2 4"></path>' },
+  ]
+}
+
+function getFAQ(tradeName: string) {
+  return [
+    { q: `Was kostet eine typische ${tradeName}-Leistung?`, a: 'Das hängt vom Umfang ab. Nach der kostenlosen Besichtigung erhalten Sie von uns ein verbindliches, schriftliches Angebot.' },
+    { q: 'Wie lange dauert ein typischer Auftrag?', a: 'Bei einem typischen Projekt dauert die Ausführung in der Regel wenige Tage bis zwei Wochen. Den genauen Zeitplan erhalten Sie vor Baubeginn schriftlich.' },
+    { q: 'Bieten Sie einen Notdienst an?', a: 'Ja. Bei akuten Schäden erreichen Sie uns telefonisch – wir kümmern uns schnellstmöglich um die Sicherung.' },
+    { q: 'Gibt es Förderungen für Sanierungen?', a: 'Ja, energetische Sanierungen werden häufig gefördert. Wir beraten Sie im Rahmen der Besichtigung zu den aktuellen Möglichkeiten.' },
+    { q: 'Wie lange gilt die Gewährleistung?', a: 'Auf unsere Handwerksleistungen gilt selbstverständlich die gesetzliche Gewährleistung. Details nennen wir Ihnen gerne im Angebot.' },
+    { q: 'Arbeiten Sie auch außerhalb der Stadt?', a: 'Ja, unser Einsatzgebiet umfasst die Stadt und alle umliegenden Gemeinden. Für größere Projekte kommen wir auf Anfrage auch darüber hinaus.' },
+    { q: 'Ist die Besichtigung wirklich kostenlos?', a: 'Ja. Die Erstbesichtigung inklusive Angebot ist komplett kostenlos und unverbindlich.' },
   ]
 }
