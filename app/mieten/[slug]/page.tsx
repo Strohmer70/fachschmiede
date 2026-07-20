@@ -100,7 +100,12 @@ export default async function RentPage({ params }: PageProps) {
                 {
                   icon: '🎨',
                   title: 'Ihr Branding',
-                  desc: 'Ihr Firmenlogo, Name, Telefonnummer, E-Mail und Adresse — prominent platziert.'
+                  desc: 'Ihr Firmenlogo, Name, Telefonnummer, E-Mail, Adresse und WhatsApp — prominent platziert.'
+                },
+                {
+                  icon: '📍',
+                  title: 'Google Maps Integration',
+                  desc: 'Ihr Standort wird auf einer interaktiven Karte angezeigt — Kunden finden Sie sofort.'
                 },
                 {
                   icon: '📱',
@@ -225,6 +230,30 @@ export default async function RentPage({ params }: PageProps) {
                   <input type="text" name="address"
                     placeholder="Musterstraße 1, 12345 Stadt"
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    WhatsApp-Nummer <span className="text-slate-400 font-normal">(optional)</span>
+                  </label>
+                  <input type="tel" name="whatsapp"
+                    placeholder="+49 123 456789"
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                  <p className="text-xs text-slate-400 mt-1">Kunden können Sie direkt über WhatsApp kontaktieren.</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Google Maps Place ID <span className="text-slate-400 font-normal">(optional)</span>
+                  </label>
+                  <input type="text" name="place_id"
+                    placeholder="ChIJ..."
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                  <p className="text-xs text-slate-400 mt-1">
+                    <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline">
+                      Place ID hier finden →
+                    </a>
+                  </p>
                 </div>
 
                 <div className="pt-2">

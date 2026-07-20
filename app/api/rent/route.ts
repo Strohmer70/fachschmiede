@@ -12,6 +12,8 @@ export async function POST(request: Request) {
     const email = formData.get('email') as string
     const phone = formData.get('phone') as string
     const address = formData.get('address') as string
+    const whatsapp = formData.get('whatsapp') as string
+    const placeId = formData.get('place_id') as string
 
     if (!landingPageId || !email || !companyName || !phone) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -75,6 +77,8 @@ export async function POST(request: Request) {
         custom_address: address,
         custom_phone: phone,
         custom_email: email,
+        custom_whatsapp: whatsapp || null,
+        custom_place_id: placeId || null,
         custom_welcome_text: `Willkommen bei ${companyName} — Ihr zuverlässiger Partner in der Region.`,
       })
 

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { RentBanner } from '@/components/RentBanner'
-import { TenantBranding } from '@/components/TenantBranding'
+import { TenantBranding, GoogleMap } from '@/components/TenantBranding'
 import { FALLBACK_TRADES, FALLBACK_CITIES, FALLBACK_PAGES } from '@/lib/fallback-data'
 import { supabase } from '@/lib/supabase'
 
@@ -286,6 +286,56 @@ export default async function LandingPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {/* Contact Section - Shows when tenant is active */}
+      {tenant && customization && (
+        <section className="bg-white py-20 px-6">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">Direkt kontaktieren</h2>
+            
+            {/* Contact Cards */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {customization?.custom_phone && (
+                <a href={`tel:${customization.custom_phone}`} className="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition text-center group">
+                  <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition">📞</div>
+                  <h3 className="font-semibold mb-2">Telefon</h3>
+                  <p className="text-orange-600 group-hover:text-orange-700">{customization.custom_phone}</p>
+                </a>
+              )}
+              {customization?.custom_whatsapp && (
+                <a href={`https://wa.me/${customization.custom_whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="bg-green-50 p-6 rounded-xl border border-green-200 hover:border-green-500 hover:shadow-lg transition text-center group">
+                  <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:bg-green-500 group-hover:text-white transition">💬</div>
+                  <h3 className="font-semibold mb-2 text-green-700">WhatsApp</h3>
+                  <p className="text-green-600 group-hover:text-green-700">{customization.custom_whatsapp}</p>
+                  <span className="text-xs text-green-500 mt-2 inline-block">Direkt schreiben →</span>
+                </a>
+              )}
+              {customization?.custom_email && (
+                <a href={`mailto:${customization.custom_email}`} className="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition text-center group">
+                  <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition">✉️</div>
+                  <h3 className="font-semibold mb-2">E-Mail</h3>
+                  <p className="text-orange-600 group-hover:text-orange-700">{customization.custom_email}</p>
+                </a>
+              )}
+              {customization?.custom_address && (
+                <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center">
+                  <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">📍</div>
+                  <h3 className="font-semibold mb-2">Adresse</h3>
+                  <p className="text-slate-600">{customization.custom_address}</p>
+                </div>
+              )}
+            </div>
+            
+            {/* Google Maps */}
+            {(customization?.custom_place_id || customization?.custom_address) && (
+              <div className="mt-8">
+                <h3 className="font-bold text-lg mb-4 text-center">So finden Sie uns</h3>
+                <GoogleMap placeId={customization.custom_place_id} address={customization.custom_address} />
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Reviews */}
       <section className="py-20 px-6 bg-slate-50">
