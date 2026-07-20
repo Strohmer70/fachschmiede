@@ -92,7 +92,7 @@ export default async function LandingPage({ params }: PageProps) {
 
       {/* Hero */}
       <section className="relative bg-slate-900 text-white py-24 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1632778149955-e80f8ceca2e8?w=1920&q=80')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1920&q=80')] bg-cover bg-center opacity-20"></div>
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-block bg-orange-500 text-white text-sm font-medium px-4 py-1 rounded-full mb-6">
             {city.name}
