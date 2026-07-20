@@ -1,10 +1,7 @@
 import Link from 'next/link'
+import { FALLBACK_TRADES } from '@/lib/fallback-data'
 
-const POPULAR_COMBOS = [
-  { trade: 'dachdecker', city: 'muenchen', tradeName: 'Dachdecker', cityName: 'München' },
-  { trade: 'elektriker', city: 'muenchen', tradeName: 'Elektriker', cityName: 'München' },
-  { trade: 'klempner', city: 'muenchen', tradeName: 'Klempner', cityName: 'München' },
-]
+const TRADES_LIST = Object.values(FALLBACK_TRADES)
 
 export default function Home() {
   return (
@@ -29,30 +26,80 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Popular Pages */}
+      {/* Trades Grid */}
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Beliebte Suchen
+          <h2 className="text-3xl font-bold text-center mb-4">
+            Wählen Sie Ihr Gewerk
           </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {POPULAR_COMBOS.map((combo) => (
+          <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
+            Finden Sie erfahrene Handwerker in Ihrer Stadt. Wählen Sie unten Ihr Gewerk und suchen Sie nach Ihrer Stadt.
+          </p>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {TRADES_LIST.map((trade) => (
               <Link 
-                key={`${combo.trade}-${combo.city}`}
-                href={`/g/${combo.trade}/${combo.city}`}
-                className="bg-slate-50 p-6 rounded-lg border border-slate-200 hover:border-orange-500 hover:shadow-lg transition"
+                key={trade.slug}
+                href={`/gewerk/${trade.slug}`}
+                className="bg-white p-6 rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-xl transition group"
               >
-                <h3 className="font-semibold text-lg mb-2">
-                  {combo.tradeName} {combo.cityName}
-                </h3>
-                <p className="text-slate-600 text-sm">
-                  Finden Sie erfahrene {combo.tradeName} in {combo.cityName}.
-                </p>
-                <span className="text-orange-500 text-sm font-medium mt-4 inline-block">
-                  Zur Seite →
-                </span>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center text-2xl group-hover:bg-orange-500 group-hover:text-white transition">
+                    {trade.slug === 'dachdecker' ? '🏠' : trade.slug === 'elektriker' ? '⚡' : '🔧'}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-slate-900 group-hover:text-orange-600 transition">
+                      {trade.name}
+                    </h3>
+                    <p className="text-slate-500 text-sm">
+                      {trade.services.length} Leistungen
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {trade.services.slice(0, 3).map((service: string, i: number) => (
+                    <span key={i} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">
+                      {service}
+                    </span>
+                  ))}
+                  {trade.services.length > 3 && (
+                    <span className="text-xs text-slate-400 px-2 py-1">+{trade.services.length - 3} mehr</span>
+                  )}
+                </div>
+                <div className="mt-4 flex items-center text-orange-500 font-medium text-sm">
+                  <span>Städte durchsuchen</span>
+                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="bg-slate-50 py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            So funktioniert's
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
+              <h3 className="font-semibold text-lg mb-2">Gewerk wählen</h3>
+              <p className="text-slate-600">Wählen Sie Ihr Handwerk aus unserer Liste.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
+              <h3 className="font-semibold text-lg mb-2">Stadt suchen</h3>
+              <p className="text-slate-600">Finden Sie Handwerker in Ihrer Stadt.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
+              <h3 className="font-semibold text-lg mb-2">Kontakt aufnehmen</h3>
+              <p className="text-slate-600">Direkt Angebot einholen – kostenlos.</p>
+            </div>
           </div>
         </div>
       </section>
