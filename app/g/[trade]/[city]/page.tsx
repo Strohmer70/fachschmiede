@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { RentBanner } from '@/components/RentBanner'
 import { TenantBranding } from '@/components/TenantBranding'
+import { FALLBACK_TRADES, FALLBACK_CITIES, FALLBACK_PAGES } from '@/lib/fallback-data'
+import { supabase } from '@/lib/supabase'
 
 interface PageProps {
   params: {
@@ -12,61 +13,26 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  try {
-    const { data: pages } = await supabase
-      .from('landing_pages')
-      .select('slug')
-
-    const params: { trade: string; city: string }[] = []
-
-    for (const page of pages || []) {
-      const parts = page.slug.split('-')
-      if (parts.length >= 2) {
-        const trade = parts[0]
-        const city = parts.slice(1).join('-')
-        params.push({ trade, city })
-      }
+  // Static export: pre-build all known pages
+  return Object.keys(FALLBACK_PAGES).map(slug => {
+    const parts = slug.split('-')
+    return {
+      trade: parts[0],
+      city: parts.slice(1).join('-')
     }
-
-    // Fallback: ensure pages exist for build
-    if (params.length === 0) {
-      return [
-        { trade: 'dachdecker', city: 'muenchen' },
-        { trade: 'elektriker', city: 'muenchen' },
-        { trade: 'klempner', city: 'muenchen' },
-      ]
-    }
-
-    return params
-  } catch {
-    return [
-      { trade: 'dachdecker', city: 'muenchen' },
-      { trade: 'elektriker', city: 'muenchen' },
-      { trade: 'klempner', city: 'muenchen' },
-    ]
-  }
+  })
 }
 
 export async function generateMetadata({ params }: PageProps) {
   const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
   const cleanCity = params.city?.replace(/\/$/, '') || params.city
   const slug = `${cleanTrade}-${cleanCity}`
-
-  const { data: page } = await supabase
-    .from('landing_pages')
-    .select('title, meta_description, status, page_customizations(custom_company_name)')
-    .eq('slug', slug)
-    .single()
-
+  
+  const page = FALLBACK_PAGES[slug]
   if (!page) return { title: 'Seite nicht gefunden' }
 
-  const companyName = page.page_customizations?.[0]?.custom_company_name
-  const title = companyName 
-    ? `${page.title} — ${companyName}` 
-    : page.title
-
   return {
-    title,
+    title: page.title,
     description: page.meta_description,
   }
 }
@@ -76,28 +42,39 @@ export default async function LandingPage({ params }: PageProps) {
   const cleanCity = params.city?.replace(/\/$/, '') || params.city
   const slug = `${cleanTrade}-${cleanCity}`
 
-  const { data: page } = await supabase
-    .from('landing_pages')
-    .select(`
-      *,
-      trade:trades(*),
-      city:cities(*),
-      page_customizations(*, tenant:tenants(*))
-    `)
-    .eq('slug', slug)
-    .single()
+  // Try Supabase first, fallback to static data
+  let page = null
+  try {
+    const { data } = await supabase
+      .from('landing_pages')
+      .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
+      .eq('slug', slug)
+      .single()
+    page = data
+  } catch {
+    // Supabase failed, use fallback
+  }
+
+  // Use fallback if Supabase has no data
+  if (!page) {
+    page = FALLBACK_PAGES[slug]
+  }
 
   if (!page) notFound()
 
-  const trade = page.trade as any
-  const city = page.city as any
+  // Get trade and city data
+  let trade = page.trade
+  let city = page.city
+
+  if (!trade) trade = FALLBACK_TRADES[cleanTrade]
+  if (!city) city = FALLBACK_CITIES[cleanCity]
+
+  if (!trade || !city) notFound()
+
   const services = trade.services || []
   const isAvailable = page.status === 'available'
   const customization = page.page_customizations?.[0]
   const tenant = customization?.tenant
-
-  // Increment page views (fire and forget)
-  supabase.from('landing_pages').update({ page_views: (page.page_views || 0) + 1 }).eq('id', page.id).then(() => {})
 
   return (
     <div className="min-h-screen bg-white">
@@ -115,7 +92,7 @@ export default async function LandingPage({ params }: PageProps) {
           tradeName={trade.name} 
           cityName={city.name} 
           price={page.monthly_price} 
-          slug={page.slug}
+          slug={slug}
         />
       )}
 
@@ -137,16 +114,10 @@ export default async function LandingPage({ params }: PageProps) {
             }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="#kontakt" 
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition"
-            >
+            <a href="#kontakt" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition">
               Jetzt anfragen
             </a>
-            <a 
-              href="#leistungen" 
-              className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-8 rounded-lg transition"
-            >
+            <a href="#leistungen" className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-8 rounded-lg transition">
               Unsere Leistungen
             </a>
           </div>
@@ -246,39 +217,19 @@ export default async function LandingPage({ params }: PageProps) {
           <p className="text-slate-600 mb-8">
             Füllen Sie das Formular aus – wir verbinden Sie mit dem besten {trade.name} in Ihrer Nähe.
           </p>
-          <form className="space-y-4 text-left" action={`/api/leads/${page.id}`} method="POST">
+          <form className="space-y-4 text-left" action={`/api/leads/${page.id || 'fallback'}`} method="POST">
             <div className="grid md:grid-cols-2 gap-4">
-              <input 
-                type="text" 
-                name="name"
-                placeholder="Name" 
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
-              <input 
-                type="email" 
-                name="email"
-                placeholder="E-Mail" 
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
+              <input type="text" name="name" placeholder="Name" required
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500" />
+              <input type="email" name="email" placeholder="E-Mail" required
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500" />
             </div>
-            <input 
-              type="tel" 
-              name="phone"
-              placeholder="Telefon" 
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-            <textarea 
-              name="message"
-              placeholder="Beschreiben Sie Ihr Vorhaben..." 
-              rows={4}
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-            <button 
-              type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition"
-            >
+            <input type="tel" name="phone" placeholder="Telefon"
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500" />
+            <textarea name="message" placeholder="Beschreiben Sie Ihr Vorhaben..." rows={4}
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500" />
+            <button type="submit"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition">
               Kostenlose Anfrage senden
             </button>
           </form>
@@ -290,7 +241,7 @@ export default async function LandingPage({ params }: PageProps) {
         <p>© 2026 fachschmiede.de — {trade.name} {city.name}</p>
         {isAvailable && (
           <p className="mt-2">
-            <Link href={`/mieten/${page.slug}`} className="text-orange-400 hover:text-orange-300">
+            <Link href={`/mieten/${slug}`} className="text-orange-400 hover:text-orange-300">
               Sind Sie {trade.name}? Diese Seite mieten →
             </Link>
           </p>
