@@ -11,11 +11,51 @@ interface PageProps {
   }
 }
 
+export async function generateStaticParams() {
+  try {
+    const { data: pages } = await supabase
+      .from('landing_pages')
+      .select('slug')
+
+    const params: { trade: string; city: string }[] = []
+
+    for (const page of pages || []) {
+      const parts = page.slug.split('-')
+      if (parts.length >= 2) {
+        const trade = parts[0]
+        const city = parts.slice(1).join('-')
+        params.push({ trade, city })
+      }
+    }
+
+    // Fallback: ensure pages exist for build
+    if (params.length === 0) {
+      return [
+        { trade: 'dachdecker', city: 'muenchen' },
+        { trade: 'elektriker', city: 'muenchen' },
+        { trade: 'klempner', city: 'muenchen' },
+      ]
+    }
+
+    return params
+  } catch {
+    return [
+      { trade: 'dachdecker', city: 'muenchen' },
+      { trade: 'elektriker', city: 'muenchen' },
+      { trade: 'klempner', city: 'muenchen' },
+    ]
+  }
+}
+
 export async function generateMetadata({ params }: PageProps) {
+  const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
+  const cleanCity = params.city?.replace(/\/$/, '') || params.city
+  const slug = `${cleanTrade}-${cleanCity}`
+
   const { data: page } = await supabase
     .from('landing_pages')
     .select('title, meta_description, status, page_customizations(custom_company_name)')
-    .eq('slug', `${params.trade}-${params.city}`)
+    .eq('slug', slug)
     .single()
 
   if (!page) return { title: 'Seite nicht gefunden' }
@@ -32,6 +72,10 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function LandingPage({ params }: PageProps) {
+  const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
+  const cleanCity = params.city?.replace(/\/$/, '') || params.city
+  const slug = `${cleanTrade}-${cleanCity}`
+
   const { data: page } = await supabase
     .from('landing_pages')
     .select(`
@@ -40,7 +84,7 @@ export default async function LandingPage({ params }: PageProps) {
       city:cities(*),
       page_customizations(*, tenant:tenants(*))
     `)
-    .eq('slug', `${params.trade}-${params.city}`)
+    .eq('slug', slug)
     .single()
 
   if (!page) notFound()

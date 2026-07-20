@@ -9,14 +9,35 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const { data: pages } = await supabase
-    .from('landing_pages')
-    .select('slug')
-    .eq('status', 'available')
+  try {
+    const { data: pages } = await supabase
+      .from('landing_pages')
+      .select('slug')
 
-  return (pages || []).map((page) => ({
-    slug: page.slug,
-  }))
+    const params: { slug: string }[] = []
+
+    for (const page of pages || []) {
+      params.push({ slug: page.slug })
+    }
+
+    // Fallback: ensure at least one page exists for build
+    if (params.length === 0) {
+      return [
+        { slug: 'dachdecker-muenchen' },
+        { slug: 'elektriker-muenchen' },
+        { slug: 'klempner-muenchen' },
+      ]
+    }
+
+    return params
+  } catch {
+    // Fallback if Supabase is unreachable during build
+    return [
+      { slug: 'dachdecker-muenchen' },
+      { slug: 'elektriker-muenchen' },
+      { slug: 'klempner-muenchen' },
+    ]
+  }
 }
 
 export async function generateMetadata({ params }: PageProps) {

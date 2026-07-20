@@ -123,15 +123,15 @@ alter table leads enable row level security;
 alter table admin_users enable row level security;
 
 -- Public read policies
--- create policy "Public can read trades" on trades for select using (true);
--- create policy "Public can read cities" on cities for select using (true);
--- create policy "Public can read landing_pages" on landing_pages for select using (true);
+create policy if not exists "Public can read trades" on trades for select using (true);
+create policy if not exists "Public can read cities" on cities for select using (true);
+create policy if not exists "Public can read landing_pages" on landing_pages for select using (true);
 
 -- ==========================================
 -- 4. SEED DATA
 -- ==========================================
 
--- Insert sample trade: Dachdecker
+-- Insert trades
 insert into trades (slug, name, plural_name, description, keywords, services)
 values (
   'dachdecker',
@@ -143,7 +143,6 @@ values (
 )
 on conflict (slug) do nothing;
 
--- Insert sample trade: Elektriker
 insert into trades (slug, name, plural_name, description, keywords, services)
 values (
   'elektriker',
@@ -155,7 +154,18 @@ values (
 )
 on conflict (slug) do nothing;
 
--- Insert sample city: Hattingen
+insert into trades (slug, name, plural_name, description, keywords, services)
+values (
+  'klempner',
+  'Klempner',
+  'Klempner',
+  'Installation und Reparatur von Sanitär-, Heizungs- und Rohrleitungssystemen.',
+  array['klempner', 'sanitär', 'heizung', 'rohrreinigung', 'wasserhahn'],
+  array['Rohrreinigung', 'Heizungsinstallation', 'Sanitärinstallation', 'Wasserhahn-Reparatur', 'Rohrbruch-Reparatur', 'Toiletten-Installation', 'Duschinstallation']
+)
+on conflict (slug) do nothing;
+
+-- Insert cities
 insert into cities (slug, name, state, population, lat, lng)
 values (
   'hattingen',
@@ -167,7 +177,6 @@ values (
 )
 on conflict (slug) do nothing;
 
--- Insert sample city: München
 insert into cities (slug, name, state, population, lat, lng)
 values (
   'muenchen',
@@ -179,7 +188,7 @@ values (
 )
 on conflict (slug) do nothing;
 
--- Create the landing page for Hattingen (Dachdecker)
+-- Create landing pages
 insert into landing_pages (trade_id, city_id, slug, title, meta_description, h1, monthly_price)
 select 
   t.id as trade_id,
@@ -193,7 +202,6 @@ from trades t, cities c
 where t.slug = 'dachdecker' and c.slug = 'hattingen'
 on conflict (slug) do nothing;
 
--- Create the landing page for München (Dachdecker)
 insert into landing_pages (trade_id, city_id, slug, title, meta_description, h1, monthly_price)
 select 
   t.id as trade_id,
@@ -207,7 +215,6 @@ from trades t, cities c
 where t.slug = 'dachdecker' and c.slug = 'muenchen'
 on conflict (slug) do nothing;
 
--- Create the landing page for Hattingen (Elektriker)
 insert into landing_pages (trade_id, city_id, slug, title, meta_description, h1, monthly_price)
 select 
   t.id as trade_id,
@@ -219,4 +226,30 @@ select
   14900
 from trades t, cities c
 where t.slug = 'elektriker' and c.slug = 'hattingen'
+on conflict (slug) do nothing;
+
+insert into landing_pages (trade_id, city_id, slug, title, meta_description, h1, monthly_price)
+select 
+  t.id as trade_id,
+  c.id as city_id,
+  'elektriker-muenchen',
+  'Elektriker München | Professionelle Elektroarbeiten ab €149/Monat',
+  'Erfahrene Elektriker in München. Installation, Reparatur & Smart-Home. Jetzt lokale Elektromeister finden.',
+  'Ihr Elektriker in München – Zuverlässig, Fair, Vor Ort',
+  14900
+from trades t, cities c
+where t.slug = 'elektriker' and c.slug = 'muenchen'
+on conflict (slug) do nothing;
+
+insert into landing_pages (trade_id, city_id, slug, title, meta_description, h1, monthly_price)
+select 
+  t.id as trade_id,
+  c.id as city_id,
+  'klempner-muenchen',
+  'Klempner München | Professionelle Sanitärarbeiten ab €149/Monat',
+  'Erfahrene Klempner in München. Installation, Reparatur & Rohrreinigung. Jetzt lokale Fachbetriebe finden.',
+  'Ihr Klempner in München – Zuverlässig, Fair, Vor Ort',
+  14900
+from trades t, cities c
+where t.slug = 'klempner' and c.slug = 'muenchen'
 on conflict (slug) do nothing;
