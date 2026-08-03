@@ -5,3 +5,25 @@
 body {
   @apply bg-gray-50 text-gray-900;
 }
+
+/* Landing page animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: linear-gradient(105deg, rgba(15,23,42,.92) 0%, rgba(15,23,42,.75) 45%, rgba(15,23,42,.35) 100%);
+}
+
+/* Selection color */
+::selection {
+  background: #f97316;
+  color: #fff;
+}

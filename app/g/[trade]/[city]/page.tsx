@@ -73,13 +73,6 @@ export default async function LandingPage({ params }: PageProps) {
 
   return (
     <div className="bg-white text-slate-800 antialiased">
-      <style jsx global>{`
-        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
-        .reveal.visible { opacity: 1; transform: none; }
-        .hero-gradient { background: linear-gradient(105deg, rgba(15,23,42,.92) 0%, rgba(15,23,42,.75) 45%, rgba(15,23,42,.35) 100%); }
-        ::selection { background: #f97316; color: #fff; }
-      `}</style>
-
       {/* Rent Banner (if available) */}
       {isAvailable && (
         <RentBanner tradeName={trade.name} cityName={city.name} price={page.monthly_price} slug={slug} />
