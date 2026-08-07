@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maler-Website mieten | Selbst anmieten &amp; sofort online – DEMO</title>
+<meta name="description" content="Demo: Fertige Maler-Websites zur Miete. Stadt wählen, selbst individualisieren, sofort online – komplett ohne Wartezeit.">
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: {50:'#fff1f2',100:'#ffe4e6',200:'#fecdd3',300:'#fda4af',400:'#fb7185',500:'#f43f5e',600:'#e11d48',700:'#be123c',800:'#9f1239',900:'#881337'},
+      ink: {50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a'}
+    },
+    fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+  } }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',system-ui,sans-serif}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  ::selection{background:#e11d48;color:#fff}
+  .onb-step{display:none}
+  .onb-step.active{display:block;animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .prog-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:#e2e8f0;color:#64748b;transition:all .3s}
+  .prog-dot.cur{background:#2563eb;color:#fff}
+  .prog-dot.done{background:#16a34a;color:#fff}
+</style>
+</head>
+<body class="bg-white text-ink-800 antialiased">
+
+<!-- ═══════════ DEMO-HINWEIS ═══════════ -->
+<div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
+  ⚠️ DEMO – Beispiel einer Gewerk-Salespage mit Self-Check-in. Verfügbarkeiten und Preise fiktiv, keine echte Buchung.
+</div>
+
+<!-- ═══════════ DEMO-NAVIGATION ═══════════ -->
+<div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
+    <span class="font-bold text-white uppercase tracking-widest text-[10px] sm:text-xs">Demo-Portal:</span>
+    <a href="start.html" class="hover:text-white transition">💼 Salespage</a>
+    <a href="sales-dachdecker.html" class="hover:text-white transition">🏠 Gewerk Dachdecker</a>
+    <a href="sales-elektriker.html" class="hover:text-white transition">⚡ Gewerk Elektriker</a>
+    <a href="sales-shk.html" class="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
+    <a href="sales-zimmerer.html" class="hover:text-white transition">🔨 Gewerk Zimmerer</a>
+    <span class="text-white font-semibold">🖌️ Gewerk Maler</span>
+    <a href="index.html" class="hover:text-white transition">🏠 Musterseite Dachdecker</a>
+    <a href="elektriker.html" class="hover:text-white transition">⚡ Musterseite Elektriker</a>
+    <a href="shk.html" class="hover:text-white transition">🔥 Musterseite SHK</a>
+    <a href="zimmerer.html" class="hover:text-white transition">🔨 Musterseite Zimmerer</a>
+    <a href="maler.html" class="hover:text-white transition">🖌️ Musterseite Maler</a>
+    <a href="admin.html" class="hover:text-white transition">🛠 Admin-Dashboard</a>
+    <a href="mieter.html" class="hover:text-white transition">👤 Mieter-Dashboard</a>
+    <a href="ratgeber.html" class="hover:text-white transition">📖 Blog Dachdecker</a>
+    <a href="ratgeber-elektriker.html" class="hover:text-white transition">📖 Blog Elektriker</a>
+    <a href="ratgeber-shk.html" class="hover:text-white transition">📖 Blog SHK</a>
+    <a href="ratgeber-zimmerer.html" class="hover:text-white transition">📖 Blog Zimmerer</a>
+    <a href="ratgeber-maler.html" class="hover:text-white transition">📖 Blog Maler</a>
+  </div>
+</div>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="bg-ink-900 text-white relative overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <a href="start.html#gewerke" class="text-sm text-ink-400 hover:text-white transition">← Alle Gewerke</a>
+    <div class="mt-6 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <span class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+          20 von 20 Stadt-Websites noch frei
+        </span>
+        <h1 class="mt-5 text-4xl sm:text-5xl font-black tracking-tight leading-tight">
+          Maler-Website mieten –<br><span class="text-brand-400">heute noch online.</span>
+        </h1>
+        <p class="mt-5 text-lg text-ink-300 leading-relaxed max-w-xl">
+          Kein Verkaufsgespräch, keine Wartezeit: Stadt auswählen, in 5 Minuten individualisieren, veröffentlichen – fertig. Deine Website geht sofort unter deinem Namen online.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-4">
+          <a href="#staedte" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg">Stadt wählen &amp; loslegen</a>
+          <a href="maler.html" class="bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold px-7 py-3.5 rounded-xl transition">Live-Beispiel: Bochum</a>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink-300">
+          <span>✅ 100 % Self-Service</span>
+          <span>✅ Sofort online nach Freigabe</span>
+          <span>✅ Monatlich kündbar</span>
+        </div>
+      </div>
+      <div class="hidden lg:block">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur">
+          <p class="text-sm font-bold text-ink-300 uppercase tracking-widest">Auf jeder Stadt-Website enthalten</p>
+          <ul class="mt-4 space-y-3 text-sm text-ink-200">
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Startseite „Maler [Stadt]" mit lokalem Bezug</li>
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> 6 Leistungsbereiche (Innenanstrich, Fassade, Lack …)</li>
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Ratgeber-Blog – <strong class="text-white">stadtindividuell</strong> formuliert</li>
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> FAQ + Kontaktformular mit Anfragen-Postfach</li>
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> WhatsApp-Button &amp; Google-Maps-Karte (deine Nummer / Place ID)</li>
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Einsatzgebiet-Karte aller Stadtteile</li>
+            <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Mieter-Dashboard für jederzeit eigene Anpassungen</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SO LÄUFT DER SELF-CHECK-IN ═══════════ -->
+<section class="py-16 sm:py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Self-Check-in</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">In 3 Schritten live – ganz ohne uns</h2>
+      <p class="mt-4 text-ink-600 text-lg">Der komplette Prozess läuft automatisch. Du brauchst nur deine Firmendaten und 5 Minuten Zeit.</p>
+    </div>
+    <div class="mt-10 grid md:grid-cols-3 gap-6">
+      <div class="reveal bg-ink-50 rounded-2xl p-7 border border-ink-200">
+        <p class="text-4xl font-black text-brand-500">01</p>
+        <h3 class="mt-3 font-bold text-ink-900">Stadt sichern</h3>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">Wähle deine Stadt, lege dein Konto an und starte die Miete (0 € Einrichtung, monatlich kündbar). Die Stadt ist ab sofort für dich reserviert.</p>
+      </div>
+      <div class="reveal bg-ink-50 rounded-2xl p-7 border border-ink-200">
+        <p class="text-4xl font-black text-brand-500">02</p>
+        <h3 class="mt-3 font-bold text-ink-900">Selbst individualisieren</h3>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">Firmenname, Kontaktdaten, Leistungen, Farben, Fotos: Der Assistent führt dich durch alles – deine Angaben machen jede Seite einzigartig.</p>
+      </div>
+      <div class="reveal bg-ink-50 rounded-2xl p-7 border border-ink-200">
+        <p class="text-4xl font-black text-brand-500">03</p>
+        <h3 class="mt-3 font-bold text-ink-900">Veröffentlichen</h3>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">Vorschau prüfen, auf „Veröffentlichen" klicken – deine Website ist sofort unter deinem Namen online. Anfragen laufen ab der ersten Minute zu dir.</p>
+      </div>
+    </div>
+    <div class="reveal mt-8 bg-ink-900 text-white rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
+      <div class="flex items-start gap-4">
+        <span class="text-2xl shrink-0">💡</span>
+        <p class="text-sm text-ink-300 leading-relaxed"><strong class="text-white">Du kommst nicht weiter oder hast einen Verbesserungsvorschlag?</strong> Dann ist unser Support für dich da – z. B. wenn dein Gewerk oder deine Stadt noch fehlt. Für alles andere brauchst du ihn nicht: Das System führt dich selbst ans Ziel.</p>
+      </div>
+      <button onclick="openSupport()" class="bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold px-6 py-3.5 rounded-xl transition shrink-0">Support kontaktieren</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ STADT-AUSWAHL ═══════════ -->
+<section id="staedte" class="py-20 sm:py-24 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-4 reveal">
+      <div class="max-w-xl">
+        <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Verfügbarkeit</p>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Wähle deine Stadt</h2>
+        <p class="mt-3 text-ink-600">20 von 20 Städten frei – jede Stadtseite ist bereits live und rankt. Über „Live ↗" siehst du die echte Stadt-Website. Alle Städte verfügbar – jetzt anmieten.</p>
+      </div>
+      <div class="flex items-center gap-5 text-sm font-semibold text-ink-600">
+        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span> frei</span>
+        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-ink-300"></span> vermietet</span>
+      </div>
+    </div>
+
+    <div class="mt-8 reveal flex flex-col sm:flex-row gap-4">
+      <div class="relative flex-1 max-w-md">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="citySearch" type="text" placeholder="Stadt suchen, z. B. Hagen …" class="w-full rounded-xl border border-ink-200 bg-white pl-12 pr-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm">
+      </div>
+      <select id="regionFilter" onchange="filterByRegion()" class="rounded-xl border border-ink-200 bg-white px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm text-ink-700">
+        <option value="">Alle Regionen</option>
+        <option value="Nordrhein-Westfalen">Nordrhein-Westfalen</option>
+        <option value="Bayern">Bayern</option>
+        <option value="Baden-Württemberg">Baden-Württemberg</option>
+        <option value="Niedersachsen">Niedersachsen</option>
+        <option value="Hessen">Hessen</option>
+        <option value="Rheinland-Pfalz">Rheinland-Pfalz</option>
+        <option value="Sachsen">Sachsen</option>
+        <option value="Berlin">Berlin</option>
+        <option value="andere">Andere Bundesländer</option>
+      </select>
+      <button onclick="resetFilters()" class="px-5 py-3.5 border border-ink-200 rounded-xl text-ink-600 hover:bg-ink-50 transition font-medium">Zurücksetzen</button>
+    </div>
+    
+    <div class="mt-4 flex flex-wrap gap-2">
+      <span class="text-sm text-ink-500">Beliebt:</span>
+      <button onclick="quickSearch('Dortmund')" class="text-sm bg-white border border-ink-200 px-3 py-1 rounded-full hover:bg-brand-50 hover:border-brand-300 transition">Dortmund</button>
+      <button onclick="quickSearch('Hagen')" class="text-sm bg-white border border-ink-200 px-3 py-1 rounded-full hover:bg-brand-50 hover:border-brand-300 transition">Hagen</button>
+      <button onclick="quickSearch('Bochum')" class="text-sm bg-white border border-ink-200 px-3 py-1 rounded-full hover:bg-brand-50 hover:border-brand-300 transition">Bochum</button>
+      <button onclick="quickSearch('Iserlohn')" class="text-sm bg-white border border-ink-200 px-3 py-1 rounded-full hover:bg-brand-50 hover:border-brand-300 transition">Iserlohn</button>
+      <button onclick="quickSearch('Unna')" class="text-sm bg-white border border-ink-200 px-3 py-1 rounded-full hover:bg-brand-50 hover:border-brand-300 transition">Unna</button>
+    </div>
+
+    <div id="cityGrid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="schwerte schwerte">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Schwerte</h3><p class="text-sm text-ink-500 mt-0.5">maler-schwerte-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~47.000 Einwohner · viele Altbauten mit Stuckfassaden und Renovierungsbedarf in den Innenräumen</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Schwerte')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/schwerte/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="dortmund dortmund">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Dortmund</h3><p class="text-sm text-ink-500 mt-0.5">maler-dortmund-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~590.000 Einwohner · Siedlungen aus den 60er- bis 80er-Jahren – Fassadenanstriche und Dämmung stehen an</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Dortmund')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/dortmund/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="iserlohn iserlohn">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Iserlohn</h3><p class="text-sm text-ink-500 mt-0.5">maler-iserlohn-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~92.000 Einwohner · Zechenhäuser und Gründerzeitbauten – Fassadensanierung mit mineralischen Systemen gefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Iserlohn')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/iserlohn/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="luenen luenen">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Lünen</h3><p class="text-sm text-ink-500 mt-0.5">maler-luenen-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~87.000 Einwohner · Mietshäuser mit Modernisierungsdruck – Schimmelsanierung und Innenanstriche im Fokus</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Lünen')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/luenen/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="castrop-rauxel castrop-rauxel">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Castrop-Rauxel</h3><p class="text-sm text-ink-500 mt-0.5">maler-castrop-rauxel-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~73.000 Einwohner · Siedlungen aus den 60er- bis 80er-Jahren – Fassadenanstriche und Dämmung stehen an</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Castrop-Rauxel')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/castrop-rauxel/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="kamen kamen">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Kamen</h3><p class="text-sm text-ink-500 mt-0.5">maler-kamen-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~43.000 Einwohner · Zechenhäuser und Gründerzeitbauten – Fassadensanierung mit mineralischen Systemen gefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Kamen')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/kamen/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="bergkamen bergkamen">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Bergkamen</h3><p class="text-sm text-ink-500 mt-0.5">maler-bergkamen-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~49.000 Einwohner · viele Einfamilienhäuser – Anstriche, Lackierarbeiten und Holzschutz stark nachgefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Bergkamen')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/bergkamen/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="froendenberg froendenberg">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Fröndenberg</h3><p class="text-sm text-ink-500 mt-0.5">maler-froendenberg-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~21.000 Einwohner · Mietshäuser mit Modernisierungsdruck – Schimmelsanierung und Innenanstriche im Fokus</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Fröndenberg')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/froendenberg/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="holzwickede holzwickede">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Holzwickede</h3><p class="text-sm text-ink-500 mt-0.5">maler-holzwickede-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~17.000 Einwohner · viele Altbauten mit Stuckfassaden und Renovierungsbedarf in den Innenräumen</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Holzwickede')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/holzwickede/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="schwelm schwelm">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Schwelm</h3><p class="text-sm text-ink-500 mt-0.5">maler-schwelm-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~30.000 Einwohner · Siedlungen aus den 60er- bis 80er-Jahren – Fassadenanstriche und Dämmung stehen an</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Schwelm')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/schwelm/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="gevelsberg gevelsberg">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Gevelsberg</h3><p class="text-sm text-ink-500 mt-0.5">maler-gevelsberg-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~31.000 Einwohner · Zechenhäuser und Gründerzeitbauten – Fassadensanierung mit mineralischen Systemen gefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Gevelsberg')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/gevelsberg/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="ennepetal ennepetal">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Ennepetal</h3><p class="text-sm text-ink-500 mt-0.5">maler-ennepetal-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~30.000 Einwohner · viele Einfamilienhäuser – Anstriche, Lackierarbeiten und Holzschutz stark nachgefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Ennepetal')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/ennepetal/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="sprockhoevel sprockhoevel">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Sprockhövel</h3><p class="text-sm text-ink-500 mt-0.5">maler-sprockhoevel-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~25.000 Einwohner · Mietshäuser mit Modernisierungsdruck – Schimmelsanierung und Innenanstriche im Fokus</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Sprockhövel')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/sprockhoevel/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="hattingen hattingen">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Hattingen</h3><p class="text-sm text-ink-500 mt-0.5">maler-hattingen-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~54.000 Einwohner · viele Altbauten mit Stuckfassaden und Renovierungsbedarf in den Innenräumen</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Hattingen')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/hattingen/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="wetter-ruhr wetter-ruhr">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Wetter (Ruhr)</h3><p class="text-sm text-ink-500 mt-0.5">maler-wetter-ruhr-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~27.000 Einwohner · Siedlungen aus den 60er- bis 80er-Jahren – Fassadenanstriche und Dämmung stehen an</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Wetter (Ruhr)')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/wetter-ruhr/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="hagen hagen">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Hagen</h3><p class="text-sm text-ink-500 mt-0.5">maler-hagen-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~190.000 Einwohner · Zechenhäuser und Gründerzeitbauten – Fassadensanierung mit mineralischen Systemen gefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Hagen')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/hagen/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="unna unna">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Unna</h3><p class="text-sm text-ink-500 mt-0.5">maler-unna-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~60.000 Einwohner · viele Einfamilienhäuser – Anstriche, Lackierarbeiten und Holzschutz stark nachgefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Unna')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/unna/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="witten witten">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Witten</h3><p class="text-sm text-ink-500 mt-0.5">maler-witten-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~96.000 Einwohner · Hanglage – Maler & Lackierer gefragt</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Witten')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/witten/" class="shrink-0 inline-flex items-center px-4 border border-ink-300 text-ink-500 hover:bg-white font-bold rounded-xl transition" title="Stadtseite (Vorher-Version)">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="bochum bochum">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Bochum</h3><p class="text-sm text-ink-500 mt-0.5">maler-bochum-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~360.000 Einwohner · Großstadt – ständig Maler gesucht</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Bochum')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/bochum/" class="shrink-0 inline-flex items-center px-4 border border-ink-300 text-ink-500 hover:bg-white font-bold rounded-xl transition" title="Stadtseite (Vorher-Version)">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-city="herne herne">
+        <div class="flex items-start justify-between">
+          <div><h3 class="text-xl font-black text-ink-900">Herne</h3><p class="text-sm text-ink-500 mt-0.5">maler-herne-muster.de</p></div>
+          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
+        </div>
+        <p class="mt-4 text-sm text-ink-600">~156.000 Einwohner · dichtbesiedelt – Malerarbeiten nötig</p>
+        <div class="mt-5 flex gap-2">
+          <button onclick="startOnboarding('Herne')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
+          <a href="/maler/herne/" class="shrink-0 inline-flex items-center px-4 border border-ink-300 text-ink-500 hover:bg-white font-bold rounded-xl transition" title="Stadtseite (Vorher-Version)">Live ↗</a>
+        </div>
+        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
+      </div>
+
+    </div>
+
+    <p id="noResult" class="hidden mt-8 text-center text-ink-500">Keine Stadt gefunden. <button onclick="resetSearch()" class="text-brand-600 font-bold hover:underline">Suche zurücksetzen</button> – oder <button onclick="openSupport('stadt')" class="text-brand-600 font-bold hover:underline">Wunschstadt vorschlagen</button>.</p>
+
+    <!-- Einzigartigkeit / SEO -->
+    <div class="reveal mt-14 bg-white border border-ink-200 rounded-2xl p-7 sm:p-10">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Jede Seite einzigartig</p>
+      <h3 class="mt-2 text-2xl font-black text-ink-900">Warum Google jede Stadt-Website als eigenständige Seite sieht</h3>
+      <p class="mt-3 text-ink-600 leading-relaxed max-w-3xl">Kopierte Inhalte („Duplicate Content") würden im Ranking abgestraft. Deshalb erzeugt unser System aus deinen Angaben und den Stadt-Daten für jeden Mieter eine <strong>individuelle Textfassung</strong> – gleiches Qualitätsgerüst, aber eigene Worte:</p>
+      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-5 text-sm">
+        <div class="bg-ink-50 rounded-xl p-5 border border-ink-100"><p class="text-2xl">🏙️</p><p class="mt-2 font-bold text-ink-900">Stadt-Kontext</p><p class="mt-1 text-ink-600">Ortsteile, Baujahrgänge, Wetterlagen und Geografie der jeweiligen Stadt fließen in alle Texte ein.</p></div>
+        <div class="bg-ink-50 rounded-xl p-5 border border-ink-100"><p class="text-2xl">✍️</p><p class="mt-2 font-bold text-ink-900">Text-Variationen</p><p class="mt-1 text-ink-600">Leistungstexte (Innenanstrich, Fassade, Lackieren …), FAQ-Antworten und Über-uns werden pro Seite neu formuliert – nie wortgleich.</p></div>
+        <div class="bg-ink-50 rounded-xl p-5 border border-ink-100"><p class="text-2xl">📖</p><p class="mt-2 font-bold text-ink-900">Blog-Fassungen</p><p class="mt-1 text-ink-600">Jeder Ratgeberartikel existiert in mehreren Varianten und wird mit deinem Stadtnamen verknüpft.</p></div>
+        <div class="bg-ink-50 rounded-xl p-5 border border-ink-100"><p class="text-2xl">🏢</p><p class="mt-2 font-bold text-ink-900">Deine Angaben</p><p class="mt-1 text-ink-600">Firmenname, Leistungen, Fotos, Bewertungen und Impressum sind ohnehin komplett individuell.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="bg-ink-900 text-ink-400 text-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p>© <span id="jahr"></span> MietWebsites – Demo-Portal. Alle Inhalte, Preise und Verfügbarkeiten sind fiktiv.</p>
+    <div class="flex gap-6">
+      <a href="start.html" class="hover:text-white transition">Zurück zur Übersicht</a>
+      <a href="index.html" class="hover:text-white transition">Musterseite ansehen</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════ ONBOARDING (SELF-CHECK-IN) ═══════════ -->
+<div id="onboarding" class="hidden fixed inset-0 z-50 overflow-y-auto bg-ink-900/80 backdrop-blur-sm">
+  <div class="min-h-full flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl relative my-8">
+      <button onclick="closeOnboarding()" class="absolute top-4 right-4 w-9 h-9 rounded-lg bg-ink-100 hover:bg-ink-200 flex items-center justify-center font-bold text-ink-600 z-10" aria-label="Schließen">✕</button>
+
+      <!-- Fortschritt -->
+      <div class="px-8 pt-8">
+        <div class="flex items-center gap-3 max-w-md">
+          <div class="prog-dot cur" id="dot1">1</div>
+          <div class="flex-1 h-1 rounded bg-ink-200"><div class="h-1 rounded bg-brand-600 transition-all duration-500" id="bar1" style="width:0%"></div></div>
+          <div class="prog-dot" id="dot2">2</div>
+          <div class="flex-1 h-1 rounded bg-ink-200"><div class="h-1 rounded bg-brand-600 transition-all duration-500" id="bar2" style="width:0%"></div></div>
+          <div class="prog-dot" id="dot3">3</div>
+        </div>
+        <p class="mt-3 text-xs font-semibold text-ink-400 uppercase tracking-widest" id="stepLabel">Schritt 1 von 3 · Konto &amp; Miete</p>
+      </div>
+
+      <!-- SCHRITT 1 -->
+      <div class="onb-step active p-8" id="step1">
+        <h3 class="text-2xl font-black text-ink-900">„Maler <span class="onbCity text-brand-600">…</span>" anmieten</h3>
+        <p class="mt-2 text-sm text-ink-600">Lege dein Konto an und starte die Miete. 0 € Einrichtung, monatlich kündbar – die Stadt ist danach für dich reserviert.</p>
+        <form class="mt-6 space-y-4" onsubmit="checkPwAndGo(event);">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input type="text" required placeholder="Vor- und Nachname" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="email" required placeholder="E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="bg-ink-50 border border-ink-200 rounded-xl p-4 space-y-3">
+            <p class="text-sm font-bold text-ink-800">🔒 Dein Dashboard-Zugang</p>
+            <input id="pw1" type="password" required placeholder="Passwort wählen (min. 8 Zeichen)" minlength="8" oninput="pwStrength()" class="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <div class="flex items-center gap-3">
+              <div class="flex-1 h-1.5 rounded bg-ink-200 overflow-hidden"><div id="pwBar" class="h-full rounded transition-all duration-300" style="width:0%"></div></div>
+              <span id="pwLabel" class="text-[11px] font-bold text-ink-400 w-16 text-right shrink-0">–</span>
+            </div>
+            <input id="pw2" type="password" required placeholder="Passwort wiederholen" minlength="8" class="w-full rounded-lg border border-ink-200 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <p id="pwWarn" class="hidden text-xs font-bold text-red-600">⚠ Die Passwörter stimmen nicht überein.</p>
+            <p class="text-[11px] text-ink-400 leading-relaxed">Mit deiner E-Mail und diesem Passwort loggst du dich später in dein Dashboard ein. Es wird ausschließlich verschlüsselt (gehasht) gespeichert – ohne Passwort ist dein Dashboard nicht erreichbar.</p>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-2">Dein Tarif *</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="tarif-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" id="tarifBasis">
+                <input type="radio" name="tarif" value="Basis" checked class="sr-only" onchange="pickTarif('Basis')">
+                <span class="flex justify-between items-baseline"><strong class="text-ink-900">Basis</strong><span class="font-black text-ink-900">189 €<span class="text-xs font-semibold text-ink-500">/M.</span></span></span>
+                <span class="mt-1.5 block text-xs text-ink-600 leading-snug">Website + Blog + E-Mail-Leads</span>
+              </label>
+              <label class="tarif-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" id="tarifPro">
+                <input type="radio" name="tarif" value="Pro" class="sr-only" onchange="pickTarif('Pro')">
+                <span class="flex justify-between items-baseline"><strong class="text-ink-900">Pro</strong><span class="font-black text-ink-900">289 €<span class="text-xs font-semibold text-ink-500">/M.</span></span></span>
+                <span class="mt-1.5 block text-xs text-ink-600 leading-snug">+ SMS, Terminbuchung, Google-Bewertungen</span>
+              </label>
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm font-bold text-ink-800 mb-2">Wie möchtest du starten? *</label>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <label class="mode-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" onclick="pickMode('miete')">
+                <input type="radio" name="mode" checked class="sr-only">
+                <span class="font-bold text-ink-900 text-sm">🚀 Sofort mieten</span>
+                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Website sofort online · monatlich kündbar</span>
+              </label>
+              <label class="mode-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickMode('test')">
+                <input type="radio" name="mode" class="sr-only">
+                <span class="font-bold text-ink-900 text-sm">🎁 14 Tage kostenlos testen</span>
+                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Voller Funktionsumfang · keine Zahlungsdaten · endet automatisch</span>
+              </label>
+            </div>
+          </div>
+          <div id="trialInfoStep1" class="hidden mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
+            <p class="text-sm font-bold text-amber-800">🎁 So läuft deine Testphase</p>
+            <ul class="mt-2 text-xs text-amber-800 space-y-1.5 leading-relaxed">
+              <li>✓ 14 Tage voller Funktionsumfang – Website live, Dashboard, alles inklusive</li>
+              <li>✓ Keine Zahlungsdaten nötig, keine automatische Abbuchung</li>
+              <li>✓ Endet automatisch – danach entscheidest du: mieten oder die Stadt geht zurück in den Pool</li>
+            </ul>
+          </div>
+            <p class="mt-2 text-xs text-ink-400">Monatlich kündbar · 0 € Einrichtung · Demo: keine echte Zahlung.</p>
+          </div>
+          <label class="flex items-start gap-3 text-xs text-ink-600">
+            <input type="checkbox" required class="mt-0.5 w-4 h-4 rounded border-ink-300 text-brand-600">
+            <span>Ich akzeptiere die Mietbedingungen und die <a href="datenschutz.html" class="underline font-semibold">Datenschutzerklärung</a>. (Demo-Platzhalter)</span>
+          </label>
+          <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Miete starten &amp; weiter →</button>
+        </form>
+      </div>
+
+      <!-- SCHRITT 2 -->
+      <div class="onb-step p-8" id="step2">
+        <h3 class="text-2xl font-black text-ink-900">Deine Seite individualisieren</h3>
+        <p class="mt-2 text-sm text-ink-600">Diese Angaben erscheinen sofort auf deiner Website – und machen sie für Google einzigartig. Alles lässt sich später im Dashboard jederzeit ändern.</p>
+        <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); gotoStep(3);">
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname *</label>
+            <input id="onbFirma" type="text" required placeholder="z. B. Weber Malerbetrieb" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon *</label>
+              <input id="onbTel" type="tel" required placeholder="02331 / …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail (öffentlich) *</label>
+              <input id="onbMail" type="email" required placeholder="info@…" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Adresse *</label>
+            <input type="text" required placeholder="Straße, PLZ, Ort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-700 leading-relaxed">
+            <strong>⚖️ Impressum &amp; Datenschutz:</strong> Deine Angaben aus diesem Formular (Firmenname, Adresse, Kontakt) fließen automatisch in <a href="impressum.html" class="underline font-semibold">Impressum</a> (§ 5 DDG) und <a href="datenschutz.html" class="underline font-semibold">Datenschutzerklärung</a>. Handwerksrolle, USt-IdNr. &amp; Co. ergänzt du im Dashboard unter „Rechtliches“ – die Seite geht erst online, wenn alles vollständig ist.
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">WhatsApp-Nummer <span class="font-normal text-ink-400">(optional)</span></label>
+              <input type="tel" placeholder="+49 151 …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <p class="mt-1 text-[11px] text-ink-400">Aktiviert den grünen WhatsApp-Button im Kontaktbereich &amp; unten rechts.</p>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Google Maps Place ID <span class="font-normal text-ink-400">(optional)</span></label>
+              <input type="text" placeholder="ChIJ…" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <p class="mt-1 text-[11px] text-ink-400">Für die Karte mit deinem Firmeneintrag. Leer = Karte nutzt deine Adresse.</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Akzentfarbe</label>
+            <div class="flex gap-3" id="colorRow">
+              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-ink-900 flex items-center justify-center transition hover:scale-105" data-color="#e11d48" onclick="pickColor(this)" style="background:#e11d48"><svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#2563eb" onclick="pickColor(this)" style="background:#2563eb"></span>
+              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#059669" onclick="pickColor(this)" style="background:#059669"></span>
+              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#d97706" onclick="pickColor(this)" style="background:#d97706"></span>
+              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#0f172a" onclick="pickColor(this)" style="background:#0f172a"></span>
+            </div>
+            <p class="mt-2 text-xs text-ink-500">Ausgewählt: <strong id="colorValue" class="font-mono">#e11d48</strong> – Buttons, Links &amp; Akzente deiner Website erscheinen in dieser Farbe.</p>
+            <span id="colorPreviewBtn" class="mt-2 inline-block text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors" style="background:#e11d48">Vorschau: So sieht dein Button aus</span>
+          </div>
+          <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-700 leading-relaxed">
+            <strong>💡 Einzigartig ab Minute eins:</strong> Aus Firmenname und Stadt-Daten erzeugt das System deine individuelle Textfassung (FAQ, Über-uns, Bewertungen). Deine Leistungen pflegst du jederzeit im Dashboard unter „Leistungen & Module". Keine zwei Miet-Websites sind wortgleich.
+          </div>
+          <div class="flex gap-3">
+            <button type="button" onclick="gotoStep(1)" class="px-6 py-3.5 rounded-xl border border-ink-300 font-bold text-ink-600 hover:bg-ink-50 transition">← Zurück</button>
+            <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Vorschau erzeugen →</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SCHRITT 3 -->
+      <div class="onb-step p-8 text-center" id="step3">
+        <span class="inline-flex w-16 h-16 rounded-full bg-green-100 text-green-600 items-center justify-center text-3xl">🎉</span>
+        <h3 class="mt-4 text-2xl font-black text-ink-900">Deine Vorschau ist fertig!</h3>
+        <p class="mt-3 text-sm text-ink-600 leading-relaxed max-w-md mx-auto">So sieht deine Website „Maler <span class="onbCity font-bold text-ink-900">…</span>" aus. Prüfe alles in Ruhe – danach geht sie mit einem Klick unter deinem Namen online.</p>
+        <div class="mt-6 bg-ink-50 border border-ink-200 rounded-xl p-5 text-left text-sm space-y-2.5">
+          <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Startseite mit deinem Firmennamen &amp; Stadt</p>
+          <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Deine 3–6 Leistungen in eigener Textfassung</p>
+          <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> FAQ &amp; Über-uns stadtindividuell formuliert</p>
+          <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Kontaktformular → Anfragen direkt an deine E-Mail</p>
+          <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Ratgeber-Blog startet mit 3 Artikeln (Stadt-Varianten)</p>
+        </div>
+        
+        <div id="trialInfo" class="hidden mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
+          <p class="text-sm font-bold text-amber-800">🎁 So läuft deine Testphase</p>
+          <ul class="mt-2 text-xs text-amber-800 space-y-1.5 leading-relaxed">
+            <li>✓ 14 Tage voller Funktionsumfang – Website live, Dashboard, alles inklusive</li>
+            <li>✓ Keine Zahlungsdaten nötig, keine automatische Abbuchung</li>
+            <li>✓ Endet am <strong id="trialEndLabel"></strong> – danach entscheidest du: mieten oder die Stadt geht zurück in den freien Pool</li>
+          </ul>
+        </div>
+                <div id="payBlock" class="mt-6 text-left">
+          <p class="text-sm font-bold text-ink-800 mb-2">💳 Zahlungsmethode für die Monatsmiete *</p>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <label class="pay-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" onclick="pickPay(this)">
+              <input type="radio" name="pay" checked class="sr-only">
+              <span class="font-bold text-ink-900 text-sm">💳 Kreditkarte</span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Visa · Mastercard · Amex<br>Abwicklung via <strong>Stripe</strong></span>
+            </label>
+            <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
+              <input type="radio" name="pay" class="sr-only">
+              <span class="font-bold text-ink-900 text-sm">🏦 SEPA-Lastschrift</span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Monatliche Abbuchung<br>Abwicklung via <strong>Stripe</strong></span>
+            </label>
+            <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
+              <input type="radio" name="pay" class="sr-only">
+              <span class="font-bold text-ink-900 text-sm">🅿️ PayPal</span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Direkt über dein<br><strong>PayPal</strong>-Konto</span>
+            </label>
+          </div>
+          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über Stripe bzw. PayPal – jederzeit im Dashboard änderbar, keine Zahlungsdaten auf unseren Servern. <strong>Demo: keine echte Zahlung.</strong></p>
+        </div>
+        <button id="pubBtn" onclick="publish()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-black text-lg py-4 rounded-xl transition shadow-lg">🚀 Jetzt veröffentlichen &amp; Miete starten</button>
+        <p class="mt-3 text-xs text-ink-400">Du kannst alles später im Dashboard ändern – Veröffentlichen ist kein Point of no Return.</p>
+      </div>
+
+      <!-- ERFOLG -->
+      <div class="onb-step p-10 text-center" id="stepDone">
+        <span class="inline-flex w-20 h-20 rounded-full bg-green-500 text-white items-center justify-center text-4xl shadow-lg">✓</span>
+        <h3 class="mt-5 text-3xl font-black text-ink-900">Du bist online!</h3>
+        <p id="doneMsg" class="mt-3 text-ink-600 leading-relaxed max-w-md mx-auto">„Maler <span class="onbCity font-bold text-ink-900">…</span>" ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (Stripe/PayPal).</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          <a id="doneSiteLink" href="maler.html" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition">Meine Website ansehen</a>
+          <a id="doneDashLink" href="mieter.html" class="bg-ink-900 hover:bg-ink-800 text-white font-bold px-7 py-3.5 rounded-xl transition">Zum Dashboard</a>
+        </div>
+        <p class="mt-5 text-xs text-ink-400 italic">Demo: Es wurde nichts gebucht, gespeichert oder veröffentlicht.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SUPPORT-MODAL (nur Probleme & Vorschläge) ═══════════ -->
+<div id="supportModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-ink-900/70 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative">
+    <button onclick="closeSupport()" class="absolute top-4 right-4 w-9 h-9 rounded-lg bg-ink-100 hover:bg-ink-200 flex items-center justify-center font-bold text-ink-600" aria-label="Schließen">✕</button>
+    <h3 class="text-2xl font-black text-ink-900">Support &amp; Vorschläge</h3>
+    <p class="mt-2 text-sm text-ink-600 leading-relaxed">Die Miete läuft komplett im Self-Service. Melde dich nur, wenn du ein echtes Problem hast – oder uns etwas vorschlagen willst:</p>
+    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); supportSubmit();">
+      <select required class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <option value="">Worum geht es? *</option>
+        <option>🧩 Vorschlag: Mein Gewerk fehlt</option>
+        <option>🏙️ Vorschlag: Meine Stadt fehlt</option>
+        <option>⚠️ Problem: Onboarding hakt</option>
+        <option>⚠️ Problem: Technischer Fehler</option>
+        <option>💬 Sonstiges Anliegen</option>
+      </select>
+      <input type="email" required placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <textarea rows="3" required placeholder="Beschreibe kurz dein Anliegen …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+      <button type="submit" class="w-full bg-ink-900 hover:bg-ink-800 text-white font-bold py-3.5 rounded-xl transition">Nachricht senden</button>
+    </form>
+    <p class="mt-4 text-xs text-ink-400 text-center">Demo-Formular – es wird nichts versendet.</p>
+  </div>
+</div>
+
+<!-- Wartelisten-Modal -->
+<div id="waitModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-ink-900/70 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative">
+    <button onclick="closeWaitlist()" class="absolute top-4 right-4 w-9 h-9 rounded-lg bg-ink-100 hover:bg-ink-200 flex items-center justify-center font-bold text-ink-600" aria-label="Schließen">✕</button>
+    <h3 class="text-2xl font-black text-ink-900" id="waitTitle">Warteliste</h3>
+    <p class="mt-2 text-sm text-ink-600 leading-relaxed" id="waitText"></p>
+    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); supportSubmit();">
+      <input type="email" required placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Auf Warteliste setzen</button>
+    </form>
+    <p class="mt-4 text-xs text-ink-400 text-center">Demo-Formular – es wird nichts versendet.</p>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-ink-900 text-white text-sm font-semibold px-6 py-4 rounded-xl shadow-2xl transition-all duration-300 z-[60]"></div>
+
+<script>
+// Reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Stadtsuche
+const search = document.getElementById('citySearch');
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.city-card').forEach(card => {
+    const hit = card.dataset.city.includes(q);
+    card.style.display = hit ? '' : 'none';
+    if (hit) visible++;
+  });
+  document.getElementById('noResult').classList.toggle('hidden', visible > 0 || q === '');
+});
+function resetSearch(){ search.value=''; search.dispatchEvent(new Event('input')); }
+
+// ── Onboarding (Self-Check-in) ──
+const onb = document.getElementById('onboarding');
+let onbCity = '';
+const CITY_SLUGS = {'Schwerte':'schwerte','Dortmund':'dortmund','Hagen':'hagen','Iserlohn':'iserlohn','Unna':'unna','Bochum':'bochum','Witten':'witten','Lünen':'luenen','Herne':'herne','Castrop-Rauxel':'castrop-rauxel','Kamen':'kamen','Bergkamen':'bergkamen','Fröndenberg':'froendenberg','Holzwickede':'holzwickede','Schwelm':'schwelm','Gevelsberg':'gevelsberg','Ennepetal':'ennepetal','Sprockhövel':'sprockhoevel','Hattingen':'hattingen','Wetter (Ruhr)':'wetter-ruhr'};
+const GEWERK_KEY = 'maler';
+const GEWERK_LABEL = 'Maler';
+const DOMAIN_PREFIX = 'maler';
+function startOnboarding(city){
+  onbCity = city;
+  document.querySelectorAll('.onbCity').forEach(el => el.textContent = city);
+  gotoStep(1);
+  onb.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeOnboarding(){
+  onb.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function gotoStep(n){
+  ['step1','step2','step3','stepDone'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  const labels = {1:'Schritt 1 von 3 · Konto & Miete', 2:'Schritt 2 von 3 · Individualisierung', 3:'Schritt 3 von 3 · Prüfen & Veröffentlichen'};
+  document.getElementById('stepLabel').textContent = labels[n] || '';
+  document.getElementById('dot1').className = 'prog-dot ' + (n > 1 ? 'done' : 'cur');
+  document.getElementById('dot1').textContent = n > 1 ? '✓' : '1';
+  document.getElementById('dot2').className = 'prog-dot ' + (n > 2 ? 'done' : n === 2 ? 'cur' : '');
+  document.getElementById('dot2').textContent = n > 2 ? '✓' : '2';
+  document.getElementById('dot3').className = 'prog-dot ' + (n === 3 ? 'cur' : '');
+  document.getElementById('bar1').style.width = n >= 2 ? '100%' : '0%';
+  document.getElementById('bar2').style.width = n >= 3 ? '100%' : '0%';
+}
+function pickTarif(t){
+  const b = document.getElementById('tarifBasis'), p = document.getElementById('tarifPro');
+  if(t === 'Basis'){ b.classList.add('border-brand-600','bg-brand-50'); b.classList.remove('border-ink-200'); p.classList.remove('border-brand-600','bg-brand-50'); p.classList.add('border-ink-200'); }
+  else { p.classList.add('border-brand-600','bg-brand-50'); p.classList.remove('border-ink-200'); b.classList.remove('border-brand-600','bg-brand-50'); b.classList.add('border-ink-200'); }
+}
+function publish(){
+  const firmaEl = document.getElementById('onbFirma');
+  const tarifEl = document.querySelector('input[name="tarif"]:checked');
+  const slug = CITY_SLUGS[onbCity] || '';
+  const miete = {gkey: GEWERK_KEY, gewerk: GEWERK_LABEL, stadt: onbCity, slug: slug,
+                 tarif: tarifEl ? tarifEl.value : 'Basis', farbe: selColor,
+                 firma: firmaEl ? firmaEl.value.trim() : '',
+                 tel: (document.getElementById('onbTel') || {}).value || '',
+                 mail: (document.getElementById('onbMail') || {}).value || '',
+                 modus: onbMode, testEnde: onbMode === 'test' ? new Date(Date.now() + 14*86400000).toISOString() : null,
+                 domain: DOMAIN_PREFIX + '-' + slug + '-muster.de'};
+  try{ localStorage.setItem('mw_miete', JSON.stringify(miete)); }catch(e){}
+  const doneMsg = document.getElementById('doneMsg');
+  if(doneMsg){
+    const ende = new Date(Date.now() + 14*86400000).toLocaleDateString('de-DE');
+    doneMsg.innerHTML = onbMode === 'test'
+      ? '\u201e' + GEWERK_LABEL + ' ' + onbCity + '\u201c ist ab sofort unter deinem Namen online – <strong>14 Tage kostenlos, ohne Zahlungsdaten</strong>. Dein Dashboard-Login ist aktiviert (Bestätigung per E-Mail). Die Testphase endet am <strong>' + ende + '</strong> – erst wenn du danach aktiv mietest, läuft die Seite weiter.'
+      : '\u201e' + GEWERK_LABEL + ' ' + onbCity + '\u201c ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (Stripe/PayPal).';
+  }
+  const mieteParam = '?miete=' + encodeURIComponent(JSON.stringify(miete));
+  const siteLink = document.getElementById('doneSiteLink');
+  if(siteLink && slug) siteLink.href = 'stadt-' + GEWERK_KEY + '-' + slug + '.html' + mieteParam;
+  const dashLink = document.getElementById('doneDashLink');
+  if(dashLink) dashLink.href = 'mieter.html' + mieteParam;
+  ['step1','step2','step3','stepDone'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById('stepDone').classList.add('active');
+  document.getElementById('stepLabel').textContent = 'Fertig · Website veröffentlicht';
+  document.getElementById('dot3').className = 'prog-dot done';
+  document.getElementById('dot3').textContent = '✓';
+}
+onb.addEventListener('click', e => { if(e.target === onb) closeOnboarding(); });
+
+// ── Start-Modus: Sofort mieten oder 14 Tage kostenlos testen ──
+let onbMode = 'miete';
+function pickMode(mode){
+  onbMode = mode;
+  document.querySelectorAll('.mode-opt').forEach(o => { o.classList.remove('border-brand-600','bg-brand-50'); o.classList.add('border-ink-200'); });
+  const els = document.querySelectorAll('.mode-opt');
+  const idx = mode === 'test' ? 1 : 0;
+  if(els[idx]) { els[idx].classList.add('border-brand-600','bg-brand-50'); els[idx].classList.remove('border-ink-200'); }
+  const payBlock = document.getElementById('payBlock');
+  const trialInfo = document.getElementById('trialInfo');
+  const trialInfoStep1 = document.getElementById('trialInfoStep1');
+  const pubBtn = document.getElementById('pubBtn');
+  const submitBtn = document.getElementById('onbSubmitBtn');
+  if(payBlock) payBlock.classList.toggle('hidden', mode === 'test');
+  if(trialInfo) trialInfo.classList.toggle('hidden', mode !== 'test');
+  if(trialInfoStep1) trialInfoStep1.classList.toggle('hidden', mode !== 'test');
+  if(pubBtn) pubBtn.textContent = mode === 'test' ? '🎁 Testphase starten & veröffentlichen' : '🚀 Jetzt veröffentlichen & Miete starten';
+  if(submitBtn) submitBtn.textContent = mode === 'test' ? '14 Tage kostenlos testen & weiter →' : 'Miete starten & weiter →';
+  document.getElementById('trialEndLabel').textContent = new Date(Date.now() + 14*86400000).toLocaleDateString('de-DE');
+}
+
+// ── Passwort & Zahlung (Self-Check-in) ──
+function pwStrength(){
+  const v = document.getElementById('pw1').value;
+  let s = 0;
+  if(v.length >= 8) s++;
+  if(v.length >= 12) s++;
+  if(/[0-9]/.test(v) && /[a-zA-Z]/.test(v)) s++;
+  if(/[^a-zA-Z0-9]/.test(v)) s++;
+  if(v.length > 0 && v.length < 8) s = 1;
+  const conf = [['0%','#e2e8f0','–','#94a3b8'],['30%','#dc2626','schwach','#dc2626'],['55%','#f59e0b','okay','#d97706'],['80%','#84cc16','gut','#65a30d'],['100%','#16a34a','stark','#16a34a']][v ? s : 0];
+  const bar = document.getElementById('pwBar'), lab = document.getElementById('pwLabel');
+  bar.style.width = conf[0]; bar.style.background = conf[1];
+  lab.textContent = conf[2]; lab.style.color = conf[3];
+}
+function checkPwAndGo(e){
+  e.preventDefault();
+  const a = document.getElementById('pw1').value, b = document.getElementById('pw2').value;
+  const warn = document.getElementById('pwWarn');
+  if(a.length >= 8 && a === b){ warn.classList.add('hidden'); gotoStep(2); }
+  else { warn.classList.remove('hidden'); document.getElementById('pw2').focus(); }
+}
+function pickPay(el){
+  document.querySelectorAll('.pay-opt').forEach(o => { o.classList.remove('border-brand-600','bg-brand-50'); o.classList.add('border-ink-200'); });
+  el.classList.add('border-brand-600','bg-brand-50'); el.classList.remove('border-ink-200');
+}
+
+// ── Akzentfarbe ──
+let selColor = (document.querySelector('#colorRow .color-swatch.border-ink-900') || {dataset:{}}).dataset.color || '';
+function pickColor(el){
+  document.querySelectorAll('#colorRow .color-swatch').forEach(s => {
+    s.classList.remove('border-ink-900');
+    s.classList.add('border-transparent');
+    s.innerHTML = '';
+  });
+  el.classList.remove('border-transparent');
+  el.classList.add('border-ink-900');
+  el.innerHTML = `<svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+  const c = el.dataset.color;
+  selColor = c;
+  document.getElementById('colorValue').textContent = c;
+  document.getElementById('colorPreviewBtn').style.background = c;
+}
+
+// ── Support (nur Probleme/Vorschläge) ──
+const sm = document.getElementById('supportModal');
+function openSupport(topic){
+  sm.classList.remove('hidden'); sm.classList.add('flex');
+  if(topic === 'stadt'){ sm.querySelector('select').selectedIndex = 2; }
+}
+function closeSupport(){ sm.classList.add('hidden'); sm.classList.remove('flex'); }
+sm.addEventListener('click', e => { if(e.target === sm) closeSupport(); });
+
+// ── Warteliste ──
+const wm = document.getElementById('waitModal');
+function openWaitlist(city){
+  document.getElementById('waitTitle').textContent = 'Warteliste: ' + city;
+  document.getElementById('waitText').innerHTML = '<strong>' + city + '</strong> ist aktuell vermietet. Wir melden uns automatisch bei dir, sobald die Seite wieder frei wird – unverbindlich und kostenlos.';
+  wm.classList.remove('hidden'); wm.classList.add('flex');
+}
+function closeWaitlist(){ wm.classList.add('hidden'); wm.classList.remove('flex'); }
+wm.addEventListener('click', e => { if(e.target === wm) closeWaitlist(); });
+
+let tTimer;
+function supportSubmit(){
+  closeSupport(); closeWaitlist();
+  const t = document.getElementById('toast');
+  t.textContent = '✓ Demo: Nachricht erhalten! In der echten Version antworten wir in 24 h.';
+  t.classList.remove('translate-y-24','opacity-0');
+  clearTimeout(tTimer);
+  tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0'), 3500);
+}
+
+document.getElementById('jahr').textContent = new Date().getFullYear();
+</script>
+
+<script>
+// Region Filter
+function filterByRegion() {
+  const region = document.getElementById('regionFilter').value;
+  const cards = document.querySelectorAll('.city-card');
+  let visible = 0;
+  
+  cards.forEach(card => {
+    const cityRegion = card.dataset.region || '';
+    const searchMatch = !window.lastSearch || card.dataset.city.toLowerCase().includes(window.lastSearch);
+    const regionMatch = !region || cityRegion === region || (region === 'andere' && !cityRegion);
+    
+    if (searchMatch && regionMatch) {
+      card.style.display = '';
+      visible++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  
+  document.getElementById('noResult').classList.toggle('hidden', visible > 0);
+}
+
+function quickSearch(city) {
+  document.getElementById('citySearch').value = city;
+  document.getElementById('citySearch').dispatchEvent(new Event('input'));
+}
+
+function resetFilters() {
+  document.getElementById('citySearch').value = '';
+  document.getElementById('regionFilter').value = '';
+  window.lastSearch = '';
+  document.querySelectorAll('.city-card').forEach(c => c.style.display = '');
+  document.getElementById('noResult').classList.add('hidden');
+}
+
+// Erweiterte Suche
+const citySearch = document.getElementById('citySearch');
+if (citySearch) {
+  citySearch.addEventListener('input', function() {
+    const term = this.value.toLowerCase().trim();
+    window.lastSearch = term;
+    const cards = document.querySelectorAll('.city-card');
+    const region = document.getElementById('regionFilter')?.value || '';
+    let visible = 0;
+    
+    cards.forEach(card => {
+      const cityData = card.dataset.city.toLowerCase();
+      const cityRegion = card.dataset.region || '';
+      const searchMatch = !term || cityData.includes(term);
+      const regionMatch = !region || cityRegion === region || (region === 'andere' && !cityRegion);
+      
+      if (searchMatch && regionMatch) {
+        card.style.display = '';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    
+    const noResult = document.getElementById('noResult');
+    if (noResult) {
+      noResult.classList.toggle('hidden', visible > 0);
+    }
+  });
+}
+</script>
+</body>
+</html>

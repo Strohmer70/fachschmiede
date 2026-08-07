@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elektriker Dortmund | Volt Elektrotechnik – MUSTERSEITE</title>
+<meta name="description" content="Musterseite: Elektriker in Dortmund. E-Check, Wallbox, Smart Home & Elektroinstallation. Beispiel einer Miet-Website für Handwerksbetriebe.">
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: {50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a'},
+        ink: {50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a'}
+      },
+      fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',system-ui,sans-serif}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .faq-item.open .faq-answer{max-height:400px}
+  .faq-item.open .chev{transform:rotate(180deg)}
+  .chev{transition:transform .3s ease}
+  .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
+  ::selection{background:#2563eb;color:#fff}
+</style>
+</head>
+<body class="bg-white text-ink-800 antialiased">
+
+<!-- ═══════════ DEMO-HINWEIS ═══════════ -->
+<div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
+  ⚠️ MUSTERSEITE – Beispiel einer Miet-Website für Handwerksbetriebe. Alle Inhalte, Namen, Bilder und Bewertungen sind fiktiv.
+</div>
+
+<!-- ═══════════ DEMO-NAVIGATION ═══════════ -->
+<div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
+    <span class="font-bold text-white uppercase tracking-widest text-[10px] sm:text-xs">Demo-Portal:</span>
+    <a href="start.html" class="hover:text-white transition">💼 Salespage</a>
+    <a href="sales-dachdecker.html" class="hover:text-white transition">🏠 Gewerk Dachdecker</a>
+    <a href="sales-elektriker.html" class="hover:text-white transition">⚡ Gewerk Elektriker</a>
+    <a href="sales-shk.html" class="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
+    <a href="sales-zimmerer.html" class="hover:text-white transition">🔨 Gewerk Zimmerer</a>
+    <a href="sales-maler.html" class="hover:text-white transition">🖌️ Gewerk Maler</a>
+    <a href="index.html" class="hover:text-white transition">🏠 Musterseite Dachdecker</a>
+    <span class="text-white font-semibold">⚡ Musterseite Elektriker</span>
+    <a href="shk.html" class="hover:text-white transition">🔥 Musterseite SHK</a>
+    <a href="zimmerer.html" class="hover:text-white transition">🔨 Musterseite Zimmerer</a>
+    <a href="maler.html" class="hover:text-white transition">🖌️ Musterseite Maler</a>
+    <a href="admin.html" class="hover:text-white transition">🛠 Admin-Dashboard</a>
+    <a href="mieter.html" class="hover:text-white transition">👤 Mieter-Dashboard</a>
+    <a href="ratgeber.html" class="hover:text-white transition">📖 Blog Dachdecker</a>
+    <a href="ratgeber-elektriker.html" class="hover:text-white transition">📖 Blog Elektriker</a>
+    <a href="ratgeber-shk.html" class="hover:text-white transition">📖 Blog SHK</a>
+    <a href="ratgeber-zimmerer.html" class="hover:text-white transition">📖 Blog Zimmerer</a>
+    <a href="ratgeber-maler.html" class="hover:text-white transition">📖 Blog Maler</a>
+  </div>
+</div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-ink-100 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
+    <a href="#start" class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </span>
+      <span class="leading-tight">
+        <span class="block font-extrabold text-lg text-ink-900">Volt Elektrotechnik</span>
+        <span class="block text-xs text-ink-500 font-medium">Elektrobetrieb · Dortmund</span>
+      </span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-600">
+      <a href="#leistungen" class="hover:text-brand-600 transition">Leistungen</a>
+      <a href="#ueber-uns" class="hover:text-brand-600 transition">Über uns</a>
+      <a href="#referenzen" class="hover:text-brand-600 transition">Referenzen</a>
+      <a href="#bewertungen" class="hover:text-brand-600 transition">Bewertungen</a>
+      <a href="#blog" class="hover:text-brand-600 transition">Blog</a>
+      <a href="#faq" class="hover:text-brand-600 transition">FAQ</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="tel:0231987654321" class="hidden md:flex items-center gap-2 text-sm font-bold text-ink-800 hover:text-brand-600 transition">
+        <svg class="w-4 h-4 text-brand-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"/></svg>
+        0231 / 987 654 32
+      </a>
+      <a href="#kontakt" class="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-sm">Angebot anfragen</a>
+      <button id="menuBtn" class="lg:hidden p-2 rounded-lg hover:bg-ink-100" aria-label="Menü öffnen">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden lg:hidden border-t border-ink-100 bg-white px-4 py-4 space-y-1 text-sm font-semibold text-ink-700">
+    <a href="#leistungen" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Leistungen</a>
+    <a href="#ueber-uns" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Über uns</a>
+    <a href="#referenzen" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Referenzen</a>
+    <a href="#bewertungen" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Bewertungen</a>
+    <a href="#blog" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Blog</a>
+    <a href="#faq" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">FAQ</a>
+    <a href="#kontakt" class="block mt-2 bg-brand-600 text-white text-center font-bold px-5 py-3 rounded-lg">Angebot anfragen</a>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="start" class="relative min-h-[92vh] flex items-center">
+  <img src="/images/hero-elektro.jpg" alt="Elektriker bei der Arbeit an einem modernen Sicherungskasten" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 hero-gradient"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
+    <div class="max-w-2xl text-white">
+      <span class="inline-flex items-center gap-2 bg-white/10 border border-white/25 backdrop-blur text-xs sm:text-sm font-semibold px-4 py-2 rounded-full mb-6">
+        <span class="w-2 h-2 rounded-full bg-brand-400"></span>
+        Elektrobetrieb aus Dortmund
+      </span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
+        Ihr Elektriker<br>in <span class="text-brand-400">Dortmund</span>.
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-ink-100 leading-relaxed max-w-xl">
+        Elektroinstallation, E-Check, Wallbox und Smart Home aus einer Hand – persönlich, sauber und zuverlässig. Für Privat- und Geschäftskunden in Dortmund und Umgebung.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <a href="#kontakt" class="inline-flex justify-center items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-brand-900/30">
+          Kostenloses Angebot
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="tel:0231987654321" class="inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white font-bold px-8 py-4 rounded-xl text-lg transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"/></svg>
+          0231 / 987 654 32
+        </a>
+      </div>
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-semibold text-ink-100">
+        <span class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg> Kostenlose Erstberatung</span>
+        <span class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg> Transparente Angebote</span>
+        <span class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg> Schnelle Terminvergabe</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VERTRAUENSLEISTE ═══════════ -->
+<section class="bg-ink-900 text-white py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+    <div><p class="text-2xl sm:text-3xl font-black text-brand-400">Komplettservice</p><p class="mt-1 text-sm text-ink-300 font-medium">Alle Elektroarbeiten aus einer Hand</p></div>
+    <div><p class="text-2xl sm:text-3xl font-black text-brand-400">Regional</p><p class="mt-1 text-sm text-ink-300 font-medium">Dortmund &amp; Umland – kurze Wege</p></div>
+    <div><p class="text-2xl sm:text-3xl font-black text-brand-400">Kostenlos</p><p class="mt-1 text-sm text-ink-300 font-medium">Erstberatung &amp; Angebot</p></div>
+    <div><p class="text-2xl sm:text-3xl font-black text-brand-400">Persönlich</p><p class="mt-1 text-sm text-ink-300 font-medium">Fester Ansprechpartner vor Ort</p></div>
+  </div>
+</section>
+
+<!-- ═══════════ LEISTUNGEN ═══════════ -->
+<section id="leistungen" class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Unsere Leistungen</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Alles rund um Elektrik – aus einer Hand</h2>
+      <p class="mt-4 text-ink-600 text-lg">Von der neuen Steckdose bis zur kompletten Elektroplanung: Wir kümmern uns um Ihre Elektroinstallation, damit Sie sich um nichts kümmern müssen.</p>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="reveal bg-white rounded-2xl p-8 shadow-sm border border-ink-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </span>
+        <h3 class="mt-5 text-xl font-bold text-ink-900">Elektroinstallation</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Neuinstallation, Umbau und Modernisierung Ihrer Elektroanlage – vom Zählerschrank über Leitungen bis zu Schaltern und Steckdosen.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 shadow-sm border border-ink-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        </span>
+        <h3 class="mt-5 text-xl font-bold text-ink-900">E-Check &amp; Prüfung</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Sicherheitsprüfung Ihrer elektrischen Anlagen und Geräte nach DGUV V3 – mit Protokoll für Vermieter, Hausverwaltungen und Gewerbe.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 shadow-sm border border-ink-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.6a1 1 0 01.9.55L19 11v5a1 1 0 01-1 1h-1"/></svg>
+        </span>
+        <h3 class="mt-5 text-xl font-bold text-ink-900">Wallbox &amp; E-Mobilität</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Planung und Installation Ihrer Ladestation fürs Elektroauto – inklusive Anmeldung beim Netzbetreiber und Beratung zu Fördermöglichkeiten.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 shadow-sm border border-ink-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 21v-6h6v6"/></svg>
+        </span>
+        <h3 class="mt-5 text-xl font-bold text-ink-900">Smart Home</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Intelligente Steuerung von Licht, Heizung und Rollläden – wir planen und installieren Ihr Smart-Home-System passend zu Ihrem Alltag.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 shadow-sm border border-ink-100 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4L17 7M7 17l-1.4 1.4M18.4 18.4L17 17M7 7L5.6 5.6"/><circle cx="12" cy="12" r="4"/></svg>
+        </span>
+        <h3 class="mt-5 text-xl font-bold text-ink-900">Photovoltaik</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Elektrotechnischer Anschluss Ihrer PV-Anlage, Speicher und Wallbox – abgestimmt auf Ihre Anlage und Ihren Verbrauch.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 shadow-sm border-2 border-brand-500 hover:shadow-xl hover:-translate-y-1 transition duration-300 relative">
+        <span class="absolute -top-3 right-6 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">STORMSCHÄDEN</span>
+        <span class="w-12 h-12 rounded-xl bg-brand-600 text-white flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+        </span>
+        <h3 class="mt-5 text-xl font-bold text-ink-900">Störung &amp; Reparatur</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Sicherung fliegt raus, Steckdose defekt, Stromausfall? Wir finden die Ursache und beheben Störungen schnellstmöglich – in Dortmund und Umgebung.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ÜBER UNS ═══════════ -->
+<section id="ueber-uns" class="py-20 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="reveal">
+      <img src="/images/team-elektro.jpg" alt="Zwei Elektriker vor ihrem Arbeitsmaterial" class="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]">
+      <div class="mt-4 flex items-center gap-4 bg-ink-900 text-white rounded-2xl p-5">
+        <p class="text-4xl font-black text-brand-400">Dortmund</p>
+        <p class="text-sm text-ink-200 leading-snug">unser Standort –<br>kurze Wege in der gesamten Ruhrgebietsregion</p>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Über uns</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Ein Betrieb, auf den Sie sich verlassen können</h2>
+      <p class="mt-6 text-ink-600 text-lg leading-relaxed">
+        Volt Elektrotechnik ist ein Elektrobetrieb aus Dortmund. Bei uns sprechen Sie direkt mit den Entscheidern – persönlich, unkompliziert und ohne lange Wege.
+      </p>
+      <p class="mt-4 text-ink-600 leading-relaxed">
+        Wir kennen die Immobilien in unserer Region – vom Altbau in der Nordstadt über die Siedlungen in Aplerbeck bis zum Neubau am Phoenixsee. Diese Ortskenntnis macht den Unterschied: Wir wissen, welche Installationstypen hier typisch sind und worauf es bei älteren Leitungsnetzen ankommt.
+      </p>
+      <ul class="mt-8 space-y-4">
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Fachgerechte Ausführung:</strong> Qualifizierte Arbeit nach den anerkannten Regeln der Technik und aktuellen VDE-Normen.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Schriftliches Angebot:</strong> Transparent kalkuliert – keine versteckten Kosten, keine Überraschungen.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Saubere Baustelle:</strong> Wir hinterlassen Ihr Zuhause so, wie wir es vorgefunden haben – versprochen.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Persönliche Betreuung:</strong> Ein fester Ansprechpartner begleitet Ihr Projekt von Anfang bis Ende.</span>
+        </li>
+      </ul>
+      <a href="#kontakt" class="mt-8 inline-flex items-center gap-2 text-brand-600 font-bold hover:gap-3 transition-all">
+        Lernen Sie uns kennen – kostenlose Erstberatung
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ABLAUF ═══════════ -->
+<section class="py-20 sm:py-24 bg-ink-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-400 font-bold text-sm uppercase tracking-widest">So einfach geht's</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black tracking-tight">In vier Schritten zu Ihrer Lösung</h2>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="reveal bg-ink-800 rounded-2xl p-7 border border-ink-700">
+        <p class="text-5xl font-black text-brand-500/40">01</p>
+        <h3 class="mt-4 text-lg font-bold">Anfrage</h3>
+        <p class="mt-2 text-ink-300 text-sm leading-relaxed">Rufen Sie an oder schreiben Sie uns über das Formular – wir melden uns schnellstmöglich bei Ihnen.</p>
+      </div>
+      <div class="reveal bg-ink-800 rounded-2xl p-7 border border-ink-700">
+        <p class="text-5xl font-black text-brand-500/40">02</p>
+        <h3 class="mt-4 text-lg font-bold">Besichtigung</h3>
+        <p class="mt-2 text-ink-300 text-sm leading-relaxed">Wir schauen uns Ihr Vorhaben vor Ort an – kostenlos und unverbindlich, inklusive ehrlicher Ersteinschätzung.</p>
+      </div>
+      <div class="reveal bg-ink-800 rounded-2xl p-7 border border-ink-700">
+        <p class="text-5xl font-black text-brand-500/40">03</p>
+        <h3 class="mt-4 text-lg font-bold">Transparentes Angebot</h3>
+        <p class="mt-2 text-ink-300 text-sm leading-relaxed">Sie erhalten ein transparentes, schriftliches Angebot – klar kalkuliert und ohne Verpflichtung.</p>
+      </div>
+      <div class="reveal bg-ink-800 rounded-2xl p-7 border border-ink-700">
+        <p class="text-5xl font-black text-brand-500/40">04</p>
+        <h3 class="mt-4 text-lg font-bold">Ausführung</h3>
+        <p class="mt-2 text-ink-300 text-sm leading-relaxed">Unser Team führt die Arbeiten termingerecht aus – mit regelmäßiger Rückmeldung und sauberer Übergabe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ REFERENZEN & EINSATZGEBIET ═══════════ -->
+<section id="referenzen" class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal order-2 lg:order-1">
+        <img src="/images/projekt-elektro.jpg" alt="Wallbox mit ladendem Elektroauto nach Referenzprojekt" class="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]">
+        <p class="mt-3 text-sm text-ink-500 italic">Beispielprojekt: Wallbox-Installation inkl. Netzbetreiber-Anmeldung und Lastmanagement <span class="not-italic font-semibold">(Demo-Bild)</span></p>
+      </div>
+      <div class="reveal order-1 lg:order-2">
+        <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Lokal verwurzelt</p>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Ihr Elektriker in Dortmund und Umgebung</h2>
+        <p class="mt-5 text-ink-600 text-lg leading-relaxed">
+          Kurze Wege bedeuten schnelle Hilfe. Wir sind direkt in Dortmund ansässig – daher sind wir im gesamten östlichen Ruhrgebiet für Sie da:
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2.5">
+          <span class="bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-full">Dortmund</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Innenstadt</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Aplerbeck</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Brackel</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Hörde</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Hombruch</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Lütgendortmund</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Eving</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Schwerte</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Lünen</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Castrop-Rauxel</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Witten</span>
+          <span class="bg-white border border-ink-200 text-ink-700 text-sm font-medium px-4 py-2 rounded-full">Unna</span>
+        </div>
+        <div class="mt-8 bg-white border-l-4 border-brand-600 rounded-r-xl p-5 shadow-sm">
+          <p class="text-ink-700 leading-relaxed"><strong class="text-ink-900">Gut zu wissen:</strong> Die Erstberatung vor Ort ist kostenlos und unverbindlich.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ BEWERTUNGEN ═══════════ -->
+<section id="bewertungen" class="py-20 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Das sagen unsere Kunden</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Bewertungen aus der Region</h2>
+      <p class="mt-4 text-ink-500 text-sm italic">Beispiel-Bewertungen zur Demonstration – keine echten Kundenstimmen.</p>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <figure class="reveal bg-ink-50 rounded-2xl p-8 border border-ink-100 flex flex-col">
+        <div class="text-brand-500 text-lg tracking-wider" aria-label="5 von 5 Sternen">★★★★★</div>
+        <blockquote class="mt-4 text-ink-700 leading-relaxed flex-1">
+          „Wallbox war dringend nötig, das E-Auto stand schon vor der Tür. Beratung, Anmeldung beim Netzbetreiber und Montage – alles aus einer Hand und schneller als erwartet."
+        </blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-ink-200">
+          <p class="font-bold text-ink-900">Familie Sommer</p>
+          <p class="text-sm text-ink-500">Dortmund-Aplerbeck · Wallbox</p>
+        </figcaption>
+      </figure>
+      <figure class="reveal bg-ink-50 rounded-2xl p-8 border border-ink-100 flex flex-col">
+        <div class="text-brand-500 text-lg tracking-wider" aria-label="5 von 5 Sternen">★★★★★</div>
+        <blockquote class="mt-4 text-ink-700 leading-relaxed flex-1">
+          „Komplette Elektrik in unserem Altbau erneuert. Klare Kommunikation, saubere Arbeit und alles exakt zum Angebotspreis. Man merkt, dass hier Profis am Werk sind."
+        </blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-ink-200">
+          <p class="font-bold text-ink-900">Jens &amp; Petra W.</p>
+          <p class="text-sm text-ink-500">Dortmund-Hörde · Altbau-Sanierung</p>
+        </figcaption>
+      </figure>
+      <figure class="reveal bg-ink-50 rounded-2xl p-8 border border-ink-100 flex flex-col">
+        <div class="text-brand-500 text-lg tracking-wider" aria-label="5 von 5 Sternen">★★★★★</div>
+        <blockquote class="mt-4 text-ink-700 leading-relaxed flex-1">
+          „Wir lassen die DGUV-Prüfungen für unsere Büros hier durchführen. Zuverlässig, gründlich dokumentiert und die Termine passen immer. Klare Empfehlung für Gewerbe."
+        </blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-ink-200">
+          <p class="font-bold text-ink-900">Bürozentrum Kley GmbH</p>
+          <p class="text-sm text-ink-500">Dortmund · Prüfvertrag</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ BLOG ═══════════ -->
+<section id="blog" class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 reveal">
+      <div class="max-w-xl">
+        <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Ratgeber &amp; Blog</p>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Wissen rund um Elektrik</h2>
+      </div>
+      <a href="ratgeber-elektriker.html" class="text-brand-600 font-bold hover:underline shrink-0">Alle Beiträge ansehen →</a>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <a href="artikel-wallbox-zuhause.html" class="reveal block bg-white rounded-2xl overflow-hidden border border-ink-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+        <div class="h-44 bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.6a1 1 0 01.9.55L19 11v5a1 1 0 01-1 1h-1"/></svg>
+        </div>
+        <div class="p-7">
+          <p class="text-xs font-semibold text-ink-400">E-Mobilität · 7 Min. Lesezeit</p>
+          <h3 class="mt-2 text-lg font-bold text-ink-900 group-hover:text-brand-600 transition leading-snug">Wallbox zu Hause: Das müssen Sie vor der Installation wissen</h3>
+          <p class="mt-2 text-sm text-ink-600 leading-relaxed">Ladeleistung, Anmeldepflicht, Kosten: Die wichtigsten Fragen rund um die private Ladestation – verständlich erklärt.</p>
+          <p class="mt-4 text-sm font-bold text-brand-600">Beitrag lesen →</p>
+        </div>
+      </a>
+      <a href="artikel-e-check-sicherheitspruefung.html" class="reveal block bg-white rounded-2xl overflow-hidden border border-ink-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+        <div class="h-44 bg-gradient-to-br from-ink-700 to-ink-900 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.6-2A11.95 11.95 0 0112 21.9 11.95 11.95 0 013.4 8a11.95 11.95 0 0117.2 0z"/></svg>
+        </div>
+        <div class="p-7">
+          <p class="text-xs font-semibold text-ink-400">Sicherheit · 6 Min. Lesezeit</p>
+          <h3 class="mt-2 text-lg font-bold text-ink-900 group-hover:text-brand-600 transition leading-snug">E-Check: Wann lohnt sich die Sicherheitsprüfung?</h3>
+          <p class="mt-2 text-sm text-ink-600 leading-relaxed">Alte Leitungen, fehlende FI-Schalter, überlastete Stromkreise: Warum die Prüfung gerade im Altbau wichtig ist.</p>
+          <p class="mt-4 text-sm font-bold text-brand-600">Beitrag lesen →</p>
+        </div>
+      </a>
+      <a href="artikel-smart-home-nachruesten.html" class="reveal block bg-white rounded-2xl overflow-hidden border border-ink-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
+        <div class="h-44 bg-gradient-to-br from-sky-600 to-ink-800 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 21v-6h6v6"/></svg>
+        </div>
+        <div class="p-7">
+          <p class="text-xs font-semibold text-ink-400">Smart Home · 5 Min. Lesezeit</p>
+          <h3 class="mt-2 text-lg font-bold text-ink-900 group-hover:text-brand-600 transition leading-snug">Smart Home nachrüsten: Einstieg ohne großen Umbau</h3>
+          <p class="mt-2 text-sm text-ink-600 leading-relaxed">Von smarten Thermostaten bis zur Lichtsteuerung: Welche Lösungen sich auch in bestehenden Wohnungen umsetzen lassen.</p>
+          <p class="mt-4 text-sm font-bold text-brand-600">Beitrag lesen →</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section id="faq" class="py-20 sm:py-28">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Häufige Fragen</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">FAQ – gut zu wissen</h2>
+    </div>
+    <div class="mt-12 space-y-3 reveal">
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Was kostet die Installation einer Wallbox?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Das hängt von der Ladeleistung, dem Leitungsweg und Ihrem Zählerschrank ab. Als grobe Orientierung: Inklusive Wallbox und Installation liegen die Kosten häufig zwischen 800 und 2.500 €. Nach der kostenlosen Besichtigung erhalten Sie von uns ein verbindliches, schriftliches Angebot.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Muss eine Wallbox angemeldet werden?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Ja. Ladepunkte müssen beim Netzbetreiber angemeldet werden, ab 12 kW Ladeleistung ist zusätzlich eine Genehmigung erforderlich. Wir übernehmen die Anmeldung auf Wunsch komplett für Sie – das ist Teil unseres Installationspakets.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Was passiert bei einem E-Check?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Wir prüfen Ihre elektrische Anlage auf Sicherheitsmängel: Zustand der Leitungen, Schutzmaßnahmen, FI-Schalter und Verteilung. Gerade in Dortmunder Altbauten – etwa in der Nordstadt oder in Hörde – finden wir häufig veraltete Verkabelung aus den 60ern und 70ern. Sie erhalten ein Protokoll mit allen Ergebnissen und auf Wunsch ein Angebot zur Mängelbeseitigung. Für Gewerbe prüfen wir nach DGUV Vorschrift 3.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Helfen Sie auch bei Stromausfall oder Störungen?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Ja. Bei akuten Störungen erreichen Sie uns telefonisch – wir kümmern uns schnellstmöglich um die Fehlersuche und Instandsetzung. Wichtig: Fassen Sie bei einem Stromschlag-Verdacht oder verschmorter Verkabelung nichts selbst an und rufen Sie direkt an.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Wie lange gilt die Gewährleistung?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Auf unsere Handwerksleistungen gilt selbstverständlich die gesetzliche Gewährleistung. Je nach verbautem Material kommen zusätzlich Herstellergarantien hinzu – Details dazu nennen wir Ihnen gerne im Angebot.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Arbeiten Sie auch außerhalb von Dortmund?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Ja, unser Einsatzgebiet umfasst Dortmund und alle Stadtbezirke sowie Schwerte, Lünen, Castrop-Rauxel, Witten und Unna. Für größere Projekte kommen wir auf Anfrage auch darüber hinaus – sprechen Sie uns einfach an.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Ist die Besichtigung wirklich kostenlos?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Ja. Die Erstberatung inklusive Angebot ist in unserem Einsatzgebiet kostenlos und unverbindlich – unabhängig davon, ob Sie den Auftrag erteilen. Sie erhalten danach ein schriftliches Angebot und können in Ruhe entscheiden.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NOTFALL-BANNER ═══════════ -->
+<section class="bg-brand-600">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="flex items-center gap-4 text-white">
+      <span class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </span>
+      <div>
+        <p class="text-xl sm:text-2xl font-black">Stromproblem? Wir helfen schnell.</p>
+        <p class="text-brand-100 mt-1">Schnelle Hilfe für Dortmund und Umgebung – rufen Sie uns einfach an.</p>
+      </div>
+    </div>
+    <a href="tel:0231987654321" class="inline-flex items-center gap-2 bg-white text-brand-700 font-black px-8 py-4 rounded-xl text-lg hover:bg-brand-50 transition shadow-lg shrink-0">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"/></svg>
+      0231 / 987 654 32
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════ KONTAKT ═══════════ -->
+<section id="kontakt" class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-5 gap-12">
+    <div class="lg:col-span-2 reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Kontakt</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Fordern Sie Ihr kostenloses Angebot an</h2>
+      <p class="mt-4 text-ink-600 leading-relaxed">Beschreiben Sie kurz Ihr Anliegen – wir melden uns zeitnah mit einem Terminvorschlag für die kostenlose Erstberatung.</p>
+      <div class="mt-8 space-y-5">
+        <div class="flex items-start gap-4">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 text-brand-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+          </span>
+          <div>
+            <p class="font-bold text-ink-900">Adresse <span class="text-ink-400 font-normal text-sm">(fiktiv)</span></p>
+            <p class="text-ink-600">Beispielweg 8<br>44137 Dortmund</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 text-brand-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"/></svg>
+          </span>
+          <div>
+            <p class="font-bold text-ink-900">Telefon</p>
+            <p class="text-ink-600">0231 / 987 654 32</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 text-brand-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </span>
+          <div>
+            <p class="font-bold text-ink-900">E-Mail</p>
+            <p class="text-ink-600">info@elektriker-dortmund-muster.de</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 text-brand-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3"/></svg>
+          </span>
+          <div>
+            <p class="font-bold text-ink-900">Öffnungszeiten Büro</p>
+            <p class="text-ink-600">Mo–Fr: 7:30 – 16:30 Uhr<br>Sa: nach Vereinbarung</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="w-11 h-11 rounded-xl bg-white border border-ink-200 text-[#25D366] flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          </span>
+          <div>
+            <p class="font-bold text-ink-900">WhatsApp</p>
+            <a href="https://wa.me/4917698765432?text=Hallo%2C%20ich%20interessiere%20mich%20f%C3%BCr%20ein%20Angebot." target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-1.5 bg-[#25D366] hover:bg-[#1fb856] text-white font-bold text-sm px-4 py-2.5 rounded-lg transition">
+              Chat starten
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+            <p class="text-xs text-ink-400 mt-1.5">Antwort meist innerhalb weniger Stunden. <span class="italic">(Demo-Nummer)</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-span-3 reveal">
+      <form id="kontaktForm" class="bg-white rounded-2xl shadow-lg border border-ink-100 p-7 sm:p-10">
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label for="name" class="block text-sm font-bold text-ink-800 mb-1.5">Ihr Name *</label>
+            <input id="name" type="text" required placeholder="Max Mustermann" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+          </div>
+          <div>
+            <label for="tel" class="block text-sm font-bold text-ink-800 mb-1.5">Telefon *</label>
+            <input id="tel" type="tel" required placeholder="0231 / …" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+          </div>
+        </div>
+        <div class="mt-5">
+          <label for="email" class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail</label>
+          <input id="email" type="email" placeholder="max@beispiel.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+        </div>
+        <div class="mt-5">
+          <label for="thema" class="block text-sm font-bold text-ink-800 mb-1.5">Worum geht es? *</label>
+          <select id="thema" required class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+            <option value="">Bitte auswählen …</option>
+            <option>Elektroinstallation</option>
+            <option>E-Check / Prüfung</option>
+            <option>Wallbox / E-Mobilität</option>
+            <option>Smart Home</option>
+            <option>Photovoltaik</option>
+            <option>Störung / Reparatur</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="mt-5">
+          <label for="nachricht" class="block text-sm font-bold text-ink-800 mb-1.5">Ihre Nachricht *</label>
+          <textarea id="nachricht" rows="4" required placeholder="Beschreiben Sie kurz Ihr Anliegen, z. B. Art des Gebäudes und gewünschte Leistung …" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"></textarea>
+        </div>
+        <label class="mt-5 flex items-start gap-3 text-sm text-ink-600">
+          <input type="checkbox" required class="mt-1 w-4 h-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
+          <span>Ich habe die <a href="#" onclick="return false" class="text-brand-600 font-semibold hover:underline">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten zur Bearbeitung der Anfrage einverstanden. *</span>
+        </label>
+        <button type="submit" class="mt-7 w-full bg-brand-600 hover:bg-brand-700 text-white font-black text-lg py-4 rounded-xl transition shadow-lg shadow-brand-600/25">
+          Kostenloses Angebot anfordern
+        </button>
+        <p id="formSuccess" class="hidden mt-4 text-center text-green-700 font-bold bg-green-50 border border-green-200 rounded-lg py-3 px-4">
+          ✓ Vielen Dank! (Demo-Hinweis: Diese Anfrage wird nicht wirklich versendet.)
+        </p>
+        <p class="mt-4 text-xs text-ink-400 text-center">Demo-Formular – es werden keine Daten übertragen oder gespeichert.</p>
+      </form>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 reveal">
+    <div class="rounded-2xl overflow-hidden border border-ink-200 shadow-lg bg-white">
+      <div class="px-6 py-4 flex flex-wrap items-center justify-between gap-3 border-b border-ink-100">
+        <p class="font-bold text-ink-900 flex items-center gap-2">
+          <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+          Hier finden Sie uns
+        </p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Musterweg+8,+44137+Dortmund" target="_blank" rel="noopener" class="text-sm font-bold text-brand-600 hover:underline">Route in Google Maps planen →</a>
+      </div>
+      <iframe title="Standortkarte Volt Elektrotechnik, Dortmund (Demo)" src="https://www.google.com/maps?q=Dortmund,%20Innenstadt&z=13&output=embed" class="w-full h-80 border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <p class="px-6 py-3 text-xs text-ink-400 italic">Demo-Karte: Im Mietbetrieb wird hier über die hinterlegte Google Maps Place ID der echte Firmeneintrag des Mieters eingebunden.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="bg-ink-900 text-ink-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </span>
+        <span class="leading-tight">
+          <span class="block font-extrabold text-white">Volt Elektrotechnik</span>
+          <span class="block text-xs text-ink-400">Elektrobetrieb · Dortmund</span>
+        </span>
+      </div>
+      <p class="mt-5 text-sm leading-relaxed">Ihr Elektrobetrieb in Dortmund – im Einsatz für Elektroinstallationen im östlichen Ruhrgebiet.</p>
+    </div>
+    <div>
+      <p class="font-bold text-white text-sm uppercase tracking-widest">Leistungen</p>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li><a href="#leistungen" class="hover:text-brand-400 transition">Elektroinstallation</a></li>
+        <li><a href="#leistungen" class="hover:text-brand-400 transition">E-Check &amp; Prüfung</a></li>
+        <li><a href="#leistungen" class="hover:text-brand-400 transition">Wallbox &amp; E-Mobilität</a></li>
+        <li><a href="#leistungen" class="hover:text-brand-400 transition">Smart Home</a></li>
+        <li><a href="#leistungen" class="hover:text-brand-400 transition">Photovoltaik</a></li>
+        <li><a href="#leistungen" class="hover:text-brand-400 transition">Störung &amp; Reparatur</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-bold text-white text-sm uppercase tracking-widest">Unternehmen</p>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li><a href="#ueber-uns" class="hover:text-brand-400 transition">Über uns</a></li>
+        <li><a href="#referenzen" class="hover:text-brand-400 transition">Referenzen</a></li>
+        <li><a href="#bewertungen" class="hover:text-brand-400 transition">Bewertungen</a></li>
+        <li><a href="#blog" class="hover:text-brand-400 transition">Blog &amp; Ratgeber</a></li>
+        <li><a href="#faq" class="hover:text-brand-400 transition">FAQ</a></li>
+        <li><a href="#kontakt" class="hover:text-brand-400 transition">Kontakt</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-bold text-white text-sm uppercase tracking-widest">Rechtliches</p>
+      <ul class="mt-4 space-y-2.5 text-sm">
+        <li><a href="impressum.html" class="hover:text-brand-400 transition">Impressum</a></li>
+        <li><a href="datenschutz.html" class="hover:text-brand-400 transition">Datenschutzerklärung</a></li>
+        <li><a href="mieter.html" class="hover:text-brand-400 transition">Pflichtangaben im Dashboard pflegen</a></li>
+      </ul>
+      <p class="mt-6 text-sm">Handwerksrolle: Platzhalter –<br>Eintrag erfolgt je Mieter</p>
+    </div>
+  </div>
+  <div class="border-t border-ink-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-400">
+      <p>© <span id="jahr"></span> Volt Elektrotechnik – Musterseite. Alle Inhalte, Personen und Bewertungen sind fiktiv.</p>
+      <p>Beispiel einer Miet-Website für Handwerksbetriebe · keine offizielle Webseite</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════ MOBILE CTA ═══════════ -->
+<a href="tel:0231987654321" class="sm:hidden fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-2xl" aria-label="Anrufen">
+  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.2a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.27 1.06l-1.6 1.6a12.05 12.05 0 005.58 5.58l1.6-1.6a1 1 0 011.06-.27l3.6 1.2a1 1 0 01.68.95V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 6V3z"/></svg>
+</a>
+
+<!-- ═══════════ WHATSAPP FLOATING BUTTON (Nummer im Mieter-Dashboard hinterlegt) ═══════════ -->
+<a href="https://wa.me/4917698765432?text=Hallo%2C%20ich%20interessiere%20mich%20f%C3%BCr%20ein%20Angebot." target="_blank" rel="noopener" class="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#1fb856] text-white flex items-center justify-center shadow-2xl transition hover:scale-105" aria-label="Per WhatsApp kontaktieren">
+  <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+document.getElementById('kontaktForm').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('formSuccess').classList.remove('hidden');
+  e.target.querySelector('button[type=submit]').disabled = true;
+  e.target.querySelector('button[type=submit]').classList.add('opacity-60','cursor-not-allowed');
+});
+
+document.getElementById('jahr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mieter-Dashboard | Bergmann Bedachungen – DEMO</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: {50:'#fff7ed',100:'#ffedd5',200:'#fed7aa',300:'#fdba74',400:'#fb923c',500:'#f97316',600:'#ea580c',700:'#c2410c',800:'#9a3412',900:'#7c2d12'},
+      ink: {50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a'}
+    },
+    fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+  } }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',system-ui,sans-serif}
+  .tab-btn{border-bottom:3px solid transparent}
+  .tab-btn.active{border-color:#ea580c;color:#0f172a}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+  .toggle{width:44px;height:24px;border-radius:9999px;background:#cbd5e1;position:relative;transition:background .2s;cursor:pointer;flex-shrink:0}
+  .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle.on{background:#ea580c}
+  .toggle.on::after{left:23px}
+  .swatch{width:44px;height:44px;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:transform .15s}
+  .swatch:hover{transform:scale(1.08)}
+  .swatch.active{border-color:#0f172a}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:all .35s ease;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body class="bg-ink-100 text-ink-800 antialiased">
+<!-- ═══════════ LOGIN-GATE (Demo) ═══════════ -->
+<div id="loginGate" class="fixed inset-0 z-[100] bg-ink-900 flex items-center justify-center p-4 transition-opacity duration-500">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-6">
+      <span class="inline-flex w-14 h-14 rounded-2xl bg-brand-600 items-center justify-center text-white font-black text-2xl shadow-lg shadow-brand-600/40">M</span>
+      <p class="mt-3 font-extrabold text-white text-xl">MietWebsites <span class="text-ink-400 font-semibold text-sm">· Mieter-Dashboard</span></p>
+    </div>
+    <form onsubmit="event.preventDefault(); doLogin();" class="bg-white rounded-2xl p-8 shadow-2xl">
+      <h1 class="text-xl font-black text-ink-900 flex items-center gap-2">🔒 Mieter-Login</h1>
+      <p class="mt-1.5 text-sm text-ink-500 leading-relaxed">Dein Dashboard ist passwortgeschützt – nur mit deinen Zugangsdaten aus dem Check-in erreichbar.</p>
+      <div class="mt-5 space-y-3.5">
+        <input type="email" required placeholder="E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <input type="password" required minlength="4" placeholder="Passwort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      </div>
+      <button type="submit" class="mt-5 w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Anmelden</button>
+      <div class="mt-4 flex items-center justify-between text-xs">
+        <button type="button" onclick="showToast('Demo: Hier würde ein Passwort-Reset-Link per E-Mail versendet.')" class="font-bold text-brand-600 hover:underline">Passwort vergessen?</button>
+        <span class="text-ink-400">🔐 Session via sicherem Cookie</span>
+      </div>
+      <div class="mt-5 bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-500 leading-relaxed">
+        <strong>Demo-Login:</strong> beliebige E-Mail &amp; Passwort eingeben – die Prüfung ist simuliert. Live würden Passwörter gehasht (bcrypt) gespeichert, Sessions serverseitig validiert und nach 5 Fehlversuchen temporär gesperrt.
+      </div>
+    </form>
+  </div>
+</div>
+<script>document.body.style.overflow='hidden';</script>
+
+
+<!-- ═══════════ DEMO-HINWEIS ═══════════ -->
+<div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
+  ⚠️ DEMO – Beispiel eines Mieter-Dashboards. Alle Daten sind fiktiv, Änderungen werden nicht gespeichert.
+</div>
+
+<!-- ═══════════ DEMO-NAVIGATION ═══════════ -->
+<div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
+  <div class="max-w-[1400px] mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
+    <span class="font-bold text-white uppercase tracking-widest text-[10px] sm:text-xs">Demo-Portal:</span>
+    <a href="start.html" class="hover:text-white transition">💼 Salespage</a>
+    <a href="sales-dachdecker.html" class="hover:text-white transition">🏠 Gewerk Dachdecker</a>
+    <a href="sales-elektriker.html" class="hover:text-white transition">⚡ Gewerk Elektriker</a>
+    <a href="sales-shk.html" class="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
+    <a href="sales-zimmerer.html" class="hover:text-white transition">🔨 Gewerk Zimmerer</a>
+    <a href="sales-maler.html" class="hover:text-white transition">🖌️ Gewerk Maler</a>
+    <a href="index.html" class="hover:text-white transition">🏠 Musterseite Dachdecker</a>
+    <a href="elektriker.html" class="hover:text-white transition">⚡ Musterseite Elektriker</a>
+    <a href="shk.html" class="hover:text-white transition">🔥 Musterseite SHK</a>
+    <a href="zimmerer.html" class="hover:text-white transition">🔨 Musterseite Zimmerer</a>
+    <a href="maler.html" class="hover:text-white transition">🖌️ Musterseite Maler</a>
+    <a href="admin.html" class="hover:text-white transition">🛠 Admin-Dashboard</a>
+    <span class="text-white font-semibold">👤 Mieter-Dashboard</span>
+    <a href="ratgeber.html" class="hover:text-white transition">📖 Blog Dachdecker</a>
+    <a href="ratgeber-elektriker.html" class="hover:text-white transition">📖 Blog Elektriker</a>
+    <a href="ratgeber-shk.html" class="hover:text-white transition">📖 Blog SHK</a>
+    <a href="ratgeber-zimmerer.html" class="hover:text-white transition">📖 Blog Zimmerer</a>
+    <a href="ratgeber-maler.html" class="hover:text-white transition">📖 Blog Maler</a>
+  </div>
+</div>
+
+<!-- ═══════════ TOPBAR ═══════════ -->
+<header class="bg-white border-b border-ink-200 sticky top-0 z-40">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>
+      </span>
+      <div class="leading-tight">
+        <p id="mFirmenname" class="font-extrabold text-ink-900">Bergmann Bedachungen</p>
+        <p id="mSub" class="text-xs text-ink-500">dachdecker-schwerte-muster.de · Tarif <span class="font-bold text-brand-600">Basis</span></p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2.5">
+      <a href="index.html" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">👁 Website ansehen</a>
+      <button onclick="logout()" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">🔒 Abmelden</button>
+      <button onclick="showToast('Demo: Änderungen würden jetzt als Entwurf gespeichert.')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">Änderungen speichern</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1400px] mx-auto px-4 sm:px-6 py-8">
+
+  <!-- Begrüßung + Status -->
+  <div class="grid lg:grid-cols-3 gap-4 mb-8">
+    <div class="lg:col-span-2 bg-white rounded-2xl border border-ink-200 p-6">
+      <h1 class="text-2xl font-black text-ink-900">Willkommen zurück! 👋</h1>
+      <p class="mt-1 text-ink-500 text-sm">Hier verwalten Sie Ihre Miet-Website komplett selbst – ganz ohne Technik-Kenntnisse. Änderungen sind sofort online. Unser Support hilft bei Problemen und freut sich über Ihre Verbesserungsvorschläge.</p>
+      <div id="mTestBanner" class="hidden mt-5 bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-sm text-amber-800 leading-relaxed max-w-xl">🎁 <strong>Testphase aktiv.</strong> <span id="mTestBannerText"></span></p>
+        <button onclick="activateMiete()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shrink-0">Jetzt mieten &amp; behalten</button>
+      </div>
+      <div class="mt-5 grid grid-cols-3 gap-3 text-center">
+        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">21</p><p class="text-xs font-semibold text-ink-500 mt-1">Anfragen (30 Tage)</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">3.412</p><p class="text-xs font-semibold text-ink-500 mt-1">Besucher (30 Tage)</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-green-600">Pos. 3</p><p id="mKeyword" class="text-xs font-semibold text-ink-500 mt-1">Google: „dachdecker schwerte"</p></div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-ink-200 p-6">
+      <h2 class="font-bold text-ink-900">Vertrag &amp; Abrechnung</h2>
+      <ul class="mt-4 space-y-2.5 text-sm text-ink-600">
+        <li class="flex justify-between"><span>Tarif</span><strong id="mTarif" class="text-ink-900">Basis · 189 €/Monat</strong></li>
+        <li class="flex justify-between"><span>Nächste Abbuchung</span><strong id="mNextPay" class="text-ink-900">01.08.2026</strong></li>
+        <li class="flex justify-between"><span>Zahlungsmethode</span><strong class="text-ink-900">🏦 SEPA · via Stripe</strong></li>
+        <li class="flex justify-between"><span>Laufzeit</span><strong class="text-ink-900">monatlich kündbar</strong></li>
+        <li class="flex justify-between"><span>Status</span><span id="mStatus" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Aktiv</span></li>
+      </ul>
+      <button id="mUpgradeBtn" onclick="showToast('Demo: Hier würde der Tarif-Vergleich (Basis → Pro) geöffnet.')" class="mt-5 w-full bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold py-2.5 rounded-lg transition">Auf Pro upgraden</button>
+      <button onclick="showToast('Demo: Hier würde die Zahlungsmethode (Kreditkarte / SEPA / PayPal) geändert.')" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">Zahlungsmethode ändern</button>
+      <button id="mResetBtn" onclick="resetDemoMiete()" class="hidden mt-2.5 w-full bg-white border border-dashed border-ink-300 hover:bg-ink-50 text-ink-400 text-xs font-bold py-2 rounded-lg transition">Demo-Miete zurücksetzen (Standardansicht)</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ TABS ═══════════ -->
+  <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
+    <div class="flex overflow-x-auto border-b border-ink-200 text-sm font-bold text-ink-500">
+      <button class="tab-btn active px-5 py-4 whitespace-nowrap" data-tab="profil">🏢 Firmenprofil</button>
+      <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="module">🧩 Leistungen &amp; Module</button>
+      <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="design">🎨 Design &amp; Bilder</button>
+      <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="bewertungen">⭐ Bewertungen</button>
+      <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="leads">📥 Anfragen</button>
+      <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="rechtliches">⚖️ Rechtliches</button>
+    </div>
+
+    <!-- ───────── TAB 1: FIRMENPROFIL ───────── -->
+    <div class="tab-panel active p-6 sm:p-8" id="tab-profil">
+      <h2 class="text-lg font-black text-ink-900">Firmenprofil</h2>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Diese Angaben erscheinen auf Ihrer Website (Header, Über-uns, Kontakt, Footer, Impressum).</p>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname</label>
+            <input id="fFirmenname" type="text" value="Bergmann Bedachungen" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon</label>
+              <input id="fTel" type="text" value="02304 / 123 456 78" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail</label>
+              <input id="fMail" type="text" value="info@dachdecker-schwerte-muster.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Adresse</label>
+            <input type="text" value="Musterstraße 12, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Öffnungszeiten</label>
+            <textarea rows="2" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Mo–Fr: 7:00 – 17:00 Uhr, Sa: nach Vereinbarung</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">„Über uns"-Text</label>
+            <textarea rows="4" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Bergmann Bedachungen ist ein Dachdeckerbetrieb aus Schwerte. Bei uns sprechen Sie direkt mit den Entscheidern – persönlich, unkompliziert und ohne lange Wege.</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Einsatzgebiete <span class="font-normal text-ink-400">(Komma-getrennt)</span></label>
+            <textarea rows="2" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Schwerte, Villigst, Wandhofen, Ergste, Geisecke, Westhofen, Lichtendorf, Dortmund, Hagen, Iserlohn, Unna, Fröndenberg, Holzwickede</textarea>
+          </div>
+
+          <!-- Kontakt-Integrationen -->
+          <div class="border border-ink-200 rounded-2xl p-5 bg-ink-50/60 space-y-4">
+            <div>
+              <h3 class="font-bold text-ink-900">Kontakt-Integrationen</h3>
+              <p class="text-xs text-ink-500 mt-1">Diese Angaben steuern den WhatsApp-Kontakt und die Google-Maps-Karte im Kontaktbereich Ihrer Website.</p>
+            </div>
+            <div class="bg-white rounded-xl border border-ink-200 p-4">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <p class="font-bold text-sm text-ink-900">💬 WhatsApp-Nummer</p>
+                  <p class="text-xs text-ink-500 mt-0.5">Erscheint als grüner WhatsApp-Button im Kontaktbereich <em>und</em> als schwebender Button unten rechts – Besucher schreiben Ihnen direkt per Chat.</p>
+                </div>
+                <span class="toggle on" onclick="toggleSwitch(this)"></span>
+              </div>
+              <input type="text" value="+49 151 23456789" placeholder="+49 …" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <p class="mt-2 text-[11px] text-ink-400">Handynummer mit Ländervorwahl. Daraus wird automatisch der Chat-Link <span class="font-mono">wa.me/49151…</span> erzeugt – mehr müssen Sie nicht tun.</p>
+            </div>
+            <div class="bg-white rounded-xl border border-ink-200 p-4">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <p class="font-bold text-sm text-ink-900">📍 Google Maps Place ID</p>
+                  <p class="text-xs text-ink-500 mt-0.5">Bindet Ihren Google-Unternehmenseintrag als Karte im Kontaktbereich ein – inkl. Routenplaner und Standort-Pin.</p>
+                </div>
+                <span class="toggle on" onclick="toggleSwitch(this)"></span>
+              </div>
+              <input type="text" value="ChIJd8zQk7G7uEcR-mK3sDemo1" placeholder="ChIJ…" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <p class="mt-2 text-[11px] text-ink-400">Zu finden über den <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-600 hover:underline">Google Place ID Finder</a> (Eintrag suchen, ID kopieren). Lassen Sie das Feld leer, nutzt die Karte einfach Ihre Adresse. <span class="italic">(Demo-Wert)</span></p>
+            </div>
+            <div class="flex items-center justify-between bg-brand-50 border border-brand-200 rounded-xl px-4 py-3">
+              <p class="text-xs text-brand-700 font-semibold">ℹ️ Sichtbar auf der Website: Kontaktbereich + schwebender Button (WhatsApp) bzw. Karte unter dem Kontaktformular (Maps).</p>
+              <a href="index.html#kontakt" class="shrink-0 text-xs font-bold text-brand-600 hover:underline ml-3">Ansehen →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Erfahrung & Qualifikationen -->
+        <div>
+          <div class="bg-ink-50 border border-ink-200 rounded-2xl p-6">
+            <h3 class="font-bold text-ink-900">Erfahrung &amp; Qualifikationen</h3>
+            <p class="text-xs text-ink-500 mt-1 mb-5">Optional – wird nur auf der Website angezeigt, wenn Sie es aktivieren. So passt die Seite zu Neugründern wie zu Altbetrieben.</p>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
+                <div><p class="font-bold text-sm text-ink-900">Gründungsjahr anzeigen</p><p class="text-xs text-ink-500">z. B. „Seit 2015 für Sie da"</p></div>
+                <div class="flex items-center gap-3"><input type="text" placeholder="2015" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+              </div>
+              <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
+                <div><p class="font-bold text-sm text-ink-900">Anzahl abgeschlossener Projekte</p><p class="text-xs text-ink-500">z. B. „Über 300 Projekte"</p></div>
+                <div class="flex items-center gap-3"><input type="text" placeholder="300+" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+              </div>
+              <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
+                <div><p class="font-bold text-sm text-ink-900">Teamgröße anzeigen</p><p class="text-xs text-ink-500">z. B. „5 Mitarbeiter"</p></div>
+                <div class="flex items-center gap-3"><input type="text" placeholder="5" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+              </div>
+              <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
+                <div><p class="font-bold text-sm text-ink-900">Meisterbetrieb</p><p class="text-xs text-ink-500">Badge „Meisterbetrieb" im Header &amp; Hero</p></div>
+                <span class="toggle" onclick="toggleSwitch(this)"></span>
+              </div>
+              <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
+                <div><p class="font-bold text-sm text-ink-900">Innungsmitgliedschaft</p><p class="text-xs text-ink-500">z. B. „Mitglied der Dachdecker-Innung Dortmund"</p></div>
+                <div class="flex items-center gap-3"><input type="text" placeholder="Innung …" class="w-32 text-sm rounded-lg border border-ink-200 px-3 py-2"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+              </div>
+              <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
+                <div><p class="font-bold text-sm text-ink-900">Zertifikate / Weiterbildungen</p><p class="text-xs text-ink-500">Logos &amp; Texte im „Über uns"-Bereich</p></div>
+                <button onclick="showToast('Demo: Hier würden Zertifikate hochgeladen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
+              </div>
+            </div>
+            <p class="mt-5 text-xs text-ink-400 italic bg-amber-50 border border-amber-200 rounded-lg p-3">💡 Hinweis: Angaben wie Meistertitel oder Innungsmitgliedschaft werden von uns vor Veröffentlichung kurz geprüft – so bleiben alle Websites rechtssicher.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── TAB 2: MODULE ───────── -->
+    <div class="tab-panel p-6 sm:p-8" id="tab-module">
+      <h2 class="text-lg font-black text-ink-900">Leistungen &amp; Module</h2>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Schalten Sie Bausteine Ihrer Website ein oder aus. Deaktivierte Module werden auf der Seite komplett ausgeblendet.</p>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold text-ink-900 mb-4">Leistungskarten <span class="text-ink-400 font-normal text-sm">(6 Plätze auf der Startseite)</span></h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">🏠 Dachsanierung</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">🔧 Dachreparatur</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">🌡 Dachdämmung</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">▭ Flachdach</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">☀️ Solar &amp; Photovoltaik</span><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">⚠️ Sturm- &amp; Notdienst</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+          </div>
+          <button onclick="showToast('Demo: Hier würden Sie eine eigene Leistungskarte mit Text & Icon anlegen.')" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
+        </div>
+        <div>
+          <h3 class="font-bold text-ink-900 mb-4">Seiten-Module</h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">⚡ Notdienst-Modul</p><p class="text-xs text-ink-500">Banner „Sturmschaden? Wir helfen schnell." + 24h-Hinweis</p></div>
+              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+            </div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">⭐ Bewertungen anzeigen</p><p class="text-xs text-ink-500">Kundenstimmen-Sektion (freigegebene Bewertungen)</p></div>
+              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+            </div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">📝 Blog / Ratgeber</p><p class="text-xs text-ink-500">Artikel aus der Redaktion, automatisch gepflegt</p></div>
+              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+            </div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">❓ FAQ-Bereich</p><p class="text-xs text-ink-500">Häufige Fragen – gut für Google (Rich Snippets)</p></div>
+              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+            </div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">📊 Kennzahlen-Leiste</p><p class="text-xs text-ink-500">Nur sinnvoll, wenn „Erfahrung &amp; Qualifikationen" aktiv sind</p></div>
+              <span class="toggle" onclick="toggleSwitch(this)"></span>
+            </div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">📅 Online-Terminbuchung</p><p class="text-xs text-ink-500"><span class="font-bold text-brand-600">Pro-Tarif</span> – Kunden buchen Besichtigungstermine direkt</p></div>
+              <span class="text-xs font-bold text-ink-400 bg-ink-100 px-2.5 py-1 rounded-full">Pro</span>
+            </div>
+            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
+              <div><p class="font-semibold text-sm text-ink-800">💬 WhatsApp-Button</p><p class="text-xs text-ink-500"><span class="font-bold text-brand-600">Pro-Tarif</span> – Direkter Chat-Kontakt vom Handy</p></div>
+              <span class="text-xs font-bold text-ink-400 bg-ink-100 px-2.5 py-1 rounded-full">Pro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── TAB 3: DESIGN ───────── -->
+    <div class="tab-panel p-6 sm:p-8" id="tab-design">
+      <h2 class="text-lg font-black text-ink-900">Design &amp; Bilder</h2>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Passen Sie Farben und Bildmaterial an Ihren Betrieb an. Das Grundlayout bleibt gleich – so bleibt die Seite schnell und suchmaschinenoptimiert.</p>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold text-ink-900 mb-4">Akzentfarbe</h3>
+          <div class="flex flex-wrap gap-3">
+            <span class="swatch active" style="background:#ea580c" title="Orange (Standard Dachdecker)" onclick="pickColor(this)"></span>
+            <span class="swatch" style="background:#2563eb" title="Blau" onclick="pickColor(this)"></span>
+            <span class="swatch" style="background:#059669" title="Grün" onclick="pickColor(this)"></span>
+            <span class="swatch" style="background:#dc2626" title="Rot" onclick="pickColor(this)"></span>
+            <span class="swatch" style="background:#7c3aed" title="Violett" onclick="pickColor(this)"></span>
+            <span class="swatch" style="background:#0f172a" title="Anthrazit" onclick="pickColor(this)"></span>
+          </div>
+          <p class="mt-3 text-xs text-ink-500">Wirkt auf Buttons, Überschriften-Akzente und Hervorhebungen. <span class="font-semibold">Live-Vorschau in der Demo nicht aktiv.</span></p>
+
+          <h3 class="font-bold text-ink-900 mt-8 mb-4">Logo</h3>
+          <div class="border-2 border-dashed border-ink-300 rounded-xl p-8 text-center hover:border-brand-400 transition cursor-pointer" onclick="showToast('Demo: Hier würden Sie Ihr Logo hochladen (PNG/SVG).')">
+            <p class="text-3xl">⬆️</p>
+            <p class="mt-2 font-bold text-ink-700 text-sm">Logo hochladen</p>
+            <p class="text-xs text-ink-400 mt-1">PNG oder SVG · wird im Header &amp; Footer angezeigt</p>
+          </div>
+          <p class="mt-2 text-xs text-ink-500">Kein Logo vorhanden? Dann zeigt die Seite automatisch Ihren Firmennamen mit Icon an – wie jetzt.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-ink-900 mb-4">Bildmaterial</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
+              <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🖼</div>
+              <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Hero-Bild (Startseite oben)</p><p class="text-xs text-ink-500">Aktuell: Standard-Bibliothek „Dachdecker"</p></div>
+              <button onclick="showToast('Demo: Hier würden Sie ein eigenes Foto hochladen oder eines aus der Bibliothek wählen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+            </div>
+            <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
+              <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">👥</div>
+              <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Team- / Inhaberfoto</p><p class="text-xs text-ink-500">Aktuell: Standard-Bibliothek</p></div>
+              <button onclick="showToast('Demo: Hier würden Sie ein eigenes Foto hochladen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+            </div>
+            <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
+              <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🏗</div>
+              <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Referenzfotos (bis zu 6)</p><p class="text-xs text-ink-500">Eigene Baustellen-Fotos wirken am stärksten</p></div>
+              <button onclick="showToast('Demo: Hier würden Sie Referenzfotos hochladen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
+            </div>
+          </div>
+          <div class="mt-5 bg-ink-50 border border-ink-200 rounded-xl p-4 text-sm text-ink-600">
+            <p class="font-bold text-ink-900">📚 Standard-Bibliothek</p>
+            <p class="mt-1 text-xs leading-relaxed">Falls Sie (noch) keine eigenen Fotos haben: Für jedes Gewerk gibt es eine kuratierte Bildbibliothek. Eigenes Material können Sie jederzeit nachreichen – ein Foto vom Handy reicht völlig.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── TAB 4: BEWERTUNGEN ───────── -->
+    <div class="tab-panel p-6 sm:p-8" id="tab-bewertungen">
+      <h2 class="text-lg font-black text-ink-900">Bewertungen</h2>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Reichen Sie echte Kundenstimmen ein – wir prüfen sie kurz und stellen sie dann auf Ihrer Website online. Echte Bewertungen sind das stärkste Verkaufsargument.</p>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <h3 class="font-bold text-ink-900">Neue Bewertung einreichen</h3>
+          <div class="bg-white rounded-xl border border-ink-200 p-5 space-y-4">
+            <input type="text" placeholder="Name des Kunden (z. B. Familie Krüger, Schwerte)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" placeholder="Projekt (z. B. Dachsanierung)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <textarea rows="3" placeholder="Zitat des Kunden …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            <button onclick="showToast('Demo: Bewertung würde zur Prüfung eingereicht.')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-lg transition">Zur Prüfung einreichen</button>
+          </div>
+          <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-sm text-ink-700">
+            <p class="font-bold text-ink-900">💡 Tipp: Google-Bewertungen einbinden</p>
+            <p class="mt-1 text-xs leading-relaxed">Im <strong>Pro-Tarif</strong> ziehen wir Ihre Google-Bewertungen automatisch auf die Website – immer aktuell, ohne Pflegeaufwand.</p>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold text-ink-900 mb-4">Ihre Bewertungen</h3>
+          <ul class="space-y-3 text-sm">
+            <li class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Familie Krüger · Sturmreparatur</p><p class="text-xs text-ink-500">★★★★★ · online seit 12.03.2026</p></div><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Online</span></li>
+            <li class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Sabine &amp; Thomas R. · Dachsanierung</p><p class="text-xs text-ink-500">★★★★★ · online seit 28.04.2026</p></div><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Online</span></li>
+            <li class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Hausverwaltung Meiser · Wartungsvertrag</p><p class="text-xs text-ink-500">★★★★★ · eingereicht am 15.07.2026</p></div><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">In Prüfung</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── TAB 5: LEADS ───────── -->
+    <div class="tab-panel p-6 sm:p-8" id="tab-leads">
+      <h2 class="text-lg font-black text-ink-900">Anfragen (Leads)</h2>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Alle Kontaktformular-Anfragen Ihrer Website – zusätzlich bekommen Sie jede Anfrage sofort per E-Mail und (Pro) per SMS.</p>
+      <div class="overflow-x-auto bg-white rounded-xl border border-ink-200">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100">
+              <th class="px-5 py-3 font-bold">Datum</th>
+              <th class="px-5 py-3 font-bold">Name</th>
+              <th class="px-5 py-3 font-bold">Anliegen</th>
+              <th class="px-5 py-3 font-bold">Kontakt</th>
+              <th class="px-5 py-3 font-bold">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-100">
+            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">Heute, 09:14</td><td class="px-5 py-4 font-bold text-ink-900">Familie Krüger</td><td class="px-5 py-4 text-ink-600">Sturmschaden / Notdienst</td><td class="px-5 py-4 text-ink-600">02304 / 55 66 77</td><td class="px-5 py-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Neu</span></td></tr>
+            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">Gestern</td><td class="px-5 py-4 font-bold text-ink-900">Herr Albrecht</td><td class="px-5 py-4 text-ink-600">Dachdämmung</td><td class="px-5 py-4 text-ink-600">E-Mail</td><td class="px-5 py-4"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">In Bearbeitung</span></td></tr>
+            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">17.07.2026</td><td class="px-5 py-4 font-bold text-ink-900">Hausverwaltung Meiser</td><td class="px-5 py-4 text-ink-600">Wartungsvertrag</td><td class="px-5 py-4 text-ink-600">E-Mail</td><td class="px-5 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Beantwortet</span></td></tr>
+            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">14.07.2026</td><td class="px-5 py-4 font-bold text-ink-900">Frau Neumann</td><td class="px-5 py-4 text-ink-600">Dachsanierung</td><td class="px-5 py-4 text-ink-600">02304 / 88 99 00</td><td class="px-5 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Beantwortet</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-xs text-ink-400 italic">Demo-Hinweis: In der echten Version sehen Sie hier nur Ihre eigenen Anfragen – DSGVO-konform, mit automatischer Löschfrist.</p>
+    </div>
+
+    <!-- Tab: Rechtliches -->
+    <div class="tab-panel p-6 sm:p-8" id="tab-rechtliches">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-lg font-black text-ink-900">Rechtliches: Impressum &amp; Datenschutz</h2>
+          <p class="text-sm text-ink-500 mt-1">Diese Pflichtangaben füllen automatisch Ihr Impressum (§ 5 DDG) und Ihre Datenschutzerklärung (DSGVO). <strong>Ohne vollständige Angaben geht die Website nicht online.</strong></p>
+        </div>
+        <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full">✓ Vollständig – Impressum &amp; Datenschutz online</span>
+      </div>
+
+      <div class="bg-brand-50 border border-brand-200 rounded-xl px-4 py-3 mb-6 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-xs text-brand-700 font-semibold">ℹ️ So sieht das Ergebnis aus: Ihre Angaben erscheinen automatisch auf den Unterseiten „Impressum“ und „Datenschutzerklärung“ – verlinkt im Footer Ihrer Website (gesetzlich vorgeschrieben).</p>
+        <div class="flex gap-2 shrink-0">
+          <a href="impressum.html" class="text-xs font-bold text-brand-600 border border-brand-200 bg-white rounded-lg px-3 py-2 hover:bg-brand-50 transition">Impressum ansehen</a>
+          <a href="datenschutz.html" class="text-xs font-bold text-brand-600 border border-brand-200 bg-white rounded-lg px-3 py-2 hover:bg-brand-50 transition">Datenschutz ansehen</a>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6">
+        <!-- Impressum -->
+        <div class="space-y-4">
+          <h3 class="font-black text-ink-900 flex items-center gap-2">📄 Impressum <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">§ 5 DDG</span></h3>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname (vollständig) *</label>
+            <input type="text" value="Bergmann Bedachungen" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Rechtsform *</label>
+              <select class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <option>Einzelunternehmen</option><option>GbR</option><option>OHG</option><option>KG</option><option>GmbH</option><option>UG (haftungsbeschränkt)</option><option>AG</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Vertretungsberechtigt *</label>
+              <input type="text" value="Max Bergmann (Inhaber)" placeholder="z. B. Inhaber / Geschäftsführer" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Anschrift (ladungsfähig) *</label>
+            <input type="text" value="Musterstraße 12, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <p class="mt-1 text-[11px] text-ink-400">Kein Postfach – das Gesetz verlangt eine ladungsfähige Anschrift.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon *</label>
+              <input type="text" value="02304 / 123 456 78" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail *</label>
+              <input type="email" value="info@bergmann-bedachungen-demo.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Umsatzsteuer-ID <span class="font-normal text-ink-400">(§ 27a UStG – falls vorhanden)</span></label>
+            <input type="text" value="DE 123 456 789" placeholder="DE …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Handwerkskammer *</label>
+              <input type="text" value="Handwerkskammer Musterstadt" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-ink-800 mb-1.5">Handwerksrolle-Nr. *</label>
+              <input type="text" value="12345" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Berufsbezeichnung &amp; Verleihungsstaat *</label>
+            <input type="text" value="Dachdeckermeister (verliehen in Deutschland)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlich i. S. d. § 18 Abs. 2 MStV *</label>
+            <input type="text" value="Max Bergmann, Anschrift wie oben" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="flex items-center justify-between bg-white border border-ink-200 rounded-xl p-4">
+            <div><p class="font-bold text-sm text-ink-900">EU-Streitschlichtung-Hinweis anzeigen</p><p class="text-xs text-ink-500">OS-Plattform-Link im Impressum (empfohlen)</p></div>
+            <span class="toggle on" onclick="toggleSwitch(this)"></span>
+          </div>
+        </div>
+
+        <!-- Datenschutz -->
+        <div class="space-y-4">
+          <h3 class="font-black text-ink-900 flex items-center gap-2">🔒 Datenschutzerklärung <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">DSGVO</span></h3>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlicher (Art. 13 DSGVO) *</label>
+            <textarea rows="2" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">Bergmann Bedachungen, Max Bergmann, Musterstraße 12, 58239 Schwerte, info@bergmann-bedachungen-demo.de</textarea>
+            <p class="mt-1 text-[11px] text-ink-400">Wird automatisch aus Ihren Impressums-Angaben vorgeschlagen – hier bei Bedarf anpassen.</p>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-ink-800 mb-1.5">Datenschutzbeauftragter <span class="font-normal text-ink-400">(nur falls bestellt)</span></label>
+            <input type="text" placeholder="Name &amp; E-Mail – leer lassen, wenn nicht erforderlich" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div class="bg-white border border-ink-200 rounded-xl p-4 space-y-3">
+            <p class="font-bold text-sm text-ink-900">Auf Ihrer Website aktive Dienste <span class="text-xs font-normal text-ink-400">(steuern die Abschnitte der Erklärung)</span></p>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Kontaktformular</p><p class="text-xs text-ink-500">Abschnitt „Kontaktformular &amp; E-Mail“ in der Erklärung</p></div><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">WhatsApp-Button</p><p class="text-xs text-ink-500">Abschnitt „WhatsApp“ in der Erklärung</p></div><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Google-Maps-Karte</p><p class="text-xs text-ink-500">Abschnitt „Google Maps“ inkl. Drittland-Hinweis</p></div><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Terminbuchung <span class="text-brand-600">(Pro)</span></p><p class="text-xs text-ink-500">Eigener Abschnitt mit Anbieter &amp; Rechtsgrundlage</p></div><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Google-Bewertungen <span class="text-brand-600">(Pro)</span></p><p class="text-xs text-ink-500">Abschnitt „Bewertungs-Einbindung“</p></div><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+          </div>
+          <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+            <p class="font-bold text-sm text-ink-900">✓ Immer enthalten – Sie müssen nichts tun</p>
+            <ul class="mt-2 text-xs text-ink-600 space-y-1 list-disc list-inside">
+              <li>Hosting &amp; Server-Logfiles (Art. 6 Abs. 1 lit. f DSGVO)</li>
+              <li>SSL-/TLS-Verschlüsselung</li>
+              <li>Betroffenenrechte, Widerruf &amp; Beschwerderecht</li>
+              <li>„Kein Tracking, keine Analyse-Cookies“ – unsere Websites setzen kein Tracking ein</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <button onclick="showToast('Rechtliche Angaben gespeichert – Impressum &amp; Datenschutzerklärung sind aktualisiert (Demo).')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Angaben speichern &amp; veröffentlichen</button>
+        <p class="text-xs text-ink-500 max-w-md">Letzte Prüfung: vollständig ✓ · Impressum und Datenschutzerklärung werden im Footer jeder Seite Ihrer Website verlinkt und für Google indexierbar ausgespielt.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Tabs
+// ── Login-Gate ──
+function doLogin(){
+  const g = document.getElementById('loginGate');
+  g.classList.add('opacity-0');
+  setTimeout(() => { g.classList.add('hidden'); document.body.style.overflow = ''; }, 450);
+  showToast('Willkommen zurück! (Demo-Login)');
+}
+function logout(){
+  const g = document.getElementById('loginGate');
+  g.classList.remove('hidden', 'opacity-0');
+  document.body.style.overflow = 'hidden';
+  showToast('Abgemeldet – der Bereich ist jetzt gesperrt. (Demo)');
+}
+
+// ── Demo-Miete übernehmen (aus dem Self-Check-in) ──
+(function(){
+  var m = null;
+  try{
+    var qp = new URLSearchParams(location.search).get('miete');
+    if(qp){ m = JSON.parse(qp); try{ localStorage.setItem('mw_miete', JSON.stringify(m)); }catch(e2){} }
+  }catch(e){}
+  if(!m){ try{ m = JSON.parse(localStorage.getItem('mw_miete') || 'null'); }catch(e){} }
+  if(!m) return;
+  if(m.firma) document.getElementById('mFirmenname').textContent = m.firma;
+  document.getElementById('mSub').innerHTML = (m.domain || 'miet-website-muster.de') + ' · Tarif <span class="font-bold text-brand-600">' + (m.tarif || 'Basis') + '</span>';
+  var t = document.getElementById('mTarif');
+  if(m.tarif === 'Pro'){
+    t.textContent = 'Pro · 289 €/Monat';
+    var b = document.getElementById('mUpgradeBtn');
+    b.textContent = '✓ Pro-Tarif aktiv – alle Module freigeschaltet';
+    b.className = 'mt-5 w-full bg-green-50 border border-green-300 text-green-700 text-sm font-bold py-2.5 rounded-lg cursor-default';
+    b.onclick = function(){ showToast('Sie nutzen bereits den Pro-Tarif. (Demo)'); };
+  } else {
+    t.textContent = 'Basis · 189 €/Monat';
+  }
+  if(m.farbe){
+    var st = document.createElement('style');
+    st.textContent = '.bg-brand-600{background:' + m.farbe + ' !important}'
+      + '.hover\:bg-brand-700:hover{background:' + m.farbe + ' !important;filter:brightness(.87)}'
+      + '.text-brand-600{color:' + m.farbe + ' !important}'
+      + '.tab-btn.active{border-color:' + m.farbe + ' !important}';
+    document.head.appendChild(st);
+  }
+  if(m.firma) document.getElementById('fFirmenname').value = m.firma;
+  if(m.tel) document.getElementById('fTel').value = m.tel;
+  if(m.mail) document.getElementById('fMail').value = m.mail;
+  if(m.gewerk && m.stadt){
+    var kw = (m.gkey === 'shk' ? 'klempner' : m.gewerk.toLowerCase()) + ' ' + m.stadt.toLowerCase();
+    document.getElementById('mKeyword').textContent = 'Google: \u201e' + kw + '\u201c';
+  }
+  if(m.modus === 'test' && m.testEnde){
+    var days = Math.max(0, Math.ceil((new Date(m.testEnde).getTime() - Date.now())/86400000));
+    var endeStr = new Date(m.testEnde).toLocaleDateString('de-DE');
+    document.getElementById('mSub').innerHTML += ' · <span class="font-bold text-amber-600">Testphase</span>';
+    document.getElementById('mTarif').textContent = 'Testphase · danach ' + (m.tarif || 'Basis') + ' ' + (m.tarif === 'Pro' ? '289' : '189') + ' €/Monat';
+    var np = document.getElementById('mNextPay');
+    if(np) np.textContent = 'erst nach Testphase (' + endeStr + ')';
+    var stEl = document.getElementById('mStatus');
+    if(stEl){ stEl.className = 'bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full'; stEl.textContent = 'Testphase · noch ' + days + ' Tage'; }
+    var b2 = document.getElementById('mUpgradeBtn');
+    b2.textContent = 'Testphase läuft (noch ' + days + ' Tage) – jetzt mieten & aktivieren';
+    b2.className = 'mt-5 w-full bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2.5 rounded-lg transition';
+    b2.onclick = activateMiete;
+    var tb = document.getElementById('mTestBanner');
+    if(tb){
+      tb.classList.remove('hidden');
+      document.getElementById('mTestBannerText').textContent = 'Du testest \u201e' + (m.gewerk || '') + ' ' + (m.stadt || '') + '\u201c noch ' + days + ' Tage kostenlos (bis ' + endeStr + '). Voller Funktionsumfang, keine Abbuchung – danach entscheidest du: mieten oder die Seite geht zurück in den freien Pool.';
+    }
+  }
+  var r = document.getElementById('mResetBtn');
+  if(r) r.classList.remove('hidden');
+})();
+function activateMiete(){
+  try{
+    var m = JSON.parse(localStorage.getItem('mw_miete') || 'null');
+    if(m){ m.modus = 'miete'; m.testEnde = null; localStorage.setItem('mw_miete', JSON.stringify(m)); }
+  }catch(e){}
+  showToast('Miete aktiviert – die Zahlung läuft ab jetzt über deine hinterlegte Zahlungsmethode (Demo).');
+  setTimeout(function(){ location.reload(); }, 1000);
+}
+function resetDemoMiete(){
+  try{ localStorage.removeItem('mw_miete'); }catch(e){}
+  location.reload();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+// Toggles
+function toggleSwitch(el){ el.classList.toggle('on'); }
+// Farbwahl
+function pickColor(el){
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+// Toast
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>

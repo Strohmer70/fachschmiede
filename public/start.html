@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MietWebsites für Handwerker | Deine fertige Handwerker-Website zur Miete – DEMO</title>
+<meta name="description" content="Demo-Salespage: Handwerker-Websites zur Miete. Gewerk + Stadt wählen, selbst individualisieren, sofort online. Beispiel-Portal ohne echte Buchungsfunktion.">
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'},
+      ink: {50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a'}
+    },
+    fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+  } }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Inter',system-ui,sans-serif}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  .hero-gradient{background:linear-gradient(115deg,rgba(15,23,42,.97) 0%,rgba(30,27,75,.92) 55%,rgba(49,46,129,.85) 100%)}
+  .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .faq-item.open .faq-answer{max-height:500px}
+  .faq-item.open .chev{transform:rotate(180deg)}
+  .chev{transition:transform .3s ease}
+  ::selection{background:#4f46e5;color:#fff}
+</style>
+</head>
+<body class="bg-white text-ink-800 antialiased">
+
+<!-- ═══════════ DEMO-HINWEIS ═══════════ -->
+<div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
+  ⚠️ DEMO – Beispiel einer Salespage für ein Website-Mietmodell. Keine echte Buchung, alle Inhalte und Preise fiktiv.
+</div>
+
+<!-- ═══════════ DEMO-NAVIGATION ═══════════ -->
+<div class="bg-ink-950 bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
+    <span class="font-bold text-white uppercase tracking-widest text-[10px] sm:text-xs">Demo-Portal:</span>
+    <span class="text-white font-semibold">💼 Salespage</span>
+    <a href="/dachdecker/" class="hover:text-white transition">🏠 Gewerk Dachdecker</a>
+    <a href="/elektriker/" class="hover:text-white transition">⚡ Gewerk Elektriker</a>
+    <a href="/shk/" class="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
+    <a href="/zimmerer/" class="hover:text-white transition">🔨 Gewerk Zimmerer</a>
+    <a href="/maler/" class="hover:text-white transition">🖌️ Gewerk Maler</a>
+    <a href="index.html" class="hover:text-white transition">🏠 Musterseite Dachdecker</a>
+    <a href="elektriker.html" class="hover:text-white transition">⚡ Musterseite Elektriker</a>
+    <a href="shk.html" class="hover:text-white transition">🔥 Musterseite SHK</a>
+    <a href="zimmerer.html" class="hover:text-white transition">🔨 Musterseite Zimmerer</a>
+    <a href="maler.html" class="hover:text-white transition">🖌️ Musterseite Maler</a>
+    <a href="admin.html" class="hover:text-white transition">🛠 Admin-Dashboard</a>
+    <a href="mieter.html" class="hover:text-white transition">👤 Mieter-Dashboard</a>
+    <a href="ratgeber.html" class="hover:text-white transition">📖 Blog Dachdecker</a>
+    <a href="ratgeber-elektriker.html" class="hover:text-white transition">📖 Blog Elektriker</a>
+    <a href="ratgeber-shk.html" class="hover:text-white transition">📖 Blog SHK</a>
+    <a href="ratgeber-zimmerer.html" class="hover:text-white transition">📖 Blog Zimmerer</a>
+    <a href="ratgeber-maler.html" class="hover:text-white transition">📖 Blog Maler</a>
+  </div>
+</div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-ink-100 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
+    <a href="start.html" class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white font-black text-lg">M</span>
+      <span class="leading-tight">
+        <span class="block font-extrabold text-lg text-ink-900">MietWebsites</span>
+        <span class="block text-xs text-ink-500 font-medium">für Handwerker <span class="text-brand-600">(Demo)</span></span>
+      </span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-600">
+      <a href="#so-funktionierts" class="hover:text-brand-600 transition">So funktioniert's</a>
+      <a href="#leistungen" class="hover:text-brand-600 transition">Alles inklusive</a>
+      <a href="#dashboard" class="hover:text-brand-600 transition">Dashboard</a>
+      <a href="#gewerke" class="hover:text-brand-600 transition">Gewerke &amp; Städte</a>
+      <a href="#preise" class="hover:text-brand-600 transition">Preise</a>
+      <a href="#faq" class="hover:text-brand-600 transition">FAQ</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="#gewerke" class="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-sm">Stadt sichern</a>
+      <button id="menuBtn" class="lg:hidden p-2 rounded-lg hover:bg-ink-100" aria-label="Menü öffnen">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden lg:hidden border-t border-ink-100 bg-white px-4 py-4 space-y-1 text-sm font-semibold text-ink-700">
+    <a href="#so-funktionierts" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">So funktioniert's</a>
+    <a href="#leistungen" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Alles inklusive</a>
+    <a href="#dashboard" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Dashboard</a>
+    <a href="#gewerke" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Gewerke &amp; Städte</a>
+    <a href="#preise" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Preise</a>
+    <a href="#faq" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">FAQ</a>
+    <a href="#gewerke" class="block mt-2 bg-brand-600 text-white text-center font-bold px-5 py-3 rounded-lg">Stadt sichern</a>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="relative overflow-hidden bg-ink-900">
+  <div class="absolute inset-0 hero-gradient"></div>
+  <div class="absolute -top-32 -right-32 w-[500px] h-[500px] bg-brand-600/20 rounded-full blur-3xl"></div>
+  <div class="absolute -bottom-40 -left-24 w-[400px] h-[400px] bg-brand-500/10 rounded-full blur-3xl"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-white">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur text-xs sm:text-sm font-semibold px-4 py-2 rounded-full mb-6">
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        <span id="heroCount">Jede Stadt nur 1× verfügbar · Self-Check-in</span>
+      </span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
+        Deine Handwerker-Website.<br>
+        <span class="text-brand-400">Fertig gebaut. Rankt bereits.</span><br>
+        Nur noch mieten.
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-ink-200 leading-relaxed max-w-2xl">
+        Wir bauen professionelle Websites für Handwerker – nach Gewerk und Stadt. „Dachdecker Schwerte", „Elektriker Dortmund" und viele mehr stehen fertig bereit: mit Texten, Bildern, Ratgeber-Blog und Google-Optimierung. Du mietest selbst online, individualisierst in 5 Minuten – und deine Seite ist sofort unter deinem Namen online.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <a href="#gewerke" class="inline-flex justify-center items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-brand-900/40">
+          Gewerk &amp; Stadt wählen
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="index.html" class="inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur text-white font-bold px-8 py-4 rounded-xl text-lg transition">
+          ▶ Live-Beispiel ansehen
+        </a>
+      </div>
+      <div class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm font-semibold text-ink-200">
+        <span class="flex items-center gap-2">✅ Sofort online nach Freigabe</span>
+        <span class="flex items-center gap-2">✅ Monatlich kündbar</span>
+        <span class="flex items-center gap-2">✅ 0 € Einrichtung · 100 % Self-Service</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PROBLEM / LÖSUNG ═══════════ -->
+<section class="py-20 sm:py-24 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Das Problem kennst du</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Eine eigene Website kostet Zeit, Geld und Nerven</h2>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200">
+        <p class="text-3xl">😤</p>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Agentur: 3.000–8.000 €</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Und nach dem Launch bist du allein: Keine Pflege, keine neuen Inhalte, keine Ahnung von Google. Nach zwei Jahren ist die Seite veraltet.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200">
+        <p class="text-3xl">🧩</p>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Baukasten: mach's selbst</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Sieht nach Baukasten aus, rankt nicht lokal, und ehrlich: Nach 10 Stunden auf dem Dach will niemand mehr Texte schreiben.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200">
+        <p class="text-3xl">📉</p>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Ohne Website: unsichtbar</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Über 80 % der Kunden googeln vorher „dachdecker + stadt". Wer dort nicht auftaucht, existiert für neue Kunden praktisch nicht.</p>
+      </div>
+    </div>
+    <div class="reveal mt-8 bg-brand-600 rounded-2xl p-8 sm:p-10 text-white text-center">
+      <p class="text-2xl sm:text-3xl font-black leading-snug">Die Alternative: Du mietest eine Website, die bereits fertig ist –<br class="hidden sm:block"> inklusive Texte, Bilder, Blog und Google-Optimierung.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SO FUNKTIONIERT'S ═══════════ -->
+<section id="so-funktionierts" class="py-20 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">So funktioniert's</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">In 3 Schritten zu deiner Website</h2>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <div class="reveal relative bg-ink-900 text-white rounded-2xl p-8">
+        <p class="text-6xl font-black text-brand-500/50">1</p>
+        <h3 class="mt-4 text-xl font-bold">Gewerk &amp; Stadt wählen</h3>
+        <p class="mt-3 text-ink-300 leading-relaxed">Such dir deine fertige Website aus: zum Beispiel „Dachdecker Schwerte". Jede Stadt ist nur <strong class="text-white">einmal</strong> vergeben – wer zuerst mietet, bekommt sie.</p>
+      </div>
+      <div class="reveal relative bg-ink-900 text-white rounded-2xl p-8">
+        <p class="text-6xl font-black text-brand-500/50">2</p>
+        <h3 class="mt-4 text-xl font-bold">Du individualisierst selbst</h3>
+        <p class="mt-3 text-ink-300 leading-relaxed">Dein Name, deine Nummer, deine Leistungen, deine Fotos: Der Assistent führt dich in 5 Minuten durch alles. Keine Agentur, kein Warten – du hast alles selbst in der Hand.</p>
+      </div>
+      <div class="reveal relative bg-ink-900 text-white rounded-2xl p-8">
+        <p class="text-6xl font-black text-brand-500/50">3</p>
+        <h3 class="mt-4 text-xl font-bold">Veröffentlichen &amp; empfangen</h3>
+        <p class="mt-3 text-ink-300 leading-relaxed">Ein Klick auf „Veröffentlichen" – und deine Seite ist sofort live. Jede Anfrage kommt ab der ersten Minute per E-Mail zu dir, im Pro-Tarif zusätzlich per SMS.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ALLES INKLUSIVE ═══════════ -->
+<section id="leistungen" class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Alles inklusive</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Was in deiner Miet-Website steckt</h2>
+      <p class="mt-4 text-ink-600 text-lg">Keine Agentur-Rechnung, kein Projekt-Stress. Alles, was eine Handwerker-Website braucht, ist bereits eingebaut.</p>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="text-3xl">🎯</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Lokale Google-Optimierung</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Jede Seite ist exakt auf „gewerk + stadt" optimiert – Titel, Texte, Struktur, Ladezeit. Genau das, wonach deine Kunden suchen.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="text-3xl">✍️</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Professionell &amp; einzigartig</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Fertige Leistungstexte und Bildmaterial für dein Gewerk – pro Stadt individuell formuliert. So erkennt Google jede Seite als eigenständig und indexiert sie sauber.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="text-3xl">📖</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Ratgeber-Blog inklusive</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Unsere Redaktion veröffentlicht regelmäßig Fachartikel auf deiner Seite – jeder Artikel in einer eigenen Stadt-Fassung, nie wortgleich kopiert. Frischer, einzigartiger Content = besseres Google-Ranking.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="text-3xl">📥</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Anfragen direkt zu dir</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Kontaktformular, Anruf-Button, Notdienst-Hinweis: Jede Anfrage landet sofort in deinem Postfach – mit Übersicht im Dashboard.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="text-3xl">⚙️</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Eigenes Mieter-Dashboard</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Firmendaten, Leistungen, Bewertungen und Fotos selbst anpassen – so einfach wie ein Formular. Änderungen sind in Minuten online.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-8 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="text-3xl">🛡️</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Technik &amp; Recht erledigt</h3>
+        <p class="mt-2 text-ink-600 leading-relaxed">Hosting, SSL, Updates, DSGVO-konforme Formulare, Impressums-Vorlage: Wir kümmern uns um alles im Hintergrund.</p>
+      </div>
+    </div>
+
+    <!-- Vorher/Nachher visuell -->
+    <div class="mt-14 grid lg:grid-cols-2 gap-6 reveal">
+      <div class="bg-white rounded-2xl border border-ink-200 p-8">
+        <p class="text-sm font-bold text-ink-400 uppercase tracking-widest">Klassischer Weg</p>
+        <ul class="mt-4 space-y-3 text-ink-600">
+          <li class="flex gap-3"><span class="text-red-500 font-bold">✗</span> 3.000–8.000 € Einmalkosten</li>
+          <li class="flex gap-3"><span class="text-red-500 font-bold">✗</span> 2–4 Monate bis zum Launch</li>
+          <li class="flex gap-3"><span class="text-red-500 font-bold">✗</span> Texte &amp; Fotos musst du liefern</li>
+          <li class="flex gap-3"><span class="text-red-500 font-bold">✗</span> Pflege &amp; Updates kosten extra</li>
+          <li class="flex gap-3"><span class="text-red-500 font-bold">✗</span> Kein laufender Content, kein Ranking</li>
+        </ul>
+      </div>
+      <div class="bg-ink-900 text-white rounded-2xl p-8 border-2 border-brand-500 relative">
+        <span class="absolute -top-3 right-6 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">MIETWEBSITES</span>
+        <p class="text-sm font-bold text-brand-400 uppercase tracking-widest">Dein Weg</p>
+        <ul class="mt-4 space-y-3 text-ink-200">
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> 0 € Einrichtung – nur monatliche Miete</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Sofort online – Self-Check-in in 5 Minuten</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Texte, Bilder &amp; Blog bereits fertig</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Pflege, Hosting &amp; Updates inklusive</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Regelmäßiger Content hält dein Ranking</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ DASHBOARD-SHOWCASE ═══════════ -->
+<section id="dashboard" class="py-20 sm:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div class="reveal">
+        <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Dein Kontrollzentrum</p>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">So sieht dein Mieter-Dashboard aus</h2>
+        <p class="mt-4 text-ink-600 text-lg leading-relaxed">Nach dem Self-Check-in bekommst du dein eigenes Dashboard. Dort steuerst du deine komplette Website selbst – ohne Agentur, ohne Wartezeit, ohne Zusatzkosten.</p>
+        <ul class="mt-8 space-y-4">
+          <li class="flex gap-4">
+            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">🏢</span>
+            <div><strong class="text-ink-900">Firmenprofil</strong><p class="text-ink-600 text-sm mt-0.5">Name, Adresse, Telefon, E-Mail, Öffnungszeiten &amp; „Über uns“ – plus WhatsApp-Nummer und Google Maps Place ID für den Kontaktbereich.</p></div>
+          </li>
+          <li class="flex gap-4">
+            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">🧩</span>
+            <div><strong class="text-ink-900">Leistungen &amp; Module</strong><p class="text-ink-600 text-sm mt-0.5">Leistungen per Schalter ein- und ausblenden – z.&nbsp;B. Erfahrung &amp; Qualifikationen nur zeigen, wenn du willst.</p></div>
+          </li>
+          <li class="flex gap-4">
+            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">🎨</span>
+            <div><strong class="text-ink-900">Design &amp; Bilder</strong><p class="text-ink-600 text-sm mt-0.5">Akzentfarbe wählen, Logo und eigene Projekt-Fotos hochladen – Vorschau in Echtzeit.</p></div>
+          </li>
+          <li class="flex gap-4">
+            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">⭐</span>
+            <div><strong class="text-ink-900">Bewertungen</strong><p class="text-ink-600 text-sm mt-0.5">Kundenstimmen prüfen, freischalten und auf deiner Seite präsentieren.</p></div>
+          </li>
+          <li class="flex gap-4">
+            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">📥</span>
+            <div><strong class="text-ink-900">Anfragen &amp; Leads</strong><p class="text-ink-600 text-sm mt-0.5">Alle Website-Anfragen mit Status verwalten – keine Anfrage geht verloren.</p></div>
+          </li>
+        </ul>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="mieter.html" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Dashboard-Demo ansehen →</a>
+          <a href="/dachdecker/" class="border-2 border-ink-200 hover:border-brand-600 hover:text-brand-600 text-ink-700 font-bold px-7 py-3.5 rounded-xl transition">Stadt auswählen</a>
+        </div>
+      </div>
+
+      <!-- Dashboard-Mockup -->
+      <div class="reveal relative">
+        <span class="absolute -top-3 left-6 z-10 bg-amber-400 text-ink-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wide">Live-Demo</span>
+        <div class="bg-white rounded-2xl border border-ink-200 shadow-2xl shadow-ink-900/10 overflow-hidden">
+          <!-- Browser-Leiste -->
+          <div class="bg-ink-100 px-4 py-2.5 flex items-center gap-2 border-b border-ink-200">
+            <span class="w-3 h-3 rounded-full bg-red-400"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            <span class="w-3 h-3 rounded-full bg-green-400"></span>
+            <span class="ml-3 flex-1 bg-white rounded-md px-3 py-1 text-xs text-ink-500 font-medium truncate">dashboard.mietwebsites.de/mein-betrieb</span>
+          </div>
+          <!-- Dashboard-Kopf -->
+          <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-ink-400 font-semibold">Mieter-Dashboard</p>
+              <p class="font-black text-ink-900">Bergmann Bedachungen <span class="ml-1 text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full align-middle">ONLINE</span></p>
+            </div>
+            <span class="text-xs font-bold text-brand-600 bg-brand-50 px-3 py-1.5 rounded-lg">Pro-Tarif</span>
+          </div>
+          <!-- Tabs -->
+          <div class="px-5 pt-3 flex gap-1 text-xs font-bold text-ink-500 border-b border-ink-100 overflow-x-auto">
+            <span class="px-3 py-2 rounded-t-lg bg-brand-50 text-brand-600 border-b-2 border-brand-600 whitespace-nowrap">Firmenprofil</span>
+            <span class="px-3 py-2 whitespace-nowrap">Leistungen</span>
+            <span class="px-3 py-2 whitespace-nowrap">Design</span>
+            <span class="px-3 py-2 whitespace-nowrap">Bewertungen</span>
+            <span class="px-3 py-2 whitespace-nowrap">Anfragen</span>
+          </div>
+          <!-- Inhalt -->
+          <div class="p-5 space-y-3 bg-ink-50/50">
+            <div class="bg-white rounded-xl border border-ink-200 p-4">
+              <p class="text-xs font-bold text-ink-400 uppercase tracking-wider mb-2">Firmenname</p>
+              <div class="flex items-center justify-between gap-3">
+                <p class="font-semibold text-ink-900 text-sm">Bergmann Bedachungen</p>
+                <span class="text-xs font-bold text-brand-600">Bearbeiten ✎</span>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3">
+              <div>
+                <p class="font-semibold text-ink-900 text-sm">Meisterbetrieb anzeigen</p>
+                <p class="text-xs text-ink-500 mt-0.5">Optional – nur sichtbar, wenn du es aktivierst</p>
+              </div>
+              <span class="shrink-0 w-11 h-6 rounded-full bg-brand-600 relative"><span class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></span></span>
+            </div>
+            <div class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3">
+              <div>
+                <p class="font-semibold text-ink-900 text-sm">Gründungsjahr anzeigen</p>
+                <p class="text-xs text-ink-500 mt-0.5">Freie Entscheidung – die Seite bleibt neutral</p>
+              </div>
+              <span class="shrink-0 w-11 h-6 rounded-full bg-ink-200 relative"><span class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></span></span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bg-white rounded-xl border border-ink-200 p-3 text-center">
+                <p class="text-xl font-black text-ink-900">12</p>
+                <p class="text-[10px] font-bold text-ink-500 uppercase">Anfragen</p>
+              </div>
+              <div class="bg-white rounded-xl border border-ink-200 p-3 text-center">
+                <p class="text-xl font-black text-ink-900">4,9★</p>
+                <p class="text-[10px] font-bold text-ink-500 uppercase">Bewertung</p>
+              </div>
+              <div class="bg-white rounded-xl border border-ink-200 p-3 text-center">
+                <p class="text-xl font-black text-green-600">Sofort</p>
+                <p class="text-[10px] font-bold text-ink-500 uppercase">Änderung live</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GEWERKE & STÄDTE ═══════════ -->
+<section id="gewerke" class="py-20 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Gewerke &amp; Städte</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Wähle dein Gewerk – sichere dir deine Stadt</h2>
+      <p class="mt-4 text-ink-600 text-lg">Pro Gewerk und Stadt gibt es genau <strong>eine</strong> Website. Grün = noch frei, grau = bereits vermietet. <span class="italic">(Demo-Daten)</span></p>
+    </div>
+
+    <div class="mt-12 space-y-5">
+      <!-- Dachdecker: aktiv -->
+      <a href="/dachdecker/" class="reveal block bg-white rounded-2xl border border-ink-200 p-6 sm:p-8 hover:shadow-xl hover:-translate-y-0.5 transition duration-300 group">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-3xl">🏠</span>
+            <div>
+              <h3 class="text-xl font-black text-ink-900 group-hover:text-brand-600 transition">Dachdecker</h3>
+              <p class="text-sm text-ink-500" data-trade="dachdecker">Lade Verfügbarkeit...</p>
+            </div>
+          </div>
+          <span class="bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition">Stadt wählen →</span>
+        </div>
+      </a>
+
+      <!-- Elektriker: aktiv -->
+      <a href="/elektriker/" class="reveal block bg-white rounded-2xl border border-ink-200 p-6 sm:p-8 hover:shadow-xl hover:-translate-y-0.5 transition duration-300 group">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-3xl">⚡</span>
+            <div>
+              <h3 class="text-xl font-black text-ink-900 group-hover:text-brand-600 transition">Elektriker</h3>
+              <p class="text-sm text-ink-500" data-trade="elektriker">Lade Verfügbarkeit...</p>
+            </div>
+          </div>
+          <span class="bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition">Stadt wählen →</span>
+        </div>
+      </a>
+
+      <a href="/shk/" class="reveal block bg-white rounded-2xl border border-ink-200 p-6 sm:p-8 hover:shadow-xl hover:-translate-y-0.5 transition duration-300 group">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-3xl">🔥</span>
+            <div>
+              <h3 class="text-xl font-black text-ink-900 group-hover:text-brand-600 transition">Klempner / SHK <span class="text-sm font-bold text-ink-400">Sanitär · Heizung · Klima</span></h3>
+              <p class="text-sm text-ink-500" data-trade="klempner">Lade Verfügbarkeit...</p>
+            </div>
+          </div>
+          <span class="bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition">Stadt wählen →</span>
+        </div>
+      </a>
+
+      <a href="/zimmerer/" class="reveal block bg-white rounded-2xl border border-ink-200 p-6 sm:p-8 hover:shadow-xl hover:-translate-y-0.5 transition duration-300 group">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl">🔨</span>
+            <div>
+              <h3 class="text-xl font-black text-ink-900 group-hover:text-brand-600 transition">Zimmerer <span class="text-sm font-bold text-ink-400">Dachstuhl · Carport · Holzbau</span></h3>
+              <p class="text-sm text-ink-500" data-trade="zimmerer">Lade Verfügbarkeit...</p>
+            </div>
+          </div>
+          <span class="bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition">Stadt wählen →</span>
+        </div>
+      </a>
+
+      <a href="/maler/" class="reveal block bg-white rounded-2xl border border-ink-200 p-6 sm:p-8 hover:shadow-xl hover:-translate-y-0.5 transition duration-300 group">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl">🖌️</span>
+            <div>
+              <h3 class="text-xl font-black text-ink-900 group-hover:text-brand-600 transition">Maler <span class="text-sm font-bold text-ink-400">Innenanstrich · Fassade · Lack</span></h3>
+              <p class="text-sm text-ink-500" data-trade="maler">Lade Verfügbarkeit...</p>
+            </div>
+          </div>
+          <span class="bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition">Stadt wählen →</span>
+        </div>
+      </a>
+
+      <!-- Weitere Gewerke: in Vorbereitung -->
+      <div class="reveal grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-ink-50 rounded-2xl border border-ink-200 border-dashed p-6 flex items-center gap-4">
+          <span class="text-2xl">🧱</span>
+          <div><p class="font-bold text-ink-800">Fliesenleger</p><p class="text-xs text-ink-500">In Planung</p></div>
+        </div>
+        <button onclick="showToastDemo()" class="bg-white rounded-2xl border-2 border-dashed border-brand-300 p-6 text-left hover:bg-brand-50 transition">
+          <p class="font-bold text-brand-600">Dein Gewerk fehlt?</p>
+          <p class="text-xs text-ink-500 mt-1">Sag uns Bescheid – wir priorisieren nach Nachfrage →</p>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PREISE ═══════════ -->
+<section id="preise" class="py-20 sm:py-28 bg-ink-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-400 font-bold text-sm uppercase tracking-widest">Preise</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black tracking-tight">Ein Preis. Alles drin. Monatlich kündbar.</h2>
+      <p class="mt-4 text-ink-300 text-lg italic">Beispiel-Preise zur Demonstration – keine echten Angebote.</p>
+    </div>
+    <div class="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl">
+      <!-- Basis -->
+      <div class="reveal bg-ink-800 rounded-2xl p-8 border border-ink-700 flex flex-col">
+        <h3 class="text-xl font-black">Basis</h3>
+        <p class="mt-1 text-sm text-ink-400">Für den soliden Start in deiner Stadt</p>
+        <p class="mt-6"><span class="text-5xl font-black">189 €</span><span class="text-ink-400 font-semibold"> / Monat</span></p>
+        <ul class="mt-6 space-y-3 text-sm text-ink-200 flex-1">
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Komplette Miet-Website (Gewerk + Stadt)</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Lokale Google-Optimierung</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Kontaktformular + Anfragen per E-Mail</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Ratgeber-Blog (2 Artikel/Monat)</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Mieter-Dashboard zur Selbst-Pflege</li>
+          <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Hosting, SSL, Updates, DSGVO-Basics</li>
+        </ul>
+        <a href="https://buy.stripe.com/test_fZueV62j176M8mH39PgQE00" class="mt-8 w-full block text-center bg-white/10 hover:bg-white/20 border border-white/25 text-white font-bold py-3.5 rounded-xl transition">Basis mieten</a>
+      </div>
+      <!-- Pro -->
+      <div class="reveal bg-white text-ink-900 rounded-2xl p-8 relative flex flex-col shadow-2xl shadow-brand-900/40">
+        <span class="absolute -top-3 left-8 bg-brand-600 text-white text-xs font-bold px-3 py-1 rounded-full">EMPFOHLEN</span>
+        <h3 class="text-xl font-black">Pro</h3>
+        <p class="mt-1 text-sm text-ink-500">Für maximale Anfragen &amp; Komfort</p>
+        <p class="mt-6"><span class="text-5xl font-black">289 €</span><span class="text-ink-500 font-semibold"> / Monat</span></p>
+        <ul class="mt-6 space-y-3 text-sm text-ink-700 flex-1">
+          <li class="flex gap-3"><span class="text-green-600 font-bold">✓</span> <strong>Alles aus Basis</strong></li>
+          <li class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Google-Bewertungen automatisch auf der Seite</li>
+          <li class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Anfragen zusätzlich per SMS</li>
+          <li class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Online-Terminbuchung für Besichtigungen</li>
+          <li class="flex gap-3"><span class="text-green-600 font-bold">✓</span> WhatsApp-Button</li>
+          <li class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Blog (4 Artikel/Monat) + monatl. Ranking-Report</li>
+        </ul>
+        <a href="https://buy.stripe.com/test_3cIeV64r9cr66ezdOtgQE01" class="mt-8 w-full block text-center bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Pro mieten</a>
+      </div>
+    </div>
+    <p class="mt-8 text-sm text-ink-400 max-w-4xl">Alle Preise zzgl. MwSt. · Keine Einrichtungsgebühr · Keine Mindestlaufzeit · Kündbar zum Monatsende. Deine Stadt bleibt dir exklusiv, solange du mietest.</p>
+  </div>
+</section>
+
+<!-- ═══════════ STIMMEN (Demo) ═══════════ -->
+<section class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Das sagen Mieter</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Handwerker, die bereits mieten</h2>
+      <p class="mt-4 text-ink-500 text-sm italic">Beispiel-Stimmen zur Demonstration – keine echten Zitate.</p>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <figure class="reveal bg-white rounded-2xl p-8 border border-ink-200">
+        <div class="text-brand-500 text-lg">★★★★★</div>
+        <blockquote class="mt-4 text-ink-700 leading-relaxed">„Ich hatte null Zeit für eine Website. Jetzt kommen pro Woche zwei, drei Anfragen über die Seite – ohne dass ich irgendwas technisch mache."</blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-ink-100"><p class="font-bold text-ink-900">Dachdecker, Kreis Unna</p><p class="text-sm text-ink-500">Mieter seit 2025 · Basis</p></figcaption>
+      </figure>
+      <figure class="reveal bg-white rounded-2xl p-8 border border-ink-200">
+        <div class="text-brand-500 text-lg">★★★★★</div>
+        <blockquote class="mt-4 text-ink-700 leading-relaxed">„Frisch selbstständig gemacht und keine 5.000 € für eine Agentur. Die Miet-Website war der perfekte Start – meine Stadt gehört jetzt mir."</blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-ink-100"><p class="font-bold text-ink-900">Elektriker, Ruhrgebiet</p><p class="text-sm text-ink-500">Mieter seit 2026 · Pro</p></figcaption>
+      </figure>
+      <figure class="reveal bg-white rounded-2xl p-8 border border-ink-200">
+        <div class="text-brand-500 text-lg">★★★★★</div>
+        <blockquote class="mt-4 text-ink-700 leading-relaxed">„Der Blog läuft im Hintergrund mit, die Google-Platzierung wird besser. Für mich ist es wie ein Marketing-Mitarbeiter für 189 Euro."</blockquote>
+        <figcaption class="mt-6 pt-5 border-t border-ink-100"><p class="font-bold text-ink-900">SHK-Betrieb, Märkischer Kreis</p><p class="text-sm text-ink-500">Mieter seit 2025 · Basis</p></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section id="faq" class="py-20 sm:py-28">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Häufige Fragen</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Alles Wichtige zur Miete</h2>
+    </div>
+    <div class="mt-12 space-y-3 reveal">
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Was passiert, wenn ich kündige?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Die Website geht zurück in unseren Bestand und kann erneut vermietet werden. Deine Daten werden gelöscht. Du gehst kein Risiko ein – das ist der Vorteil der Miete: kein Großprojekt, keine Sunk Costs.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Gehört die Website mir?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Nein – du mietest sie, wie eine Werkstatt oder ein Büro. Dafür kümmern wir uns um alles: Technik, Inhalte, Sicherheit. Dein Firmenname, deine Kontaktdaten und deine Inhalte bleiben natürlich deine.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Meine Stadt ist schon vergeben – was nun?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Dann bauen wir auf Anfrage eine neue Seite für eine benachbarte Stadt oder einen Stadtteil (z. B. „dachdecker villigst" statt „dachdecker schwerte"). Setz dich außerdem auf die Warteliste – wird die Seite frei, melden wir uns zuerst bei dir.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Ich habe schon eine Website – lohnt sich das trotzdem?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Viele Mieter nutzen die Miet-Website als zweite, lokal optimierte Anfragen-Maschine neben ihrer Firmenseite. Du kannst sie auch als Ersatz nutzen und deine alte Domain darauf weiterleiten – wir helfen bei der Umstellung.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Wie schnell bin ich wirklich online?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Sofort. Du wählst deine Stadt, gibst im geführten Assistenten deine Firmendaten ein (Name, Adresse, Telefon, Leistungen, ggf. Logo) und klickst auf „Veröffentlichen". Ab diesem Moment ist die Seite unter deinem Namen online – ohne Wartezeit, ohne Rückruf, ohne Termin.</p></div>
+      </div>
+      <div class="faq-item bg-ink-50 border border-ink-100 rounded-xl overflow-hidden">
+        <button class="faq-q w-full flex items-center justify-between gap-4 text-left px-6 py-5 font-bold text-ink-900">
+          Kann ich Inhalte selbst ändern?
+          <svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 leading-relaxed">Ja – alles läuft Self-Service über dein Mieter-Dashboard: Texte, Leistungen, Öffnungszeiten, Fotos und Bewertungen änderst du selbst, ohne Programmierkenntnisse. Unser Support ist nur für echte Probleme und deine Verbesserungsvorschläge da (z. B. wenn dein Gewerk oder deine Stadt noch fehlt).</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ABSCHLUSS-CTA ═══════════ -->
+<section class="bg-brand-600 relative overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center text-white">
+    <h2 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">Deine Stadt. Dein Gewerk.<br>Deine Website – ab morgen.</h2>
+    <p class="mt-5 text-lg text-brand-100 max-w-2xl mx-auto">Jede Stadt ist nur einmal verfügbar. Sichere dir deine Kombination jetzt im Self-Check-in – in 5 Minuten bist du online.</p>
+    <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+      <a href="#gewerke" class="inline-flex justify-center items-center gap-2 bg-white text-brand-700 font-black px-8 py-4 rounded-xl text-lg hover:bg-brand-50 transition shadow-xl">Verfügbarkeit prüfen</a>
+      <a href="index.html" class="inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold px-8 py-4 rounded-xl text-lg transition">Erst Beispiel ansehen</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="bg-ink-900 text-ink-400">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid sm:grid-cols-3 gap-8 text-sm">
+    <div>
+      <div class="flex items-center gap-3">
+        <span class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center text-white font-black">M</span>
+        <span class="font-extrabold text-white">MietWebsites <span class="text-brand-400 text-xs">(Demo)</span></span>
+      </div>
+      <p class="mt-4 leading-relaxed">Fertige Handwerker-Websites zur Miete. Gewerk + Stadt wählen, selbst individualisieren, sofort online – Anfragen empfangen.</p>
+    </div>
+    <div>
+      <p class="font-bold text-white text-xs uppercase tracking-widest">Portal</p>
+      <ul class="mt-4 space-y-2">
+        <li><a href="/dachdecker/" class="hover:text-white transition">Gewerk: Dachdecker</a></li>
+        <li><a href="index.html" class="hover:text-white transition">Musterseite: Dachdecker Schwerte</a></li>
+        <li><a href="elektriker.html" class="hover:text-white transition">Musterseite: Elektriker Dortmund</a></li>
+        <li><a href="ratgeber.html" class="hover:text-white transition">Ratgeber-Blog (Beispiel)</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-bold text-white text-xs uppercase tracking-widest">Rechtliches</p>
+      <ul class="mt-4 space-y-2">
+        <li><a href="impressum.html" class="hover:text-white transition">Impressum (Vorlage)</a></li>
+        <li><a href="datenschutz.html" class="hover:text-white transition">Datenschutz (Vorlage)</a></li>
+        <li><a href="#" onclick="return false" class="hover:text-white transition">Mietbedingungen (Platzhalter)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-ink-800 py-6 text-center text-xs">
+    <p>© <span id="jahr"></span> MietWebsites – Demo-Portal. Alle Inhalte, Preise und Verfügbarkeiten sind fiktiv.</p>
+  </div>
+</footer>
+
+<div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-ink-900 text-white text-sm font-semibold px-6 py-4 rounded-xl shadow-2xl transition-all duration-300 z-50">Demo: Hier würde der Verfügbarkeits-Check bzw. das Buchungsformular starten.</div>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+let tTimer;
+function showToastDemo(){
+  const t = document.getElementById('toastDemo');
+  t.classList.remove('translate-y-24','opacity-0');
+  clearTimeout(tTimer);
+  tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0'), 3500);
+}
+
+document.getElementById('jahr').textContent = new Date().getFullYear();
+
+// ═══════════ DYNAMISCHE GEWERKE-DATEN VON SUPABASE ═══════════
+(async function loadTradeStats() {
+  // Supabase Konfiguration (Anon Key ist public-safe für Lesen mit RLS)
+  const SUPABASE_URL = 'https://tlxlkmewbhnpzvrphcq.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRseGxrbWV3YmhucHp2cmJwaGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMzMwNjEsImV4cCI6MjA5OTYwOTA2MX0.hHRHXdtiVzlxwzLqXDcq1dZQYJdH8g8DqOKBvF1a4a0';
+  
+  try {
+    const { createClient } = supabase;
+    const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Lade Landing Pages mit Trade-Info
+    const { data: pages, error } = await client
+      .from('landing_pages')
+      .select('trade_id, status');
+    
+    if (error || !pages) throw error;
+    
+    // Berechne Statistiken pro Gewerk
+    const stats = {};
+    pages.forEach(p => {
+      if (!stats[p.trade_id]) {
+        stats[p.trade_id] = { total: 0, available: 0, rented: 0 };
+      }
+      stats[p.trade_id].total++;
+      if (p.status === 'available') stats[p.trade_id].available++;
+      if (p.status === 'rented') stats[p.trade_id].rented++;
+    });
+    
+    // Aktualisiere DOM
+    document.querySelectorAll('[data-trade]').forEach(el => {
+      const tradeSlug = el.getAttribute('data-trade');
+      const stat = stats[tradeSlug];
+      if (stat) {
+        const free = stat.available;
+        const total = stat.total;
+        const rented = stat.rented;
+        el.textContent = `${total} Städte im Portfolio · ${free} noch frei · ${rented} vermietet`;
+        
+        // Farbe je nach Verfügbarkeit
+        if (free === 0) {
+          el.innerHTML += ' <span class="text-red-500 font-bold">(Ausverkauft)</span>';
+        } else if (free < 3) {
+          el.innerHTML += ' <span class="text-orange-500 font-bold">(Nur noch wenige)</span>';
+        }
+      } else {
+        el.textContent = 'Bald verfügbar · In Vorbereitung';
+      }
+    });
+    
+  } catch (err) {
+    console.error('Supabase load failed:', err);
+    // Fallback: Echte Zahlen basierend auf den existierenden HTML-Seiten
+    // 20 Städte pro Gewerk, noch KEINE vermietet (Projekt im Aufbau)
+    const fallbackStats = {
+      dachdecker:    { total: 20, free: 20, rented: 0 },
+      elektriker:    { total: 20, free: 20, rented: 0 },
+      klempner:      { total: 20, free: 20, rented: 0 },
+      zimmerer:      { total: 20, free: 20, rented: 0 },
+      maler:         { total: 20, free: 20, rented: 0 },
+    };
+    
+    document.querySelectorAll('[data-trade]').forEach(el => {
+      const tradeSlug = el.getAttribute('data-trade');
+      const stat = fallbackStats[tradeSlug];
+      if (stat) {
+        el.textContent = `${stat.total} Städte im Portfolio · ${stat.free} noch frei · ${stat.rented} vermietet`;
+      } else {
+        el.textContent = 'Bald verfügbar · In Vorbereitung';
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
