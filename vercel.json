@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "^/$",
+      "dest": "/start.html"
+    },
+    {
+      "src": "^/dachdecker/$",
+      "dest": "/sales-dachdecker.html"
+    },
+    {
+      "src": "^/dachdecker/([^/]+)/$",
+      "dest": "/stadt-dach-$1.html"
+    },
+    {
+      "src": "^/elektriker/$",
+      "dest": "/sales-elektriker.html"
+    },
+    {
+      "src": "^/elektriker/([^/]+)/$",
+      "dest": "/stadt-elek-$1.html"
+    },
+    {
+      "src": "^/shk/$",
+      "dest": "/sales-shk.html"
+    },
+    {
+      "src": "^/shk/([^/]+)/$",
+      "dest": "/stadt-shk-$1.html"
+    },
+    {
+      "src": "^/maler/$",
+      "dest": "/sales-maler.html"
+    },
+    {
+      "src": "^/maler/([^/]+)/$",
+      "dest": "/stadt-maler-$1.html"
+    },
+    {
+      "src": "^/zimmerer/$",
+      "dest": "/sales-zimmerer.html"
+    },
+    {
+      "src": "^/zimmerer/([^/]+)/$",
+      "dest": "/stadt-zimm-$1.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
