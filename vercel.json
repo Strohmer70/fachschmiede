@@ -14,12 +14,20 @@
       "dest": "/stadt-dach-$1.html"
     },
     {
+      "src": "^/dachdecker/([^/]+)/blog/([^/]+)/$",
+      "dest": "/blog/dachdecker/$1/$2.html"
+    },
+    {
       "src": "^/elektriker/$",
       "dest": "/sales-elektriker.html"
     },
     {
       "src": "^/elektriker/([^/]+)/$",
       "dest": "/stadt-elek-$1.html"
+    },
+    {
+      "src": "^/elektriker/([^/]+)/blog/([^/]+)/$",
+      "dest": "/blog/elektriker/$1/$2.html"
     },
     {
       "src": "^/shk/$",
@@ -30,6 +38,10 @@
       "dest": "/stadt-shk-$1.html"
     },
     {
+      "src": "^/shk/([^/]+)/blog/([^/]+)/$",
+      "dest": "/blog/shk/$1/$2.html"
+    },
+    {
       "src": "^/maler/$",
       "dest": "/sales-maler.html"
     },
@@ -38,12 +50,56 @@
       "dest": "/stadt-maler-$1.html"
     },
     {
+      "src": "^/maler/([^/]+)/blog/([^/]+)/$",
+      "dest": "/blog/maler/$1/$2.html"
+    },
+    {
       "src": "^/zimmerer/$",
       "dest": "/sales-zimmerer.html"
     },
     {
       "src": "^/zimmerer/([^/]+)/$",
       "dest": "/stadt-zimm-$1.html"
+    },
+    {
+      "src": "^/zimmerer/([^/]+)/blog/([^/]+)/$",
+      "dest": "/blog/zimmerer/$1/$2.html"
+    },
+    {
+      "src": "^/impressum/$",
+      "dest": "/impressum.html"
+    },
+    {
+      "src": "^/datenschutz/$",
+      "dest": "/datenschutz.html"
+    },
+    {
+      "src": "^/admin/$",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "^/mieter/$",
+      "dest": "/mieter.html"
+    },
+    {
+      "src": "^/ratgeber/$",
+      "dest": "/ratgeber.html"
+    },
+    {
+      "src": "^/ratgeber-elektriker/$",
+      "dest": "/ratgeber-elektriker.html"
+    },
+    {
+      "src": "^/ratgeber-shk/$",
+      "dest": "/ratgeber-shk.html"
+    },
+    {
+      "src": "^/ratgeber-maler/$",
+      "dest": "/ratgeber-maler.html"
+    },
+    {
+      "src": "^/ratgeber-zimmerer/$",
+      "dest": "/ratgeber-zimmerer.html"
     },
     {
       "src": "/(.*)",
