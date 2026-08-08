@@ -133,25 +133,78 @@ function getArticleCountByPlan(plan) {
   }
 }
 
-function generateUnsplashUrl(keyword, width = 1200) {
-  // Use specific Unsplash photo IDs for reliability
-  const photoIds = {
-    'roof insulation': 'photo-1600585154340-be6161a56a0c',
-    'storm damage roof': 'photo-1600607687939-ce8a6c25118c',
-    'roof renovation': 'photo-1600585154526-990dced4db0d',
-    'electrical inspection': 'photo-1621905251189-08b45d6a269e',
-    'LED lighting': 'photo-1565814329452-e1efa11c5b89',
-    'plumbing emergency': 'photo-1585704032915-c3400ca199e7',
-    'water damage': 'photo-1585771724684-38269d6639fd',
-    'facade painting': 'photo-1562259949-e8e7689d7828',
-    'interior paint': 'photo-1600585154526-990dced4db0d',
-    'wood deck': 'photo-1558618666-fcd25c85f82e',
-    'carport': 'photo-1558618666-fcd25c85f82e',
-    'chimney repair': 'photo-1600585154340-be6161a56a0c',
+function generateUnsplashUrl(topic, width = 1200) {
+  // Themenspezifische deutsche Unsplash-Suchbegriffe
+  const topicImages = {
+    'heizungs-check-winter': 'heizung,wartung,techniker',
+    'heizkoerper-entlueften': 'heizkoerper,heizung,warm',
+    'rohrbruch-sofortmassnahmen': 'wasserrohr,leckage,wasser',
+    'schimmel-wohnung': 'schimmel,feuchtigkeit,wand',
+    'wasserdruck-optimieren': 'wasserhahn,druck,armatur',
+    'abfluss-verstopft': 'abfluss,verstopfung,rohr',
+    'warmwasserspeicher-tauschen': 'boiler,warmwasser,heizung',
+    'fussbodenheizung-wartung': 'fussbodenheizung,boden,warm',
+    'gasleitung-pruefen': 'gas,leitung,pruefung',
+    'wasserenthaertung-anlagen': 'wasser,filter,anlage',
+    'trinkwasserqualitaet': 'wasserhahn,trinkwasser,glas',
+    'sanitaer-notdienst': 'notdienst,werkzeug,plumber',
+    'badrenovierung-planen': 'bad,badezimmer,renovierung',
+    'armaturen-wechseln': 'armatur,wasserhahn,messing',
+    'wasserschaden-sanierung': 'wasserschaden,trocknung,bauseite',
+    'dachdaemmung-kosten': 'dach,daemmung,dachdecker',
+    'sturmschaden-reparatur': 'dach,sturm,schaden',
+    'dachsanierung-planen': 'dachsanierung,dach,bau',
+    'dachziegel-arten': 'dachziegel,dach,ton',
+    'dachfenster-einbauen': 'dachfenster,dachgaube,licht',
+    'flachdach-abdichten': 'flachdach,abdichtung,membran',
+    'dachrinne-reinigen': 'dachrinne,laub,herbst',
+    'schornstein-sanieren': 'schornstein,kamin,mauerwerk',
+    'dachboden-ausbauen': 'dachboden,ausbau,holz',
+    'dach-haltbarkeit': 'dach,altbau,ziegel',
+    'gruendach-anlegen': 'gruendach,pflanzen,oekologisch',
+    'dachholz-schutz': 'holzschutz,dachholz,lasur',
+    'e-check-2026': 'elektriker,pruefung,sicherheit',
+    'led-beleuchtung': 'led,lampe,beleuchtung',
+    'sicherungskasten-erneuern': 'sicherungskasten,elektro,verteiler',
+    'elektroheizung-effizienz': 'heizung,elektro,warm',
+    'photovoltaik-anschluss': 'solar,pv,dach',
+    'stromausfall-ursachen': 'stromausfall,dunkel,kerze',
+    'erdung-pruefen': 'erdung,elektro,messung',
+    'kuechenelektro-planen': 'kueche,elektro,steckdose',
+    'badezimmer-elektro': 'bad,elektro,licht',
+    'smart-meter-vorteile': 'smartmeter,stromzaehler,digital',
+    'blitzschutz-nachruesten': 'blitz,blitzableiter,dach',
+    'stromkosten-senken': 'strom,sparen,energie',
+    'smart-home-nachruesten': 'smarthome,haus,technik',
+    'wallbox-zuhause': 'wallbox,eauto,laden',
+    'tapezierarbeiten-kosten': 'tapete, Tapezieren, wand',
+    'spachteln-und-streichen': 'spachtel,streichen,farbe',
+    'fassadensanierung-2026': 'fassade,sanierung,anstrich',
+    'decken-verkleiden': 'decke,verkleidung,holz',
+    'lasuren-holzschutz': 'holz,lasur,schutz',
+    'schoener-wohnen-farben': 'farben,wand,interior',
+    'anstrich-daemmschicht': 'daemmung,fassade,energie',
+    'malerkosten-pro-qm': 'maler,farbe,rolle',
+    'tapeten-trends': 'tapete,muster,wand',
+    'besenstrich-technik': 'streichen,technik,farbe',
+    'keller-anstreichen': 'keller,anstrich,feuchtigkeit',
+    'lackierarbeiten-moebel': 'moebel,lack,tisch',
+    'holzschutz-terrassen': 'terrasse,holz,oel',
+    'carport-planung': 'carport,auto,holz',
+    'gauben-ausbauen': 'gaube,dach,ausbau',
+    'holzrahmenbau-haus': 'holzhaus,rahmenbau,bau',
+    'carport-dach-arten': 'carport,dach,auto',
+    'holzterrasse-verlegen': 'terrasse,holz,bauen',
+    'zimmerei-traditionell': 'zimmerei,holz,balken',
+    'holzschutz-mittel': 'holzschutz,lasur,holz',
+    'dachstuhl-reparatur': 'dachstuhl,holz,bau',
+    'wintergarten-holz': 'wintergarten,glas,holz',
+    'holzcarport-vs-metall': 'carport,holz,metall',
+    'zimmermann-kosten': 'zimmermann,holz,bauen'
   };
   
-  const photoId = photoIds[keyword] || 'photo-1600585154340-be6161a56a0c';
-  return `https://images.unsplash.com/${photoId}?w=${width}&q=80`;
+  const searchQuery = topicImages[topic] || 'handwerker,bau,fachmann';
+  return `https://source.unsplash.com/${width}x600/?${searchQuery}`;
 }
 
 function generateSchemaOrgArticle(title, description, image, city, tradeName) {
@@ -219,7 +272,7 @@ function generateArticleHTML(tradeSlug, citySlug, cityName, tradeName, topic, mo
   const title = `${topicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
   const h1 = `${topicTitle} in ${cityName}: Was Sie wissen müssen`;
   const meta = `${topicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps ✓ Förderung. Erfahren Sie alles Wichtige in unserem ${new Date().getFullYear()}-Ratgeber.`;
-  const image = generateUnsplashUrl(keyword);
+  const image = generateUnsplashUrl(slug);
   const imgAlt = `${topicTitle} in ${cityName} - Kosten und Förderung ${new Date().getFullYear()}`;
   const imgCaption = `${topicTitle} in ${cityName} und dem Ruhrgebiet`;
   
