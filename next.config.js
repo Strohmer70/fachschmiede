@@ -39,6 +39,48 @@ function generateCityRewrites() {
   return rewrites
 }
 
+// Generiere Rewrites für Blog-Artikel
+function generateBlogRewrites() {
+  const fs = require('fs')
+  const path = require('path')
+  
+  const blogDir = path.join(__dirname, 'public', 'blog')
+  const rewrites = []
+  
+  if (!fs.existsSync(blogDir)) {
+    console.log('⚠️ No blog directory found')
+    return rewrites
+  }
+  
+  const trades = fs.readdirSync(blogDir)
+  
+  for (const tradeSlug of trades) {
+    const tradeDir = path.join(blogDir, tradeSlug)
+    if (!fs.statSync(tradeDir).isDirectory()) continue
+    
+    const cities = fs.readdirSync(tradeDir)
+    
+    for (const citySlug of cities) {
+      const cityDir = path.join(tradeDir, citySlug)
+      if (!fs.statSync(cityDir).isDirectory()) continue
+      
+      const articles = fs.readdirSync(cityDir)
+        .filter(f => f.endsWith('.html'))
+        .map(f => f.replace('.html', ''))
+      
+      for (const slug of articles) {
+        rewrites.push({
+          source: `/${tradeSlug}/${citySlug}/blog/${slug}/`,
+          destination: `/blog/${tradeSlug}/${citySlug}/${slug}.html`,
+        })
+      }
+    }
+  }
+  
+  console.log(`✅ Generated ${rewrites.length} blog rewrites`)
+  return rewrites
+}
+
 const nextConfig = {
   images: {
     unoptimized: true,
@@ -47,9 +89,13 @@ const nextConfig = {
   
   async rewrites() {
     const cityRewrites = generateCityRewrites()
+    const blogRewrites = generateBlogRewrites()
     
     return {
       beforeFiles: [
+        // Blog-Artikel (statische HTML) - HÖCHSTE PRIORITÄT
+        ...blogRewrites,
+        
         // Portal-Startseite
         { source: '/', destination: '/start.html' },
         
@@ -75,35 +121,20 @@ const nextConfig = {
         
         // Artikel (Blogposts)
         { source: '/artikel-5-anzeichen-dachsanierung/', destination: '/artikel-5-anzeichen-dachsanierung.html' },
-        { source: '/artikel-5-anzeichen-dachsanierung.html', destination: '/artikel-5-anzeichen-dachsanierung.html' },
         { source: '/artikel-carport-bauen/', destination: '/artikel-carport-bauen.html' },
-        { source: '/artikel-carport-bauen.html', destination: '/artikel-carport-bauen.html' },
         { source: '/artikel-dachdaemmung-foerderung/', destination: '/artikel-dachdaemmung-foerderung.html' },
-        { source: '/artikel-dachdaemmung-foerderung.html', destination: '/artikel-dachdaemmung-foerderung.html' },
         { source: '/artikel-dachstuhl-sanieren/', destination: '/artikel-dachstuhl-sanieren.html' },
-        { source: '/artikel-dachstuhl-sanieren.html', destination: '/artikel-dachstuhl-sanieren.html' },
         { source: '/artikel-e-check-sicherheitspruefung/', destination: '/artikel-e-check-sicherheitspruefung.html' },
-        { source: '/artikel-e-check-sicherheitspruefung.html', destination: '/artikel-e-check-sicherheitspruefung.html' },
         { source: '/artikel-farben-raumwirkung/', destination: '/artikel-farben-raumwirkung.html' },
-        { source: '/artikel-farben-raumwirkung.html', destination: '/artikel-farben-raumwirkung.html' },
         { source: '/artikel-fassade-streichen-kosten/', destination: '/artikel-fassade-streichen-kosten.html' },
-        { source: '/artikel-fassade-streichen-kosten.html', destination: '/artikel-fassade-streichen-kosten.html' },
         { source: '/artikel-heizungs-check-winter/', destination: '/artikel-heizungs-check-winter.html' },
-        { source: '/artikel-heizungs-check-winter.html', destination: '/artikel-heizungs-check-winter.html' },
         { source: '/artikel-heizungstausch-foerderung/', destination: '/artikel-heizungstausch-foerderung.html' },
-        { source: '/artikel-heizungstausch-foerderung.html', destination: '/artikel-heizungstausch-foerderung.html' },
         { source: '/artikel-holzterrasse-pflegen/', destination: '/artikel-holzterrasse-pflegen.html' },
-        { source: '/artikel-holzterrasse-pflegen.html', destination: '/artikel-holzterrasse-pflegen.html' },
         { source: '/artikel-rohrbruch-sofortmassnahmen/', destination: '/artikel-rohrbruch-sofortmassnahmen.html' },
-        { source: '/artikel-rohrbruch-sofortmassnahmen.html', destination: '/artikel-rohrbruch-sofortmassnahmen.html' },
         { source: '/artikel-schimmel-wohnung/', destination: '/artikel-schimmel-wohnung.html' },
-        { source: '/artikel-schimmel-wohnung.html', destination: '/artikel-schimmel-wohnung.html' },
         { source: '/artikel-smart-home-nachruesten/', destination: '/artikel-smart-home-nachruesten.html' },
-        { source: '/artikel-smart-home-nachruesten.html', destination: '/artikel-smart-home-nachruesten.html' },
         { source: '/artikel-sturmschaden-sofortmassnahmen/', destination: '/artikel-sturmschaden-sofortmassnahmen.html' },
-        { source: '/artikel-sturmschaden-sofortmassnahmen.html', destination: '/artikel-sturmschaden-sofortmassnahmen.html' },
         { source: '/artikel-wallbox-zuhause/', destination: '/artikel-wallbox-zuhause.html' },
-        { source: '/artikel-wallbox-zuhause.html', destination: '/artikel-wallbox-zuhause.html' },
         
         // Musterseiten (Fallback für alte Links)
         { source: '/muster-dachdecker/', destination: '/index.html' },
