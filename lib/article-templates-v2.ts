@@ -13,8 +13,8 @@ export interface ArticleTemplate {
 }
 
 export interface ArticleSection {
-  h2: (city: string, tradeName: string) => string;
-  content: (city: string, tradeName: string, tradeSlug: string) => string;
+  h2: (city: string, tradeName: string, tradeSlug?: string) => string;
+  content: (city: string, tradeName: string, tradeSlug?: string) => string;
   hasList?: boolean;
   listItems?: (city: string, tradeName: string) => string[];
 }
