@@ -39,48 +39,6 @@ function generateCityRewrites() {
   return rewrites
 }
 
-// Generiere Rewrites für Blog-Artikel
-function generateBlogRewrites() {
-  const fs = require('fs')
-  const path = require('path')
-  
-  const blogDir = path.join(__dirname, 'public', 'blog')
-  const rewrites = []
-  
-  if (!fs.existsSync(blogDir)) {
-    console.log('⚠️ No blog directory found')
-    return rewrites
-  }
-  
-  const trades = fs.readdirSync(blogDir)
-  
-  for (const tradeSlug of trades) {
-    const tradeDir = path.join(blogDir, tradeSlug)
-    if (!fs.statSync(tradeDir).isDirectory()) continue
-    
-    const cities = fs.readdirSync(tradeDir)
-    
-    for (const citySlug of cities) {
-      const cityDir = path.join(tradeDir, citySlug)
-      if (!fs.statSync(cityDir).isDirectory()) continue
-      
-      const articles = fs.readdirSync(cityDir)
-        .filter(f => f.endsWith('.html'))
-        .map(f => f.replace('.html', ''))
-      
-      for (const slug of articles) {
-        rewrites.push({
-          source: `/${tradeSlug}/${citySlug}/blog/${slug}/`,
-          destination: `/blog/${tradeSlug}/${citySlug}/${slug}.html`,
-        })
-      }
-    }
-  }
-  
-  console.log(`✅ Generated ${rewrites.length} blog rewrites`)
-  return rewrites
-}
-
 const nextConfig = {
   images: {
     unoptimized: true,
@@ -116,7 +74,6 @@ const nextConfig = {
         { source: '/ratgeber-maler/', destination: '/ratgeber-maler.html' },
         
         // Artikel (Blogposts)
-        // Artikel (alle Blogposts) — mit und ohne .html
         { source: '/artikel-5-anzeichen-dachsanierung/', destination: '/artikel-5-anzeichen-dachsanierung.html' },
         { source: '/artikel-5-anzeichen-dachsanierung.html', destination: '/artikel-5-anzeichen-dachsanierung.html' },
         { source: '/artikel-carport-bauen/', destination: '/artikel-carport-bauen.html' },
@@ -154,9 +111,6 @@ const nextConfig = {
         { source: '/muster-shk/', destination: '/shk.html' },
         { source: '/muster-zimmerer/', destination: '/zimmerer.html' },
         { source: '/muster-maler/', destination: '/maler.html' },
-        
-        // Blog-Artikel (dynamisch generiert)
-        ...generateBlogRewrites(),
         
         // City pages (dynamisch generiert)
         ...cityRewrites,
