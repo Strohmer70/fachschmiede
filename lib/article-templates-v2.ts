@@ -623,6 +623,7 @@ export const SMARTHOME_TEMPLATE: ArticleTemplate = {
     { q: 'Kann ich verschiedene Hersteller kombinieren?', a: 'Ja, über Plattformen wie Home Assistant, ioBroker oder openHAB lassen sich Geräte verschiedener Hersteller verbinden. Das erfordert jedoch technisches Know-how oder einen erfahrenen Elektroinstallateur.' }
   ]
 };
+};
   dachdecker: [DACHDAEMMUNG_TEMPLATE, STURMSCHADEN_TEMPLATE, ANZEICHEN_TEMPLATE],
   elektriker: [ECHECK_TEMPLATE],
   shk: [ROHRBRUCH_TEMPLATE],
