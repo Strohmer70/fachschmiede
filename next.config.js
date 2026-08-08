@@ -6,7 +6,7 @@ const TRADE_MAP = {
   elek: 'elektriker',
   zimm: 'zimmerer',
   maler: 'maler',
-  shk: 'shk',
+  shk: 'klempner',
 }
 
 // Generiere Rewrites für alle Stadt-HTML-Dateien

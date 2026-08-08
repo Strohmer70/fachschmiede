@@ -61,7 +61,7 @@ const TRADES = {
       { slug: 'stromkosten-senken', title: 'Stromkosten senken', keyword: 'reduce electricity costs' },
     ]
   },
-  shk: {
+  klempner: {
     name: 'Klempner',
     topics: [
       { slug: 'wasserdruck-optimieren', title: 'Wasserdruck optimieren', keyword: 'water pressure' },
