@@ -1,35 +1,51 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: Request) {
   try {
-    const formData = await request.formData()
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
+    const { email, password } = await request.json()
 
     if (!email || !password) {
-      return NextResponse.redirect(new URL('/dashboard?error=missing', request.url))
+      return NextResponse.json({ error: 'E-Mail und Passwort erforderlich' }, { status: 400 })
     }
 
-    // Simple lookup (in production: proper bcrypt comparison)
-    const { data: tenant } = await supabase
+    // Find tenant by email
+    const { data: tenant, error } = await supabaseAdmin
       .from('tenants')
-      .select('id')
+      .select('*, landing_page:landing_pages(*), page_customizations(*)')
       .eq('email', email)
       .single()
 
-    if (!tenant) {
-      return NextResponse.redirect(new URL('/dashboard?error=invalid', request.url))
+    if (error || !tenant) {
+      return NextResponse.json({ error: 'Ungültige Zugangsdaten' }, { status: 401 })
     }
 
-    // For MVP: simple password check (temporary — should use proper auth)
-    // In production: bcrypt.compare(password, tenant.password_hash)
-    // For now, we just check if they exist and redirect
-    
-    return NextResponse.redirect(new URL(`/dashboard?tenant=${tenant.id}`, request.url))
+    // Simple password check (plain text for MVP — hash in production!)
+    if (tenant.password !== password) {
+      return NextResponse.json({ error: 'Ungültige Zugangsdaten' }, { status: 401 })
+    }
 
-  } catch (error) {
-    console.error('Login error:', error)
-    return NextResponse.redirect(new URL('/dashboard?error=server', request.url))
+    // Get leads for this tenant's landing page
+    const { data: leads } = await supabaseAdmin
+      .from('leads')
+      .select('*')
+      .eq('landing_page_id', tenant.landing_page_id)
+      .order('created_at', { ascending: false })
+
+    return NextResponse.json({
+      tenant: {
+        id: tenant.id,
+        company_name: tenant.company_name,
+        email: tenant.email,
+        phone: tenant.phone,
+      },
+      landing_page: tenant.landing_page,
+      customization: tenant.page_customizations?.[0] || null,
+      leads: leads || [],
+    })
+
+  } catch (error: any) {
+    console.error('Tenant login error:', error)
+    return NextResponse.json({ error: 'Login fehlgeschlagen' }, { status: 500 })
   }
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(request: Request) {
   try {
@@ -28,8 +28,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
-    // Upsert customization
-    const { error } = await supabase
+    // Upsert customization using admin client
+    const { error } = await supabaseAdmin
       .from('page_customizations')
       .upsert({
         landing_page_id: pageId,

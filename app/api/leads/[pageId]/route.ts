@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(
   request: Request,
@@ -18,18 +18,26 @@ export async function POST(
       return NextResponse.json({ error: 'Name and email required' }, { status: 400 })
     }
 
-    // Get landing page and tenant
-    const { data: page } = await supabase
-      .from('landing_pages')
-      .select('rented_by')
-      .eq('id', pageId)
-      .single()
+    // Validate pageId is a real UUID (not 'fallback')
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(pageId)
+    let tenantId = null
 
-    const { error } = await supabase
+    if (isUUID) {
+      // Get landing page and tenant
+      const { data: page } = await supabase
+        .from('landing_pages')
+        .select('rented_by')
+        .eq('id', pageId)
+        .single()
+      tenantId = page?.rented_by
+    }
+
+    // Use admin client to insert lead (bypasses RLS)
+    const { error } = await supabaseAdmin
       .from('leads')
       .insert({
-        landing_page_id: pageId,
-        tenant_id: page?.rented_by,
+        landing_page_id: isUUID ? pageId : null,
+        tenant_id: tenantId,
         name,
         email,
         phone,

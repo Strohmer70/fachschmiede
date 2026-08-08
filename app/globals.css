@@ -2,28 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gray-50 text-gray-900;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
 }
 
-/* Landing page animations */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ═══════════ REVEAL ANIMATION ═══════════ */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity .7s ease, transform .7s ease;
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .reveal.visible {
   opacity: 1;
   transform: none;
 }
 
-/* Hero gradient */
-.hero-gradient {
+/* ═══════════ HERO GRADIENTS ═══════════ */
+/* Indigo gradient for Salespages */
+.hero-gradient-indigo {
+  background: linear-gradient(115deg, rgba(15,23,42,.97) 0%, rgba(30,27,75,.92) 55%, rgba(49,46,129,.85) 100%);
+}
+
+/* Dark gradient for City pages */
+.hero-gradient-dark {
   background: linear-gradient(105deg, rgba(15,23,42,.92) 0%, rgba(15,23,42,.75) 45%, rgba(15,23,42,.35) 100%);
 }
 
-/* Selection color */
+/* ═══════════ FAQ ACCORDION ═══════════ */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.faq-item.open .faq-answer {
+  max-height: 500px;
+}
+.faq-item.open .chev {
+  transform: rotate(180deg);
+}
+.chev {
+  transition: transform 0.3s ease;
+}
+
+/* ═══════════ SELECTION ═══════════ */
 ::selection {
-  background: #f97316;
+  background: #4f46e5;
   color: #fff;
+}
+
+/* ═══════════ CUSTOM SCROLLBAR ═══════════ */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

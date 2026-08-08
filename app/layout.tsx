@@ -1,9 +1,16 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
 
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
 export const metadata: Metadata = {
-  title: 'fachschmiede.de — Wir schmieden deine lokale Präsenz',
-  description: 'Professionelle lokale Webseiten für Handwerker und Dienstleister. Mieten Sie eine bereits rankende Seite in Ihrer Stadt.',
+  title: 'MietWebsites für Handwerker | Deine fertige Handwerker-Website zur Miete',
+  description: 'Wir bauen professionelle Websites für Handwerker – nach Gewerk und Stadt. Du mietest selbst online, individualisierst in 5 Minuten – und deine Seite ist sofort online.',
 }
 
 export default function RootLayout({
@@ -12,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de">
-      <body>{children}</body>
+    <html lang="de" className={`${inter.variable} scroll-smooth`}>
+      <body className="bg-white text-ink-800 antialiased">{children}</body>
     </html>
   )
 }

@@ -24,20 +24,26 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-export default async function RentPage({ params }: PageProps) {
-  const cleanSlug = params.slug?.replace(/\/$/, '') || params.slug
-
-  let page = null
+async function loadRentPage(slug: string) {
   try {
-    const { data } = await supabase
+    const { data: page } = await supabase
       .from('landing_pages')
       .select(`*, trade:trades(*), city:cities(*)`)
-      .eq('slug', cleanSlug)
+      .eq('slug', slug)
       .single()
-    page = data
-  } catch {}
 
-  if (!page) page = FALLBACK_PAGES[cleanSlug]
+    if (page) return page
+  } catch (err) {
+    console.error('Rent page load error:', err)
+  }
+
+  return FALLBACK_PAGES[slug] || null
+}
+
+export default async function RentPage({ params }: PageProps) {
+  const cleanSlug = params.slug?.replace(/\/$/, '') || params.slug
+  const page = await loadRentPage(cleanSlug)
+  
   if (!page) notFound()
 
   const trade = page.trade || FALLBACK_TRADES[page.trade_id]
