@@ -343,11 +343,248 @@ function showPageDetail(id) {
   showToast(`Seiten-Details für ID: ${id} — Funktion folgt`);
 }
 
+// ═══════════ LEADS FUNKTIONEN ═══════════
+let allLeads = [];
+let currentLeadFilter = { status: '', site: '' };
+
+async function loadLeads() {
+  if (!adminToken) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/admin/leads?limit=100`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    
+    if (res.status === 401) {
+      showLoginGate();
+      return;
+    }
+    
+    const data = await res.json();
+    allLeads = data.leads || [];
+    
+    // Update KPIs
+    setText('leadStatNew', data.stats.new || 0);
+    setText('leadStat30d', data.stats.recent30d || 0);
+    setText('leadStatTotal', data.stats.total || 0);
+    
+    // Render table
+    renderLeadsTable(allLeads);
+    
+    // Populate site filter
+    populateLeadSiteFilter(allLeads);
+    
+  } catch (err) {
+    console.error('Leads load error:', err);
+    showToast('❌ Fehler beim Laden der Leads');
+  }
+}
+
+function renderLeadsTable(leads) {
+  const tbody = document.getElementById('leadTbody');
+  const emptyMsg = document.getElementById('leadEmpty');
+  
+  if (!tbody) return;
+  
+  if (leads.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="px-6 py-12 text-center">
+          <div class="text-ink-400">
+            <p class="text-4xl mb-3">📭</p>
+            <p class="font-bold text-ink-600 text-lg">Noch keine Leads</p>
+            <p class="text-sm mt-1">Sobald Anfragen eingehen, erscheinen sie hier automatisch.</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    if (emptyMsg) emptyMsg.classList.add('hidden');
+    return;
+  }
+  
+  if (emptyMsg) emptyMsg.classList.add('hidden');
+  
+  tbody.innerHTML = leads.map(lead => {
+    const page = lead.landing_page || {};
+    const trade = lead.trade || {};
+    const city = lead.city || {};
+    const timeAgo = timeSince(new Date(lead.created_at));
+    
+    const statusColors = {
+      'new': 'bg-red-100 text-red-700',
+      'sent': 'bg-brand-100 text-brand-700',
+      'answered': 'bg-green-100 text-green-700',
+      'done': 'bg-ink-100 text-ink-500',
+    };
+    const statusLabels = {
+      'new': 'Neu',
+      'sent': 'An Mieter gesendet',
+      'answered': 'Beantwortet',
+      'done': 'Erledigt',
+    };
+    const statusClass = statusColors[lead.status] || 'bg-ink-100 text-ink-500';
+    const statusLabel = statusLabels[lead.status] || lead.status || 'Neu';
+    
+    return `
+      <tr class="hover:bg-ink-50 transition" data-status="${lead.status || 'new'}" data-site="${page.slug || ''}">
+        <td class="px-6 py-4 text-sm text-ink-600 whitespace-nowrap">${timeAgo}</td>
+        <td class="px-6 py-4">
+          <p class="font-bold text-ink-900">${lead.name || 'Anonym'}</p>
+          <p class="text-xs text-ink-500">${lead.email || ''} ${lead.phone ? '· ' + lead.phone : ''}</p>
+        </td>
+        <td class="px-6 py-4 text-sm text-ink-600">${lead.service || 'Anfrage'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">${trade.name || '-'} · ${city.name || '-'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">${lead.source || 'Website'}</td>
+        <td class="px-6 py-4">
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full ${statusClass}">${statusLabel}</span>
+        </td>
+        <td class="px-6 py-4 text-right">
+          <button onclick="showLeadDetail('${lead.id}')" class="text-brand-600 font-semibold hover:underline">Details</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function populateLeadSiteFilter(leads) {
+  const select = document.getElementById('leadSite');
+  if (!select) return;
+  
+  // Get unique sites
+  const sites = [...new Set(leads.map(l => l.landing_page?.slug).filter(Boolean))];
+  
+  // Keep first option, add new ones
+  select.innerHTML = '<option value="">Alle Websites</option>';
+  sites.forEach(slug => {
+    const option = document.createElement('option');
+    option.value = slug;
+    option.textContent = slug;
+    select.appendChild(option);
+  });
+}
+
+function filterLeads() {
+  const statusFilter = document.getElementById('leadStatus')?.value || '';
+  const siteFilter = document.getElementById('leadSite')?.value || '';
+  
+  let filtered = allLeads;
+  
+  if (statusFilter) {
+    // Map German labels to status codes
+    const statusMap = {
+      'Neu': 'new',
+      'An Mieter gesendet': 'sent',
+      'Beantwortet': 'answered',
+    };
+    const code = statusMap[statusFilter] || statusFilter;
+    filtered = filtered.filter(l => (l.status || 'new') === code);
+  }
+  
+  if (siteFilter) {
+    filtered = filtered.filter(l => (l.landing_page?.slug || '') === siteFilter);
+  }
+  
+  renderLeadsTable(filtered);
+}
+
+function showLeadDetail(leadId) {
+  const lead = allLeads.find(l => l.id === leadId);
+  if (!lead) {
+    showToast('Lead nicht gefunden');
+    return;
+  }
+  
+  const page = lead.landing_page || {};
+  const trade = lead.trade || {};
+  const city = lead.city || {};
+  
+  // Create modal content
+  const modalHTML = `
+    <div class="fixed inset-0 z-[80] bg-ink-900/60 backdrop-blur flex items-center justify-center p-4" id="leadDetailModal">
+      <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-black text-ink-900">Lead-Details</h3>
+          <button onclick="document.getElementById('leadDetailModal').remove()" class="text-ink-400 hover:text-ink-600">✕</button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Name</p>
+            <p class="font-bold text-ink-900">${lead.name || 'Anonym'}</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Kontakt</p>
+            <p class="text-sm text-ink-600">${lead.email || '-'}<br>${lead.phone || '-'}</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Anliegen</p>
+            <p class="text-sm text-ink-900">${lead.service || 'Anfrage'}</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Website</p>
+            <p class="text-sm text-ink-600">${trade.name || '-'} · ${city.name || '-'}</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Nachricht</p>
+            <p class="text-sm text-ink-900 bg-ink-50 rounded-lg p-3">${lead.message || 'Keine Nachricht'}</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase mb-2">Status ändern</p>
+            <div class="flex gap-2">
+              <button onclick="updateLeadStatus('${lead.id}', 'new')" class="text-xs font-bold px-3 py-2 rounded-lg border ${lead.status === 'new' ? 'bg-red-100 text-red-700 border-red-300' : 'border-ink-200 text-ink-600'}">Neu</button>
+              <button onclick="updateLeadStatus('${lead.id}', 'sent')" class="text-xs font-bold px-3 py-2 rounded-lg border ${lead.status === 'sent' ? 'bg-brand-100 text-brand-700 border-brand-300' : 'border-ink-200 text-ink-600'}">Gesendet</button>
+              <button onclick="updateLeadStatus('${lead.id}', 'answered')" class="text-xs font-bold px-3 py-2 rounded-lg border ${lead.status === 'answered' ? 'bg-green-100 text-green-700 border-green-300' : 'border-ink-200 text-ink-600'}">Beantwortet</button>
+              <button onclick="updateLeadStatus('${lead.id}', 'done')" class="text-xs font-bold px-3 py-2 rounded-lg border ${lead.status === 'done' ? 'bg-ink-100 text-ink-700 border-ink-300' : 'border-ink-200 text-ink-600'}">Erledigt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Remove existing modal
+  const existing = document.getElementById('leadDetailModal');
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+async function updateLeadStatus(leadId, status) {
+  try {
+    const res = await fetch(`${API_BASE}/admin/leads`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: leadId, status })
+    });
+    
+    if (res.ok) {
+      showToast('✅ Status aktualisiert');
+      // Update local data
+      const lead = allLeads.find(l => l.id === leadId);
+      if (lead) lead.status = status;
+      // Re-render
+      filterLeads();
+      // Close modal
+      const modal = document.getElementById('leadDetailModal');
+      if (modal) modal.remove();
+    } else {
+      showToast('❌ Status-Update fehlgeschlagen');
+    }
+  } catch (err) {
+    console.error('Lead update error:', err);
+    showToast('❌ Fehler beim Aktualisieren');
+  }
+}
+
 // ═══════════ INIT ═══════════
 document.addEventListener('DOMContentLoaded', () => {
   // Überschreibe das originale doLogin und logout aus der HTML-Datei
   window.doLogin = doLogin;
   window.logout = showLoginGate;
+  window.showLeadDetail = showLeadDetail;
+  window.updateLeadStatus = updateLeadStatus;
   
   // Prüfe, ob Token existiert
   if (adminToken) {

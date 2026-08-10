@@ -423,10 +423,23 @@ tailwind.config = {
       <!-- ═══════ VIEW: LEADS ═══════ -->
       <div class="view" id="view-leads">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Neue Leads</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Leads (30 Tage)</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Weiterleitungsquote</p><p class="mt-2 text-3xl font-black text-ink-900">100 %</p><p class="mt-1 text-xs font-bold text-green-600">E-Mail &amp; SMS aktiv</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Ø Antwortzeit Mieter</p><p class="mt-2 text-3xl font-black text-ink-900">3,2 h</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Neue Leads</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="leadStatNew">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Leads (30 Tage)</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="leadStat30d">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Leads gesamt</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="leadStatTotal">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Weiterleitung</p>
+            <p class="mt-2 text-3xl font-black text-ink-900">E-Mail</p>
+            <p class="mt-1 text-xs font-bold text-ink-400">Automatisch an Mieter</p>
+          </div>
         </div>
 
         <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
@@ -437,7 +450,7 @@ tailwind.config = {
                 <option value="">Alle Stati</option><option>Neu</option><option>An Mieter gesendet</option><option>Beantwortet</option>
               </select>
               <select id="leadSite" onchange="filterLeads()" class="text-sm border border-ink-200 rounded-lg px-3 py-2 bg-white">
-                <option value="">Alle Websites</option><option>Dachdecker Schwerte</option><option>Elektriker Dortmund</option><option>SHK Unna</option>
+                <option value="">Alle Websites</option>
               </select>
             </div>
           </div>
@@ -2284,6 +2297,11 @@ function showView(id, el){
   document.getElementById('viewTitle').textContent = m[0];
   document.getElementById('viewSub').textContent = m[1];
   window.scrollTo({top:0, behavior:'smooth'});
+  
+  // Load leads when switching to leads view
+  if (id === 'leads' && typeof loadLeads === 'function') {
+    loadLeads();
+  }
 }
 
 // ───────── Modals & Toast ─────────
