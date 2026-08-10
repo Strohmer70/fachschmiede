@@ -1948,18 +1948,19 @@ function remindLegal(name){ showToast('Erinnerung an ' + name + ' versendet: Rec
 function remindAllLegal(){ showToast('Erinnerungen an SHK Krämer und Maler Weber versendet (Demo).'); }
 
 // ── Login-Gate ──
-function doLogin(){
-  const g = document.getElementById('loginGate');
-  g.classList.add('opacity-0');
-  setTimeout(() => { g.classList.add('hidden'); document.body.style.overflow = ''; }, 450);
-  showToast('Willkommen zurück! (Demo-Login)');
-}
-function logout(){
-  const g = document.getElementById('loginGate');
-  g.classList.remove('hidden', 'opacity-0');
-  document.body.style.overflow = 'hidden';
-  showToast('Abgemeldet – der Bereich ist jetzt gesperrt. (Demo)');
-}
+// HINWEIS: doLogin() und logout() werden durch admin.js überschrieben
+// function doLogin(){
+//   const g = document.getElementById('loginGate');
+//   g.classList.add('opacity-0');
+//   setTimeout(() => { g.classList.add('hidden'); document.body.style.overflow = ''; }, 450);
+//   showToast('Willkommen zurück! (Demo-Login)');
+// }
+// function logout(){
+//   const g = document.getElementById('loginGate');
+//   g.classList.remove('hidden', 'opacity-0');
+//   document.body.style.overflow = 'hidden';
+//   showToast('Abgemeldet – der Bereich ist jetzt gesperrt. (Demo)');
+// }
 
 function connectStripe(){
   const pk = document.getElementById('stripePk').value.trim(), sk = document.getElementById('stripeSk').value.trim();
@@ -2594,6 +2595,10 @@ function remindInvoice(btn){
   btn.removeAttribute('onclick');
   showToast('1. Mahnung versendet – Mieter sieht Hinweis auch im Dashboard (Demo).');
 }
+
+// ═══════════ ECHTE ADMIN-DATEN LADEN ═══════════
+// Admin-Dashboard wird durch admin.js mit echten Daten verbunden
 </script>
+<script src="/admin.js?v=2"></script>
 </body>
 </html>
