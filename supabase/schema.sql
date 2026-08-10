@@ -71,7 +71,7 @@ create table if not exists landing_pages (
   rented_by uuid references tenants(id) on delete set null,
   rented_at timestamp with time zone,
   stripe_price_id text,
-  monthly_price integer default 14900, -- in cents (€149)
+  monthly_price integer default 18900, -- in cents (€189) — Preis muss zur Salespage passen
   page_views integer default 0,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
