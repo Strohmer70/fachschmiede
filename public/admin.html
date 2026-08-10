@@ -138,7 +138,7 @@ tailwind.config = {
     <div class="bg-white border-b border-ink-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
       <div>
         <h1 class="text-xl sm:text-2xl font-black text-ink-900" id="viewTitle">Übersicht</h1>
-        <p class="text-sm text-ink-500" id="viewSub">Alle Miet-Websites auf einen Blick · Demo-Daten</p>
+        <p class="text-sm text-ink-500" id="viewSub">Alle Miet-Websites auf einen Blick</p>
       </div>
       <div class="flex items-center gap-3">
         <select id="mobileViewSelect" onchange="showView(this.value)" class="lg:hidden text-sm border border-ink-200 rounded-lg px-3 py-2.5 bg-white font-semibold">
@@ -164,27 +164,27 @@ tailwind.config = {
 
       <div class="view active" id="view-uebersicht">
 
-      <!-- KPI-Karten -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- KPI-KARTEN — Werden durch admin.js mit echten Daten befüllt -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpiCards">
         <div class="bg-white rounded-2xl border border-ink-200 p-5">
           <p class="text-sm font-semibold text-ink-500">Aktive Mietverträge</p>
-          <p class="mt-2 text-3xl font-black text-ink-900">0</p>
-          <p class="mt-1 text-xs font-bold text-green-600">▲ +2 diesen Monat</p>
+          <p class="mt-2 text-3xl font-black text-ink-900" id="stat-rented">—</p>
+          <p class="mt-1 text-xs font-bold text-ink-400" id="stat-rented-trend">Lade…</p>
         </div>
         <div class="bg-white rounded-2xl border border-ink-200 p-5">
           <p class="text-sm font-semibold text-ink-500">Monatl. Mieteinnahmen</p>
-          <p class="mt-2 text-3xl font-black text-ink-900">0 €</p>
-          <p class="mt-1 text-xs font-bold text-green-600">▲ +12 % ggü. Vormonat</p>
+          <p class="mt-2 text-3xl font-black text-ink-900" id="stat-mrr">—</p>
+          <p class="mt-1 text-xs font-bold text-ink-400" id="stat-mrr-trend">Lade…</p>
         </div>
         <div class="bg-white rounded-2xl border border-ink-200 p-5">
           <p class="text-sm font-semibold text-ink-500">Leads gesamt (30 Tage)</p>
-          <p class="mt-2 text-3xl font-black text-ink-900">0</p>
+          <p class="mt-2 text-3xl font-black text-ink-900" id="stat-leads">—</p>
           <p class="mt-1 text-xs font-bold text-ink-400">über alle Websites</p>
         </div>
         <div class="bg-white rounded-2xl border border-ink-200 p-5">
-          <p class="text-sm font-semibold text-ink-500">Offene Aufgaben</p>
-          <p class="mt-2 text-3xl font-black text-ink-900">0</p>
-          <p class="mt-1 text-xs font-bold text-amber-600">3 Zahlungen überfällig</p>
+          <p class="text-sm font-semibold text-ink-500">Websites im Portfolio</p>
+          <p class="mt-2 text-3xl font-black text-ink-900" id="stat-total">—</p>
+          <p class="mt-1 text-xs font-bold text-ink-400" id="stat-available">Lade…</p>
         </div>
       </div>
 
@@ -192,26 +192,19 @@ tailwind.config = {
       <div class="grid lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 bg-white rounded-2xl border border-ink-200 p-6">
           <div class="flex items-center justify-between">
-            <h2 class="font-bold text-ink-900">Leads pro Monat (Demo)</h2>
+            <h2 class="font-bold text-ink-900">Leads pro Monat</h2>
             <span class="text-xs font-semibold text-ink-400">alle Websites</span>
           </div>
-          <div class="mt-6 flex items-end gap-3" style="height:176px">
-            <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-brand-200 rounded-t-md" style="height:62px"></div><span class="text-xs text-ink-400 font-medium">Feb</span></div>
-            <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-brand-200 rounded-t-md" style="height:79px"></div><span class="text-xs text-ink-400 font-medium">Mär</span></div>
-            <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-brand-300 rounded-t-md" style="height:70px"></div><span class="text-xs text-ink-400 font-medium">Apr</span></div>
-            <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-brand-400 rounded-t-md" style="height:102px"></div><span class="text-xs text-ink-400 font-medium">Mai</span></div>
-            <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-brand-500 rounded-t-md" style="height:127px"></div><span class="text-xs text-ink-400 font-medium">Jun</span></div>
-            <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full bg-brand-600 rounded-t-md" style="height:162px"></div><span class="text-xs text-ink-400 font-medium">Jul</span></div>
+          <div class="mt-6 flex items-end gap-3" style="height:176px" id="leadsChart">
+            <div class="flex-1 flex flex-col items-center justify-end gap-2 h-full">
+              <p class="text-sm text-ink-400 italic">Noch keine Lead-Daten verfügbar</p>
+            </div>
           </div>
         </div>
         <div class="bg-white rounded-2xl border border-ink-200 p-6">
           <h2 class="font-bold text-ink-900">Offene Aufgaben</h2>
-          <ul class="mt-4 space-y-3 text-sm">
-            <li class="flex items-start gap-3"><span class="mt-1 w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"></span><span><strong>Miete überfällig:</strong> Maler Weber (Bochum) – seit 12 Tagen</span></li>
-            <li class="flex items-start gap-3"><span class="mt-1 w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"></span><span><strong>Miete überfällig:</strong> SHK Krämer (Unna) – seit 8 Tagen</span></li>
-            <li class="flex items-start gap-3"><span class="mt-1 w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span><span><strong>Domain-Transfer:</strong> elektriker-lünen.de wartet auf Auth-Code</span></li>
-            <li class="flex items-start gap-3"><span class="mt-1 w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span><span><strong>Freigabe angefragt:</strong> Neue Bewertung bei „Bergmann Bedachungen"</span></li>
-            <li class="flex items-start gap-3"><span class="mt-1 w-2.5 h-2.5 rounded-full bg-brand-400 shrink-0"></span><span><strong>Blog-Artikel fällig:</strong> „Förderung 2026" für Gewerk SHK</span></li>
+          <ul class="mt-4 space-y-3 text-sm" id="todoList">
+            <li class="text-ink-400 italic">Lade Aufgaben…</li>
           </ul>
         </div>
       </div>
@@ -241,59 +234,11 @@ tailwind.config = {
               </tr>
             </thead>
             <tbody class="divide-y divide-ink-100" id="ovTbody">
-              <tr class="hover:bg-ink-50" data-gewerk="Dachdecker">
-                <td class="px-6 py-4 font-bold text-ink-900">Bergmann Bedachungen</td>
-                <td class="px-6 py-4 text-ink-600">Dachdecker · Schwerte</td>
-                <td class="px-6 py-4"><a href="index.html" class="text-brand-600 font-semibold hover:underline">dachdecker-schwerte-muster.de</a></td>
-                <td class="px-6 py-4 text-ink-600">Basis · 189 €/M.</td>
-                <td class="px-6 py-4 text-ink-900 font-bold">21</td>
-                <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Aktiv</span></td>
-                <td class="px-6 py-4 text-right"><a href="mieter.html" class="text-brand-600 font-semibold hover:underline">Öffnen</a></td>
-              </tr>
-              <tr class="hover:bg-ink-50" data-gewerk="Elektriker">
-                <td class="px-6 py-4 font-bold text-ink-900">Volt Elektrotechnik</td>
-                <td class="px-6 py-4 text-ink-600">Elektriker · Dortmund</td>
-                <td class="px-6 py-4"><a href="elektriker.html" class="text-brand-600 font-semibold hover:underline">elektriker-dortmund-muster.de</a></td>
-                <td class="px-6 py-4 text-ink-600">Pro · 289 €/M.</td>
-                <td class="px-6 py-4 text-ink-900 font-bold">34</td>
-                <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Aktiv</span></td>
-                <td class="px-6 py-4 text-right"><button onclick="openMieterDetail(this.closest('tr'))" class="text-brand-600 font-semibold hover:underline">Details</button></td>
-              </tr>
-              <tr class="hover:bg-ink-50" data-gewerk="SHK">
-                <td class="px-6 py-4 font-bold text-ink-900">SHK Krämer</td>
-                <td class="px-6 py-4 text-ink-600">Heizung &amp; Sanitär · Unna</td>
-                <td class="px-6 py-4 text-ink-600">shk-unna-muster.de</td>
-                <td class="px-6 py-4 text-ink-600">Basis · 189 €/M.</td>
-                <td class="px-6 py-4 text-ink-900 font-bold">12</td>
-                <td class="px-6 py-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Zahlung überfällig</span></td>
-                <td class="px-6 py-4 text-right"><button onclick="openMieterDetail(this.closest('tr'))" class="text-brand-600 font-semibold hover:underline">Details</button></td>
-              </tr>
-              <tr class="hover:bg-ink-50" data-gewerk="Maler">
-                <td class="px-6 py-4 font-bold text-ink-900">Maler Weber</td>
-                <td class="px-6 py-4 text-ink-600">Maler · Bochum</td>
-                <td class="px-6 py-4 text-ink-600">maler-bochum-muster.de</td>
-                <td class="px-6 py-4 text-ink-600">Basis · 189 €/M.</td>
-                <td class="px-6 py-4 text-ink-900 font-bold">9</td>
-                <td class="px-6 py-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Zahlung überfällig</span></td>
-                <td class="px-6 py-4 text-right"><button onclick="openMieterDetail(this.closest('tr'))" class="text-brand-600 font-semibold hover:underline">Details</button></td>
-              </tr>
-              <tr class="hover:bg-ink-50" data-gewerk="Zimmerer">
-                <td class="px-6 py-4 font-bold text-ink-900">Zimmerei Falk</td>
-                <td class="px-6 py-4 text-ink-600">Zimmerer · Iserlohn</td>
-                <td class="px-6 py-4 text-ink-600">zimmerer-iserlohn-muster.de</td>
-                <td class="px-6 py-4 text-ink-600">Pro · 289 €/M.</td>
-                <td class="px-6 py-4 text-ink-900 font-bold">17</td>
-                <td class="px-6 py-4"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">Im Aufbau</span></td>
-                <td class="px-6 py-4 text-right"><button onclick="openMieterDetail(this.closest('tr'))" class="text-brand-600 font-semibold hover:underline">Details</button></td>
-              </tr>
-              <tr class="hover:bg-ink-50" data-gewerk="Fliesenleger">
-                <td class="px-6 py-4 font-bold text-ink-900">—</td>
-                <td class="px-6 py-4 text-ink-600">Fliesenleger · Hagen</td>
-                <td class="px-6 py-4 text-ink-600">fliesenleger-hagen-muster.de</td>
-                <td class="px-6 py-4 text-ink-400">—</td>
-                <td class="px-6 py-4 text-ink-400">—</td>
-                <td class="px-6 py-4"><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">Frei / verfügbar</span></td>
-                <td class="px-6 py-4 text-right"><button onclick="openModal('modalWebsite')" class="text-brand-600 font-semibold hover:underline">Vermieten</button></td>
+              <tr id="ovEmpty">
+                <td colspan="7" class="px-6 py-8 text-center">
+                  <p class="font-bold text-ink-600 text-lg">Noch keine Einträge</p>
+                  <p class="text-sm text-ink-400 mt-1">Mieter und Websites erscheinen hier automatisch.</p>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -317,13 +262,10 @@ tailwind.config = {
         </div>
         <div class="bg-white rounded-2xl border border-ink-200 p-6">
           <h2 class="font-bold text-ink-900 text-lg">Letzte Leads (alle Websites)</h2>
-          <ul class="mt-4 divide-y divide-ink-100 text-sm">
-            <li class="py-3 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Familie Krüger · Sturmreparatur</p><p class="text-ink-500 text-xs">dachdecker-schwerte-muster.de · vor 2 Std.</p></div><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Neu</span></li>
-            <li class="py-3 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Herr Sommer · Wallbox</p><p class="text-ink-500 text-xs">elektriker-dortmund-muster.de · vor 5 Std.</p></div><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Neu</span></li>
-            <li class="py-3 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Hausverwaltung Meiser · Wartung</p><p class="text-ink-500 text-xs">dachdecker-schwerte-muster.de · gestern</p></div><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">An Mieter gesendet</span></li>
-            <li class="py-3 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Frau Brandt · Heizungs-Check</p><p class="text-ink-500 text-xs">shk-unna-muster.de · gestern</p></div><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">An Mieter gesendet</span></li>
+          <ul class="mt-4 divide-y divide-ink-100 text-sm" id="recentLeadsList">
+            <li class="py-3 text-ink-400 italic">Lade Leads…</li>
           </ul>
-          <p class="mt-3 text-xs text-ink-400 italic">Demo: Leads werden per E-Mail an den Mieter weitergeleitet und hier protokolliert.</p>
+          <p class="mt-3 text-xs text-ink-400 italic">Leads werden per E-Mail an den Mieter weitergeleitet und hier protokolliert.</p>
         </div>
       </div>
 
@@ -2318,7 +2260,7 @@ function sendPrint(btn){
 }
 
 const viewMeta = {
-  uebersicht:    ['Übersicht', 'Alle Miet-Websites auf einen Blick · Demo-Daten'],
+  uebersicht:    ['Übersicht', 'Alle Miet-Websites auf einen Blick'],
   mieter:        ['Mieter', 'Verträge, Stati und Zugänge verwalten'],
   websites:      ['Websites & Städte', 'Stadt-Portfolio: freie Städte listen, vermietete verwalten'],
   leads:         ['Leads', 'Alle Anfragen über alle Websites – Protokoll & Weiterleitung'],

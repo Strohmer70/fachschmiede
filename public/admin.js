@@ -5,7 +5,6 @@ let dashboardData = null;
 
 // ═══════════ LOGIN ═══════════
 async function doLogin() {
-  const email = document.querySelector('#loginGate input[type="email"]').value;
   const password = document.querySelector('#loginGate input[type="password"]').value;
   
   if (!password) {
@@ -39,17 +38,16 @@ async function doLogin() {
 
 function hideLoginGate() {
   const gate = document.getElementById('loginGate');
-  gate.style.opacity = '0';
+  gate.classList.add('opacity-0');
   setTimeout(() => {
-    gate.style.display = 'none';
+    gate.classList.add('hidden');
     document.body.style.overflow = '';
-  }, 500);
+  }, 450);
 }
 
 function showLoginGate() {
   const gate = document.getElementById('loginGate');
-  gate.style.display = 'flex';
-  setTimeout(() => gate.style.opacity = '1', 10);
+  gate.classList.remove('hidden', 'opacity-0');
   document.body.style.overflow = 'hidden';
   localStorage.removeItem('adminToken');
   adminToken = null;
@@ -88,13 +86,17 @@ async function loadDashboard() {
 function renderDashboard(data) {
   const { stats, recentLeads, pages, tenants } = data;
   
-  // ── Stats-Karten (Übersicht) ──
-  updateStatCard('Gesamt-Websites', stats.total, 'text-ink-900');
-  updateStatCard('Vermietet', stats.rented, 'text-green-600');
-  updateStatCard('Noch frei', stats.available, 'text-brand-600');
-  updateStatCard('MRR (€/Monat)', stats.mrr + ' €', 'text-ink-900');
-  updateStatCard('ARR (€/Jahr)', stats.arr + ' €', 'text-ink-900');
-  updateStatCard('Leads (30 T.)', stats.leads, 'text-orange-600');
+  // ── KPI-Karten (per ID) ──
+  setText('stat-rented', stats.rented || 0);
+  setText('stat-rented-trend', stats.rented > 0 ? 'Aktive Mieter' : 'Noch keine Mieter', 'text-ink-400');
+  
+  setText('stat-mrr', (stats.mrr || 0) + ' €');
+  setText('stat-mrr-trend', stats.mrr > 0 ? 'MRR' : 'Noch keine Einnahmen', 'text-ink-400');
+  
+  setText('stat-leads', stats.leads || 0);
+  
+  setText('stat-total', stats.total || 0);
+  setText('stat-available', (stats.available || 0) + ' noch frei', 'text-brand-600');
   
   // ── Mieter-Tabelle ──
   renderMieterTable(tenants || []);
@@ -104,21 +106,17 @@ function renderDashboard(data) {
   
   // ── Seiten-Übersicht ──
   renderPagesOverview(pages || []);
+  
+  // ── Todo-Liste (wenn keine echten Daten, leer anzeigen) ──
+  renderTodoList(tenants || [], pages || []);
 }
 
-function updateStatCard(label, value, colorClass) {
-  // Suche nach Stat-Karten anhand des Labels
-  const cards = document.querySelectorAll('#view-uebersicht .grid > div');
-  cards.forEach(card => {
-    const labelEl = card.querySelector('p:first-child');
-    if (labelEl && labelEl.textContent.includes(label)) {
-      const valueEl = card.querySelector('p:nth-child(2)');
-      if (valueEl) {
-        valueEl.textContent = value;
-        valueEl.className = `mt-2 text-3xl font-black ${colorClass}`;
-      }
-    }
-  });
+function setText(id, text, colorClass) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = text;
+    if (colorClass) el.className = `mt-1 text-xs font-bold ${colorClass}`;
+  }
 }
 
 // ═══════════ MIETER TABELLE ═══════════
@@ -129,12 +127,19 @@ function renderMieterTable(tenants) {
   if (!tbody) return;
   
   if (tenants.length === 0) {
-    tbody.innerHTML = '';
-    emptyMsg.classList.remove('hidden');
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="px-6 py-8 text-center">
+          <p class="font-bold text-ink-600 text-lg">Noch keine Mieter</p>
+          <p class="text-sm text-ink-400 mt-1">Mieter erscheinen hier, sobald sie sich über die Salespage anmelden.</p>
+        </td>
+      </tr>
+    `;
+    if (emptyMsg) emptyMsg.classList.add('hidden');
     return;
   }
   
-  emptyMsg.classList.add('hidden');
+  if (emptyMsg) emptyMsg.classList.add('hidden');
   
   tbody.innerHTML = tenants.map(t => {
     const page = t.landing_page || {};
@@ -166,11 +171,11 @@ function renderMieterTable(tenants) {
 
 // ═══════════ LEADS LISTE ═══════════
 function renderLeadsList(leads) {
-  const leadsContainer = document.querySelector('#view-uebersicht ul');
-  if (!leadsContainer) return;
+  const container = document.getElementById('recentLeadsList');
+  if (!container) return;
   
   if (leads.length === 0) {
-    leadsContainer.innerHTML = `
+    container.innerHTML = `
       <li class="py-3 text-center text-sm text-ink-400 italic">
         Keine Leads in den letzten 30 Tagen
       </li>
@@ -178,17 +183,18 @@ function renderLeadsList(leads) {
     return;
   }
   
-  leadsContainer.innerHTML = leads.map(lead => {
+  container.innerHTML = leads.map(lead => {
     const page = lead.landing_page || {};
     const timeAgo = timeSince(new Date(lead.created_at));
+    const isNew = !lead.status || lead.status === 'new';
     return `
-      <li class="py-3 flex items-center justify-between gap-3 border-b border-ink-100 last:border-0">
+      <li class="py-3 flex items-center justify-between gap-3">
         <div>
           <p class="font-bold text-ink-900">${lead.name || 'Anonym'} · ${lead.service || 'Anfrage'}</p>
           <p class="text-ink-500 text-xs">${page.title || page.slug || '-'} · ${timeAgo}</p>
         </div>
-        <span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">
-          ${lead.status || 'Neu'}
+        <span class="${isNew ? 'bg-red-100 text-red-700' : 'bg-ink-100 text-ink-500'} text-xs font-bold px-2.5 py-1 rounded-full shrink-0">
+          ${isNew ? 'Neu' : (lead.status || 'Gesehen')}
         </span>
       </li>
     `;
@@ -242,6 +248,53 @@ function renderPagesOverview(pages) {
   }).join('');
 }
 
+// ═══════════ TODO-LISTE ═══════════
+function renderTodoList(tenants, pages) {
+  const container = document.getElementById('todoList');
+  if (!container) return;
+  
+  const todos = [];
+  
+  // Wenn es freie Seiten gibt
+  const freePages = pages.filter(p => p.status === 'available');
+  if (freePages.length > 0) {
+    todos.push({
+      color: 'bg-brand-400',
+      text: `<strong>Marketing:</strong> ${freePages.length} Website${freePages.length > 1 ? 's' : ''} noch frei — Salespage bewerben`
+    });
+  }
+  
+  // Wenn es keine Seiten gibt
+  if (pages.length === 0) {
+    todos.push({
+      color: 'bg-amber-400',
+      text: '<strong>Setup:</strong> Erstelle erste Landing-Pages mit dem Seed-Tool'
+    });
+  }
+  
+  // Wenn es keine Mieter gibt
+  if (tenants.length === 0 && pages.length > 0) {
+    todos.push({
+      color: 'bg-brand-400',
+      text: '<strong>Vertrieb:</strong> Noch keine Mieter — Social Media / Google Ads starten'
+    });
+  }
+  
+  if (todos.length === 0) {
+    container.innerHTML = `
+      <li class="text-ink-400 italic">Keine offenen Aufgaben – alles läuft!</li>
+    `;
+    return;
+  }
+  
+  container.innerHTML = todos.map(todo => `
+    <li class="flex items-start gap-3">
+      <span class="mt-1 w-2.5 h-2.5 rounded-full ${todo.color} shrink-0"></span>
+      <span>${todo.text}</span>
+    </li>
+  `).join('');
+}
+
 // ═══════════ HILFSFUNKTIONEN ═══════════
 function formatDate(dateStr) {
   if (!dateStr) return '-';
@@ -266,13 +319,6 @@ function timeSince(date) {
 }
 
 function showToast(msg) {
-  // Prüfe, ob showToast bereits existiert (aus der HTML-Datei)
-  if (typeof window.originalShowToast === 'function') {
-    window.originalShowToast(msg);
-    return;
-  }
-  
-  // Eigene Toast-Implementierung
   let toast = document.getElementById('adminToast');
   if (!toast) {
     toast = document.createElement('div');
