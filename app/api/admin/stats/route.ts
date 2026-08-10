@@ -63,6 +63,27 @@ export async function GET() {
       .order('created_at', { ascending: false })
       .limit(50)
 
+    // Get tenant status breakdown
+    const { count: activeTenants } = await supabaseAdmin
+      .from('tenants')
+      .select('*', { count: 'exact', head: true })
+      .eq('subscription_status', 'active')
+    
+    const { count: setupTenants } = await supabaseAdmin
+      .from('tenants')
+      .select('*', { count: 'exact', head: true })
+      .eq('subscription_status', 'inactive')
+    
+    const { count: overdueTenants } = await supabaseAdmin
+      .from('tenants')
+      .select('*', { count: 'exact', head: true })
+      .eq('subscription_status', 'past_due')
+    
+    const { count: cancelledTenants } = await supabaseAdmin
+      .from('tenants')
+      .select('*', { count: 'exact', head: true })
+      .eq('subscription_status', 'cancelled')
+
     return NextResponse.json({
       stats: {
         total: totalPages || 0,
@@ -71,7 +92,13 @@ export async function GET() {
         leads: totalLeads || 0,
         tenants: totalTenants || 0,
         mrr: Math.round(mrr / 100), // cents to euros
-        arr: Math.round(arr / 100),
+        arr: Math.round(arr * 100) / 100,
+        tenantStats: {
+          active: activeTenants || 0,
+          setup: setupTenants || 0,
+          overdue: overdueTenants || 0,
+          cancelled: cancelledTenants || 0,
+        }
       },
       recentLeads: recentLeads || [],
       pages: pages || [],

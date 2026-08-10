@@ -275,10 +275,22 @@ tailwind.config = {
       <!-- ═══════ VIEW: MIETER ═══════ -->
       <div class="view" id="view-mieter">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Aktive Mieter</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Im Aufbau</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Zahlung überfällig</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Gekündigt (laufend)</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Aktive Mieter</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="tenantStatActive">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Im Aufbau</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="tenantStatSetup">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Zahlung überfällig</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="tenantStatOverdue">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Gekündigt (laufend)</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="tenantStatCanceled">—</p>
+          </div>
         </div>
 
         <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
@@ -2316,6 +2328,11 @@ function showView(id, el){
   if (id === 'leads' && typeof loadLeads === 'function') {
     loadLeads();
   }
+  
+  // Load tenants when switching to mieter view
+  if (id === 'mieter' && typeof renderMieterTable === 'function' && dashboardData) {
+    renderMieterTable(dashboardData.tenants || []);
+  }
 }
 
 // ───────── Modals & Toast ─────────
@@ -2396,9 +2413,16 @@ function filterOverview(){
 function filterMieter(){
   const q = document.getElementById('mieterSearch').value.toLowerCase();
   const s = document.getElementById('mieterStatus').value;
+  const statusMap = {
+    'Aktiv': 'active',
+    'Im Aufbau': 'inactive',
+    'Zahlung überfällig': 'past_due',
+    'Gekündigt': 'cancelled',
+  };
+  const targetStatus = statusMap[s] || s;
   let visible = 0;
   document.querySelectorAll('#mieterTbody tr').forEach(tr => {
-    const ok = tr.textContent.toLowerCase().includes(q) && (!s || tr.dataset.status === s);
+    const ok = tr.textContent.toLowerCase().includes(q) && (!s || tr.dataset.status === targetStatus);
     tr.style.display = ok ? '' : 'none';
     if(ok) visible++;
   });

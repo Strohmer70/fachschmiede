@@ -98,6 +98,14 @@ function renderDashboard(data) {
   setText('stat-total', stats.total || 0);
   setText('stat-available', (stats.available || 0) + ' noch frei', 'text-brand-600');
   
+  // ── Tenant-Statistiken ──
+  if (stats.tenantStats) {
+    setText('tenantStatActive', stats.tenantStats.active || 0);
+    setText('tenantStatSetup', stats.tenantStats.setup || 0);
+    setText('tenantStatOverdue', stats.tenantStats.overdue || 0);
+    setText('tenantStatCanceled', stats.tenantStats.cancelled || 0);
+  }
+  
   // ── Mieter-Tabelle ──
   renderMieterTable(tenants || []);
   
@@ -129,9 +137,13 @@ function renderMieterTable(tenants) {
   if (tenants.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" class="px-6 py-8 text-center">
-          <p class="font-bold text-ink-600 text-lg">Noch keine Mieter</p>
-          <p class="text-sm text-ink-400 mt-1">Mieter erscheinen hier, sobald sie sich über die Salespage anmelden.</p>
+        <td colspan="6" class="px-6 py-12 text-center">
+          <div class="text-ink-400">
+            <p class="text-4xl mb-3">🏠</p>
+            <p class="font-bold text-ink-600 text-lg">Noch keine Mieter</p>
+            <p class="text-sm mt-1">Alle Städte sind aktuell verfügbar.</p>
+            <p class="text-xs mt-3 text-ink-400">Sobald sich ein Handwerker über die Salespage anmeldet, erscheint er hier automatisch.</p>
+          </div>
         </td>
       </tr>
     `;
@@ -141,10 +153,20 @@ function renderMieterTable(tenants) {
   
   if (emptyMsg) emptyMsg.classList.add('hidden');
   
+  // Status-Mapping
+  const statusConfig = {
+    'active':    { label: 'Aktiv',      class: 'bg-green-100 text-green-700' },
+    'inactive':  { label: 'Im Aufbau',  class: 'bg-amber-100 text-amber-700' },
+    'past_due':  { label: 'Überfällig', class: 'bg-red-100 text-red-700' },
+    'cancelled': { label: 'Gekündigt',  class: 'bg-ink-100 text-ink-500' },
+  };
+  
   tbody.innerHTML = tenants.map(t => {
     const page = t.landing_page || {};
+    const status = statusConfig[t.subscription_status] || statusConfig['inactive'];
+    
     return `
-      <tr class="hover:bg-ink-50 transition">
+      <tr class="hover:bg-ink-50 transition" data-status="${t.subscription_status || 'inactive'}">
         <td class="px-6 py-4">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-sm">
@@ -156,11 +178,12 @@ function renderMieterTable(tenants) {
             </div>
           </div>
         </td>
-        <td class="px-6 py-4">
-          <span class="text-xs font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">Aktiv</span>
-        </td>
         <td class="px-6 py-4 text-sm text-ink-600">${page.title || page.slug || '-'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">—</td>
         <td class="px-6 py-4 text-sm text-ink-600">${formatDate(t.created_at)}</td>
+        <td class="px-6 py-4">
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full ${status.class}">${status.label}</span>
+        </td>
         <td class="px-6 py-4 text-right">
           <button onclick="showTenantDetail('${t.id}')" class="text-brand-600 font-semibold hover:underline">Details</button>
         </td>
