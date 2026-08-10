@@ -13,7 +13,7 @@ const ARTICLE_MAP = {
   'elektriker': {
     'artikel-e-check-sicherheitspruefung': 'e-check-sicherheit',
     'artikel-smart-home-nachruesten': 'smart-home-nachruesten',
-    'artikel-wallbox-zuhause': 'wallbox-installation'
+    'artikel-wallbox-zuhause': 'wallbox-zuhause'
   },
   'klempner': {
     'artikel-heizungstausch-foerderung': 'heizungstausch-foerderung',
