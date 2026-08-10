@@ -115,14 +115,14 @@ tailwind.config = {
       <a class="side-link active" data-view="uebersicht" onclick="showView('uebersicht', this)"><span>📊</span> Übersicht</a>
       <a class="side-link" data-view="mieter" onclick="showView('mieter', this)"><span>👥</span> Mieter</a>
       <a class="side-link" data-view="websites" onclick="showView('websites', this)"><span>🌐</span> Websites &amp; Städte</a>
-      <a class="side-link" data-view="leads" onclick="showView('leads', this)"><span>📥</span> Leads<span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">5</span></a>
-      <a class="side-link" data-view="mieten" onclick="showView('mieten', this)"><span>💶</span> Mieten &amp; Abrechnung<span class="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span></a>
-      <a class="side-link" data-view="rechnungen" onclick="showView('rechnungen', this)"><span>🧾</span> Rechnungen<span class="ml-auto bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">AUTO</span></a>
+      <a class="side-link" data-view="leads" onclick="showView('leads', this)"><span>📥</span> Leads</a>
+      <a class="side-link" data-view="mieten" onclick="showView('mieten', this)"><span>💶</span> Mieten &amp; Abrechnung</a>
+      <a class="side-link" data-view="rechnungen" onclick="showView('rechnungen', this)"><span>🧾</span> Rechnungen</a>
       <a class="side-link" data-view="gewerke" onclick="showView('gewerke', this)"><span>🧩</span> Vorlagen &amp; Gewerke</a>
       <a class="side-link" data-view="blog" onclick="showView('blog', this)"><span>📝</span> Blog-Redaktion</a>
-      <a class="side-link" data-view="support" onclick="showView('support', this)"><span>🎧</span> Support &amp; Anfragen<span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">4</span></a>
-      <a class="side-link" data-view="marketing" onclick="showView('marketing', this)"><span>📣</span> Marketing<span class="ml-auto bg-brand-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">NEU</span></a>
-      <a class="side-link" data-view="rechtliches" onclick="showView('rechtliches', this)"><span>⚖️</span> Rechtliches<span class="ml-auto bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">2</span></a>
+      <a class="side-link" data-view="support" onclick="showView('support', this)"><span>🎧</span> Support &amp; Anfragen</a>
+      <a class="side-link" data-view="marketing" onclick="showView('marketing', this)"><span>📣</span> Marketing</a>
+      <a class="side-link" data-view="rechtliches" onclick="showView('rechtliches', this)"><span>⚖️</span> Rechtliches</a>
       <a class="side-link" data-view="einstellungen" onclick="showView('einstellungen', this)"><span>⚙️</span> Einstellungen</a>
     </nav>
     <div class="p-4 border-t border-ink-800 text-xs text-ink-500">
@@ -482,7 +482,21 @@ tailwind.config = {
           </div>
           <p id="leadEmpty" class="hidden px-6 py-8 text-center text-sm text-ink-400 italic">Keine Leads in dieser Auswahl.</p>
         </div>
-        <p class="text-xs text-ink-400 italic">Demo: Im Live-Betrieb wird jeder Lead sofort per E-Mail (Basis) bzw. zusätzlich per SMS (Pro) an den Mieter weitergeleitet. Dieses Protokoll dient der Kontrolle – z. B. wenn ein Mieter nicht reagiert.</p>
+        <div class="mt-6 bg-brand-50 border border-brand-200 rounded-xl p-4">
+          <h4 class="font-bold text-brand-900 text-sm mb-2">📖 Was ist das Lead-Protokoll?</h4>
+          <p class="text-sm text-brand-700 leading-relaxed">
+            Hier siehst du alle Anfragen, die über deine Miet-Websites eingehen. Ein Interessent füllt das Kontaktformular auf einer Stadt-Seite aus — z. B. „Dachdecker Hattingen“. Die Daten landen automatisch in diesem Protokoll.
+          </p>
+          <ul class="mt-2 text-sm text-brand-700 space-y-1">
+            <li><strong>Status „Neu“</strong> = Lead ist eingegangen, aber noch nicht bearbeitet</li>
+            <li><strong>Status „Gesendet"</strong> = Du hast die Anfrage an den Mieter weitergeleitet</li>
+            <li><strong>Status „Beantwortet"</strong> = Der Mieter hat den Interessenten kontaktiert</li>
+            <li><strong>Status „Erledigt"</strong> = Auftrag abgeschlossen oder Lead nicht relevant</li>
+          </ul>
+          <p class="mt-2 text-sm text-brand-700">
+            <strong>Automatische Weiterleitung:</strong> Der Lead wird sofort per E-Mail an den Mieter der jeweiligen Website gesendet. Dieses Protokoll dient dir als Übersicht — z. B. wenn ein Mieter nicht reagiert und du nachhaken musst.
+          </p>
+        </div>
       </div>
 
       <!-- ═══════ VIEW: MIETEN & ABRECHNUNG ═══════ -->
@@ -579,7 +593,7 @@ tailwind.config = {
             </div>
           </div>
         </div>
-        <p class="text-xs text-ink-400 italic">Demo: Beträge inkl. 19 % MwSt. Im Live-Betrieb läuft der Einzug automatisch per SEPA-Lastschrift oder Stripe.</p>
+        <p class="text-xs text-ink-400 italic">Beträge inkl. 19 % MwSt. Zahlungen laufen über Stripe (Kreditkarte / SEPA). Rechnungen werden automatisch erstellt.</p>
       </div>
 
       <!-- ═══════ VIEW: VORLAGEN & GEWERKE ═══════ -->
