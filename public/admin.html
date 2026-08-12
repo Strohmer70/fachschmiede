@@ -358,78 +358,10 @@ tailwind.config = {
           </div>
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="stadtGrid">
-          <!-- Dachdecker -->
-          <div class="stadt-card bg-white rounded-2xl border-2 border-ink-200 p-5" data-gewerk="Dachdecker" data-status="vermietet">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Schwerte</p><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span></div>
-            <p class="text-xs text-ink-500 mt-1">🏠 Dachdecker · dachdecker-schwerte-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Mieter: <strong class="text-ink-700">Bergmann Bedachungen</strong></p>
-            <div class="mt-4 flex gap-2"><a href="index.html" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a><button onclick="openMieterDetail(null, 'Bergmann Bedachungen')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button><button onclick="openResetModal('Schwerte', 'Bergmann Bedachungen', this)" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition" title="Website in Originalzustand zurücksetzen">↺</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-green-200 p-5" data-gewerk="Dachdecker" data-status="frei">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Hagen</p><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span></div>
-            <p class="text-xs text-ink-500 mt-1">🏠 Dachdecker · dachdecker-hagen-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Erstellt: 06/2026 · Textfassung A · bereit</p>
-            <div class="mt-4 flex gap-2"><button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast('Vorschau „Dachdecker Hagen“ geöffnet (Demo).')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-green-200 p-5" data-gewerk="Dachdecker" data-status="frei">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Iserlohn</p><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span></div>
-            <p class="text-xs text-ink-500 mt-1">🏠 Dachdecker · dachdecker-iserlohn-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Erstellt: 06/2026 · Textfassung B · bereit</p>
-            <div class="mt-4 flex gap-2"><button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast('Vorschau „Dachdecker Iserlohn“ geöffnet (Demo).')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-green-200 p-5" data-gewerk="Dachdecker" data-status="frei">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Unna</p><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span></div>
-            <p class="text-xs text-ink-500 mt-1">🏠 Dachdecker · dachdecker-unna-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Erstellt: 06/2026 · Textfassung C · bereit</p>
-            <div class="mt-4 flex gap-2"><button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast('Vorschau „Dachdecker Unna“ geöffnet (Demo).')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button></div>
-          </div>
-          <!-- Elektriker -->
-          <div class="stadt-card bg-white rounded-2xl border-2 border-ink-200 p-5" data-gewerk="Elektriker" data-status="vermietet">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Dortmund</p><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span></div>
-            <p class="text-xs text-ink-500 mt-1">⚡ Elektriker · elektriker-dortmund-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Mieter: <strong class="text-ink-700">Volt Elektrotechnik</strong></p>
-            <div class="mt-4 flex gap-2"><a href="elektriker.html" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a><button onclick="openMieterDetail(null, 'Volt Elektrotechnik')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button><button onclick="openResetModal('Dortmund', 'Volt Elektrotechnik', this)" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition" title="Website in Originalzustand zurücksetzen">↺</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-green-200 p-5" data-gewerk="Elektriker" data-status="frei">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Bochum</p><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span></div>
-            <p class="text-xs text-ink-500 mt-1">⚡ Elektriker · elektriker-bochum-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Erstellt: 07/2026 · Textfassung A · bereit</p>
-            <div class="mt-4 flex gap-2"><button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast('Vorschau „Elektriker Bochum“ geöffnet (Demo).')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-green-200 p-5" data-gewerk="Elektriker" data-status="frei">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Schwerte</p><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span></div>
-            <p class="text-xs text-ink-500 mt-1">⚡ Elektriker · elektriker-schwerte-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Erstellt: 07/2026 · Textfassung D · bereit</p>
-            <div class="mt-4 flex gap-2"><button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast('Vorschau „Elektriker Schwerte“ geöffnet (Demo).')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button></div>
-          </div>
-          <!-- SHK / Zimmerer -->
-          <div class="stadt-card bg-white rounded-2xl border-2 border-ink-200 p-5" data-gewerk="SHK" data-status="vermietet">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Unna</p><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span></div>
-            <p class="text-xs text-ink-500 mt-1">🔥 SHK · klempner-unna-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Mieter: <strong class="text-ink-700">SHK Krämer</strong></p>
-            <div class="mt-4 flex gap-2"><button onclick="showToast('Vorschau geöffnet (Demo).')" class="flex-1 text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</button><button onclick="openMieterDetail(null, 'SHK Krämer')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button><button onclick="openResetModal('Unna', 'SHK Krämer', this)" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition" title="Website in Originalzustand zurücksetzen">↺</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-ink-200 p-5" data-gewerk="Zimmerer" data-status="vermietet">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Iserlohn</p><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span></div>
-            <p class="text-xs text-ink-500 mt-1">🔨 Zimmerer · zimmerei-iserlohn-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Mieter: <strong class="text-ink-700">Zimmerei Falk</strong></p>
-            <div class="mt-4 flex gap-2"><a href="zimmerer.html" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a><button onclick="openMieterDetail(null, 'Zimmerei Falk')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button><button onclick="openResetModal('Iserlohn', 'Zimmerei Falk', this)" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition" title="Website in Originalzustand zurücksetzen">↺</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-ink-200 p-5" data-gewerk="Maler" data-status="vermietet">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Bochum</p><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">Testphase · 9 Tage</span></div>
-            <p class="text-xs text-ink-500 mt-1">🖌️ Maler · maler-bochum-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Mieter: <strong class="text-ink-700">Maler Weber</strong> · Test bis 05.08.2026</p>
-            <div class="mt-4 flex gap-2"><a href="maler.html" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a><button onclick="openMieterDetail(null, 'Maler Weber')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button><button onclick="openResetModal('Bochum', 'Maler Weber', this)" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition" title="Website in Originalzustand zurücksetzen">↺</button></div>
-          </div>
-          <div class="stadt-card bg-white rounded-2xl border-2 border-green-200 p-5" data-gewerk="Zimmerer" data-status="frei">
-            <div class="flex items-center justify-between"><p class="font-black text-ink-900">Lünen</p><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span></div>
-            <p class="text-xs text-ink-500 mt-1">🔨 Zimmerer · zimmerei-luenen-muster.de</p>
-            <p class="text-xs text-ink-500 mt-2">Erstellt: 07/2026 · Textfassung A · bereit</p>
-            <div class="mt-4 flex gap-2"><button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast('Vorschau „Zimmerer Lünen“ geöffnet (Demo).')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button></div>
-          </div>
-        </div>
-        <p class="text-xs text-ink-400 italic">Demo-Auszug: 11 von 100 Stadt-Websites (20 Städte × 5 Gewerke: Dachdecker, Elektriker, SHK, Zimmerer, Maler – jeweils identisches Stadt-Portfolio). Alle Stadtseiten sind live und indexierbar. Neue Städte, die du über „+ Neue Stadt-Website listen" anlegst, erscheinen hier und auf der öffentlichen Gewerk-Salespage.</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="stadtGrid">
+        <!-- Wird dynamisch durch admin.js befüllt -->
+      </div>
+        <p class="text-xs text-ink-400 italic mt-4" id="stadtGridHint">Lade Stadt-Portfolio...</p>
       </div>
 
       <!-- ═══════ VIEW: LEADS ═══════ -->
@@ -867,33 +799,68 @@ Ihr MietWebsites-Team</textarea>
         </div>
       </div>
 
-      <!-- ═══════ VIEW: BLOG-REDAKTION ═══════ -->
+      <!-- ═══════ VIEW: BLOG-REDAKTION (DYNAMISCH) ═══════ -->
       <div class="view" id="view-blog">
-        <div class="bg-brand-50 border border-brand-200 rounded-2xl p-5 text-sm text-ink-700">
-          <strong class="text-ink-900">🧠 Einzigartigkeit automatisch:</strong> Jeder freigegebene Artikel wird pro Stadt-Website in einer eigenen Textfassung ausgespielt (andere Einleitung, lokale Bezüge, umgestellte Abschnitte). So sieht Google keine Kopien – und alle Mieter-Websites bekommen trotzdem frischen Content, ohne dass jemand etwas tun muss.
+        <div class="bg-brand-50 border border-brand-200 rounded-2xl p-5 text-sm text-ink-700 mb-6">
+          <strong class="text-ink-900">🧠 Einzigartigkeit automatisch:</strong> Jeder freigegebene Artikel wird pro Stadt-Website in einer eigenen Textfassung ausgespielt. So sieht Google keine Kopien – und alle Mieter-Websites bekommen trotzdem frischen Content.
         </div>
-        <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
-          <div class="px-6 py-5 border-b border-ink-100 flex flex-wrap items-center justify-between gap-3">
-            <h2 class="font-bold text-ink-900 text-lg">Artikel-Pipeline</h2>
-            <button onclick="openModal('modalArtikel')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition">+ Artikel planen</button>
+        
+        <!-- KPIs -->
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Veröffentlicht</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="blogStatPublished">0</p>
           </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Entwürfe</p>
+            <p class="mt-2 text-3xl font-black text-amber-600" id="blogStatDrafts">0</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">KI-generiert</p>
+            <p class="mt-2 text-3xl font-black text-purple-600" id="blogStatAi">0</p>
+          </div>
+        </div>
+        
+        <!-- Aktionen -->
+        <div class="flex flex-wrap gap-3 mb-4">
+          <button onclick="openModal('modalArtikel')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition">+ Artikel generieren</button>
+          <button onclick="runArticleSchedule()" id="scheduleBtn" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition">📅 Automatisch planen (1-2-4)</button>
+        </div>
+        
+        <!-- Filter -->
+        <div class="flex flex-wrap gap-3 mb-4">
+          <select id="articleStatus" onchange="filterArticles()" class="text-sm border border-ink-200 rounded-lg px-3 py-2 bg-white">
+            <option value="">Alle Stati</option>
+            <option>Entwurf</option>
+            <option>Veröffentlicht</option>
+            <option>Archiviert</option>
+          </select>
+          <select id="articlePage" onchange="filterArticles()" class="text-sm border border-ink-200 rounded-lg px-3 py-2 bg-white">
+            <option value="">Alle Seiten</option>
+          </select>
+        </div>
+        
+        <!-- Tabelle -->
+        <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
-              <thead><tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100"><th class="px-6 py-3 font-bold">Artikel</th><th class="px-6 py-3 font-bold">Gewerk</th><th class="px-6 py-3 font-bold">Stadt-Fassungen</th><th class="px-6 py-3 font-bold">Geplant</th><th class="px-6 py-3 font-bold">Status</th><th class="px-6 py-3 font-bold text-right">Aktion</th></tr></thead>
-              <tbody class="divide-y divide-ink-100">
-                <tr class="hover:bg-ink-50"><td class="px-6 py-4 font-bold text-ink-900">5 Anzeichen, dass Ihr Dach eine Sanierung braucht</td><td class="px-6 py-4 text-ink-600">🏠 Dachdecker</td><td class="px-6 py-4 text-ink-600">13 / 13</td><td class="px-6 py-4 text-ink-600">–</td><td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Veröffentlicht</span></td><td class="px-6 py-4 text-right"><a href="artikel-5-anzeichen-dachsanierung.html" class="text-brand-600 font-semibold hover:underline">Ansehen</a></td></tr>
-                <tr class="hover:bg-ink-50"><td class="px-6 py-4 font-bold text-ink-900">Wallbox zu Hause: Kosten, Förderung, Ablauf</td><td class="px-6 py-4 text-ink-600">⚡ Elektriker</td><td class="px-6 py-4 text-ink-600">11 / 11</td><td class="px-6 py-4 text-ink-600">–</td><td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Veröffentlicht</span></td><td class="px-6 py-4 text-right"><a href="artikel-wallbox-zuhause.html" class="text-brand-600 font-semibold hover:underline">Ansehen</a></td></tr>
-                <tr class="hover:bg-ink-50"><td class="px-6 py-4 font-bold text-ink-900">Förderung 2026: Dämmung &amp; Energieberatung</td><td class="px-6 py-4 text-ink-600">🏠 Dachdecker</td><td class="px-6 py-4 text-ink-600">9 / 13</td><td class="px-6 py-4 text-ink-600">28.07.2026</td><td class="px-6 py-4"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">Fassungen laufen</span></td><td class="px-6 py-4 text-right"><button onclick="showToast('Fassungs-Status: 9 von 13 fertig, Rest bis Freitag (Demo).')" class="text-brand-600 font-semibold hover:underline">Status</button></td></tr>
-                <tr class="hover:bg-ink-50"><td class="px-6 py-4 font-bold text-ink-900">E-Check fürs Eigenheim: Was wird geprüft?</td><td class="px-6 py-4 text-ink-600">⚡ Elektriker</td><td class="px-6 py-4 text-ink-600">11 / 11</td><td class="px-6 py-4 text-ink-600">–</td><td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Veröffentlicht</span></td><td class="px-6 py-4 text-right"><a href="artikel-e-check-sicherheitspruefung.html" class="text-brand-600 font-semibold hover:underline">Ansehen</a></td></tr>
-                <tr class="hover:bg-ink-50"><td class="px-6 py-4 font-bold text-ink-900">Heizungs-Check vor dem Winter</td><td class="px-6 py-4 text-ink-600">🔧 SHK</td><td class="px-6 py-4 text-ink-600">0 / 2</td><td class="px-6 py-4 text-ink-600">Launch 08/2026</td><td class="px-6 py-4"><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">Entwurf</span></td><td class="px-6 py-4 text-right"><button onclick="showToast('Entwurf zur Redaktion freigegeben (Demo).')" class="text-brand-600 font-semibold hover:underline">Freigeben</button></td></tr>
+              <thead>
+                <tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100">
+                  <th class="px-6 py-3 font-bold">Artikel</th>
+                  <th class="px-6 py-3 font-bold">Gewerk</th>
+                  <th class="px-6 py-3 font-bold">Stadt</th>
+                  <th class="px-6 py-3 font-bold">Wörter</th>
+                  <th class="px-6 py-3 font-bold">Veröffentlicht</th>
+                  <th class="px-6 py-3 font-bold">Status</th>
+                  <th class="px-6 py-3 font-bold text-right">Aktion</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-ink-100" id="blogTbody">
+                <tr><td colspan="7" class="px-6 py-12 text-center text-ink-400">Lade Artikel...</td></tr>
               </tbody>
             </table>
           </div>
-        </div>
-        <div class="grid sm:grid-cols-3 gap-4">
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Veröffentlichte Artikel</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Stadt-Fassungen gesamt</p><p class="mt-2 text-3xl font-black text-ink-900">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Duplicate-Content-Check</p><p class="mt-2 text-3xl font-black text-green-600">✓ 0 Treffer</p></div>
+          <p id="blogEmpty" class="hidden px-6 py-8 text-center text-ink-400 text-sm">Noch keine Artikel vorhanden.</p>
         </div>
       </div>
 
@@ -1826,29 +1793,23 @@ Ihr MietWebsites-Team</textarea>
   <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 my-auto">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <h3 class="text-xl font-black text-ink-900">Blog-Artikel planen</h3>
-        <p class="mt-1 text-sm text-ink-600">Die Redaktion schreibt den Artikel und erzeugt automatisch eine eigene Fassung pro Stadt-Website.</p>
+        <h3 class="text-xl font-black text-ink-900">KI-Artikel generieren</h3>
+        <p class="mt-1 text-sm text-ink-600">Wähle eine Website und lass die KI einen einzigartigen Artikel dafür schreiben.</p>
       </div>
       <button onclick="closeModal('modalArtikel')" class="text-ink-400 hover:text-ink-900 text-2xl font-black leading-none">×</button>
     </div>
-    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); closeModal('modalArtikel'); showToast('Artikel „' + this.querySelector('input').value + '“ in der Pipeline geplant – Redaktion startet (Demo).'); this.reset();">
+    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); generateArticle();">
       <div>
-        <label class="block text-sm font-bold text-ink-800 mb-1.5">Arbeitstitel *</label>
-        <input type="text" required placeholder="z. B. Sturmschäden am Dach: die ersten 24 Stunden" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <label class="block text-sm font-bold text-ink-800 mb-1.5">Website auswählen *</label>
+        <select id="genPageId" required class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="">Bitte wählen...</option>
+        </select>
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk *</label>
-          <select class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <option>🏠 Dachdecker</option><option>⚡ Elektriker</option><option>🔧 SHK</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-ink-800 mb-1.5">Veröffentlichung</label>
-          <input type="date" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-        </div>
+      <div>
+        <label class="block text-sm font-bold text-ink-800 mb-1.5">Optional: Eigener Titel</label>
+        <input type="text" id="genTitle" placeholder="z. B. Sturmschäden am Dach: die ersten 24 Stunden" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
       </div>
-      <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">In Pipeline planen</button>
+      <button type="submit" id="genBtn" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">🤖 Mit KI generieren</button>
     </form>
   </div>
 </div>
@@ -2327,6 +2288,11 @@ function showView(id, el){
   // Load leads when switching to leads view
   if (id === 'leads' && typeof loadLeads === 'function') {
     loadLeads();
+  }
+  
+  // Load articles when switching to blog view
+  if (id === 'blog' && typeof loadArticles === 'function') {
+    loadArticles();
   }
   
   // Load tenants when switching to mieter view

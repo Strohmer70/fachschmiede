@@ -115,8 +115,29 @@ function renderDashboard(data) {
   // ── Seiten-Übersicht ──
   renderPagesOverview(pages || []);
   
-  // ── Todo-Liste (wenn keine echten Daten, leer anzeigen) ──
+  // ── Artikel-Generierung Dropdown ──
+  populateGenPageDropdown(pages || []);
+  
+  // ── Websites & Städte View ──
+  renderWebsitesView(pages || []);
+  
+  // ── Todo-Liste ──
   renderTodoList(tenants || [], pages || []);
+}
+
+function populateGenPageDropdown(pages) {
+  const select = document.getElementById('genPageId');
+  if (!select) return;
+  
+  // Keep first option
+  select.innerHTML = '<option value="">Bitte wählen...</option>';
+  
+  pages.forEach(page => {
+    const option = document.createElement('option');
+    option.value = page.id;
+    option.textContent = `${page.trade?.name || 'Gewerk'} · ${page.city?.name || 'Stadt'} (${page.slug})`;
+    select.appendChild(option);
+  });
 }
 
 function setText(id, text, colorClass) {
@@ -317,6 +338,97 @@ function renderTodoList(tenants, pages) {
     </li>
   `).join('');
 }
+
+// ═══════════ WEBSITES & STÄDTE ═══════════
+function renderWebsitesView(pages) {
+  const grid = document.getElementById('stadtGrid');
+  const hint = document.getElementById('stadtGridHint');
+  if (!grid) return;
+  
+  if (pages.length === 0) {
+    grid.innerHTML = '';
+    if (hint) hint.textContent = 'Noch keine Seiten vorhanden.';
+    return;
+  }
+  
+  if (hint) hint.textContent = `${pages.length} Stadt-Websites im Portfolio — alle live und indexierbar.`;
+  
+  grid.innerHTML = pages.map(p => {
+    const isRented = p.status === 'rented';
+    const statusBadge = isRented 
+      ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span>'
+      : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span>';
+    
+    const tradeEmoji = {
+      'Dachdecker': '🏠',
+      'Elektriker': '⚡',
+      'Klempner': '🔧',
+      'Zimmerer': '🔨',
+      'Maler': '🖌️',
+    }[p.trade?.name] || '🏗️';
+    
+    return `
+      <div class="stadt-card bg-white rounded-2xl border-2 ${isRented ? 'border-ink-200' : 'border-green-200'} p-5" data-gewerk="${p.trade?.name || ''}" data-status="${isRented ? 'vermietet' : 'frei'}">
+        <div class="flex items-center justify-between">
+          <p class="font-black text-ink-900">${p.city?.name || 'Unbekannt'}</p>
+          ${statusBadge}
+        </div>
+        <p class="text-xs text-ink-500 mt-1">${tradeEmoji} ${p.trade?.name || '-'} · fachschmiede.de/${p.slug}</p>
+        <p class="text-xs text-ink-500 mt-2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</p>
+        <div class="mt-4 flex gap-2">
+          <a href="/${p.slug}" target="_blank" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
+          ${isRented ? `
+            <button onclick="showToast('Bereits vermietet')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button>
+          ` : `
+            <button onclick="openModal('modalWebsite')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Filter-Buttons dynamisch erstellen
+  renderWebsitesFilter(pages);
+}
+
+function renderWebsitesFilter(pages) {
+  const container = document.getElementById('stadtFilter');
+  if (!container) return;
+  
+  const gewerke = [...new Set(pages.map(p => p.trade?.name).filter(Boolean))].sort();
+  
+  container.innerHTML = `
+    <span class="text-sm font-bold text-ink-700">Filter:</span>
+    <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
+    ${gewerke.map(g => {
+      const emoji = {'Dachdecker':'🏠','Elektriker':'⚡','Klempner':'🔧','Zimmerer':'🔨','Maler':'🖌️'}[g] || '🏗️';
+      return `<button onclick="filterStaedte('${g}', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">${emoji} ${g}</button>`;
+    }).join('')}
+    <span class="ml-auto text-xs text-ink-400 font-semibold"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>frei · <span class="inline-block w-2.5 h-2.5 rounded-full bg-ink-300 mr-1 ml-2"></span>vermietet</span>
+  `;
+}
+
+// Globale Filter-Funktion für Websites & Städte
+window.filterStaedte = function(gewerk, btn) {
+  // Buttons aktualisieren
+  document.querySelectorAll('.stadt-f').forEach(b => {
+    b.classList.remove('bg-ink-900', 'text-white');
+    b.classList.add('bg-ink-100', 'text-ink-600');
+  });
+  if (btn) {
+    btn.classList.remove('bg-ink-100', 'text-ink-600');
+    btn.classList.add('bg-ink-900', 'text-white');
+  }
+  
+  // Cards filtern
+  document.querySelectorAll('.stadt-card').forEach(card => {
+    if (!gewerk || card.dataset.gewerk === gewerk) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+};
 
 // ═══════════ HILFSFUNKTIONEN ═══════════
 function formatDate(dateStr) {
@@ -601,6 +713,331 @@ async function updateLeadStatus(leadId, status) {
   }
 }
 
+// ═══════════ BLOG / ARTIKEL ═══════════
+let allArticles = [];
+let currentArticleFilter = 'all';
+
+async function loadArticles() {
+  if (!adminToken) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/articles?status=all&limit=100`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    
+    if (res.status === 401) {
+      showLoginGate();
+      return;
+    }
+    
+    const data = await res.json();
+    allArticles = data.articles || [];
+    
+    // Update KPIs
+    const published = allArticles.filter(a => a.status === 'published').length;
+    const drafts = allArticles.filter(a => a.status === 'draft').length;
+    const aiGenerated = allArticles.filter(a => a.ai_generated).length;
+    
+    setText('blogStatPublished', published);
+    setText('blogStatDrafts', drafts);
+    setText('blogStatAi', aiGenerated);
+    
+    renderArticlesTable(allArticles);
+    populateArticlePageFilter(allArticles);
+    
+  } catch (err) {
+    console.error('Articles load error:', err);
+    showToast('❌ Fehler beim Laden der Artikel');
+  }
+}
+
+function renderArticlesTable(articles) {
+  const tbody = document.getElementById('blogTbody');
+  const emptyMsg = document.getElementById('blogEmpty');
+  
+  if (!tbody) return;
+  
+  if (articles.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="px-6 py-12 text-center">
+          <div class="text-ink-400">
+            <p class="text-4xl mb-3">📝</p>
+            <p class="font-bold text-ink-600 text-lg">Noch keine Artikel</p>
+            <p class="text-sm mt-1">Erstelle deinen ersten Artikel oder nutze die KI-Generierung.</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    if (emptyMsg) emptyMsg.classList.add('hidden');
+    return;
+  }
+  
+  if (emptyMsg) emptyMsg.classList.add('hidden');
+  
+  const statusColors = {
+    'published': 'bg-green-100 text-green-700',
+    'draft': 'bg-amber-100 text-amber-700',
+    'archived': 'bg-ink-100 text-ink-500',
+  };
+  const statusLabels = {
+    'published': 'Veröffentlicht',
+    'draft': 'Entwurf',
+    'archived': 'Archiviert',
+  };
+  
+  tbody.innerHTML = articles.map(article => {
+    const page = article.landing_page || {};
+    const trade = page.trade || {};
+    const city = page.city || {};
+    const timeAgo = article.published_at ? timeSince(new Date(article.published_at)) : '-';
+    
+    const statusClass = statusColors[article.status] || 'bg-ink-100 text-ink-500';
+    const statusLabel = statusLabels[article.status] || article.status;
+    
+    return `
+      <tr class="hover:bg-ink-50 transition" data-status="${article.status}" data-page="${page.slug || ''}">
+        <td class="px-6 py-4">
+          <p class="font-bold text-ink-900">${article.title || 'Ohne Titel'}</p>
+          <p class="text-xs text-ink-500">${article.slug || ''}</p>
+        </td>
+        <td class="px-6 py-4 text-sm text-ink-600">${trade.name || '-'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">${city.name || '-'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">${article.word_count || 0} Wörter</td>
+        <td class="px-6 py-4 text-sm text-ink-600 whitespace-nowrap">${timeAgo}</td>
+        <td class="px-6 py-4">
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full ${statusClass}">${statusLabel}</span>
+          ${article.ai_generated ? '<span class="text-xs font-bold px-2 py-1 rounded-full bg-purple-100 text-purple-700 ml-1">KI</span>' : ''}
+        </td>
+        <td class="px-6 py-4 text-right">
+          <button onclick="showArticleDetail('${article.id}')" class="text-brand-600 font-semibold hover:underline">Details</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function populateArticlePageFilter(articles) {
+  const select = document.getElementById('articlePage');
+  if (!select) return;
+  
+  const pages = [...new Set(articles.map(a => a.landing_page?.slug).filter(Boolean))];
+  
+  select.innerHTML = '<option value="">Alle Seiten</option>';
+  pages.forEach(slug => {
+    const option = document.createElement('option');
+    option.value = slug;
+    option.textContent = slug;
+    select.appendChild(option);
+  });
+}
+
+function filterArticles() {
+  const statusFilter = document.getElementById('articleStatus')?.value || '';
+  const pageFilter = document.getElementById('articlePage')?.value || '';
+  
+  let filtered = allArticles;
+  
+  if (statusFilter) {
+    const statusMap = {
+      'Entwurf': 'draft',
+      'Veröffentlicht': 'published',
+      'Archiviert': 'archived',
+    };
+    const code = statusMap[statusFilter] || statusFilter;
+    filtered = filtered.filter(a => (a.status || 'draft') === code);
+  }
+  
+  if (pageFilter) {
+    filtered = filtered.filter(a => (a.landing_page?.slug || '') === pageFilter);
+  }
+  
+  renderArticlesTable(filtered);
+}
+
+async function generateArticle() {
+  const pageId = document.getElementById('genPageId')?.value;
+  const customTitle = document.getElementById('genTitle')?.value;
+  
+  if (!pageId) {
+    showToast('❌ Bitte wähle eine Seite aus');
+    return;
+  }
+  
+  const btn = document.getElementById('genBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Generiere...';
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/articles/generate`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        landing_page_id: pageId,
+        custom_title: customTitle || undefined
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (data.error) {
+      showToast('❌ ' + (data.message || 'Generierung fehlgeschlagen'));
+    } else {
+      showToast(`✅ Artikel generiert: "${data.article?.title || 'Erfolg'}"`);
+      loadArticles();
+      // Reset form
+      document.getElementById('genTitle').value = '';
+    }
+  } catch (err) {
+    console.error('Generate error:', err);
+    showToast('❌ Fehler bei der Generierung');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🤖 Mit KI generieren';
+    }
+  }
+}
+
+async function runArticleSchedule() {
+  const btn = document.getElementById('scheduleBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Plane Artikel...';
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/articles/schedule`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    const data = await res.json();
+    
+    if (data.error) {
+      showToast('❌ ' + (data.message || 'Planung fehlgeschlagen'));
+    } else {
+      showToast(`✅ ${data.scheduled || 0} Artikel geplant`);
+      loadArticles();
+    }
+  } catch (err) {
+    console.error('Schedule error:', err);
+    showToast('❌ Fehler bei der Planung');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '📅 Automatisch planen (1-2-4)';
+    }
+  }
+}
+
+function showArticleDetail(articleId) {
+  const article = allArticles.find(a => a.id === articleId);
+  if (!article) {
+    showToast('Artikel nicht gefunden');
+    return;
+  }
+  
+  const page = article.landing_page || {};
+  const trade = page.trade || {};
+  const city = page.city || {};
+  
+  const modalHTML = `
+    <div class="fixed inset-0 z-[80] bg-ink-900/60 backdrop-blur flex items-center justify-center p-4" id="articleDetailModal">
+      <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-black text-ink-900">Artikel-Details</h3>
+          <button onclick="document.getElementById('articleDetailModal').remove()" class="text-ink-400 hover:text-ink-600">✕</button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Titel</p>
+            <p class="font-bold text-ink-900">${article.title || 'Ohne Titel'}</p>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Slug</p>
+            <p class="text-sm text-ink-600">${article.slug || '-'}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-bold text-ink-400 uppercase">Gewerk</p>
+              <p class="text-sm text-ink-900">${trade.name || '-'}</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-ink-400 uppercase">Stadt</p>
+              <p class="text-sm text-ink-900">${city.name || '-'}</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-bold text-ink-400 uppercase">Wörter</p>
+              <p class="text-sm text-ink-900">${article.word_count || 0}</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-ink-400 uppercase">KI-generiert</p>
+              <p class="text-sm text-ink-900">${article.ai_generated ? 'Ja ✅' : 'Nein'}</p>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase mb-2">Status ändern</p>
+            <div class="flex gap-2">
+              <button onclick="updateArticleStatus('${article.id}', 'draft')" class="text-xs font-bold px-3 py-2 rounded-lg border ${article.status === 'draft' ? 'bg-amber-100 text-amber-700 border-amber-300' : 'border-ink-200 text-ink-600'}">Entwurf</button>
+              <button onclick="updateArticleStatus('${article.id}', 'published')" class="text-xs font-bold px-3 py-2 rounded-lg border ${article.status === 'published' ? 'bg-green-100 text-green-700 border-green-300' : 'border-ink-200 text-ink-600'}">Veröffentlichen</button>
+              <button onclick="updateArticleStatus('${article.id}', 'archived')" class="text-xs font-bold px-3 py-2 rounded-lg border ${article.status === 'archived' ? 'bg-ink-100 text-ink-700 border-ink-300' : 'border-ink-200 text-ink-600'}">Archivieren</button>
+            </div>
+          </div>
+          ${article.excerpt ? `
+          <div>
+            <p class="text-xs font-bold text-ink-400 uppercase">Auszug</p>
+            <p class="text-sm text-ink-900 bg-ink-50 rounded-lg p-3">${article.excerpt}</p>
+          </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  const existing = document.getElementById('articleDetailModal');
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+async function updateArticleStatus(articleId, status) {
+  try {
+    const res = await fetch(`${API_BASE}/articles/${articleId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status })
+    });
+    
+    if (res.ok) {
+      showToast('✅ Status aktualisiert');
+      const article = allArticles.find(a => a.id === articleId);
+      if (article) article.status = status;
+      renderArticlesTable(allArticles);
+      const modal = document.getElementById('articleDetailModal');
+      if (modal) modal.remove();
+    } else {
+      showToast('❌ Status-Update fehlgeschlagen');
+    }
+  } catch (err) {
+    console.error('Article update error:', err);
+    showToast('❌ Fehler beim Aktualisieren');
+  }
+}
+
 // ═══════════ INIT ═══════════
 document.addEventListener('DOMContentLoaded', () => {
   // Überschreibe das originale doLogin und logout aus der HTML-Datei
@@ -608,6 +1045,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.logout = showLoginGate;
   window.showLeadDetail = showLeadDetail;
   window.updateLeadStatus = updateLeadStatus;
+  window.showArticleDetail = showArticleDetail;
+  window.updateArticleStatus = updateArticleStatus;
+  window.generateArticle = generateArticle;
+  window.runArticleSchedule = runArticleSchedule;
+  window.filterArticles = filterArticles;
   
   // Prüfe, ob Token existiert
   if (adminToken) {

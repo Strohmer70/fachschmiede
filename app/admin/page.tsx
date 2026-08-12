@@ -26,9 +26,16 @@ interface Tenant {
   created_at: string; landing_page: { slug: string } | null
 }
 
-interface Invoice {
-  id: string; tenant: string; amount: number; status: string
-  date: string; description: string
+interface Article {
+  id: string; title: string; slug: string; status: string
+  excerpt: string; meta_description: string; word_count: number
+  created_at: string; published_at: string | null
+  ai_generated: boolean; featured_image: string | null
+  landing_page: { 
+    slug: string; 
+    trade: { name: string } | null; 
+    city: { name: string } | null 
+  } | null
 }
 
 export default function AdminPage() {
@@ -39,14 +46,23 @@ export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [pages, setPages] = useState<Page[]>([])
   const [tenants, setTenants] = useState<Tenant[]>([])
+  const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Blog state
+  const [blogFilter, setBlogFilter] = useState('all')
+  const [generating, setGenerating] = useState(false)
+  const [generateResult, setGenerateResult] = useState('')
+  const [selectedPageForArticle, setSelectedPageForArticle] = useState('')
+  const [articleTitle, setArticleTitle] = useState('')
 
   // Marketing state
   const [seoKeyword, setSeoKeyword] = useState('')
   const [marketingMessage, setMarketingMessage] = useState('')
 
   useEffect(() => { if (isLoggedIn) loadData() }, [isLoggedIn])
+  useEffect(() => { if (isLoggedIn && activeTab === 'blog') loadArticles() }, [activeTab, isLoggedIn])
 
   async function loadData() {
     setLoading(true)
@@ -63,6 +79,117 @@ export default function AdminPage() {
       }
     } catch (err: any) { setError(err.message) }
     setLoading(false)
+  }
+
+  async function loadArticles() {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/articles?status=${blogFilter === 'all' ? 'all' : blogFilter}&limit=100`)
+      const data = await res.json()
+      if (data.error) setError(data.message || 'Fehler beim Laden der Artikel')
+      else setArticles(data.articles || [])
+    } catch (err: any) { setError(err.message) }
+    setLoading(false)
+  }
+
+  async function generateArticle() {
+    if (!selectedPageForArticle) {
+      setError('Bitte wählen Sie eine Seite aus')
+      return
+    }
+    
+    setGenerating(true)
+    setGenerateResult('')
+    setError('')
+    
+    try {
+      const res = await fetch('/api/articles/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          landing_page_id: selectedPageForArticle,
+          custom_title: articleTitle || undefined
+        })
+      })
+      
+      const data = await res.json()
+      
+      if (data.error) {
+        setError(data.message || 'Generierung fehlgeschlagen')
+      } else {
+        setGenerateResult(`✅ Artikel generiert: "${data.article.title}" (${data.wordCount} Wörter)`)
+        loadArticles()
+        setArticleTitle('')
+      }
+    } catch (err: any) {
+      setError(err.message)
+    }
+    
+    setGenerating(false)
+  }
+
+  async function runScheduledGeneration() {
+    setGenerating(true)
+    setGenerateResult('')
+    setError('')
+    
+    try {
+      const res = await fetch('/api/articles/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      
+      const data = await res.json()
+      
+      if (data.error) {
+        setError(data.message || 'Scheduling fehlgeschlagen')
+      } else {
+        const successCount = data.results?.filter((r: any) => r.status === 'generated').length || 0
+        setGenerateResult(`✅ ${successCount} von ${data.total_pages} Artikeln generiert`)
+        loadArticles()
+      }
+    } catch (err: any) {
+      setError(err.message)
+    }
+    
+    setGenerating(false)
+  }
+
+  async function updateArticleStatus(articleId: string, newStatus: string) {
+    try {
+      const res = await fetch(`/api/articles/${articleId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+      
+      if (res.ok) {
+        loadArticles()
+      } else {
+        const data = await res.json()
+        setError(data.message || 'Update fehlgeschlagen')
+      }
+    } catch (err: any) {
+      setError(err.message)
+    }
+  }
+
+  async function deleteArticle(articleId: string) {
+    if (!confirm('Artikel wirklich löschen?')) return
+    
+    try {
+      const res = await fetch(`/api/articles/${articleId}`, { method: 'DELETE' })
+      
+      if (res.ok) {
+        loadArticles()
+      } else {
+        const data = await res.json()
+        setError(data.message || 'Löschen fehlgeschlagen')
+      }
+    } catch (err: any) {
+      setError(err.message)
+    }
   }
 
   function handleLogin(e: React.FormEvent) {
@@ -107,6 +234,7 @@ export default function AdminPage() {
           {[
             { id: 'dashboard', label: '📊 Dashboard' },
             { id: 'websites', label: '🌐 Websites' },
+            { id: 'blog', label: '📝 Blog' },
             { id: 'leads', label: '📥 Leads' },
             { id: 'tenants', label: '👤 Mieter' },
             { id: 'invoices', label: '📄 Rechnungen' },
@@ -128,10 +256,11 @@ export default function AdminPage() {
 
       {/* Mobile nav */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-900 text-slate-300 flex justify-around p-2 z-50 text-xs">
-        {['dashboard','websites','leads','tenants','invoices','marketing'].map(t => (
+        {['dashboard','websites','blog','leads','tenants','invoices','marketing'].map(t => (
           <button key={t} onClick={() => setActiveTab(t)} className={`p-2 rounded ${activeTab === t ? 'bg-orange-600 text-white' : ''}`}>
             {t === 'dashboard' && '📊'}
             {t === 'websites' && '🌐'}
+            {t === 'blog' && '📝'}
             {t === 'leads' && '📥'}
             {t === 'tenants' && '👤'}
             {t === 'invoices' && '📄'}
@@ -146,6 +275,7 @@ export default function AdminPage() {
           <h1 className="text-xl font-black text-slate-900">
             {activeTab === 'dashboard' && 'Dashboard'}
             {activeTab === 'websites' && 'Websites'}
+            {activeTab === 'blog' && 'Blog-Verwaltung'}
             {activeTab === 'leads' && 'Leads'}
             {activeTab === 'tenants' && 'Mieter'}
             {activeTab === 'invoices' && 'Rechnungen'}
@@ -162,6 +292,7 @@ export default function AdminPage() {
 
         <div className="p-6 max-w-7xl">
           {error && <p className="mb-4 p-4 bg-red-50 text-red-600 rounded-lg">{error}</p>}
+          {generateResult && <p className="mb-4 p-4 bg-green-50 text-green-600 rounded-lg">{generateResult}</p>}
 
           {/* ═════ DASHBOARD ═════ */}
           {activeTab === 'dashboard' && stats && (
@@ -203,6 +334,177 @@ export default function AdminPage() {
                 )}
               </div>
             </>
+          )}
+
+          {/* ═════ BLOG ═════ */}
+          {activeTab === 'blog' && (
+            <div className="space-y-6">
+              {/* Generate Article Section */}
+              <div className="bg-white rounded-xl border border-slate-200 p-6">
+                <h2 className="font-bold mb-4">🤖 Artikel generieren</h2>
+                
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Seite auswählen</label>
+                    <select 
+                      value={selectedPageForArticle}
+                      onChange={(e) => setSelectedPageForArticle(e.target.value)}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                    >
+                      <option value="">-- Seite wählen --</option>
+                      {pages.map(page => (
+                        <option key={page.id} value={page.id}>
+                          {page.trade?.name} {page.city?.name} ({page.slug})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Titel (optional)</label>
+                    <input 
+                      type="text"
+                      value={articleTitle}
+                      onChange={(e) => setArticleTitle(e.target.value)}
+                      placeholder="Leer lassen für automatischen Titel"
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-3">
+                  <button 
+                    onClick={generateArticle}
+                    disabled={generating || !selectedPageForArticle}
+                    className="bg-orange-600 hover:bg-orange-700 disabled:bg-slate-300 text-white font-bold px-6 py-3 rounded-xl transition"
+                  >
+                    {generating ? '⏳ Generiere...' : '📝 Einzelnen Artikel generieren'}
+                  </button>
+                  
+                  <button 
+                    onClick={runScheduledGeneration}
+                    disabled={generating}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold px-6 py-3 rounded-xl transition"
+                  >
+                    {generating ? '⏳ Läuft...' : '🚀 Automatisches Scheduling (1-2-4)'}
+                  </button>
+                </div>
+                
+                <div className="mt-4 p-3 bg-slate-50 rounded-lg text-sm text-slate-600">
+                  <p className="font-medium">📋 Automatisches Scheduling:</p>
+                  <ul className="mt-1 space-y-1">
+                    <li>• Freie Seiten: 1 Artikel/Monat</li>
+                    <li>• Basis-Mieter: 2 Artikel/Monat</li>
+                    <li>• Pro-Mieter: 4 Artikel/Monat</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Articles List */}
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                  <h2 className="font-bold">Artikel ({articles.length})</h2>
+                  <div className="flex gap-2">
+                    <select 
+                      value={blogFilter}
+                      onChange={(e) => { setBlogFilter(e.target.value); loadArticles(); }}
+                      className="text-sm border border-slate-300 rounded-lg px-3 py-2"
+                    >
+                      <option value="all">Alle</option>
+                      <option value="published">Veröffentlicht</option>
+                      <option value="draft">Entwurf</option>
+                      <option value="archived">Archiviert</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-slate-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left font-semibold">Titel</th>
+                        <th className="px-6 py-3 text-left font-semibold">Seite</th>
+                        <th className="px-6 py-3 text-left font-semibold">Status</th>
+                        <th className="px-6 py-3 text-left font-semibold">Wörter</th>
+                        <th className="px-6 py-3 text-left font-semibold">KI</th>
+                        <th className="px-6 py-3 text-left font-semibold">Datum</th>
+                        <th className="px-6 py-3 text-left font-semibold">Aktionen</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {articles.map(article => (
+                        <tr key={article.id} className="border-t border-slate-100">
+                          <td className="px-6 py-3">
+                            <p className="font-medium">{article.title}</p>
+                            <p className="text-xs text-slate-400 truncate max-w-xs">{article.excerpt}</p>
+                          </td>
+                          <td className="px-6 py-3 text-slate-500">
+                            {article.landing_page ? (
+                              <span>{article.landing_page.trade?.name} {article.landing_page.city?.name}</span>
+                            ) : '—'}
+                          </td>
+                          <td className="px-6 py-3">
+                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-bold ${
+                              article.status === 'published' ? 'bg-green-100 text-green-700' :
+                              article.status === 'draft' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-slate-100 text-slate-700'
+                            }`}>
+                              {article.status === 'published' ? 'Live' : 
+                               article.status === 'draft' ? 'Entwurf' : 'Archiviert'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-3">{article.word_count || 0}</td>
+                          <td className="px-6 py-3">
+                            {article.ai_generated ? (
+                              <span className="text-purple-600">🤖</span>
+                            ) : (
+                              <span className="text-slate-400">✍️</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-3 text-slate-500">
+                            {new Date(article.created_at).toLocaleDateString('de-DE')}
+                          </td>
+                          <td className="px-6 py-3">
+                            <div className="flex gap-2">
+                              {article.status === 'draft' && (
+                                <button 
+                                  onClick={() => updateArticleStatus(article.id, 'published')}
+                                  className="text-xs bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700"
+                                >
+                                  Veröffentlichen
+                                </button>
+                              )}
+                              {article.status === 'published' && (
+                                <button 
+                                  onClick={() => updateArticleStatus(article.id, 'draft')}
+                                  className="text-xs bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700"
+                                >
+                                  Zurückziehen
+                                </button>
+                              )}
+                              <button 
+                                onClick={() => deleteArticle(article.id)}
+                                className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                              >
+                                Löschen
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {articles.length === 0 && (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
+                            <div className="text-4xl mb-2">📝</div>
+                            <p>Noch keine Artikel vorhanden</p>
+                            <p className="text-sm mt-1">Generieren Sie Ihren ersten Artikel oben</p>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           )}
 
           {/* ═════ WEBSITES ═════ */}
@@ -353,10 +655,6 @@ export default function AdminPage() {
                         <p className="text-sm text-purple-700">Aktive Mieter</p>
                       </div>
                     </div>
-                    <div className="mt-6">
-                      <h3 className="font-bold mb-3">Ausstehende Rechnungen</h3>
-                      <p className="text-slate-500 text-sm">Rechnungen werden automatisch über Stripe generiert. Sobald Mieter vorhanden sind, erscheinen sie hier.</p>
-                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-12 text-slate-400">
@@ -364,26 +662,6 @@ export default function AdminPage() {
                     <p className="text-sm">Rechnungen werden automatisch erstellt, sobald Mieter über Stripe zahlen.</p>
                   </div>
                 )}
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-bold mb-4">Zahlungseinstellungen</h2>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                    <div>
-                      <p className="font-bold">Stripe-Integration</p>
-                      <p className="text-sm text-slate-500">Automatische Abrechnung über Stripe</p>
-                    </div>
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">Konfiguration nötig</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                    <div>
-                      <p className="font-bold">Standardpreis</p>
-                      <p className="text-sm text-slate-500">Monatliche Miete pro Landing Page</p>
-                    </div>
-                    <span className="font-bold text-slate-900">€149/Monat</span>
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -411,44 +689,6 @@ export default function AdminPage() {
                     <p className="text-sm text-purple-700">Leads (30 Tage)</p>
                   </div>
                 </div>
-
-                <h3 className="font-bold mb-3">Keyword-Tracking</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <span className="font-medium">Dachdecker [Stadt]</span>
-                    <span className="text-sm text-slate-500">{pages.filter(p => p.slug.startsWith('dachdecker')).length} Seiten</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <span className="font-medium">Elektriker [Stadt]</span>
-                    <span className="text-sm text-slate-500">{pages.filter(p => p.slug.startsWith('elektriker')).length} Seiten</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <span className="font-medium">Klempner [Stadt]</span>
-                    <span className="text-sm text-slate-500">{pages.filter(p => p.slug.startsWith('klempner')).length} Seiten</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-bold mb-4">E-Mail Marketing</h2>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Nachricht an alle Mieter</label>
-                    <textarea 
-                      value={marketingMessage}
-                      onChange={(e) => setMarketingMessage(e.target.value)}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none"
-                      rows={4}
-                      placeholder="Hier Nachricht eingeben..."
-                    />
-                  </div>
-                  <button 
-                    disabled={!marketingMessage.trim() || tenants.length === 0}
-                    className="bg-orange-600 hover:bg-orange-700 disabled:bg-slate-300 text-white font-bold px-6 py-3 rounded-xl transition"
-                  >
-                    {tenants.length === 0 ? 'Keine Mieter vorhanden' : 'An alle Mieter senden'}
-                  </button>
-                </div>
               </div>
             </div>
           )}
@@ -465,38 +705,6 @@ export default function AdminPage() {
                       <p className="text-sm text-slate-500">Monatliche Gebühr für Mieter</p>
                     </div>
                     <span className="font-bold text-slate-900">€149/Monat</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                    <div>
-                      <p className="font-bold">Stripe-Integration</p>
-                      <p className="text-sm text-slate-500">Zahlungsabwicklung</p>
-                    </div>
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">Konfiguration nötig</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                    <div>
-                      <p className="font-bold">Supabase-Verbindung</p>
-                      <p className="text-sm text-slate-500">Datenbank-Status</p>
-                    </div>
-                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Verbunden</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h2 className="font-bold mb-4">API-Status</h2>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="font-medium">Admin API</span>
-                    <span className="text-green-700 font-bold text-sm">✓ Aktiv</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="font-medium">Lead-Erfassung</span>
-                    <span className="text-green-700 font-bold text-sm">✓ Aktiv</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
-                    <span className="font-medium">Stripe Checkout</span>
-                    <span className="text-yellow-700 font-bold text-sm">⚠ Keys fehlen</span>
                   </div>
                 </div>
               </div>
