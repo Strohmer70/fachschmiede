@@ -517,13 +517,13 @@ async function main() {
   console.table(generationPlan);
   console.log(`\n📝 Gesamt: ${totalArticles} neue Artikel`);
   
-  // Lade bestehenden Index
+  // Lade bestehenden Index (verschachteltes Format)
   const indexPath = path.join(process.cwd(), 'lib', 'article-index.json');
-  let articleIndex = [];
+  let articleIndex = {};
   try {
     articleIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
   } catch {
-    articleIndex = [];
+    articleIndex = {};
   }
   
   // Generiere Artikel
@@ -569,14 +569,21 @@ async function main() {
       
       fs.writeFileSync(filePath, html, 'utf-8');
       
-      // Füge zu Index hinzu
-      articleIndex.push({
-        slug: fullSlug,
-        trade: tradeSlug,
-        city: city,
+      // Füge zu Index hinzu (verschachteltes Format)
+      if (!articleIndex[tradeSlug]) {
+        articleIndex[tradeSlug] = {};
+      }
+      if (!articleIndex[tradeSlug][city]) {
+        articleIndex[tradeSlug][city] = [];
+      }
+      
+      articleIndex[tradeSlug][city].push({
         title: `${topic.title} in ${cityName}`,
-        month: monthSlug,
-        generated: new Date().toISOString()
+        excerpt: `Wertvolle Tipps zu ${topic.title} in ${cityName} und dem Ruhrgebiet.`,
+        tag: 'Ratgeber',
+        gradient: 'from-accent-500 to-accent-700',
+        svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
+        url: `/${tradeSlug}/${city}/blog/${fullSlug}/`
       });
       
       console.log(`✅ Generiert: ${tradeSlug}/${city}/${fullSlug}`);
@@ -587,8 +594,16 @@ async function main() {
   // Speichere Index
   fs.writeFileSync(indexPath, JSON.stringify(articleIndex, null, 2), 'utf-8');
   
+  // Zähle Gesamt-Artikel im verschachtelten Index
+  let totalArticles = 0;
+  for (const trade of Object.values(articleIndex)) {
+    for (const cityArticles of Object.values(trade)) {
+      totalArticles += cityArticles.length;
+    }
+  }
+  
   console.log(`\n🎉 Fertig! ${generatedCount} neue Artikel generiert.`);
-  console.log(`📚 Index aktualisiert: ${articleIndex.length} Gesamt-Artikel`);
+  console.log(`📚 Index aktualisiert: ${totalArticles} Gesamt-Artikel`);
   
   // Git commit Info
   console.log(`\n💡 Nächste Schritte:`);
