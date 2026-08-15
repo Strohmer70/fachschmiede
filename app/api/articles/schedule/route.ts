@@ -23,7 +23,6 @@ function getArticleCountForPage(page: any, config: ScheduleConfig): number {
   
   // Check tenant plan
   if (page.rented_by) {
-    // For now, default to basic plan. In future, check tenant subscription tier
     return config.basic_plan
   }
   
@@ -50,7 +49,7 @@ async function needsArticlesThisMonth(pageId: string, requiredCount: number): Pr
   return (count || 0) < requiredCount
 }
 
-// POST /api/articles/schedule - Run scheduled article generation
+// POST /api/articles/schedule - Run scheduled article generation with KI
 export async function POST(request: NextRequest) {
   try {
     let body: any = {}
@@ -62,7 +61,7 @@ export async function POST(request: NextRequest) {
     
     const config: ScheduleConfig = { ...DEFAULT_CONFIG, ...(body.config || {}) }
     
-    // Get all landing pages (all statuses, not just published)
+    // Get all landing pages
     const { data: pages, error: pagesError } = await supabaseAdmin
       .from('landing_pages')
       .select(`
@@ -77,6 +76,7 @@ export async function POST(request: NextRequest) {
     
     const results = []
     let generatedCount = 0
+    let totalCost = 0
     
     for (const page of (pages || [])) {
       if (generatedCount >= config.max_articles_per_run) {
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       }
       
       try {
-        // Call generate API (no api_key needed, uses templates)
+        // Call KI generate API
         const generateResponse = await fetch(`${request.nextUrl.origin}/api/articles/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -109,12 +109,14 @@ export async function POST(request: NextRequest) {
         if (generateResponse.ok) {
           const data = await generateResponse.json()
           generatedCount++
+          totalCost += parseFloat(data.cost_estimate?.replace('$', '') || '0')
           results.push({
             page_id: page.id,
             page_slug: page.slug,
             status: 'generated',
             article_id: data.article?.id,
-            word_count: data.wordCount
+            word_count: data.article?.word_count,
+            cost: data.cost_estimate
           })
         } else {
           const error = await generateResponse.json()
@@ -126,8 +128,8 @@ export async function POST(request: NextRequest) {
           })
         }
         
-        // Small delay to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        // Delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 2000))
         
       } catch (error: any) {
         results.push({
@@ -142,6 +144,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       generated: generatedCount,
+      total_cost_estimate: `~$${totalCost.toFixed(4)}`,
       total_pages: pages?.length || 0,
       results,
       config

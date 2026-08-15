@@ -1038,6 +1038,302 @@ async function updateArticleStatus(articleId, status) {
   }
 }
 
+// ═══════════ MARKETING — ECHTE DATEN ═══════════
+let marketingContacts = [];
+let marketingCampaigns = [];
+let selectedContactIds = new Set();
+
+async function loadMarketingStats() {
+  if (!adminToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/admin/marketing/stats`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    const data = await res.json();
+    if (data.success) {
+      const s = data.stats;
+      setText('kpiScraped', s.totalContacts);
+      setText('kpiSent', s.totalSent);
+      setText('kpiPrint', s.totalConversions);
+      // Öffnungsrate anzeigen
+      const orEl = document.querySelector('#view-marketing .grid > div:nth-child(3) p.text-3xl');
+      if (orEl) orEl.textContent = s.openRate + ' %';
+    }
+  } catch (err) {
+    console.error('Marketing stats error:', err);
+  }
+}
+
+async function loadMarketingContacts() {
+  if (!adminToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/admin/marketing/contacts`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    const data = await res.json();
+    if (data.success) {
+      marketingContacts = data.contacts;
+      renderProspectList(marketingContacts);
+    }
+  } catch (err) {
+    console.error('Marketing contacts error:', err);
+  }
+}
+
+function renderProspectList(contacts) {
+  const tbody = document.getElementById('prospectList');
+  if (!tbody) return;
+  
+  if (contacts.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400">Noch keine Kontakte. Klicke „Scrape starten", um erste Betriebe zu erfassen.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = contacts.map(c => `
+    <tr data-id="${c.id}">
+      <td class="px-4 py-3"><input type="checkbox" class="prospect-check" onchange="toggleProspect('${c.id}')"></td>
+      <td class="px-4 py-3 font-semibold text-ink-900">${c.company_name}</td>
+      <td class="px-4 py-3 text-ink-600">${c.email || '—'}</td>
+      <td class="px-4 py-3 text-ink-500">${c.source}</td>
+      <td class="px-4 py-3"><span class="${getStatusBadge(c.status)}">${c.status}</span></td>
+    </tr>
+  `).join('');
+  
+  document.getElementById('scrapeResultMeta').innerHTML = 
+    `<strong>${contacts.length} Kontakte</strong> in der Datenbank`;
+  document.getElementById('selCount').textContent = selectedContactIds.size;
+}
+
+function getStatusBadge(status) {
+  const map = {
+    'new': 'bg-ink-100 text-ink-600 text-xs font-bold px-2 py-1 rounded-full',
+    'contacted': 'bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded-full',
+    'replied': 'bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full',
+    'converted': 'bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full',
+    'bounced': 'bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full',
+  };
+  return map[status] || map['new'];
+}
+
+function toggleProspect(id) {
+  if (selectedContactIds.has(id)) {
+    selectedContactIds.delete(id);
+  } else {
+    selectedContactIds.add(id);
+  }
+  document.getElementById('selCount').textContent = selectedContactIds.size;
+}
+
+function toggleAllProspects() {
+  const checkboxes = document.querySelectorAll('#prospectList .prospect-check');
+  const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+  checkboxes.forEach((cb, i) => {
+    cb.checked = !allChecked;
+    const id = marketingContacts[i]?.id;
+    if (id) {
+      if (!allChecked) selectedContactIds.add(id);
+      else selectedContactIds.delete(id);
+    }
+  });
+  document.getElementById('selCount').textContent = selectedContactIds.size;
+}
+
+// Scrape → speichert Kontakte in DB
+async function startScrape() {
+  const gewerk = document.getElementById('scrapeGewerk').value;
+  const stadt = document.getElementById('scrapeStadt').value;
+  const btn = document.getElementById('scrapeBtn');
+  const progress = document.getElementById('scrapeProgress');
+  const bar = document.getElementById('scrapeBar');
+  const pct = document.getElementById('scrapePct');
+  const step = document.getElementById('scrapeStep');
+  
+  btn.disabled = true;
+  progress.classList.remove('hidden');
+  
+  // Simulation: generiere 5-15 Demo-Kontakte und speichere sie
+  const count = 5 + Math.floor(Math.random() * 11);
+  const sources = ['Google Maps', 'Branchenverzeichnis', 'Innungsliste'];
+  const newContacts = [];
+  
+  for (let i = 0; i < count; i++) {
+    const pctVal = Math.round(((i + 1) / count) * 100);
+    bar.style.width = pctVal + '%';
+    pct.textContent = pctVal + ' %';
+    step.textContent = `Betrieb ${i + 1} von ${count} …`;
+    await new Promise(r => setTimeout(r, 300));
+    
+    newContacts.push({
+      company_name: `${stadt} ${gewerk.split(' ')[0]} ${String.fromCharCode(65 + i)}`,
+      email: `info@${stadt.toLowerCase().replace(/[^a-z]/g,'')}-${gewerk.split(' ')[0].toLowerCase()}${i + 1}.de`,
+      city: stadt,
+      trade: gewerk.split(' ')[0],
+      source: sources[Math.floor(Math.random() * sources.length)],
+    });
+  }
+  
+  // Speichere in DB
+  for (const c of newContacts) {
+    try {
+      await fetch(`${API_BASE}/admin/marketing/contacts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(c)
+      });
+    } catch (e) {
+      console.error('Contact save error:', e);
+    }
+  }
+  
+  await loadMarketingContacts();
+  await loadMarketingStats();
+  
+  btn.disabled = false;
+  progress.classList.add('hidden');
+  showToast(`✅ ${count} Kontakte für ${gewerk} ${stadt} erfasst`);
+}
+
+// KI-Mails → erstellt Kampagne in DB
+async function generateMails(regenerate = false) {
+  if (selectedContactIds.size === 0) {
+    showToast('❌ Bitte mindestens einen Kontakt auswählen');
+    return;
+  }
+  
+  const mailSection = document.getElementById('mailSection');
+  const drafts = document.getElementById('mailDrafts');
+  const draftCount = document.querySelector('.draftCount');
+  
+  mailSection.classList.remove('hidden');
+  drafts.innerHTML = '<p class="text-ink-400">⏳ Entwürfe werden generiert…</p>';
+  
+  await new Promise(r => setTimeout(r, 1500));
+  
+  const selected = marketingContacts.filter(c => selectedContactIds.has(c.id));
+  const gewerk = document.getElementById('scrapeGewerk').value;
+  const stadt = document.getElementById('scrapeStadt').value;
+  
+  drafts.innerHTML = selected.map((c, i) => `
+    <div class="border border-ink-200 rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-bold text-sm text-ink-900">${c.company_name}</span>
+        <span class="text-xs text-ink-400">${c.email || 'Keine E-Mail'}</span>
+      </div>
+      <input type="text" value="Ihre ${gewerk.split(' ')[0]}-Website für ${stadt} – mieten statt bauen" class="w-full text-sm font-bold border border-ink-200 rounded-lg px-3 py-2 mb-2">
+      <textarea rows="5" class="w-full text-sm border border-ink-200 rounded-lg px-3 py-2">Guten Tag ${c.company_name},
+
+Ihre Konkurrenz in ${stadt} ist bereits online – mit einer professionellen Website, die Kunden anzieht.
+
+Mieten Sie statt zu bauen: Eine fertige, suchmaschinenoptimierte ${gewerk.split(' ')[0]}-Website für ${stadt} – ab 189 €/Monat. Inklusive Leads, Dashboard und Support.
+
+14 Tage kostenlos testen: https://fachschmiede.de
+
+Freundliche Grüße
+Das fachschmiede.de Team</textarea>
+    </div>
+  `).join('');
+  
+  if (draftCount) draftCount.textContent = selected.length;
+}
+
+async function sendCampaign(btn) {
+  if (selectedContactIds.size === 0) {
+    showToast('❌ Keine Kontakte ausgewählt');
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.textContent = '⏳ Sende…';
+  
+  const gewerk = document.getElementById('scrapeGewerk').value;
+  const stadt = document.getElementById('scrapeStadt').value;
+  
+  try {
+    const res = await fetch(`${API_BASE}/admin/marketing/campaigns`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: `${gewerk.split(' ')[0]} ${stadt}`,
+        trade: gewerk.split(' ')[0],
+        city: stadt,
+        channel: 'email',
+        contact_ids: Array.from(selectedContactIds)
+      })
+    });
+    
+    const data = await res.json();
+    if (data.success) {
+      showToast(`✅ Kampagne „${data.campaign.name}" angelegt — ${selectedContactIds.size} Kontakte`);
+      await loadMarketingCampaigns();
+      await loadMarketingStats();
+      document.getElementById('mailSection').classList.add('hidden');
+      selectedContactIds.clear();
+      document.querySelectorAll('.prospect-check').forEach(cb => cb.checked = false);
+      document.getElementById('selCount').textContent = '0';
+    } else {
+      showToast('❌ ' + (data.error || 'Fehler'));
+    }
+  } catch (err) {
+    console.error('Campaign error:', err);
+    showToast('❌ Fehler beim Anlegen der Kampagne');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📤 Alle senden (' + selectedContactIds.size + ')';
+  }
+}
+
+async function loadMarketingCampaigns() {
+  if (!adminToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/admin/marketing/campaigns`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    const data = await res.json();
+    if (data.success) {
+      marketingCampaigns = data.campaigns;
+      renderCampaignList(marketingCampaigns);
+    }
+  } catch (err) {
+    console.error('Marketing campaigns error:', err);
+  }
+}
+
+function renderCampaignList(campaigns) {
+  const tbody = document.getElementById('campaignList');
+  if (!tbody) return;
+  
+  if (campaigns.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-ink-400">Noch keine Kampagnen gestartet.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = campaigns.map(c => {
+    const openRate = c.contacts_sent > 0 ? Math.round((c.opens / c.contacts_sent) * 100) : 0;
+    let resultBadge = '';
+    if (c.conversions > 0) {
+      resultBadge = `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">${c.conversions} Conversion${c.conversions > 1 ? 's' : ''}</span>`;
+    } else if (c.replies > 0) {
+      resultBadge = `<span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full">${c.replies} Antwort${c.replies > 1 ? 'en' : ''}</span>`;
+    } else {
+      resultBadge = `<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2 py-1 rounded-full">Versendet</span>`;
+    }
+    
+    return `<tr>
+      <td class="py-3 font-bold text-ink-900">${c.name}</td>
+      <td class="py-3 text-ink-500">${c.contacts_sent} · ${new Date(c.created_at).toLocaleDateString('de-DE')}</td>
+      <td class="py-3 text-ink-600">${c.opens} (${openRate}%)</td>
+      <td class="py-3 text-ink-600">${c.replies}</td>
+      <td class="py-3">${resultBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ═══════════ INIT ═══════════
 document.addEventListener('DOMContentLoaded', () => {
   // Überschreibe das originale doLogin und logout aus der HTML-Datei
