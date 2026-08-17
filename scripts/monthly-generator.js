@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
  * Monatlicher Artikel-Generator für fachschmiede.de
- * Nutzt die echte Kimi/Moonshot API für einzigartige, SEO-optimierte Artikel.
  * 
- * 1-2-4 System:
+ * Nutzt die echte Kimi/Moonshot API zur Generierung einzigartiger,
+ * SEO-optimierter Artikel pro Stadt und Gewerk.
+ * 
+ * Mietplan:
  * - Freie Stadt: 1 Artikel/Monat
  * - Basic: 2 Artikel/Monat
  * - Pro: 4 Artikel/Monat
@@ -12,13 +14,14 @@
 const fs = require('fs');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+const fetch = require('node-fetch');
 
 // ─── KONFIGURATION ──────────────────────────────────────────────────
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY;
-const MOONSHOT_API_URL = 'https://api.moonshot.ai/v1/chat/completions';
+const MOONSHOT_API_URL = process.env.MOONSHOT_API_URL || 'https://api.moonshot.ai/v1/chat/completions';
 
 const CITIES = [
   'bergkamen', 'bochum', 'castrop-rauxel', 'dortmund', 'ennepetal',
@@ -27,6 +30,7 @@ const CITIES = [
   'schwerte', 'sprockhoevel', 'unna', 'wetter-ruhr', 'witten'
 ];
 
+// Stadtname Mapping (schöne Display-Namen)
 const CITY_DISPLAY_NAMES = {
   'bergkamen': 'Bergkamen',
   'bochum': 'Bochum',
@@ -54,86 +58,86 @@ const TRADES = {
   dachdecker: {
     name: 'Dachdecker',
     topics: [
-      { slug: 'dachdaemmung-kosten', title: 'Dachdämmung Kosten', keyword: 'Dachdämmung', searchTerms: 'dach,daemmung,dachdecker,wärmedämmung' },
-      { slug: 'sturmschaden-reparatur', title: 'Sturmschaden Reparatur', keyword: 'Sturmschaden', searchTerms: 'dach,sturm,schaden,reparatur' },
-      { slug: 'dachsanierung-planen', title: 'Dachsanierung planen', keyword: 'Dachsanierung', searchTerms: 'dachsanierung,dach,bau,erneuerung' },
-      { slug: 'dachziegel-arten', title: 'Dachziegel Arten', keyword: 'Dachziegel', searchTerms: 'dachziegel,dach,ton,tonne' },
-      { slug: 'dachfenster-einbauen', title: 'Dachfenster einbauen', keyword: 'Dachfenster', searchTerms: 'dachfenster,dachgaube,licht,fenster' },
-      { slug: 'flachdach-abdichten', title: 'Flachdach abdichten', keyword: 'Flachdach', searchTerms: 'flachdach,abdichtung,membran,bitumen' },
-      { slug: 'dachrinne-reinigen', title: 'Dachrinne reinigen', keyword: 'Dachrinne', searchTerms: 'dachrinne,laub,herbst,reinigung' },
-      { slug: 'schornstein-sanieren', title: 'Schornstein sanieren', keyword: 'Schornstein', searchTerms: 'schornstein,kamin,mauerwerk,sanierung' },
-      { slug: 'dachboden-ausbauen', title: 'Dachboden ausbauen', keyword: 'Dachboden', searchTerms: 'dachboden,ausbau,holz,dachgeschoss' },
-      { slug: 'dach-haltbarkeit', title: 'Dach Haltbarkeit', keyword: 'Dachhaltbarkeit', searchTerms: 'dach,altbau,ziegel,lebensdauer' },
-      { slug: 'gruendach-anlegen', title: 'Gründach anlegen', keyword: 'Gründach', searchTerms: 'gruendach,pflanzen,oekologisch,dachbegrünung' },
-      { slug: 'dachholz-schutz', title: 'Dachholz Schutz', keyword: 'Dachholz', searchTerms: 'holzschutz,dachholz,lasur,pilz' },
+      { slug: 'dachdaemmung-kosten', title: 'Dachdämmung Kosten', keyword: 'Dachdämmung' },
+      { slug: 'sturmschaden-reparatur', title: 'Sturmschaden Reparatur', keyword: 'Sturmschaden Dach' },
+      { slug: 'dachsanierung-planen', title: 'Dachsanierung planen', keyword: 'Dachsanierung' },
+      { slug: 'dachziegel-arten', title: 'Dachziegel Arten', keyword: 'Dachziegel' },
+      { slug: 'dachfenster-einbauen', title: 'Dachfenster einbauen', keyword: 'Dachfenster' },
+      { slug: 'flachdach-abdichten', title: 'Flachdach abdichten', keyword: 'Flachdach Abdichtung' },
+      { slug: 'dachrinne-reinigen', title: 'Dachrinne reinigen', keyword: 'Dachrinnenreinigung' },
+      { slug: 'schornstein-sanieren', title: 'Schornstein sanieren', keyword: 'Schornsteinsanierung' },
+      { slug: 'dachboden-ausbauen', title: 'Dachboden ausbauen', keyword: 'Dachbodenausbau' },
+      { slug: 'dach-haltbarkeit', title: 'Dach Haltbarkeit', keyword: 'Dachlebensdauer' },
+      { slug: 'gruendach-anlegen', title: 'Gründach anlegen', keyword: 'Gründach' },
+      { slug: 'dachholz-schutz', title: 'Dachholz Schutz', keyword: 'Holzschutz Dach' },
     ]
   },
   elektriker: {
     name: 'Elektriker',
     topics: [
-      { slug: 'e-check-2026', title: 'E-Check 2026', keyword: 'E-Check', searchTerms: 'elektriker,pruefung,sicherheit,e-check' },
-      { slug: 'led-beleuchtung', title: 'LED Beleuchtung', keyword: 'LED', searchTerms: 'led,lampe,beleuchtung,energiesparen' },
-      { slug: 'sicherungskasten-erneuern', title: 'Sicherungskasten erneuern', keyword: 'Sicherungskasten', searchTerms: 'sicherungskasten,elektro,verteiler,fi-schalter' },
-      { slug: 'elektroheizung-effizienz', title: 'Elektroheizung Effizienz', keyword: 'Elektroheizung', searchTerms: 'heizung,elektro,warm,infrarot' },
-      { slug: 'photovoltaik-anschluss', title: 'Photovoltaik Anschluss', keyword: 'Photovoltaik', searchTerms: 'solar,pv,dach,strom' },
-      { slug: 'stromausfall-ursachen', title: 'Stromausfall Ursachen', keyword: 'Stromausfall', searchTerms: 'stromausfall,dunkel,kerze,notstrom' },
-      { slug: 'erdung-pruefen', title: 'Erdung prüfen', keyword: 'Erdung', searchTerms: 'erdung,elektro,messung,potentialausgleich' },
-      { slug: 'kuechenelektro-planen', title: 'Küchenelektro planen', keyword: 'Küchenelektro', searchTerms: 'kueche,elektro,steckdose,herd' },
-      { slug: 'badezimmer-elektro', title: 'Badezimmer Elektro', keyword: 'Badelektro', searchTerms: 'bad,elektro,licht,steckdose,schutzraum' },
-      { slug: 'smart-meter-vorteile', title: 'Smart Meter Vorteile', keyword: 'Smart Meter', searchTerms: 'smartmeter,stromzaehler,digital,verbrauch' },
-      { slug: 'blitzschutz-nachruesten', title: 'Blitzschutz nachrüsten', keyword: 'Blitzschutz', searchTerms: 'blitz,blitzableiter,dach,schutz' },
-      { slug: 'stromkosten-senken', title: 'Stromkosten senken', keyword: 'Stromkosten', searchTerms: 'strom,sparen,energie,verbrauch' },
+      { slug: 'e-check-2026', title: 'E-Check 2026', keyword: 'Elektro-Check' },
+      { slug: 'led-beleuchtung', title: 'LED Beleuchtung', keyword: 'LED Beleuchtung' },
+      { slug: 'sicherungskasten-erneuern', title: 'Sicherungskasten erneuern', keyword: 'Sicherungskasten' },
+      { slug: 'elektroheizung-effizienz', title: 'Elektroheizung Effizienz', keyword: 'Elektroheizung' },
+      { slug: 'photovoltaik-anschluss', title: 'Photovoltaik Anschluss', keyword: 'Photovoltaik' },
+      { slug: 'stromausfall-ursachen', title: 'Stromausfall Ursachen', keyword: 'Stromausfall' },
+      { slug: 'erdung-pruefen', title: 'Erdung prüfen', keyword: 'Erdung' },
+      { slug: 'kuechenelektro-planen', title: 'Küchenelektro planen', keyword: 'Küchenelektro' },
+      { slug: 'badezimmer-elektro', title: 'Badezimmer Elektro', keyword: 'Badezimmer Elektro' },
+      { slug: 'smart-meter-vorteile', title: 'Smart Meter Vorteile', keyword: 'Smart Meter' },
+      { slug: 'blitzschutz-nachruesten', title: 'Blitzschutz nachrüsten', keyword: 'Blitzschutz' },
+      { slug: 'stromkosten-senken', title: 'Stromkosten senken', keyword: 'Stromkosten sparen' },
     ]
   },
   klempner: {
     name: 'Klempner',
     topics: [
-      { slug: 'wasserdruck-optimieren', title: 'Wasserdruck optimieren', keyword: 'Wasserdruck', searchTerms: 'wasserhahn,druck,armatur,pumpe' },
-      { slug: 'abfluss-verstopft', title: 'Abfluss verstopft', keyword: 'Abfluss', searchTerms: 'abfluss,verstopfung,rohr,pümpel' },
-      { slug: 'warmwasserspeicher-tauschen', title: 'Warmwasserspeicher tauschen', keyword: 'Warmwasserspeicher', searchTerms: 'boiler,warmwasser,heizung,speicher' },
-      { slug: 'fussbodenheizung-wartung', title: 'Fußbodenheizung Wartung', keyword: 'Fußbodenheizung', searchTerms: 'fussbodenheizung,boden,warm,heizkreis' },
-      { slug: 'gasleitung-pruefen', title: 'Gasleitung prüfen', keyword: 'Gasleitung', searchTerms: 'gas,leitung,pruefung,dichtheitsprüfung' },
-      { slug: 'wasserenthaertung-anlagen', title: 'Wasserenthärtung Anlagen', keyword: 'Wasserenthärtung', searchTerms: 'wasser,filter,anlage,enthärtung' },
-      { slug: 'heizkoerper-entlueften', title: 'Heizkörper entlüften', keyword: 'Heizkörper', searchTerms: 'heizkoerper,heizung,warm,entlüften' },
-      { slug: 'trinkwasserqualitaet', title: 'Trinkwasserqualität', keyword: 'Trinkwasser', searchTerms: 'wasserhahn,trinkwasser,glas,blei' },
-      { slug: 'sanitaer-notdienst', title: 'Sanitär Notdienst', keyword: 'Notdienst', searchTerms: 'notdienst,werkzeug,plumber,rohrbruch' },
-      { slug: 'badrenovierung-planen', title: 'Badrenovierung planen', keyword: 'Badrenovierung', searchTerms: 'bad,badezimmer,renovierung,fliesen' },
-      { slug: 'armaturen-wechseln', title: 'Armaturen wechseln', keyword: 'Armaturen', searchTerms: 'armatur,wasserhahn,messing,mischer' },
-      { slug: 'wasserschaden-sanierung', title: 'Wasserschaden Sanierung', keyword: 'Wasserschaden', searchTerms: 'wasserschaden,trocknung,bauseite,schimmel' },
+      { slug: 'wasserdruck-optimieren', title: 'Wasserdruck optimieren', keyword: 'Wasserdruck' },
+      { slug: 'abfluss-verstopft', title: 'Abfluss verstopft', keyword: 'Verstopfter Abfluss' },
+      { slug: 'warmwasserspeicher-tauschen', title: 'Warmwasserspeicher tauschen', keyword: 'Warmwasserspeicher' },
+      { slug: 'fussbodenheizung-wartung', title: 'Fußbodenheizung Wartung', keyword: 'Fußbodenheizung' },
+      { slug: 'gasleitung-pruefen', title: 'Gasleitung prüfen', keyword: 'Gasleitung' },
+      { slug: 'wasserenthaertung-anlagen', title: 'Wasserenthärtung Anlagen', keyword: 'Wasserenthärtung' },
+      { slug: 'heizkoerper-entlueften', title: 'Heizkörper entlüften', keyword: 'Heizkörper entlüften' },
+      { slug: 'trinkwasserqualitaet', title: 'Trinkwasserqualität', keyword: 'Trinkwasser' },
+      { slug: 'sanitaer-notdienst', title: 'Sanitär Notdienst', keyword: 'Sanitär Notdienst' },
+      { slug: 'badrenovierung-planen', title: 'Badrenovierung planen', keyword: 'Badrenovierung' },
+      { slug: 'armaturen-wechseln', title: 'Armaturen wechseln', keyword: 'Armaturen' },
+      { slug: 'wasserschaden-sanierung', title: 'Wasserschaden Sanierung', keyword: 'Wasserschaden' },
     ]
   },
   maler: {
     name: 'Maler',
     topics: [
-      { slug: 'tapezierarbeiten-kosten', title: 'Tapezierarbeiten Kosten', keyword: 'Tapezieren', searchTerms: 'tapete,tapezieren,wand,muster' },
-      { slug: 'spachteln-und-streichen', title: 'Spachteln und streichen', keyword: 'Spachteln', searchTerms: 'spachtel,streichen,farbe,putz' },
-      { slug: 'fassadensanierung-2026', title: 'Fassadensanierung 2026', keyword: 'Fassadensanierung', searchTerms: 'fassade,sanierung,anstrich,putz' },
-      { slug: 'decken-verkleiden', title: 'Decken verkleiden', keyword: 'Deckenverkleidung', searchTerms: 'decke,verkleidung,holz,paneele' },
-      { slug: 'lasuren-holzschutz', title: 'Lasuren Holzschutz', keyword: 'Holzschutz', searchTerms: 'holz,lasur,schutz,anstrich' },
-      { slug: 'schoener-wohnen-farben', title: 'Schöner Wohnen Farben', keyword: 'Farben', searchTerms: 'farben,wand,interior,design' },
-      { slug: 'anstrich-daemmschicht', title: 'Anstrich Dämmschicht', keyword: 'Dämmschicht', searchTerms: 'daemmung,fassade,energie,wärmedämmung' },
-      { slug: 'malerkosten-pro-qm', title: 'Malerkosten pro m²', keyword: 'Malerkosten', searchTerms: 'maler,farbe,rolle,kosten' },
-      { slug: 'tapeten-trends', title: 'Tapeten Trends', keyword: 'Tapeten', searchTerms: 'tapete,muster,wand,design' },
-      { slug: 'besenstrich-technik', title: 'Besenstrich Technik', keyword: 'Besenstrich', searchTerms: 'streichen,technik,farbe,effekt' },
-      { slug: 'keller-anstreichen', title: 'Keller anstreichen', keyword: 'Kelleranstrich', searchTerms: 'keller,anstrich,feuchtigkeit,schimmel' },
-      { slug: 'lackierarbeiten-moebel', title: 'Lackierarbeiten Möbel', keyword: 'Lackierarbeiten', searchTerms: 'moebel,lack,tisch,schrank' },
+      { slug: 'tapezierarbeiten-kosten', title: 'Tapezierarbeiten Kosten', keyword: 'Tapezieren' },
+      { slug: 'spachteln-und-streichen', title: 'Spachteln und streichen', keyword: 'Spachteln Streichen' },
+      { slug: 'fassadensanierung-2026', title: 'Fassadensanierung 2026', keyword: 'Fassadensanierung' },
+      { slug: 'decken-verkleiden', title: 'Decken verkleiden', keyword: 'Deckenverkleidung' },
+      { slug: 'lasuren-holzschutz', title: 'Lasuren Holzschutz', keyword: 'Lasuren' },
+      { slug: 'schoener-wohnen-farben', title: 'Schöner Wohnen Farben', keyword: 'Wandfarben' },
+      { slug: 'anstrich-daemmschicht', title: 'Anstrich Dämmschicht', keyword: 'Dämmfarbe' },
+      { slug: 'malerkosten-pro-qm', title: 'Malerkosten pro m²', keyword: 'Malerkosten' },
+      { slug: 'tapeten-trends', title: 'Tapeten Trends', keyword: 'Tapeten' },
+      { slug: 'besenstrich-technik', title: 'Besenstrich Technik', keyword: 'Besenstrich' },
+      { slug: 'keller-anstreichen', title: 'Keller anstreichen', keyword: 'Keller streichen' },
+      { slug: 'lackierarbeiten-moebel', title: 'Lackierarbeiten Möbel', keyword: 'Möbel lackieren' },
     ]
   },
   zimmerer: {
     name: 'Zimmerer',
     topics: [
-      { slug: 'holzschutz-terrassen', title: 'Holzschutz Terrassen', keyword: 'Holzschutz', searchTerms: 'terrasse,holz,oel,schutz' },
-      { slug: 'carport-planung', title: 'Carport Planung', keyword: 'Carport', searchTerms: 'carport,auto,holz,überdachung' },
-      { slug: 'gauben-ausbauen', title: 'Gauben ausbauen', keyword: 'Gaube', searchTerms: 'gaube,dach,ausbau,dachgaube' },
-      { slug: 'holzrahmenbau-haus', title: 'Holzrahmenbau Haus', keyword: 'Holzrahmenbau', searchTerms: 'holzhaus,rahmenbau,bau,fertighaus' },
-      { slug: 'carport-dach-arten', title: 'Carport Dach Arten', keyword: 'Carportdach', searchTerms: 'carport,dach,auto,pvc' },
-      { slug: 'holzterrasse-verlegen', title: 'Holzterrasse verlegen', keyword: 'Holzterrasse', searchTerms: 'terrasse,holz,bauen,verlegen' },
-      { slug: 'zimmerei-traditionell', title: 'Zimmerei traditionell', keyword: 'Zimmerei', searchTerms: 'zimmerei,holz,balken,fachwerk' },
-      { slug: 'holzschutz-mittel', title: 'Holzschutz Mittel', keyword: 'Holzschutzmittel', searchTerms: 'holzschutz,lasur,holz,pilz' },
-      { slug: 'dachstuhl-reparatur', title: 'Dachstuhl Reparatur', keyword: 'Dachstuhl', searchTerms: 'dachstuhl,holz,bau,reparatur' },
-      { slug: 'wintergarten-holz', title: 'Wintergarten Holz', keyword: 'Wintergarten', searchTerms: 'wintergarten,glas,holz,veranda' },
-      { slug: 'holzcarport-vs-metall', title: 'Holzcarport vs Metall', keyword: 'Carport Vergleich', searchTerms: 'carport,holz,metall,vergleich' },
-      { slug: 'zimmermann-kosten', title: 'Zimmermann Kosten', keyword: 'Zimmermann', searchTerms: 'zimmermann,holz,bauen,kosten' },
+      { slug: 'holzschutz-terrassen', title: 'Holzschutz Terrassen', keyword: 'Terrassen Holzschutz' },
+      { slug: 'carport-planung', title: 'Carport Planung', keyword: 'Carport' },
+      { slug: 'gauben-ausbauen', title: 'Gauben ausbauen', keyword: 'Gaube' },
+      { slug: 'holzrahmenbau-haus', title: 'Holzrahmenbau Haus', keyword: 'Holzrahmenbau' },
+      { slug: 'carport-dach-arten', title: 'Carport Dach Arten', keyword: 'Carport Dach' },
+      { slug: 'holzterrasse-verlegen', title: 'Holzterrasse verlegen', keyword: 'Holzterrasse' },
+      { slug: 'zimmerei-traditionell', title: 'Zimmerei traditionell', keyword: 'Zimmerei' },
+      { slug: 'holzschutz-mittel', title: 'Holzschutz Mittel', keyword: 'Holzschutzmittel' },
+      { slug: 'dachstuhl-reparatur', title: 'Dachstuhl Reparatur', keyword: 'Dachstuhl' },
+      { slug: 'wintergarten-holz', title: 'Wintergarten Holz', keyword: 'Wintergarten' },
+      { slug: 'holzcarport-vs-metall', title: 'Holzcarport vs Metall', keyword: 'Carport Holz Metall' },
+      { slug: 'zimmermann-kosten', title: 'Zimmermann Kosten', keyword: 'Zimmermann Kosten' },
     ]
   }
 };
@@ -158,197 +162,91 @@ function getArticleCountByPlan(plan) {
 }
 
 function getCityDisplayName(citySlug) {
-  return CITY_DISPLAY_NAMES[citySlug] || citySlug.charAt(0).toUpperCase() + citySlug.slice(1);
+  return CITY_DISPLAY_NAMES[citySlug] || citySlug.charAt(0).toUpperCase() + citySlug.slice(1).replace(/-/g, ' ');
 }
 
-function generateUnsplashUrl(searchTerms, width = 1200) {
-  return `https://source.unsplash.com/${width}x600/?${searchTerms}`;
-}
-
-// ─── KIMI/MOONSHOT API ──────────────────────────────────────────────
-
-/**
- * Ruft die Moonshot API mit Retry-Logik auf.
- * Max 3 Versuche bei Fehlern, exponentielles Backoff.
- */
-async function callMoonshotAPI(messages, maxRetries = 3) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${MOONSHOT_API_KEY}`
+function generateUnsplashUrl(topic, width = 1200) {
+  const topicImages = {
+    'dachdaemmung-kosten': 'dach,daemmung,dachdecker',
+    'sturmschaden-reparatur': 'dach,sturm,schaden',
+    'dachsanierung-planen': 'dachsanierung,dach,bau',
+    'dachziegel-arten': 'dachziegel,dach,ton',
+    'dachfenster-einbauen': 'dachfenster,dachgaube,licht',
+    'flachdach-abdichten': 'flachdach,abdichtung,membran',
+    'dachrinne-reinigen': 'dachrinne,laub,herbst',
+    'schornstein-sanieren': 'schornstein,kamin,mauerwerk',
+    'dachboden-ausbauen': 'dachboden,ausbau,holz',
+    'dach-haltbarkeit': 'dach,altbau,ziegel',
+    'gruendach-anlegen': 'gruendach,pflanzen,oekologisch',
+    'dachholz-schutz': 'holzschutz,dachholz,lasur',
+    'e-check-2026': 'elektriker,pruefung,sicherheit',
+    'led-beleuchtung': 'led,lampe,beleuchtung',
+    'sicherungskasten-erneuern': 'sicherungskasten,elektro,verteiler',
+    'elektroheizung-effizienz': 'heizung,elektro,warm',
+    'photovoltaik-anschluss': 'solar,pv,dach',
+    'stromausfall-ursachen': 'stromausfall,dunkel,kerze',
+    'erdung-pruefen': 'erdung,elektro,messung',
+    'kuechenelektro-planen': 'kueche,elektro,steckdose',
+    'badezimmer-elektro': 'bad,elektro,licht',
+    'smart-meter-vorteile': 'smartmeter,stromzaehler,digital',
+    'blitzschutz-nachruesten': 'blitz,blitzableiter,dach',
+    'stromkosten-senken': 'strom,sparen,energie',
+    'wasserdruck-optimieren': 'wasserhahn,druck,armatur',
+    'abfluss-verstopft': 'abfluss,verstopfung,rohr',
+    'warmwasserspeicher-tauschen': 'boiler,warmwasser,heizung',
+    'fussbodenheizung-wartung': 'fussbodenheizung,boden,warm',
+    'gasleitung-pruefen': 'gas,leitung,pruefung',
+    'wasserenthaertung-anlagen': 'wasser,filter,anlage',
+    'heizkoerper-entlueften': 'heizkoerper,heizung,warm',
+    'trinkwasserqualitaet': 'wasserhahn,trinkwasser,glas',
+    'sanitaer-notdienst': 'notdienst,werkzeug,plumber',
+    'badrenovierung-planen': 'bad,badezimmer,renovierung',
+    'armaturen-wechseln': 'armatur,wasserhahn,messing',
+    'wasserschaden-sanierung': 'wasserschaden,trocknung,bauseite',
+    'tapezierarbeiten-kosten': 'tapete,tapezieren,wand',
+    'spachteln-und-streichen': 'spachtel,streichen,farbe',
+    'fassadensanierung-2026': 'fassade,sanierung,anstrich',
+    'decken-verkleiden': 'decke,verkleidung,holz',
+    'lasuren-holzschutz': 'holz,lasur,schutz',
+    'schoener-wohnen-farben': 'farben,wand,interior',
+    'anstrich-daemmschicht': 'daemmung,fassade,energie',
+    'malerkosten-pro-qm': 'maler,farbe,rolle',
+    'tapeten-trends': 'tapete,muster,wand',
+    'besenstrich-technik': 'streichen,technik,farbe',
+    'keller-anstreichen': 'keller,anstrich,feuchtigkeit',
+    'lackierarbeiten-moebel': 'moebel,lack,tisch',
+    'holzschutz-terrassen': 'terrasse,holz,oel',
+    'carport-planung': 'carport,auto,holz',
+    'gauben-ausbauen': 'gaube,dach,ausbau',
+    'holzrahmenbau-haus': 'holzhaus,rahmenbau,bau',
+    'carport-dach-arten': 'carport,dach,auto',
+    'holzterrasse-verlegen': 'terrasse,holz,bauen',
+    'zimmerei-traditionell': 'zimmerei,holz,balken',
+    'holzschutz-mittel': 'holzschutz,lasur,holz',
+    'dachstuhl-reparatur': 'dachstuhl,holz,bau',
+    'wintergarten-holz': 'wintergarten,glas,holz',
+    'holzcarport-vs-metall': 'carport,holz,metall',
+    'zimmermann-kosten': 'zimmermann,holz,bauen'
   };
-
-  const body = {
-    model: 'moonshot-v1-32k',
-    messages: messages,
-    temperature: 0.7,
-    max_tokens: 4000,
-    response_format: { type: 'json_object' }
-  };
-
-  let lastError;
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`   🌙 API Call (Versuch ${attempt}/${maxRetries})...`);
-      
-      const response = await fetch(MOONSHOT_API_URL, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-        throw new Error('Ungültige API-Antwort: Keine choices gefunden');
-      }
-
-      const content = data.choices[0].message.content;
-      
-      // Versuche JSON zu parsen
-      try {
-        return JSON.parse(content);
-      } catch (parseErr) {
-        // Manchmal ist JSON in Markdown-Codeblock eingewickelt
-        const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || 
-                         content.match(/```\s*([\s\S]*?)\s*```/);
-        if (jsonMatch) {
-          return JSON.parse(jsonMatch[1]);
-        }
-        throw new Error('JSON Parse Fehler: ' + parseErr.message);
-      }
-    } catch (err) {
-      lastError = err;
-      console.log(`   ⚠️  Fehler: ${err.message}`);
-      
-      if (attempt < maxRetries) {
-        const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
-        console.log(`   ⏳ Warte ${delay}ms vor nächstem Versuch...`);
-        await sleep(delay);
-      }
-    }
-  }
   
-  throw new Error(`API-Aufruf nach ${maxRetries} Versuchen fehlgeschlagen: ${lastError.message}`);
+  const searchQuery = topicImages[topic] || 'handwerker,bau,fachmann';
+  return `https://source.unsplash.com/${width}x600/?${searchQuery}`;
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
- * Baut den Prompt für die Artikel-Generierung.
- * Sehr detailliert für beste SEO-Ergebnisse.
- */
-function buildArticlePrompt(tradeName, cityName, topic, citySlug, tradeSlug) {
-  const year = new Date().getFullYear();
-  
-  return [
-    {
-      role: 'system',
-      content: `Du bist ein erfahrener SEO-Content-Writer für das deutsche Handwerker-Portal fachschmiede.de. 
-Du schreibst hochwertige, einzigartige Ratgeber-Artikel für Handwerker-Themen im Ruhrgebiet.
-
-WICHTIGE REGELN:
-- Schreibe auf Deutsch (Deutschland)
-- 1000-1500 Wörter pro Artikel
-- Nutze lokale Bezüge zur Stadt und zum Ruhrgebiet
-- SEO-optimiert mit natürlicher Keyword-Verteilung
-- Fachlich korrekt und vertrauenswürdig
-- Enthält konkrete Zahlen, Kosten und Preisspannen
-- Erwähne Förderprogramme (KfW, BAFA, kommunale Zuschüsse NRW)
-- Verwende Übergangswörter für guten Lesefluss
-
-Das Ruhrgebiet hat spezifische Merkmale:
-- Viele Häuser aus den 1950er-1970er Jahren (Siedlungsbau)
-- Steigende Energiekosten
-- Förderung durch Landesprogramme NRW
-- Typische bauliche Probleme: Feuchtigkeit, Schimmel, Altbau-Sanierung
-- Starker Zusammenhang mit Bergbau-Geschichte (viele Häuser für Bergarbeiter gebaut)
-
-Antworte AUSSCHLIESSLICH im JSON-Format mit folgender Struktur:`
-    },
-    {
-      role: 'user',
-      content: `Schreibe einen umfassenden SEO-Ratgeber-Artikel zum Thema:
-
-THEMA: ${topic.title}
-GEWERK: ${tradeName}
-STADT: ${cityName}
-JAHR: ${year}
-
-Gib mir das Ergebnis als JSON mit folgenden Feldern:
-
-{
-  "title": "SEO-Title (max 60 Zeichen)",
-  "h1": "H1-Überschrift (max 70 Zeichen)",
-  "metaDescription": "Meta-Description (max 160 Zeichen)",
-  "intro": "Einleitungstext (2-3 Absätze, ca. 200 Wörter). Muss Stadtname und Ruhrgebiet enthalten.",
-  "sections": [
-    {
-      "h2": "H2-Überschrift",
-      "content": "Absatz-Text (HTML mit <p> und <ul>/<li>). Ca. 150-250 Wörter pro Section."
-    }
-  ],
-  "faq": [
-    { "q": "Frage 1", "a": "Antwort 1 (ca. 2-3 Sätze)" },
-    { "q": "Frage 2", "a": "Antwort 2" },
-    { "q": "Frage 3", "a": "Antwort 3" },
-    { "q": "Frage 4", "a": "Antwort 4" }
-  ],
-  "howTo": {
-    "title": "HowTo Titel",
-    "steps": [
-      { "name": "Schritt 1", "text": "Beschreibung" },
-      { "name": "Schritt 2", "text": "Beschreibung" },
-      { "name": "Schritt 3", "text": "Beschreibung" },
-      { "name": "Schritt 4", "text": "Beschreibung" },
-      { "name": "Schritt 5", "text": "Beschreibung" }
-    ]
-  },
-  "internalLinks": [
-    { "text": "Verlinkungstext", "url": "relativer-link" }
-  ],
-  "conclusion": "Fazit-Absatz (ca. 150 Wörter)"
-}
-
-ANFORDERUNGEN AN DEN INHALT:
-1. Mindestens 5 H2-Sections mit sinnvoller Struktur
-2. Jede Section muss echte, nützliche Informationen enthalten
-3. Erwähne konkrete Kosten, Preisspannen und Fördermöglichkeiten
-4. Nutze Fachbegriffe des Gewerks
-5. Verweise auf lokale Besonderheiten von ${cityName}
-6. Erwähne das Ruhrgebiet mindestens 3x
-7. Nutze natürliche Keywords: ${topic.keyword}, ${tradeName} ${cityName}, ${topic.title}
-8. Schreibe im "Wir"-Stil als erfahrener Fachbetrieb
-9. Keine Platzhalter oder generischen Floskeln
-10. Jeder FAQ-Eintrag muss eine konkrete, hilfreiche Antwort haben
-11. Die HowTo-Steps müssen praktisch umsetzbar sein
-
-Das JSON muss valide sein - achte auf korrekte Escape-Zeichen bei Anführungszeichen im Text.`
-    }
-  ];
-}
-
-// ─── SCHEMA.ORG GENERATOREN ─────────────────────────────────────────
-
-function generateSchemaOrgArticle(title, description, image, city, tradeName, datePublished) {
+function generateSchemaOrgArticle(title, description, image, city, tradeName) {
+  const now = new Date().toISOString();
   return {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": title,
     "description": description,
     "image": image,
-    "datePublished": datePublished,
-    "dateModified": datePublished,
+    "datePublished": now,
+    "dateModified": now,
     "author": {
       "@type": "Organization",
       "name": `${tradeName} ${city}`,
-      "url": `https://fachschmiede.de/${tradeName.toLowerCase()}/${city.toLowerCase().replace(/\s+/g, '-')}/`
+      "url": `https://fachschmiede.de/${tradeName.toLowerCase()}/${city.toLowerCase().replace(/\s/g, '-')}/`
     },
     "publisher": {
       "@type": "Organization",
@@ -392,52 +290,276 @@ function generateSchemaOrgHowTo(title, description, image, steps) {
   };
 }
 
-// ─── HTML BUILDER ───────────────────────────────────────────────────
+// ─── KIMI API FUNKTIONEN ────────────────────────────────────────────
 
-function buildArticleHTML(apiResponse, tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, relatedSlugs) {
-  const { title, h1, metaDescription, intro, sections, faq, howTo, internalLinks, conclusion } = apiResponse;
+async function callKimiAPI(prompt, maxRetries = 3) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${MOONSHOT_API_KEY}`
+  };
+
+  const body = {
+    model: 'kimi-k2.6',
+    messages: [
+      {
+        role: 'system',
+        content: 'Du bist ein erfahrener deutscher SEO-Content-Writer spezialisiert auf Handwerker- und Baubranche im Ruhrgebiet. Du schreibst fundierte, lokale Ratgeber-Artikel.'
+      },
+      {
+        role: 'user',
+        content: prompt
+      }
+    ],
+    temperature: 0.7,
+    max_tokens: 8000
+  };
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`   🌐 API-Call Versuch ${attempt}/${maxRetries}...`);
+      
+      const response = await fetch(MOONSHOT_API_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        return data.choices[0].message.content;
+      }
+      
+      throw new Error('Ungültige API-Antwortstruktur');
+    } catch (error) {
+      console.error(`   ❌ Versuch ${attempt} fehlgeschlagen: ${error.message}`);
+      
+      if (attempt === maxRetries) {
+        throw new Error(`API-Call nach ${maxRetries} Versuchen fehlgeschlagen: ${error.message}`);
+      }
+      
+      // Exponentielles Backoff
+      const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+      console.log(`   ⏳ Warte ${Math.round(delay/1000)}s vor nächstem Versuch...`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+}
+
+async function generateArticleContent(tradeSlug, citySlug, cityName, tradeName, topic) {
+  const { slug, title: topicTitle, keyword } = topic;
   
-  const fullSlug = `${topic.slug}-${monthSlug}`;
-  const image = generateUnsplashUrl(topic.searchTerms);
-  const imgAlt = `${topic.title} in ${cityName} - Kosten und Förderung ${new Date().getFullYear()}`;
-  const imgCaption = `${topic.title} in ${cityName} und dem Ruhrgebiet`;
+  const prompt = `Schreibe einen umfassenden, SEO-optimierten Ratgeber-Artikel über "${topicTitle}" in ${cityName}.
+
+ANFORDERUNGEN:
+- Länge: 1200-1500 Wörter (absolutes Minimum: 1000 Wörter)
+- Sprache: Deutsch (Deutschland)
+- Zielgruppe: Hausbesitzer und Immobilieneigentümer in ${cityName}
+- Ton: Professionell, vertrauenswürdig, lokal verbunden
+
+LOKALE BEZÜGE (MÜSSEN enthalten sein):
+- Erwähne "${cityName}" mindestens 8-10 Mal natürlich im Text
+- Erwähne "Ruhrgebiet" mindestens 3-4 Mal
+- Bezug auf lokale Gegebenheiten: Altbautypen aus den 60er/70er Jahren, Kohleabbau- Geschichte, typische Bausubstanz
+- Erwähne regionale Besonderheiten von ${cityName} wenn möglich
+
+STRUKTUR (Muss exakt eingehalten werden):
+1. EINLEITUNG (150-200 Wörter): Ansprechende Einleitung mit Bezug zu ${cityName}
+2. WARUM DAS THEMA WICHTIG IST (200-250 Wörter): Lokale Relevanz, Klima, Bausubstanz
+3. DIE 5 WICHTIGSTEN PUNKTE (250-300 Wörter): Praktische Tipps mit Bezug auf ${cityName}
+4. KOSTEN IN ${cityName.toUpperCase()} (200-250 Wörter): Realistische Preise, Fördermöglichkeiten, KfW, BAFA
+5. FAQ (4-5 Fragen): Häufige Fragen mit konkreten Antworten für ${cityName}
+6. FAZIT (150-200 Wörter): Zusammenfassung + Handlungsaufruf
+
+SEO-ANFORDERUNGEN:
+- Haupt-Keyword: "${keyword} ${cityName}"
+- Natürliche Keyword-Einbettung
+- Überschriften mit H2-Tags (markdown ##)
+- Kurze Absätze (3-4 Sätze)
+- Aufzählungspunkte wo sinnvoll
+- Konkrete Zahlen und Preise
+
+GIB NUR DEN REINEN ARTIKEL-TEXT ZURÜCK (keine Meta-Infos, keine Erklärungen). Verwende Markdown-Formatierung mit ## für Überschriften.`;
+
+  const content = await callKimiAPI(prompt);
+  return content;
+}
+
+async function generateFAQs(tradeSlug, citySlug, cityName, tradeName, topic) {
+  const { slug, title: topicTitle, keyword } = topic;
+  
+  const prompt = `Erstelle 4-5 relevante FAQ-Einträge für "${topicTitle}" in ${cityName}.
+
+Format pro FAQ:
+FRAGE: [Konkrete Frage]
+ANTWORT: [Detaillierte Antwort mit Bezug zu ${cityName}, 2-3 Sätze]
+
+Themen für FAQs:
+- Kosten in ${cityName}
+- Dauer der Arbeiten
+- Genehmigungen/Baugenehmigung
+- Ob man während der Arbeiten im Haus bleiben kann
+- Garantie/Gewährleistung
+
+GIB NUR FAQS ZURÜCK, JEDE im Format:
+FRAGE: ...
+ANTWORT: ...`;
+
+  const faqText = await callKimiAPI(prompt);
+  
+  // Parse FAQs
+  const faqs = [];
+  const lines = faqText.split('\n');
+  let currentQ = null;
+  let currentA = '';
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('FRAGE:')) {
+      if (currentQ) {
+        faqs.push({ q: currentQ, a: currentA.trim() });
+      }
+      currentQ = trimmed.replace('FRAGE:', '').trim();
+      currentA = '';
+    } else if (trimmed.startsWith('ANTWORT:')) {
+      currentA = trimmed.replace('ANTWORT:', '').trim();
+    } else if (currentQ && trimmed) {
+      currentA += ' ' + trimmed;
+    }
+  }
+  
+  if (currentQ) {
+    faqs.push({ q: currentQ, a: currentA.trim() });
+  }
+  
+  // Fallback FAQs wenn das Parsing fehlschlägt
+  if (faqs.length === 0) {
+    return [
+      { q: `Wie lange dauert ${topicTitle} in ${cityName}?`, a: `Die Dauer hängt vom Umfang ab. In der Regel rechnen Sie mit 1 bis 3 Werktagen für Standardarbeiten. Bei umfangreicheren Projekten in ${cityName} kann es auch 1 bis 2 Wochen dauern.` },
+      { q: `Was kostet ${topicTitle} in ${cityName}?`, a: `Die Kosten variieren je nach Umfang und Material. Für eine Standard-Lösung in ${cityName} können Sie mit 500 bis 2.000 Euro rechnen. Holen Sie sich am besten mehrere kostenlose Angebote ein.` },
+      { q: `Benötige ich eine Genehmigung für ${topicTitle} in ${cityName}?`, a: `Das kommt auf das Projekt an. Kleine Reparaturen sind in der Regel genehmigungsfrei. Bei größeren Umbauten in ${cityName} sollten Sie sich vorab beim Bauamt erkundigen.` },
+      { q: `Kann ich während der Arbeiten im Haus wohnen bleiben?`, a: `In den meisten Fällen ja. Bei ${topicTitle} in ${cityName} wird in der Regel nur einzelne Bereiche bearbeitet, sodass Sie normal im Haus wohnen können.` }
+    ];
+  }
+  
+  return faqs;
+}
+
+async function generateHowToSteps(tradeSlug, citySlug, cityName, tradeName, topic) {
+  const { slug, title: topicTitle, keyword } = topic;
+  
+  const prompt = `Erstelle 5 praktische HowTo-Schritte für "${topicTitle}" in ${cityName}.
+
+Format pro Schritt:
+SCHRITT [Nummer]: [Titel]
+BESCHREIBUNG: [2-3 Sätze mit konkreten Tipps für ${cityName}]
+
+GIB NUR DIE SCHRITTE ZURÜCK im Format:
+SCHRITT 1: ...
+BESCHREIBUNG: ...`;
+
+  const howToText = await callKimiAPI(prompt);
+  
+  // Parse HowTo Steps
+  const steps = [];
+  const lines = howToText.split('\n');
+  let currentName = null;
+  let currentText = '';
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const stepMatch = trimmed.match(/^SCHRITT\s*\d*[:\.]?\s*(.+)/i);
+    
+    if (stepMatch) {
+      if (currentName) {
+        steps.push({ name: currentName, text: currentText.trim() });
+      }
+      currentName = stepMatch[1].trim();
+      currentText = '';
+    } else if (trimmed.toLowerCase().startsWith('beschreibung:')) {
+      currentText = trimmed.replace(/beschreibung[:\.]?/i, '').trim();
+    } else if (currentName && trimmed) {
+      currentText += ' ' + trimmed;
+    }
+  }
+  
+  if (currentName) {
+    steps.push({ name: currentName, text: currentText.trim() });
+  }
+  
+  // Fallback
+  if (steps.length === 0) {
+    return [
+      { name: 'Bedarf analysieren', text: `Definieren Sie Ihre Anforderungen für ${topicTitle} in ${cityName}. Welches Budget haben Sie? Welche Termine sind realistisch?` },
+      { name: 'Fachbetrieb wählen', text: `Vergleichen Sie mindestens 3 Fachbetriebe aus ${cityName}. Achten Sie auf Meisterbetrieb, Referenzen und Gewährleistung.` },
+      { name: 'Angebot einholen', text: `Lassen Sie sich ein detailliertes, schriftliches Angebot unterbreiten. Prüfen Sie Leistungsumfang, Material und Termine.` },
+      { name: 'Auftrag erteilen', text: `Nach Prüfung des Angebots erteilen Sie den Auftrag. Vereinbaren Sie einen festen Termin und klären Sie alle Details.` },
+      { name: 'Abnahme & Zahlung', text: `Nach Fertigstellung prüfen Sie die Arbeiten. Bei Zufriedenheit erfolgt die Abnahme und Zahlung gemäß Vereinbarung.` }
+    ];
+  }
+  
+  return steps;
+}
+
+// ─── ARTIKEL-HTML-GENERATOR ─────────────────────────────────────────
+
+function generateArticleHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, articleContent, faqs, howToSteps, relatedSlugs) {
+  const { slug, title: topicTitle, keyword } = topic;
+  const fullSlug = `${slug}-${monthSlug}`;
+  const title = `${topicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
+  const h1 = `${topicTitle} in ${cityName}: Was Sie wissen müssen`;
+  const meta = `${topicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps ✓ Förderung. Erfahren Sie alles Wichtige in unserem ${new Date().getFullYear()}-Ratgeber.`;
+  const image = generateUnsplashUrl(slug);
+  const imgAlt = `${topicTitle} in ${cityName} - Kosten und Förderung ${new Date().getFullYear()}`;
+  const imgCaption = `${topicTitle} in ${cityName} und dem Ruhrgebiet`;
+  
   const today = new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
-  const isoDate = new Date().toISOString();
   
   // Schema.org JSON
-  const schemaArticle = JSON.stringify(generateSchemaOrgArticle(title, metaDescription, image, cityName, tradeName, isoDate));
-  const schemaFAQ = JSON.stringify(generateSchemaOrgFAQ(faq));
-  const schemaHowTo = JSON.stringify(generateSchemaOrgHowTo(howTo.title || title, metaDescription, image, howTo.steps));
+  const schemaArticle = JSON.stringify(generateSchemaOrgArticle(title, meta, image, cityName, tradeName));
+  const schemaFAQ = JSON.stringify(generateSchemaOrgFAQ(faqs));
+  const schemaHowTo = JSON.stringify(generateSchemaOrgHowTo(title, meta, image, howToSteps));
   
-  // Build sections HTML
-  const sectionsHTML = sections.map(section => `
-<h2>${section.h2}</h2>
-${section.content}
-  `).join('\n');
+  // Related links
+  const relatedLinks = relatedSlugs.map(relSlug => {
+    const relTitle = relSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return `<p><a href="/${tradeSlug}/${citySlug}/blog/${relSlug}/">→ ${relTitle} in ${cityName}</a></p>`;
+  }).join('\n');
   
-  // Build FAQ HTML
-  const faqHTML = faq.map(faqItem => `
+  // FAQ HTML
+  const faqHTML = faqs.map(faq => `
 <details style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden;">
   <summary style="padding:20px;cursor:pointer;font-weight:600;color:#0f172a;list-style:none;display:flex;justify-content:space-between;align-items:center;">
-    ${faqItem.q}
+    ${faq.q}
     <svg style="width:20px;height:20px;color:#64748b;flex-shrink:0;margin-left:12px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
     </svg>
   </summary>
-  <div style="padding:0 20px 20px;color:#475569;line-height:1.7;">${faqItem.a}</div>
+  <div style="padding:0 20px 20px;color:#475569;line-height:1.7;">${faq.a}</div>
 </details>
   `).join('');
   
-  // Build internal links
-  const linksHTML = (internalLinks || []).map(link => `
-<p><a href="${link.url}">→ ${link.text}</a></p>
-  `).join('');
-  
-  // Related links from parameter
-  const relatedLinksHTML = relatedSlugs.map(relSlug => {
-    const relTitle = relSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    return `<p><a href="/${tradeSlug}/${citySlug}/blog/${relSlug}/">→ ${relTitle} in ${cityName}</a></p>`;
-  }).join('\n');
+  // Convert markdown content to HTML
+  const contentHTML = articleContent
+    .replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
+    .replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
+    .replace(/^\*\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/^\-\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .split('\n\n')
+    .map(para => {
+      const trimmed = para.trim();
+      if (trimmed.startsWith('<h2>') || trimmed.startsWith('<h3>') || trimmed.startsWith('<li>')) return trimmed;
+      if (trimmed) return `<p>${trimmed}</p>`;
+      return '';
+    })
+    .join('\n');
   
   return `<!DOCTYPE html>
 <html lang="de">
@@ -445,17 +567,17 @@ ${section.content}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
-<meta name="description" content="${metaDescription}">
+<meta name="description" content="${meta}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://fachschmiede.de/${tradeSlug}/${citySlug}/blog/${fullSlug}/">
 <meta property="og:title" content="${title}">
-<meta property="og:description" content="${metaDescription}">
+<meta property="og:description" content="${meta}">
 <meta property="og:image" content="${image}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://fachschmiede.de/${tradeSlug}/${citySlug}/blog/${fullSlug}/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${title}">
-<meta name="twitter:description" content="${metaDescription}">
+<meta name="twitter:description" content="${meta}">
 <meta name="twitter:image" content="${image}">
 <script type="application/ld+json">${schemaArticle}</script>
 <script type="application/ld+json">${schemaFAQ}</script>
@@ -466,14 +588,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:#f8fafc;color:#1e293b;l
 .container{max-width:800px;margin:0 auto;padding:0 20px}
 header{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:white;padding:40px 0;text-align:center}
 h1{font-size:2rem;font-weight:800;margin-bottom:10px}
+h2{font-size:1.5rem;font-weight:700;margin:40px 0 20px;color:#0f172a}
+h3{font-size:1.25rem;font-weight:600;margin:30px 0 15px;color:#1e293b}
 .meta{color:#94a3b8;font-size:0.9rem}
 .hero-image{width:100%;height:400px;object-fit:cover;display:block}
 .img-caption{text-align:center;color:#64748b;font-size:0.875rem;padding:8px 0;font-style:italic}
 .content{background:white;margin:40px auto;padding:40px;border-radius:16px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1)}
-h2{font-size:1.5rem;font-weight:700;margin:40px 0 20px;color:#0f172a}
 p{margin-bottom:20px;color:#475569;line-height:1.8}
 ul{margin:20px 0;padding-left:24px}
 li{margin-bottom:12px;color:#475569}
+strong{color:#0f172a}
 a{color:#2563eb;text-decoration:none}
 a:hover{text-decoration:underline}
 .breadcrumb{padding:16px 0;font-size:0.875rem;color:#64748b}
@@ -500,11 +624,9 @@ a:hover{text-decoration:underline}
 <div class="container">
 <div class="breadcrumb"><a href="/${tradeSlug}/${citySlug}/">${cityName}</a> / <a href="/${tradeSlug}/${citySlug}/">${tradeName}</a> / Blog</div>
 <article class="content">
-<p style="font-size:1.125rem;color:#334155;margin-bottom:24px;font-weight:500;">${metaDescription}</p>
+<p style="font-size:1.125rem;color:#334155;margin-bottom:24px;font-weight:500;">${meta}</p>
 
-${intro}
-
-${sectionsHTML}
+${contentHTML}
 
 <div style="margin-top:40px">
 <h2>Häufig gestellte Fragen</h2>
@@ -512,11 +634,15 @@ ${faqHTML}
 </div>
 
 <h2>Fazit: Ihr nächster Schritt in ${cityName}</h2>
-${conclusion}
+
+<p>${topicTitle} ist eine Investition, die sich lohnt – finanziell, komfortabel und oft auch förderfähig. In ${cityName} und dem Ruhrgebiet finden Sie zahlreiche qualifizierte Fachbetriebe, die Sie kompetent beraten und die Arbeiten fachgerecht ausführen.</p>
+
+<p>Nutzen Sie die aktuellen Förderprogramme, holen Sie sich mehrere Angebote ein und entscheiden Sie sich für einen Meisterbetrieb mit regionaler Erfahrung. Die Kombination aus Qualität, Förderung und professioneller Ausführung macht Ihr Projekt zum Erfolg.</p>
+
+<p>Mein Tipp: Starten Sie mit einer kostenlosen Beratung bei einem Fachbetrieb in ${cityName}. So erhalten Sie eine realistische Einschätzung der Kosten und des Aufwands – und können gezielt planen.</p>
 
 <h2>Weitere Artikel für ${cityName}</h2>
-${relatedLinksHTML}
-${linksHTML}
+${relatedLinks}
 <p><a href="/${tradeSlug}/${citySlug}/">→ Hauptseite: ${tradeName} ${cityName}</a></p>
 
 <div class="cta-box">
@@ -533,55 +659,19 @@ ${linksHTML}
 </html>`;
 }
 
-// ─── RATE LIMITER ───────────────────────────────────────────────────
-
-class RateLimiter {
-  constructor(maxConcurrent = 2, delayBetweenMs = 3000) {
-    this.maxConcurrent = maxConcurrent;
-    this.delayBetweenMs = delayBetweenMs;
-    this.running = 0;
-    this.queue = [];
-  }
-
-  async execute(fn) {
-    return new Promise((resolve, reject) => {
-      this.queue.push({ fn, resolve, reject });
-      this.processQueue();
-    });
-  }
-
-  async processQueue() {
-    if (this.running >= this.maxConcurrent || this.queue.length === 0) {
-      return;
-    }
-
-    this.running++;
-    const { fn, resolve, reject } = this.queue.shift();
-
-    try {
-      const result = await fn();
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    } finally {
-      this.running--;
-      // Delay before processing next
-      setTimeout(() => this.processQueue(), this.delayBetweenMs);
-    }
-  }
-}
-
 // ─── HAUPTFUNKTION ──────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 Monatlicher Artikel-Generator mit Kimi/Moonshot API');
+  console.log('🚀 Monatlicher Artikel-Generator mit Kimi API gestartet');
   console.log(`📅 Monat: ${getMonthSlug()}`);
+  console.log(`🌐 API-URL: ${MOONSHOT_API_URL}`);
   
-  // Prüfe Credentials
+  // Prüfe Umgebungsvariablen
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.error('❌ Supabase Credentials fehlen!');
     process.exit(1);
   }
+  
   if (!MOONSHOT_API_KEY) {
     console.error('❌ MOONSHOT_API_KEY fehlt in .env.local!');
     process.exit(1);
@@ -628,7 +718,7 @@ async function main() {
   console.log(`\n📋 Generierungsplan:`);
   console.table(generationPlan);
   console.log(`\n📝 Gesamt: ${totalArticles} neue Artikel`);
-  console.log(`💰 Geschätzte API-Kosten: ~$${(totalArticles * 0.05).toFixed(2)} (${totalArticles} × $0.05)`);
+  console.log(`⚡ Rate-Limit: Max 1 API-Call alle 3 Sekunden`);
   
   // Lade bestehenden Index
   const indexPath = path.join(process.cwd(), 'lib', 'article-index.json');
@@ -639,14 +729,10 @@ async function main() {
     articleIndex = {};
   }
   
-  // Rate Limiter für API-Calls
-  const rateLimiter = new RateLimiter(2, 3000); // Max 2 gleichzeitig, 3s Pause
-  
   // Generiere Artikel
   const monthSlug = getMonthSlug();
   let generatedCount = 0;
-  let failedCount = 0;
-  const failedArticles = [];
+  let apiCalls = 0;
   
   for (const { city, count } of generationPlan) {
     const cityName = getCityDisplayName(city);
@@ -661,6 +747,7 @@ async function main() {
       const topicIndex = Math.floor(generatedCount / tradeKeys.length) % trade.topics.length;
       const topic = trade.topics[topicIndex];
       
+      // Erstelle Artikel
       const fullSlug = `${topic.slug}-${monthSlug}`;
       const filePath = path.join(process.cwd(), 'public', 'blog', tradeSlug, city, `${fullSlug}.html`);
       
@@ -670,35 +757,43 @@ async function main() {
         continue;
       }
       
-      // Stelle sicher, dass Verzeichnis existiert
-      const dir = path.dirname(filePath);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-      
-      // Verwandte Links für diesen Artikel
-      const relatedSlugs = trade.topics
-        .filter((_, idx) => idx !== topicIndex)
-        .slice(0, 2)
-        .map(t => t.slug);
-      
-      // API Call mit Rate Limiting
       console.log(`\n📝 Generiere: ${tradeSlug}/${city}/${fullSlug}`);
       console.log(`   Thema: ${topic.title} | Stadt: ${cityName} | Gewerk: ${trade.name}`);
       
       try {
-        const apiResponse = await rateLimiter.execute(async () => {
-          const messages = buildArticlePrompt(trade.name, cityName, topic, city, tradeSlug);
-          return await callMoonshotAPI(messages);
-        });
+        // Generiere Artikel-Content per API
+        console.log(`   ✍️  Rufe Kimi API für Artikel-Content auf...`);
+        const articleContent = await generateArticleContent(tradeSlug, city, cityName, trade.name, topic);
+        apiCalls++;
         
-        // Validiere API-Response
-        if (!apiResponse.title || !apiResponse.h1 || !apiResponse.sections) {
-          throw new Error('API-Antwort enthält nicht alle erforderlichen Felder');
+        // Warte 3 Sekunden vor nächstem API-Call (Rate-Limit)
+        await new Promise(r => setTimeout(r, 3000));
+        
+        // Generiere FAQs
+        console.log(`   ❓ Generiere FAQs...`);
+        const faqs = await generateFAQs(tradeSlug, city, cityName, trade.name, topic);
+        apiCalls++;
+        
+        await new Promise(r => setTimeout(r, 3000));
+        
+        // Generiere HowTo Steps
+        console.log(`   📝 Generiere HowTo-Schritte...`);
+        const howToSteps = await generateHowToSteps(tradeSlug, city, cityName, trade.name, topic);
+        apiCalls++;
+        
+        // Stelle sicher, dass Verzeichnis existiert
+        const dir = path.dirname(filePath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
         }
         
-        // Baue HTML
-        const html = buildArticleHTML(apiResponse, tradeSlug, city, cityName, trade.name, topic, monthSlug, relatedSlugs);
+        // Generiere HTML
+        const relatedSlugs = trade.topics
+          .filter((_, idx) => idx !== topicIndex)
+          .slice(0, 2)
+          .map(t => t.slug);
+        
+        const html = generateArticleHTML(tradeSlug, city, cityName, trade.name, topic, monthSlug, articleContent, faqs, howToSteps, relatedSlugs);
         
         fs.writeFileSync(filePath, html, 'utf-8');
         
@@ -710,32 +805,32 @@ async function main() {
           articleIndex[tradeSlug][city] = [];
         }
         
-        // Prüfe ob Eintrag bereits existiert
-        const existingIndex = articleIndex[tradeSlug][city].findIndex(a => a.url === `/${tradeSlug}/${city}/blog/${fullSlug}/`);
-        const newEntry = {
-          title: apiResponse.title,
-          excerpt: apiResponse.metaDescription || `Wertvolle Tipps zu ${topic.title} in ${cityName} und dem Ruhrgebiet.`,
-          tag: 'Ratgeber',
-          gradient: 'from-accent-500 to-accent-700',
-          svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
-          url: `/${tradeSlug}/${city}/blog/${fullSlug}/`
-        };
-        
-        if (existingIndex >= 0) {
-          articleIndex[tradeSlug][city][existingIndex] = newEntry;
-        } else {
-          articleIndex[tradeSlug][city].push(newEntry);
+        // Prüfe ob bereits im Index
+        const existingIndex = articleIndex[tradeSlug][city].findIndex(a => a.url.includes(fullSlug));
+        if (existingIndex === -1) {
+          articleIndex[tradeSlug][city].push({
+            title: `${topic.title} in ${cityName}`,
+            excerpt: `Wertvolle Tipps zu ${topic.title} in ${cityName} und dem Ruhrgebiet.`,
+            tag: 'Ratgeber',
+            gradient: 'from-accent-500 to-accent-700',
+            svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
+            url: `/${tradeSlug}/${city}/blog/${fullSlug}/`
+          });
         }
         
-        // Zähle Wörter im Artikel
-        const wordCount = html.replace(/<[^>]*>/g, '').split(/\s+/).length;
-        console.log(`   ✅ Erfolg! ${wordCount} Wörter generiert.`);
+        console.log(`   ✅ Erfolgreich generiert! (${articleContent.length} Zeichen)`);
         generatedCount++;
         
-      } catch (err) {
-        console.error(`   ❌ FEHLER: ${err.message}`);
-        failedCount++;
-        failedArticles.push({ city, trade: tradeSlug, topic: topic.slug, error: err.message });
+        // Warte vor nächster Stadt (Rate-Limit)
+        if (generatedCount < totalArticles) {
+          console.log(`   ⏳ Warte 5s vor nächstem Artikel...`);
+          await new Promise(r => setTimeout(r, 5000));
+        }
+        
+      } catch (error) {
+        console.error(`   ❌ Fehler bei Generierung: ${error.message}`);
+        console.log(`   ⚠️  Überspringe diesen Artikel und fahre fort...`);
+        continue;
       }
     }
   }
@@ -743,28 +838,22 @@ async function main() {
   // Speichere Index
   fs.writeFileSync(indexPath, JSON.stringify(articleIndex, null, 2), 'utf-8');
   
-  // Zähle Gesamt-Artikel im Index
-  let totalIndexed = 0;
+  // Zähle Gesamt-Artikel im verschachtelten Index
+  let totalIndexedArticles = 0;
   for (const trade of Object.values(articleIndex)) {
     for (const cityArticles of Object.values(trade)) {
-      totalIndexed += cityArticles.length;
+      totalIndexedArticles += cityArticles.length;
     }
   }
   
-  console.log(`\n${'='.repeat(60)}`);
-  console.log(`🎉 FERTIG!`);
-  console.log(`✅ ${generatedCount} neue Artikel generiert`);
-  console.log(`❌ ${failedCount} Fehler`);
-  console.log(`📚 Index aktualisiert: ${totalIndexed} Gesamt-Artikel`);
+  console.log(`\n🎉 Fertig! ${generatedCount} neue Artikel generiert.`);
+  console.log(`🌐 Insgesamt ${apiCalls} API-Calls an Kimi/Moonshot`);
+  console.log(`📚 Index aktualisiert: ${totalIndexedArticles} Gesamt-Artikel`);
   
-  if (failedArticles.length > 0) {
-    console.log(`\n⚠️  Fehlgeschlagene Artikel:`);
-    failedArticles.forEach(f => console.log(`   - ${f.trade}/${f.city}/${f.topic}: ${f.error}`));
-  }
-  
+  // Git commit Info
   console.log(`\n💡 Nächste Schritte:`);
   console.log(`   git add -A`);
-  console.log(`   git commit -m "feat: ${generatedCount} monatliche AI-Artikel (${monthSlug})"`);
+  console.log(`   git commit -m "feat: ${generatedCount} monatliche Artikel mit Kimi API (${monthSlug})"`);
   console.log(`   git push`);
 }
 
