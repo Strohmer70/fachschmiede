@@ -20,7 +20,7 @@ const fetch = require('node-fetch');
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY;
+const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY || 'sk-dflfmQZYslaRgqiVP8edlrh6JKG8Kepm5GkTqZkSmf7pmGgp';
 const MOONSHOT_API_URL = process.env.MOONSHOT_API_URL || 'https://api.moonshot.ai/v1/chat/completions';
 
 const CITIES = [
@@ -310,7 +310,7 @@ async function callKimiAPI(prompt, maxRetries = 3) {
         content: prompt
       }
     ],
-    temperature: 0.7,
+    temperature: 1,
     max_tokens: 8000
   };
 
@@ -665,6 +665,7 @@ async function main() {
   console.log('🚀 Monatlicher Artikel-Generator mit Kimi API gestartet');
   console.log(`📅 Monat: ${getMonthSlug()}`);
   console.log(`🌐 API-URL: ${MOONSHOT_API_URL}`);
+  console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅ Vorhanden' : '❌ Fehlt!'}`);
   
   // Prüfe Umgebungsvariablen
   if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -672,10 +673,7 @@ async function main() {
     process.exit(1);
   }
   
-  if (!MOONSHOT_API_KEY) {
-    console.error('❌ MOONSHOT_API_KEY fehlt in .env.local!');
-    process.exit(1);
-  }
+  console.log('✅ Kimi API Key:', MOONSHOT_API_KEY ? 'Vorhanden (via Env oder Fallback)' : 'FEHLT!');
   
   // Lade Mieter aus Supabase
   console.log('📊 Lade Mieter-Daten...');
