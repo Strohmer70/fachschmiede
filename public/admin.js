@@ -3,6 +3,9 @@ const API_BASE = '/api';
 let adminToken = localStorage.getItem('adminToken');
 let dashboardData = null;
 
+// Debug-Logging
+console.log('admin.js geladen. Token:', adminToken ? 'vorhanden' : 'fehlt');
+
 // ═══════════ LOGIN ═══════════
 async function doLogin() {
   // Finde das erste Passwort-Feld im Login-Gate (nicht das Stripe-Feld)
@@ -21,6 +24,7 @@ async function doLogin() {
     // Demo-Modus: Token setzen damit API-Calls funktionieren
     adminToken = 'demo-' + Date.now();
     localStorage.setItem('adminToken', adminToken);
+    console.log('Login erfolgreich, Token gesetzt:', adminToken);
     
     hideLoginGate();
     showToast('✅ Admin-Login erfolgreich');
@@ -61,6 +65,7 @@ function logout() {
 
 // ═══════════ DASHBOARD LADEN ═══════════
 async function loadDashboard() {
+  console.log('loadDashboard() aufgerufen. Token:', adminToken ? 'vorhanden' : 'fehlt');
   if (!adminToken) {
     showLoginGate();
     return;
@@ -73,6 +78,8 @@ async function loadDashboard() {
       }
     });
     
+    console.log('API Response Status:', res.status);
+    
     if (res.status === 401) {
       showToast('⚠️ Session abgelaufen — bitte neu einloggen');
       showLoginGate();
@@ -80,6 +87,7 @@ async function loadDashboard() {
     }
     
     dashboardData = await res.json();
+    console.log('Dashboard Daten geladen:', dashboardData.stats);
     renderDashboard(dashboardData);
     
   } catch (err) {
@@ -347,9 +355,13 @@ function renderTodoList(tenants, pages) {
 
 // ═══════════ WEBSITES & STÄDTE ═══════════
 function renderWebsitesView(pages) {
+  console.log('renderWebsitesView() aufgerufen mit', pages.length, 'Seiten');
   const grid = document.getElementById('stadtGrid');
   const hint = document.getElementById('stadtGridHint');
-  if (!grid) return;
+  if (!grid) {
+    console.error('stadtGrid Element nicht gefunden!');
+    return;
+  }
   
   if (pages.length === 0) {
     grid.innerHTML = '';
