@@ -67,7 +67,7 @@ async function loadDashboard() {
   }
   
   try {
-    const res = await fetch(`${API_BASE}/admin/stats`, {
+    const res = await fetch(`${API_BASE}/admin/stats/`, {
       headers: {
         'Authorization': `Bearer ${adminToken}`
       }
@@ -492,7 +492,7 @@ async function loadLeads() {
   if (!adminToken) return;
   
   try {
-    const res = await fetch(`${API_BASE}/admin/leads?limit=100`, {
+    const res = await fetch(`${API_BASE}/admin/leads/?limit=100`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
     
@@ -691,7 +691,7 @@ function showLeadDetail(leadId) {
 
 async function updateLeadStatus(leadId, status) {
   try {
-    const res = await fetch(`${API_BASE}/admin/leads`, {
+    const res = await fetch(`${API_BASE}/admin/leads/`, {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${adminToken}`,
@@ -727,7 +727,7 @@ async function loadArticles() {
   if (!adminToken) return;
   
   try {
-    const res = await fetch(`${API_BASE}/articles?status=all&limit=100`, {
+    const res = await fetch(`${API_BASE}/articles/?status=all&limit=100`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
     
