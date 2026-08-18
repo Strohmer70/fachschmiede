@@ -311,7 +311,7 @@ async function callKimiAPI(prompt, maxRetries = 3) {
       }
     ],
     temperature: 1,
-    max_tokens: 8000
+    max_tokens: 16000
   };
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -351,159 +351,93 @@ async function callKimiAPI(prompt, maxRetries = 3) {
   }
 }
 
-async function generateArticleContent(tradeSlug, citySlug, cityName, tradeName, topic) {
+async function generateFullArticle(tradeSlug, citySlug, cityName, tradeName, topic) {
   const { slug, title: topicTitle, keyword } = topic;
   
   const prompt = `Schreibe einen umfassenden, SEO-optimierten Ratgeber-Artikel über "${topicTitle}" in ${cityName}.
 
 ANFORDERUNGEN:
-- Länge: 1200-1500 Wörter (absolutes Minimum: 1000 Wörter)
+- Gesamtlänge: 1200-1500 Wörter
 - Sprache: Deutsch (Deutschland)
-- Zielgruppe: Hausbesitzer und Immobilieneigentümer in ${cityName}
+- Zielgruppe: Hausbesitzer in ${cityName}
 - Ton: Professionell, vertrauenswürdig, lokal verbunden
 
-LOKALE BEZÜGE (MÜSSEN enthalten sein):
-- Erwähne "${cityName}" mindestens 8-10 Mal natürlich im Text
-- Erwähne "Ruhrgebiet" mindestens 3-4 Mal
-- Bezug auf lokale Gegebenheiten: Altbautypen aus den 60er/70er Jahren, Kohleabbau- Geschichte, typische Bausubstanz
-- Erwähne regionale Besonderheiten von ${cityName} wenn möglich
+LOKALE BEZÜGE:
+- Erwähne "${cityName}" natürlich im Text
+- Erwähne "Ruhrgebiet" mehrfach
+- Bezug auf Altbautypen aus den 60er/70er Jahren
 
-STRUKTUR (Muss exakt eingehalten werden):
-1. EINLEITUNG (150-200 Wörter): Ansprechende Einleitung mit Bezug zu ${cityName}
-2. WARUM DAS THEMA WICHTIG IST (200-250 Wörter): Lokale Relevanz, Klima, Bausubstanz
-3. DIE 5 WICHTIGSTEN PUNKTE (250-300 Wörter): Praktische Tipps mit Bezug auf ${cityName}
-4. KOSTEN IN ${cityName.toUpperCase()} (200-250 Wörter): Realistische Preise, Fördermöglichkeiten, KfW, BAFA
-5. FAQ (4-5 Fragen): Häufige Fragen mit konkreten Antworten für ${cityName}
-6. FAZIT (150-200 Wörter): Zusammenfassung + Handlungsaufruf
+STRUKTUR (mit ## Überschriften):
 
-SEO-ANFORDERUNGEN:
-- Haupt-Keyword: "${keyword} ${cityName}"
-- Natürliche Keyword-Einbettung
-- Überschriften mit H2-Tags (markdown ##)
-- Kurze Absätze (3-4 Sätze)
-- Aufzählungspunkte wo sinnvoll
-- Konkrete Zahlen und Preise
+## Einleitung
+150-200 Wörter. Ansprechende Einleitung mit Bezug zu ${cityName}.
 
-GIB NUR DEN REINEN ARTIKEL-TEXT ZURÜCK (keine Meta-Infos, keine Erklärungen). Verwende Markdown-Formatierung mit ## für Überschriften.`;
+## Warum ist das Thema wichtig?
+200-250 Wörter. Lokale Relevanz, Klima, Bausubstanz.
+
+## Die 5 wichtigsten Punkte
+250-300 Wörter. Praktische Tipps mit Bezug auf ${cityName}.
+
+## Kosten in ${cityName}
+200-250 Wörter. Realistische Preise, Fördermöglichkeiten (KfW, BAFA).
+
+## Häufig gestellte Fragen
+4-5 Fragen im Format:
+**Frage:** [Konkrete Frage]
+**Antwort:** [Detaillierte Antwort mit Bezug zu ${cityName}, 2-3 Sätze]
+
+## Fazit
+150-200 Wörter. Zusammenfassung + Handlungsaufruf.
+
+## So gehen Sie vor: 5 Schritte
+1. **[Schritt-Titel]**: [2-3 Sätze Beschreibung mit Bezug zu ${cityName}]
+2. ...usw. bis 5.
+
+SEO: Haupt-Keyword "${keyword} ${cityName}", kurze Absätze, konkrete Zahlen.
+GIB NUR DEN ARTIKEL-TEXT ZURÜCK. Keine Meta-Infos.`;
 
   const content = await callKimiAPI(prompt);
-  return content;
-}
-
-async function generateFAQs(tradeSlug, citySlug, cityName, tradeName, topic) {
-  const { slug, title: topicTitle, keyword } = topic;
   
-  const prompt = `Erstelle 4-5 relevante FAQ-Einträge für "${topicTitle}" in ${cityName}.
-
-Format pro FAQ:
-FRAGE: [Konkrete Frage]
-ANTWORT: [Detaillierte Antwort mit Bezug zu ${cityName}, 2-3 Sätze]
-
-Themen für FAQs:
-- Kosten in ${cityName}
-- Dauer der Arbeiten
-- Genehmigungen/Baugenehmigung
-- Ob man während der Arbeiten im Haus bleiben kann
-- Garantie/Gewährleistung
-
-GIB NUR FAQS ZURÜCK, JEDE im Format:
-FRAGE: ...
-ANTWORT: ...`;
-
-  const faqText = await callKimiAPI(prompt);
-  
-  // Parse FAQs
+  // Parse FAQs und HowTo aus dem Content
   const faqs = [];
-  const lines = faqText.split('\n');
-  let currentQ = null;
-  let currentA = '';
+  const howToSteps = [];
   
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.startsWith('FRAGE:')) {
-      if (currentQ) {
-        faqs.push({ q: currentQ, a: currentA.trim() });
-      }
-      currentQ = trimmed.replace('FRAGE:', '').trim();
-      currentA = '';
-    } else if (trimmed.startsWith('ANTWORT:')) {
-      currentA = trimmed.replace('ANTWORT:', '').trim();
-    } else if (currentQ && trimmed) {
-      currentA += ' ' + trimmed;
-    }
+  // Extrahiere FAQs
+  const faqRegex = /\*\*Frage:\*\*\s*(.+?)\n\*\*Antwort:\*\*\s*(.+?)(?=\n\*\*Frage:|\n## |$)/gs;
+  let faqMatch;
+  while ((faqMatch = faqRegex.exec(content)) !== null) {
+    faqs.push({ q: faqMatch[1].trim(), a: faqMatch[2].trim() });
   }
   
-  if (currentQ) {
-    faqs.push({ q: currentQ, a: currentA.trim() });
-  }
-  
-  // Fallback FAQs wenn das Parsing fehlschlägt
+  // Fallback FAQs
   if (faqs.length === 0) {
-    return [
-      { q: `Wie lange dauert ${topicTitle} in ${cityName}?`, a: `Die Dauer hängt vom Umfang ab. In der Regel rechnen Sie mit 1 bis 3 Werktagen für Standardarbeiten. Bei umfangreicheren Projekten in ${cityName} kann es auch 1 bis 2 Wochen dauern.` },
-      { q: `Was kostet ${topicTitle} in ${cityName}?`, a: `Die Kosten variieren je nach Umfang und Material. Für eine Standard-Lösung in ${cityName} können Sie mit 500 bis 2.000 Euro rechnen. Holen Sie sich am besten mehrere kostenlose Angebote ein.` },
-      { q: `Benötige ich eine Genehmigung für ${topicTitle} in ${cityName}?`, a: `Das kommt auf das Projekt an. Kleine Reparaturen sind in der Regel genehmigungsfrei. Bei größeren Umbauten in ${cityName} sollten Sie sich vorab beim Bauamt erkundigen.` },
-      { q: `Kann ich während der Arbeiten im Haus wohnen bleiben?`, a: `In den meisten Fällen ja. Bei ${topicTitle} in ${cityName} wird in der Regel nur einzelne Bereiche bearbeitet, sodass Sie normal im Haus wohnen können.` }
-    ];
+    faqs.push(
+      { q: `Wie lange dauert ${topicTitle} in ${cityName}?`, a: `In der Regel 1-3 Werktage.` },
+      { q: `Was kostet ${topicTitle} in ${cityName}?`, a: `500-2.000 Euro je nach Umfang.` },
+      { q: `Benötige ich eine Genehmigung?`, a: `Kleine Reparaturen meist nicht.` },
+      { q: `Kann ich während der Arbeiten im Haus wohnen?`, a: `Ja, in der Regel kein Problem.` }
+    );
   }
   
-  return faqs;
-}
-
-async function generateHowToSteps(tradeSlug, citySlug, cityName, tradeName, topic) {
-  const { slug, title: topicTitle, keyword } = topic;
-  
-  const prompt = `Erstelle 5 praktische HowTo-Schritte für "${topicTitle}" in ${cityName}.
-
-Format pro Schritt:
-SCHRITT [Nummer]: [Titel]
-BESCHREIBUNG: [2-3 Sätze mit konkreten Tipps für ${cityName}]
-
-GIB NUR DIE SCHRITTE ZURÜCK im Format:
-SCHRITT 1: ...
-BESCHREIBUNG: ...`;
-
-  const howToText = await callKimiAPI(prompt);
-  
-  // Parse HowTo Steps
-  const steps = [];
-  const lines = howToText.split('\n');
-  let currentName = null;
-  let currentText = '';
-  
-  for (const line of lines) {
-    const trimmed = line.trim();
-    const stepMatch = trimmed.match(/^SCHRITT\s*\d*[:\.]?\s*(.+)/i);
-    
-    if (stepMatch) {
-      if (currentName) {
-        steps.push({ name: currentName, text: currentText.trim() });
-      }
-      currentName = stepMatch[1].trim();
-      currentText = '';
-    } else if (trimmed.toLowerCase().startsWith('beschreibung:')) {
-      currentText = trimmed.replace(/beschreibung[:\.]?/i, '').trim();
-    } else if (currentName && trimmed) {
-      currentText += ' ' + trimmed;
-    }
+  // Extrahiere HowTo Steps
+  const stepRegex = /^(\d+)\.\s*\*\*(.+?)\*\*:\s*(.+)$/gm;
+  let stepMatch;
+  while ((stepMatch = stepRegex.exec(content)) !== null) {
+    howToSteps.push({ name: stepMatch[2].trim(), text: stepMatch[3].trim() });
   }
   
-  if (currentName) {
-    steps.push({ name: currentName, text: currentText.trim() });
+  // Fallback Steps
+  if (howToSteps.length === 0) {
+    howToSteps.push(
+      { name: 'Bedarf analysieren', text: `Definieren Sie Ihre Anforderungen für ${topicTitle} in ${cityName}.` },
+      { name: 'Fachbetrieb wählen', text: `Vergleichen Sie mindestens 3 Fachbetriebe aus ${cityName}.` },
+      { name: 'Angebot einholen', text: `Lassen Sie sich ein detailliertes Angebot unterbreiten.` },
+      { name: 'Auftrag erteilen', text: `Nach Prüfung des Angebots erteilen Sie den Auftrag.` },
+      { name: 'Abnahme', text: `Prüfen Sie die Arbeiten und nehmen Sie sie ab.` }
+    );
   }
   
-  // Fallback
-  if (steps.length === 0) {
-    return [
-      { name: 'Bedarf analysieren', text: `Definieren Sie Ihre Anforderungen für ${topicTitle} in ${cityName}. Welches Budget haben Sie? Welche Termine sind realistisch?` },
-      { name: 'Fachbetrieb wählen', text: `Vergleichen Sie mindestens 3 Fachbetriebe aus ${cityName}. Achten Sie auf Meisterbetrieb, Referenzen und Gewährleistung.` },
-      { name: 'Angebot einholen', text: `Lassen Sie sich ein detailliertes, schriftliches Angebot unterbreiten. Prüfen Sie Leistungsumfang, Material und Termine.` },
-      { name: 'Auftrag erteilen', text: `Nach Prüfung des Angebots erteilen Sie den Auftrag. Vereinbaren Sie einen festen Termin und klären Sie alle Details.` },
-      { name: 'Abnahme & Zahlung', text: `Nach Fertigstellung prüfen Sie die Arbeiten. Bei Zufriedenheit erfolgt die Abnahme und Zahlung gemäß Vereinbarung.` }
-    ];
-  }
-  
-  return steps;
+  return { content, faqs, howToSteps };
 }
 
 // ─── ARTIKEL-HTML-GENERATOR ─────────────────────────────────────────
@@ -759,25 +693,14 @@ async function main() {
       console.log(`   Thema: ${topic.title} | Stadt: ${cityName} | Gewerk: ${trade.name}`);
       
       try {
-        // Generiere Artikel-Content per API
-        console.log(`   ✍️  Rufe Kimi API für Artikel-Content auf...`);
-        const articleContent = await generateArticleContent(tradeSlug, city, cityName, trade.name, topic);
+        // Generiere kompletten Artikel in EINEM API-Call
+        console.log(`   ✍️  Rufe Kimi API auf (1 Call = kompletter Artikel)...`);
+        const startCall = Date.now();
+        const { content: articleContent, faqs, howToSteps } = await generateFullArticle(tradeSlug, city, cityName, trade.name, topic);
+        const callDuration = ((Date.now() - startCall) / 1000).toFixed(1);
         apiCalls++;
         
-        // Warte 3 Sekunden vor nächstem API-Call (Rate-Limit)
-        await new Promise(r => setTimeout(r, 3000));
-        
-        // Generiere FAQs
-        console.log(`   ❓ Generiere FAQs...`);
-        const faqs = await generateFAQs(tradeSlug, city, cityName, trade.name, topic);
-        apiCalls++;
-        
-        await new Promise(r => setTimeout(r, 3000));
-        
-        // Generiere HowTo Steps
-        console.log(`   📝 Generiere HowTo-Schritte...`);
-        const howToSteps = await generateHowToSteps(tradeSlug, city, cityName, trade.name, topic);
-        apiCalls++;
+        console.log(`   ✅ API-Call fertig in ${callDuration}s (${articleContent.length} Zeichen)`);
         
         // Stelle sicher, dass Verzeichnis existiert
         const dir = path.dirname(filePath);
