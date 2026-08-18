@@ -18,9 +18,12 @@ async function doLogin() {
   // Demo-Modus: Einfaches Passwort akzeptieren
   // In Produktion würde hier ein API-Call erfolgen
   if (password.length >= 4) {
-    // Für Demo: Direkt einloggen ohne API-Call
+    // Demo-Modus: Token setzen damit API-Calls funktionieren
+    adminToken = 'demo-' + Date.now();
+    localStorage.setItem('adminToken', adminToken);
+    
     hideLoginGate();
-    showToast('✅ Admin-Login erfolgreich (Demo)');
+    showToast('✅ Admin-Login erfolgreich');
     
     // Versuche trotzdem Dashboard-Daten zu laden
     try {
