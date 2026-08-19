@@ -6,7 +6,7 @@ export async function GET() {
     // Get all trades
     const { data: trades, error: tradesError } = await supabaseAdmin
       .from('trades')
-      .select('id, name, slug, description, icon')
+      .select('id, name, slug, description')
       .order('name')
 
     if (tradesError) {
@@ -38,8 +38,8 @@ export async function GET() {
         name: trade.name,
         slug: trade.slug,
         description: trade.description,
-        emoji: trade.icon || '🏠',
-        icon: trade.icon,
+        emoji: '🏠',
+        icon: null,
         total_pages: tradePages.length,
         rented_pages: tradePages.filter((p) => p.status === 'rented').length,
         available_pages: tradePages.filter((p) => p.status === 'available').length,
