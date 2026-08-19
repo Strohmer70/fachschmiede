@@ -731,6 +731,114 @@ async function updateLeadStatus(leadId, status) {
   }
 }
 
+// ═══════════ BILLING / MIETEN ═══════════
+async function loadBillingData() {
+  if (!adminToken) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/admin/billing`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    
+    if (res.status === 401) {
+      showLoginGate();
+      return;
+    }
+    
+    const data = await res.json();
+    
+    if (!data.success) {
+      console.error('Billing API error:', data.error);
+      return;
+    }
+    
+    const stats = data.stats;
+    
+    // KPI Cards
+    const mrrEl = document.getElementById('billMrr');
+    if (mrrEl) mrrEl.textContent = stats.mrr.toLocaleString('de-DE') + ' €';
+    
+    const openEl = document.getElementById('billOpen');
+    if (openEl) openEl.textContent = stats.openInvoicesTotal.toLocaleString('de-DE') + ' €';
+    
+    const openCountEl = document.getElementById('billOpenCount');
+    if (openCountEl) openCountEl.textContent = stats.openInvoicesCount + ' überfällig';
+    
+    const basisEl = document.getElementById('billBasis');
+    if (basisEl) basisEl.textContent = stats.basisCount + ' × ' + stats.basisPrice + ' €';
+    
+    const proEl = document.getElementById('billPro');
+    if (proEl) proEl.textContent = stats.proCount + ' × ' + stats.proPrice + ' €';
+    
+    // Tenant table
+    const tbody = document.getElementById('billTenantTbody');
+    if (tbody) {
+      if (!data.tenants || data.tenants.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-12 text-center">
+              <p class="font-bold text-ink-600 text-lg">Noch keine aktiven Mieter</p>
+              <p class="text-sm text-ink-400 mt-1">Sobald eine Website vermietet wird, erscheint der Mieter hier.</p>
+            </td>
+          </tr>
+        `;
+      } else {
+        tbody.innerHTML = data.tenants.map((t: any) => {
+          const page = t.landing_page || {};
+          const trade = page.trade || {};
+          const city = page.city || {};
+          const price = (page.monthly_price || 0) / 100;
+          const since = t.created_at ? new Date(t.created_at).toLocaleDateString('de-DE') : '-';
+          
+          return `
+            <tr class="hover:bg-ink-50">
+              <td class="px-6 py-4 font-bold text-ink-900">${t.company_name || t.contact_name || 'Unbekannt'}</td>
+              <td class="px-6 py-4 text-ink-600">${trade.name || '-'} / ${city.name || '-'}</td>
+              <td class="px-6 py-4 text-ink-900 font-bold">${price.toLocaleString('de-DE')} €</td>
+              <td class="px-6 py-4 text-ink-600">${since}</td>
+              <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Aktiv</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+    
+    // Revenue by trade
+    const revEl = document.getElementById('billRevenueByTrade');
+    if (revEl) {
+      if (!data.revenueByTrade || data.revenueByTrade.length === 0) {
+        revEl.innerHTML = '<p class="text-ink-400 italic">Noch keine Umsatzdaten verfügbar</p>';
+      } else {
+        const maxRev = Math.max(...data.revenueByTrade.map((r: any) => r.revenue), 1);
+        const colors = ['bg-orange-500', 'bg-blue-500', 'bg-teal-500', 'bg-brand-500', 'bg-purple-500', 'bg-red-500'];
+        const emojis: Record<string, string> = {
+          dachdecker: '🏠', elektriker: '⚡', shk: '🔧', zimmerer: '🔨', maler: '🖌️', fliesenleger: '🧱'
+        };
+        
+        revEl.innerHTML = data.revenueByTrade.map((r: any, i: number) => {
+          const pct = Math.round((r.revenue / maxRev) * 100);
+          const color = colors[i % colors.length];
+          const emoji = emojis[r.slug] || '🏢';
+          return `
+            <div>
+              <div class="flex justify-between font-semibold">
+                <span>${emoji} ${r.name}</span>
+                <span>${r.revenue.toLocaleString('de-DE')} €</span>
+              </div>
+              <div class="mt-1 h-2.5 bg-ink-100 rounded-full">
+                <div class="h-2.5 ${color} rounded-full" style="width:${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+    
+  } catch (err) {
+    console.error('Billing load error:', err);
+  }
+}
+
 // ═══════════ BLOG / ARTIKEL ═══════════
 let allArticles = [];
 let currentArticleFilter = 'all';

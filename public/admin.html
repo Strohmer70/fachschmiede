@@ -444,70 +444,47 @@ tailwind.config = {
       <!-- ═══════ VIEW: MIETEN & ABRECHNUNG ═══════ -->
       <div class="view" id="view-mieten">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">MRR (monatl. Umsatz)</p><p class="mt-2 text-3xl font-black text-ink-900">4.347 €</p><p class="mt-1 text-xs font-bold text-green-600">▲ +12 % ggü. Vormonat</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Offene Forderungen</p><p class="mt-2 text-3xl font-black text-red-600">567 €</p><p class="mt-1 text-xs font-bold text-ink-400">3 Rechnungen</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Basis-Tarife</p><p class="mt-2 text-3xl font-black text-ink-900">15 × 189 €</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Pro-Tarife</p><p class="mt-2 text-3xl font-black text-ink-900">8 × 289 €</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">MRR (monatl. Umsatz)</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="billMrr">0 €</p>
+            <p class="mt-1 text-xs font-bold text-ink-400">Aktive Mietverträge</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Offene Forderungen</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="billOpen">0 €</p>
+            <p class="mt-1 text-xs font-bold text-ink-400" id="billOpenCount">0 überfällig</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Basis-Tarife</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="billBasis">0 × 189 €</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5">
+            <p class="text-sm font-semibold text-ink-500">Pro-Tarife</p>
+            <p class="mt-2 text-3xl font-black text-ink-900" id="billPro">0 × 289 €</p>
+          </div>
         </div>
 
         <div class="grid lg:grid-cols-3 gap-6">
           <div class="lg:col-span-2 bg-white rounded-2xl border border-ink-200 overflow-hidden">
             <div class="px-6 py-5 border-b border-ink-100 flex items-center justify-between">
-              <h2 class="font-bold text-ink-900 text-lg">Rechnungen Juli 2026</h2>
-              <button onclick="showToast('Rechnungslauf gestartet: 23 Rechnungen werden erzeugt und versendet (Demo).')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2 rounded-lg transition">Rechnungslauf starten</button>
+              <h2 class="font-bold text-ink-900 text-lg">Aktive Mieter &amp; Abonnements</h2>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
                   <tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100">
-                    <th class="px-6 py-3 font-bold">Rechnung</th>
                     <th class="px-6 py-3 font-bold">Mieter</th>
+                    <th class="px-6 py-3 font-bold">Gewerk / Ort</th>
                     <th class="px-6 py-3 font-bold">Betrag</th>
-                    <th class="px-6 py-3 font-bold">Fällig</th>
+                    <th class="px-6 py-3 font-bold">Seit</th>
                     <th class="px-6 py-3 font-bold">Status</th>
-                    <th class="px-6 py-3 font-bold text-right">Aktion</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-ink-100" id="rechTbody">
-                  <tr class="hover:bg-ink-50">
-                    <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0714</td>
-                    <td class="px-6 py-4 font-bold text-ink-900">Bergmann Bedachungen</td>
-                    <td class="px-6 py-4 text-ink-900 font-bold">224,91 €</td>
-                    <td class="px-6 py-4 text-ink-600">05.07.2026</td>
-                    <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Bezahlt</span></td>
-                    <td class="px-6 py-4 text-right"><button onclick="showToast('Rechnung RE-2026-0714 als PDF heruntergeladen (Demo).')" class="text-brand-600 font-semibold hover:underline">PDF</button></td>
-                  </tr>
-                  <tr class="hover:bg-ink-50">
-                    <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0715</td>
-                    <td class="px-6 py-4 font-bold text-ink-900">Volt Elektrotechnik</td>
-                    <td class="px-6 py-4 text-ink-900 font-bold">343,91 €</td>
-                    <td class="px-6 py-4 text-ink-600">05.07.2026</td>
-                    <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Bezahlt</span></td>
-                    <td class="px-6 py-4 text-right"><button onclick="showToast('Rechnung RE-2026-0715 als PDF heruntergeladen (Demo).')" class="text-brand-600 font-semibold hover:underline">PDF</button></td>
-                  </tr>
-                  <tr class="hover:bg-ink-50">
-                    <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0716</td>
-                    <td class="px-6 py-4 font-bold text-ink-900">SHK Krämer</td>
-                    <td class="px-6 py-4 text-ink-900 font-bold">224,91 €</td>
-                    <td class="px-6 py-4 text-ink-600">05.07.2026</td>
-                    <td class="px-6 py-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Überfällig (8 T.)</span></td>
-                    <td class="px-6 py-4 text-right space-x-3 whitespace-nowrap"><button onclick="remindInvoice(this)" class="text-amber-600 font-semibold hover:underline">Mahnung senden</button><button onclick="showToast('Rechnung RE-2026-0716 als PDF heruntergeladen (Demo).')" class="text-brand-600 font-semibold hover:underline">PDF</button></td>
-                  </tr>
-                  <tr class="hover:bg-ink-50">
-                    <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0717</td>
-                    <td class="px-6 py-4 font-bold text-ink-900">Maler Weber</td>
-                    <td class="px-6 py-4 text-ink-900 font-bold">224,91 €</td>
-                    <td class="px-6 py-4 text-ink-600">05.07.2026</td>
-                    <td class="px-6 py-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Überfällig (12 T.)</span></td>
-                    <td class="px-6 py-4 text-right space-x-3 whitespace-nowrap"><button onclick="remindInvoice(this)" class="text-amber-600 font-semibold hover:underline">Mahnung senden</button><button onclick="showToast('Rechnung RE-2026-0717 als PDF heruntergeladen (Demo).')" class="text-brand-600 font-semibold hover:underline">PDF</button></td>
-                  </tr>
-                  <tr class="hover:bg-ink-50">
-                    <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0718</td>
-                    <td class="px-6 py-4 font-bold text-ink-900">Zimmerei Falk</td>
-                    <td class="px-6 py-4 text-ink-900 font-bold">343,91 €</td>
-                    <td class="px-6 py-4 text-ink-600">15.07.2026</td>
-                    <td class="px-6 py-4"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">Offen</span></td>
-                    <td class="px-6 py-4 text-right space-x-3 whitespace-nowrap"><button onclick="showToast('Zahlungserinnerung versendet (Demo).')" class="text-amber-600 font-semibold hover:underline">Erinnern</button><button onclick="showToast('Rechnung RE-2026-0718 als PDF heruntergeladen (Demo).')" class="text-brand-600 font-semibold hover:underline">PDF</button></td>
+                <tbody class="divide-y divide-ink-100" id="billTenantTbody">
+                  <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-ink-400 italic">
+                      Lade Mieter-Daten…
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -522,15 +499,12 @@ tailwind.config = {
                 <li class="flex gap-3"><span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-black shrink-0">2</span><span><strong class="text-ink-900">Tag 10:</strong> 1. Mahnung + Hinweis im Mieter-Dashboard</span></li>
                 <li class="flex gap-3"><span class="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-black shrink-0">3</span><span><strong class="text-ink-900">Tag 20:</strong> 2. Mahnung, Website bleibt online, Aufgabe für dich</span></li>
               </ul>
-              <button onclick="showToast('Mahnplan bearbeitet (Demo).')" class="mt-4 w-full border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold py-2.5 rounded-lg transition">Mahnplan anpassen</button>
+              <p class="mt-4 text-xs text-ink-400 italic">Rechnungen werden über Stripe automatisch erstellt und versendet.</p>
             </div>
             <div class="bg-white rounded-2xl border border-ink-200 p-6">
               <h2 class="font-bold text-ink-900">Umsatz nach Gewerk</h2>
-              <div class="mt-4 space-y-3 text-sm">
-                <div><div class="flex justify-between font-semibold"><span>🏠 Dachdecker</span><span>1.701 €</span></div><div class="mt-1 h-2.5 bg-ink-100 rounded-full"><div class="h-2.5 bg-orange-500 rounded-full" style="width:78%"></div></div></div>
-                <div><div class="flex justify-between font-semibold"><span>⚡ Elektriker</span><span>1.323 €</span></div><div class="mt-1 h-2.5 bg-ink-100 rounded-full"><div class="h-2.5 bg-blue-500 rounded-full" style="width:61%"></div></div></div>
-                <div><div class="flex justify-between font-semibold"><span>🔧 SHK</span><span>756 €</span></div><div class="mt-1 h-2.5 bg-ink-100 rounded-full"><div class="h-2.5 bg-teal-500 rounded-full" style="width:35%"></div></div></div>
-                <div><div class="flex justify-between font-semibold"><span>🎨 Maler &amp; weitere</span><span>567 €</span></div><div class="mt-1 h-2.5 bg-ink-100 rounded-full"><div class="h-2.5 bg-brand-500 rounded-full" style="width:26%"></div></div></div>
+              <div class="mt-4 space-y-3 text-sm" id="billRevenueByTrade">
+                <p class="text-ink-400 italic">Lade Umsatzdaten…</p>
               </div>
             </div>
           </div>
@@ -2374,6 +2348,11 @@ function showView(id, el){
   // Load tenants when switching to mieter view
   if (id === 'mieter' && typeof renderMieterTable === 'function' && dashboardData) {
     renderMieterTable(dashboardData.tenants || []);
+  }
+  
+  // Load billing data when switching to mieten view
+  if (id === 'mieten' && typeof loadBillingData === 'function') {
+    loadBillingData();
   }
 }
 
