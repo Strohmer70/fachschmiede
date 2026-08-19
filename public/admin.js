@@ -942,21 +942,21 @@ async function loadTrades() {
     }
     
     const salesPages = {
-      'dachdecker': 'sales-dachdecker.html',
-      'elektriker': 'sales-elektriker.html',
-      'shk': 'sales-shk.html',
-      'klempner': 'sales-shk.html',
-      'zimmerer': 'sales-zimmerer.html',
-      'maler': 'sales-maler.html',
+      'dachdecker': '/sales-dachdecker.html',
+      'elektriker': '/sales-elektriker.html',
+      'shk': '/sales-shk.html',
+      'klempner': '/sales-shk.html',
+      'zimmerer': '/sales-zimmerer.html',
+      'maler': '/sales-maler.html',
     };
     
     const samplePages = {
-      'dachdecker': 'index.html',
-      'elektriker': 'elektriker.html',
-      'shk': 'shk.html',
-      'klempner': 'shk.html',
-      'zimmerer': 'zimmerer.html',
-      'maler': 'maler.html',
+      'dachdecker': '/muster/dachdecker',
+      'elektriker': '/muster/elektriker',
+      'shk': '/muster/shk',
+      'klempner': '/muster/shk',
+      'zimmerer': '/muster/zimmerer',
+      'maler': '/muster/maler',
     };
     
     grid.innerHTML = trades.map((trade) => {
