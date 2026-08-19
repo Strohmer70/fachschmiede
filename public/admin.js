@@ -910,7 +910,7 @@ async function loadTrades() {
   if (!adminToken) return;
   
   try {
-    const res = await fetch(`${API_BASE}/admin/trades`, {
+    const res = await fetch(`${API_BASE}/admin/trades?_=${Date.now()}`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
     
