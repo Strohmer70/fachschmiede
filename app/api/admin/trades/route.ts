@@ -6,7 +6,7 @@ export async function GET() {
     // Get all trades with their landing page counts
     const { data: trades, error: tradesError } = await supabaseAdmin
       .from('trades')
-      .select('id, name, slug, description, emoji, icon')
+      .select('id, name, slug, description, icon')
       .order('name')
 
     if (tradesError) {
@@ -42,7 +42,7 @@ export async function GET() {
         name: trade.name,
         slug: trade.slug,
         description: trade.description,
-        emoji: trade.emoji || '🏠',
+        emoji: trade.icon || '🏠',
         icon: trade.icon,
         total_pages: totalPages,
         rented_pages: rentedPages,
