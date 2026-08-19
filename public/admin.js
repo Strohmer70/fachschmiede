@@ -1001,19 +1001,6 @@ function renderTradeCards(trades) {
     reqBody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400 text-sm">Noch keine Anfragen vorhanden.</td></tr>`;
   }
 }
-            <td class="px-4 py-3.5 text-ink-600">—</td>
-            <td class="px-4 py-3.5"><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">1</span></td>
-            <td class="px-4 py-3.5 text-ink-600">${req.created_at ? new Date(req.created_at).toLocaleDateString('de-DE') : '-'}</td>
-            <td class="px-4 py-3.5 text-right"><button class="text-brand-600 font-semibold hover:underline">Als Gewerk anlegen</button></td>
-          </tr>
-        `).join('');
-      }
-    }
-    
-  } catch (err) {
-    console.error('Trades load error:', err);
-  }
-}
 
 // ═══════════ BLOG / ARTIKEL ═══════════
 let allArticles = [];
