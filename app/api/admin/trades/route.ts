@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    // Get all trades with their landing page counts
+    // Get all trades
     const { data: trades, error: tradesError } = await supabaseAdmin
       .from('trades')
       .select('id, name, slug, description, icon')
@@ -17,7 +17,7 @@ export async function GET() {
       }, { status: 500 })
     }
 
-    // Get landing page counts per trade
+    // Get landing pages
     const { data: pages, error: pagesError } = await supabaseAdmin
       .from('landing_pages')
       .select('trade_id, status')
@@ -33,10 +33,6 @@ export async function GET() {
     // Aggregate counts per trade
     const tradeStats = (trades || []).map((trade) => {
       const tradePages = pages?.filter((p) => p.trade_id === trade.id) || []
-      const totalPages = tradePages.length
-      const rentedPages = tradePages.filter((p) => p.status === 'rented').length
-      const availablePages = tradePages.filter((p) => p.status === 'available').length
-
       return {
         id: trade.id,
         name: trade.name,
@@ -44,10 +40,10 @@ export async function GET() {
         description: trade.description,
         emoji: trade.icon || '🏠',
         icon: trade.icon,
-        total_pages: totalPages,
-        rented_pages: rentedPages,
-        available_pages: availablePages,
-        status: totalPages > 0 ? 'live' : 'planned',
+        total_pages: tradePages.length,
+        rented_pages: tradePages.filter((p) => p.status === 'rented').length,
+        available_pages: tradePages.filter((p) => p.status === 'available').length,
+        status: tradePages.length > 0 ? 'live' : 'planned',
       }
     })
 
