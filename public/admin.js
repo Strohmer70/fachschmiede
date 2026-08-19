@@ -905,6 +905,117 @@ async function loadInvoiceData() {
   }
 }
 
+// ═══════════ TRADES / GEWERKE ═══════════
+async function loadTrades() {
+  if (!adminToken) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/admin/trades`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    
+    if (res.status === 401) {
+      showLoginGate();
+      return;
+    }
+    
+    const data = await res.json();
+    
+    if (!data.success) {
+      console.error('Trades API error:', data.error);
+      return;
+    }
+    
+    // Render trade cards
+    const grid = document.getElementById('gewerkGrid');
+    if (!grid) return;
+    
+    const trades = data.trades || [];
+    
+    if (trades.length === 0) {
+      grid.innerHTML = `
+        <div class="border border-ink-200 rounded-2xl p-8 text-center col-span-full">
+          <p class="text-ink-400">Noch keine Gewerke angelegt.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    const salesPages = {
+      'dachdecker': 'sales-dachdecker.html',
+      'elektriker': 'sales-elektriker.html',
+      'shk': 'sales-shk.html',
+      'klempner': 'sales-shk.html',
+      'zimmerer': 'sales-zimmerer.html',
+      'maler': 'sales-maler.html',
+    };
+    
+    const samplePages = {
+      'dachdecker': 'index.html',
+      'elektriker': 'elektriker.html',
+      'shk': 'shk.html',
+      'klempner': 'shk.html',
+      'zimmerer': 'zimmerer.html',
+      'maler': 'maler.html',
+    };
+    
+    grid.innerHTML = trades.map((trade) => {
+      const isLive = trade.total_pages > 0;
+      const statusBadge = isLive
+        ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Live</span>`
+        : `<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">Geplant</span>`;
+      
+      const salesUrl = salesPages[trade.slug] || `#`;
+      const sampleUrl = samplePages[trade.slug] || `#`;
+      
+      return `
+        <div class="border border-ink-200 rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <p class="font-black text-ink-900 text-lg">${trade.emoji || '🏠'} ${trade.name}</p>
+            ${statusBadge}
+          </div>
+          <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
+            <li>✓ ${trade.total_pages} Stadt-Websites (${trade.rented_pages} vermietet)</li>
+            <li>✓ ${trade.available_pages} verfügbar zur Vermietung</li>
+          </ul>
+          <div class="mt-4 flex gap-2">
+            <a href="${salesUrl}" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Salespage</a>
+            <a href="${sampleUrl}" class="flex-1 text-center text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Musterseite</a>
+          </div>
+        </div>
+      `;
+    }).join('') + `
+      <button onclick="openModal('modalGewerk')" class="border-2 border-dashed border-brand-300 rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-brand-600 hover:bg-brand-50 transition min-h-[190px]">
+        <span class="text-3xl">＋</span>
+        <span class="font-bold">Neues Gewerk anfordern</span>
+        <span class="text-xs text-ink-400 font-normal">Redaktion erstellt Texte, FAQ &amp; Blog-Paket</span>
+      </button>
+    `;
+    
+    // Render trade requests
+    const reqBody = document.getElementById('tradeRequestsBody');
+    if (reqBody) {
+      const requests = data.requests || [];
+      if (requests.length === 0) {
+        reqBody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400 text-sm">Noch keine Anfragen vorhanden.</td></tr>`;
+      } else {
+        reqBody.innerHTML = requests.map((req) => `
+          <tr class="hover:bg-ink-50">
+            <td class="px-4 py-3.5 font-bold text-ink-900">${req.message || 'Anfrage'}</td>
+            <td class="px-4 py-3.5 text-ink-600">—</td>
+            <td class="px-4 py-3.5"><span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">1</span></td>
+            <td class="px-4 py-3.5 text-ink-600">${req.created_at ? new Date(req.created_at).toLocaleDateString('de-DE') : '-'}</td>
+            <td class="px-4 py-3.5 text-right"><button class="text-brand-600 font-semibold hover:underline">Als Gewerk anlegen</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+    
+  } catch (err) {
+    console.error('Trades load error:', err);
+  }
+}
+
 // ═══════════ BLOG / ARTIKEL ═══════════
 let allArticles = [];
 let currentArticleFilter = 'all';
@@ -1540,6 +1651,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.filterArticles = filterArticles;
   window.loadBillingData = loadBillingData;
   window.loadInvoiceData = loadInvoiceData;
+  window.loadTrades = loadTrades;
   
   // Prüfe, ob Token existiert
   if (adminToken) {
