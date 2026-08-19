@@ -243,42 +243,6 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Mieter-Tabelle -->
-      <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
-        <div class="px-6 py-5 flex flex-wrap items-center justify-between gap-3 border-b border-ink-100">
-          <h2 class="font-bold text-ink-900 text-lg">Mieter &amp; Websites</h2>
-          <div class="flex gap-2">
-            <input type="text" id="ovSearch" oninput="filterOverview()" placeholder="Suchen …" class="text-sm border border-ink-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <select id="ovFilter" onchange="filterOverview()" class="text-sm border border-ink-200 rounded-lg px-3 py-2 bg-white">
-              <option value="">Alle Gewerke</option><option>Dachdecker</option><option>Elektriker</option><option>SHK</option><option>Maler</option><option>Zimmerer</option><option>Fliesenleger</option>
-            </select>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100">
-                <th class="px-6 py-3 font-bold">Mieter</th>
-                <th class="px-6 py-3 font-bold">Gewerk / Ort</th>
-                <th class="px-6 py-3 font-bold">Website</th>
-                <th class="px-6 py-3 font-bold">Tarif</th>
-                <th class="px-6 py-3 font-bold">Leads (30 T.)</th>
-                <th class="px-6 py-3 font-bold">Status</th>
-                <th class="px-6 py-3 font-bold text-right">Aktion</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-ink-100" id="ovTbody">
-              <tr id="ovEmpty">
-                <td colspan="7" class="px-6 py-8 text-center">
-                  <p class="font-bold text-ink-600 text-lg">Noch keine Einträge</p>
-                  <p class="text-sm text-ink-400 mt-1">Mieter und Websites erscheinen hier automatisch.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       <!-- Gewerke & Vorlagen -->
       <div class="grid lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-2xl border border-ink-200 p-6">
