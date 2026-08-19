@@ -839,6 +839,72 @@ async function loadBillingData() {
   }
 }
 
+// ═══════════ INVOICE / RECHNUNGEN ═══════════
+async function loadInvoiceData() {
+  if (!adminToken) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/admin/invoices`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    
+    if (res.status === 401) {
+      showLoginGate();
+      return;
+    }
+    
+    const data = await res.json();
+    
+    if (!data.success) {
+      console.error('Invoice API error:', data.error);
+      return;
+    }
+    
+    // Badge update
+    const badge = document.getElementById('invoiceAutoBadge');
+    if (badge) badge.textContent = data.stats.total + ' automatisch';
+    
+    // Table
+    const tbody = document.getElementById('invoiceList');
+    if (!tbody) return;
+    
+    if (!data.invoices || data.invoices.length === 0) {
+      tbody.innerHTML = `
+        <tr id="invoiceListEmpty">
+          <td colspan="7" class="px-6 py-12 text-center">
+            <p class="font-bold text-ink-600 text-lg">Noch keine Rechnungen</p>
+            <p class="text-sm text-ink-400 mt-1">Rechnungen werden automatisch erstellt, sobald Mieter über Stripe bezahlen.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+    
+    tbody.innerHTML = data.invoices.map((inv: any) => {
+      const since = inv.created_at ? new Date(inv.created_at).toLocaleDateString('de-DE') : '-';
+      return `
+        <tr class="hover:bg-ink-50">
+          <td class="px-6 py-4 font-mono text-ink-600">${inv.number}</td>
+          <td class="px-6 py-4">
+            <p class="font-bold text-ink-900">${inv.tenant_name}</p>
+            <p class="text-xs text-ink-400">${inv.website}</p>
+          </td>
+          <td class="px-6 py-4 text-ink-600">${inv.month}</td>
+          <td class="px-6 py-4 font-bold text-ink-900">${inv.amount.toLocaleString('de-DE')} €</td>
+          <td class="px-6 py-4 text-ink-600">${inv.payment_method}</td>
+          <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Bezahlt</span></td>
+          <td class="px-6 py-4 text-right">
+            <button onclick="showToast('PDF-Download folgt…')" class="text-brand-600 font-semibold hover:underline">PDF</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    
+  } catch (err) {
+    console.error('Invoice load error:', err);
+  }
+}
+
 // ═══════════ BLOG / ARTIKEL ═══════════
 let allArticles = [];
 let currentArticleFilter = 'all';
@@ -1472,6 +1538,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.generateArticle = generateArticle;
   window.runArticleSchedule = runArticleSchedule;
   window.filterArticles = filterArticles;
+  window.loadBillingData = loadBillingData;
+  window.loadInvoiceData = loadInvoiceData;
   
   // Prüfe, ob Token existiert
   if (adminToken) {

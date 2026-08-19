@@ -539,83 +539,20 @@ tailwind.config = {
           <div class="bg-white rounded-2xl border border-ink-200 p-6">
             <h2 class="font-black text-ink-900">📧 Versand-E-Mail (Vorlage)</h2>
             <p class="text-sm text-ink-500 mt-0.5">Geht automatisch raus, sobald die Zahlung eingegangen ist. Platzhalter werden pro Mieter ersetzt.</p>
-            <div class="mt-4 space-y-3.5">
-              <div>
-                <label class="block text-xs font-bold text-ink-700 mb-1">Absender</label>
-                <input type="text" value="MietWebsites Abrechnung <buchhaltung@mietwebsites-muster.de>" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-ink-700 mb-1">Betreff</label>
-                <input type="text" value="Ihre Rechnung {rechnungsnr} – Zahlung erhalten, danke!" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-ink-700 mb-1">Text</label>
-                <textarea rows="7" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-500">Guten Tag {ansprechpartner},
-
-wir haben Ihre Zahlung über {betrag} für „{website}" erhalten – vielen Dank!
-
-Die Rechnung {rechnungsnr} finden Sie als PDF im Anhang und jederzeit in Ihrem Dashboard unter „Vertrag & Abrechnung".
-
-Freundliche Grüße
-Ihr MietWebsites-Team</textarea>
-              </div>
-              <div class="flex flex-wrap gap-2 text-[11px]">
-                <span class="bg-ink-100 text-ink-600 font-mono px-2 py-1 rounded">{rechnungsnr}</span>
-                <span class="bg-ink-100 text-ink-600 font-mono px-2 py-1 rounded">{ansprechpartner}</span>
-                <span class="bg-ink-100 text-ink-600 font-mono px-2 py-1 rounded">{betrag}</span>
-                <span class="bg-ink-100 text-ink-600 font-mono px-2 py-1 rounded">{website}</span>
-                <span class="bg-ink-100 text-ink-600 font-mono px-2 py-1 rounded">{zeitraum}</span>
-              </div>
-              <div class="flex gap-2">
-                <button onclick="showToast('Test-Mail an admin@demo.de versendet – mit Beispiel-PDF (Demo).')" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-4 py-2.5 hover:bg-ink-50 transition">Test-Versand an mich</button>
-                <button onclick="showToast('E-Mail-Vorlage gespeichert (Demo).')" class="text-xs font-bold text-white bg-brand-600 rounded-lg px-4 py-2.5 hover:bg-brand-700 transition">Vorlage speichern</button>
-              </div>
+      <div class="view" id="view-rechnungen">
+        <!-- Automatik-Status -->
+        <div class="bg-white rounded-2xl border-2 border-green-500/60 p-6">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="max-w-3xl">
+              <h2 class="font-black text-ink-900 text-lg flex items-center gap-2">⚡ Automatischer Rechnungsversand <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full" id="autoInvoiceBadge">aktiv</span></h2>
+              <p class="text-sm text-ink-500 mt-1 leading-relaxed">Sobald eine Zahlung über Stripe eingeht, erstellt das System die Rechnung automatisch. Aktive Abonnements werden monatlich belastet.</p>
             </div>
           </div>
-
-          <!-- Einstellungen + Webhook-Log -->
-          <div class="space-y-6">
-            <div class="bg-white rounded-2xl border border-ink-200 p-6">
-              <h2 class="font-black text-ink-900">⚙️ Rechnungseinstellungen</h2>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-ink-700 mb-1">Nummernkreis</label>
-                  <input type="text" value="RE-2026-####" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-ink-700 mb-1">Nächste Nr.</label>
-                  <input type="text" value="RE-2026-0723" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-ink-700 mb-1">Umsatzsteuer</label>
-                  <select class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                    <option selected>19 % USt (Regelbesteuerung)</option>
-                    <option>0 % – Kleinunternehmer § 19 UStG</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-ink-700 mb-1">Leistungsdatum</label>
-                  <select class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                    <option selected>Mietzeitraum (z. B. „Juli 2026")</option>
-                    <option>Zahlungsdatum</option>
-                  </select>
-                </div>
-              </div>
-              <div class="mt-4 bg-brand-50 border border-brand-200 rounded-xl px-4 py-3 text-xs text-brand-800 leading-relaxed">
-                📎 Absender, Anschrift, USt-IdNr. &amp; Bankdaten auf der Rechnung kommen automatisch aus dem Bereich <a class="font-bold underline cursor-pointer" onclick="showView('rechtliches', document.querySelector('[data-view=rechtliches]'))">⚖️ Rechtliches</a> – dort auch pflegen.
-              </div>
-            </div>
-            <div class="bg-white rounded-2xl border border-ink-200 p-6">
-              <div class="flex items-center justify-between">
-                <h2 class="font-black text-ink-900">🔄 Automatik-Log (live)</h2>
-                <button onclick="simulateInvoice()" class="text-xs font-bold text-white bg-green-600 rounded-lg px-4 py-2 hover:bg-green-700 transition">⚡ Zahlungseingang simulieren</button>
-              </div>
-              <ul id="invoiceLog" class="mt-4 space-y-2.5 text-xs">
-                <li class="flex gap-3 bg-ink-50 rounded-lg px-3.5 py-2.5"><span class="text-ink-400 font-mono shrink-0">23.07. 09:14</span><span class="text-ink-700"><strong>invoice.paid</strong> (Stripe) · Zimmerei Falk 343,91 € → <strong>RE-2026-0722</strong> erstellt &amp; an info@zimmerei-falk.de versendet ✓</span></li>
-                <li class="flex gap-3 bg-ink-50 rounded-lg px-3.5 py-2.5"><span class="text-ink-400 font-mono shrink-0">22.07. 17:41</span><span class="text-ink-700"><strong>invoice.paid</strong> (PayPal) · Volt Elektrotechnik 343,91 € → <strong>RE-2026-0721</strong> erstellt &amp; versendet ✓</span></li>
-                <li class="flex gap-3 bg-ink-50 rounded-lg px-3.5 py-2.5"><span class="text-ink-400 font-mono shrink-0">21.07. 08:02</span><span class="text-ink-700"><strong>invoice.paid</strong> (Stripe SEPA) · Bergmann Bedachungen 224,91 € → <strong>RE-2026-0720</strong> erstellt &amp; versendet ✓</span></li>
-              </ul>
-            </div>
+          <div class="mt-5 grid sm:grid-cols-4 gap-3 text-center">
+            <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl">💳</p><p class="mt-1.5 text-xs font-bold text-ink-900">1. Zahlungseingang</p><p class="text-[11px] text-ink-500 mt-0.5">Stripe <code class="font-mono">invoice.paid</code></p></div>
+            <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl">🧾</p><p class="mt-1.5 text-xs font-bold text-ink-900">2. Rechnung erstellt</p><p class="text-[11px] text-ink-500 mt-0.5">Fortlaufende Nr. · 19 % USt</p></div>
+            <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl">📄</p><p class="mt-1.5 text-xs font-bold text-ink-900">3. PDF generiert</p><p class="text-[11px] text-ink-500 mt-0.5">GoBD-konform · per E-Mail</p></div>
+            <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl">📧</p><p class="mt-1.5 text-xs font-bold text-ink-900">4. Versand an Mieter</p><p class="text-[11px] text-ink-500 mt-0.5">E-Mail mit PDF-Anhang</p></div>
           </div>
         </div>
 
@@ -623,46 +560,72 @@ Ihr MietWebsites-Team</textarea>
         <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
           <div class="px-6 py-5 border-b border-ink-100 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 class="font-bold text-ink-900 text-lg">Automatisch versendete Rechnungen</h2>
-              <p class="text-sm text-ink-500">Jede Rechnung ging direkt nach Zahlungseingang raus – Versandzeitpunkt inklusive.</p>
+              <h2 class="font-bold text-ink-900 text-lg">Aktive Rechnungen & Abonnements</h2>
+              <p class="text-sm text-ink-500">Monatliche Rechnungen basierend auf aktiven Mietverträgen.</p>
             </div>
-            <span class="text-xs font-bold text-green-700 bg-green-100 px-3 py-1.5 rounded-full">100 % automatisch versendet</span>
+            <span class="text-xs font-bold text-green-700 bg-green-100 px-3 py-1.5 rounded-full" id="invoiceAutoBadge">—</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-sm min-w-[860px]">
               <thead><tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100">
-                <th class="px-6 py-3 font-bold">Rechnung</th><th class="px-6 py-3 font-bold">Mieter / Website</th><th class="px-6 py-3 font-bold">Zeitraum</th><th class="px-6 py-3 font-bold">Brutto</th><th class="px-6 py-3 font-bold">Zahlung</th><th class="px-6 py-3 font-bold">Versendet</th><th class="px-6 py-3 font-bold text-right">Aktion</th>
+                <th class="px-6 py-3 font-bold">Rechnung</th>
+                <th class="px-6 py-3 font-bold">Mieter / Website</th>
+                <th class="px-6 py-3 font-bold">Zeitraum</th>
+                <th class="px-6 py-3 font-bold">Brutto</th>
+                <th class="px-6 py-3 font-bold">Zahlung</th>
+                <th class="px-6 py-3 font-bold">Status</th>
+                <th class="px-6 py-3 font-bold text-right">Aktion</th>
               </tr></thead>
               <tbody id="invoiceList" class="divide-y divide-ink-100">
-                <tr class="hover:bg-ink-50">
-                  <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0722</td>
-                  <td class="px-6 py-4"><p class="font-bold text-ink-900">Zimmerei Falk</p><p class="text-xs text-ink-400">zimmerei-iserlohn-muster.de</p></td>
-                  <td class="px-6 py-4 text-ink-600">Juli 2026</td>
-                  <td class="px-6 py-4 font-bold text-ink-900">343,91 €</td>
-                  <td class="px-6 py-4 text-ink-600">Stripe · 23.07.</td>
-                  <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">✓ 23.07. 09:14</span></td>
-                  <td class="px-6 py-4 text-right space-x-3 whitespace-nowrap"><button onclick="openInvoice('RE-2026-0722','Zimmerei Falk','Zimmerei Falk · Iserlohn','zimmerei-iserlohn-muster.de','Pro-Tarif','289,00','54,91','343,91','23.07.2026','Stripe (Kreditkarte)')" class="text-brand-600 font-semibold hover:underline">Ansehen</button><button onclick="showToast('RE-2026-0722 erneut an den Mieter versendet (Demo).')" class="text-ink-500 font-semibold hover:underline">Erneut senden</button></td>
-                </tr>
-                <tr class="hover:bg-ink-50">
-                  <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0721</td>
-                  <td class="px-6 py-4"><p class="font-bold text-ink-900">Volt Elektrotechnik</p><p class="text-xs text-ink-400">elektriker-dortmund-muster.de</p></td>
-                  <td class="px-6 py-4 text-ink-600">Juli 2026</td>
-                  <td class="px-6 py-4 font-bold text-ink-900">343,91 €</td>
-                  <td class="px-6 py-4 text-ink-600">PayPal · 22.07.</td>
-                  <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">✓ 22.07. 17:41</span></td>
-                  <td class="px-6 py-4 text-right space-x-3 whitespace-nowrap"><button onclick="openInvoice('RE-2026-0721','Volt Elektrotechnik','Volt Elektrotechnik · Dortmund','elektriker-dortmund-muster.de','Pro-Tarif','289,00','54,91','343,91','22.07.2026','PayPal')" class="text-brand-600 font-semibold hover:underline">Ansehen</button><button onclick="showToast('RE-2026-0721 erneut an den Mieter versendet (Demo).')" class="text-ink-500 font-semibold hover:underline">Erneut senden</button></td>
-                </tr>
-                <tr class="hover:bg-ink-50">
-                  <td class="px-6 py-4 font-mono text-ink-600">RE-2026-0720</td>
-                  <td class="px-6 py-4"><p class="font-bold text-ink-900">Bergmann Bedachungen</p><p class="text-xs text-ink-400">dachdecker-schwerte-muster.de</p></td>
-                  <td class="px-6 py-4 text-ink-600">Juli 2026</td>
-                  <td class="px-6 py-4 font-bold text-ink-900">224,91 €</td>
-                  <td class="px-6 py-4 text-ink-600">Stripe SEPA · 21.07.</td>
-                  <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">✓ 21.07. 08:02</span></td>
-                  <td class="px-6 py-4 text-right space-x-3 whitespace-nowrap"><button onclick="openInvoice('RE-2026-0720','Bergmann Bedachungen','Bergmann Bedachungen · Schwerte','dachdecker-schwerte-muster.de','Basis-Tarif','189,00','35,91','224,91','21.07.2026','Stripe (SEPA-Lastschrift)')" class="text-brand-600 font-semibold hover:underline">Ansehen</button><button onclick="showToast('RE-2026-0720 erneut an den Mieter versendet (Demo).')" class="text-ink-500 font-semibold hover:underline">Erneut senden</button></td>
+                <tr id="invoiceListEmpty">
+                  <td colspan="7" class="px-6 py-12 text-center">
+                    <p class="font-bold text-ink-600 text-lg">Noch keine Rechnungen</p>
+                    <p class="text-sm text-ink-400 mt-1">Rechnungen werden automatisch erstellt, sobald Mieter über Stripe bezahlen.</p>
+                  </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- E-Mail-Vorlage (vereinfacht) -->
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl border border-ink-200 p-6">
+            <h2 class="font-bold text-ink-900">📧 Rechnungs-E-Mail (Vorlage)</h2>
+            <p class="text-sm text-ink-500 mt-1">Wird automatisch an Mieter versendet, sobald eine Zahlung eingeht.</p>
+            <div class="mt-4 space-y-3.5">
+              <div>
+                <label class="block text-xs font-bold text-ink-700 mb-1">Absender</label>
+                <input type="text" value="hello@fachschmiede.de" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-ink-700 mb-1">Betreff</label>
+                <input type="text" value="Ihre Rechnung {rechnungsnr} – Zahlung erhalten, danke!" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              </div>
+              <div class="flex gap-2">
+                <button onclick="showToast('Vorlage gespeichert.')" class="text-xs font-bold text-white bg-brand-600 rounded-lg px-4 py-2.5 hover:bg-brand-700 transition">Vorlage speichern</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-ink-200 p-6">
+            <h2 class="font-black text-ink-900">⚙️ Rechnungseinstellungen</h2>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-ink-700 mb-1">Nummernkreis</label>
+                <input type="text" value="RE-2026-####" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-ink-700 mb-1">Umsatzsteuer</label>
+                <select class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option selected>19 % USt (Regelbesteuerung)</option>
+                  <option>0 % – Kleinunternehmer § 19 UStG</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-4 bg-brand-50 border border-brand-200 rounded-xl px-4 py-3 text-xs text-brand-800 leading-relaxed">
+              📎 Absender, Anschrift, USt-IdNr. &amp; Bankdaten auf der Rechnung kommen automatisch aus dem Bereich <a class="font-bold underline cursor-pointer" onclick="showView('rechtliches', document.querySelector('[data-view=rechtliches]'))">⚖️ Rechtliches</a>.
+            </div>
           </div>
         </div>
       </div>
@@ -2353,6 +2316,11 @@ function showView(id, el){
   // Load billing data when switching to mieten view
   if (id === 'mieten' && typeof loadBillingData === 'function') {
     loadBillingData();
+  }
+  
+  // Load invoice data when switching to rechnungen view
+  if (id === 'rechnungen' && typeof loadInvoiceData === 'function') {
+    loadInvoiceData();
   }
 }
 
