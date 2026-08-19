@@ -3,18 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    console.log('=== TRADES API CALLED ===')
-    
-    // Check if supabaseAdmin is available
-    if (!supabaseAdmin) {
-      console.error('supabaseAdmin is not initialized')
-      return NextResponse.json({ 
-        error: 'Database not initialized',
-        details: 'supabaseAdmin is null'
-      }, { status: 500 })
-    }
-    
-    // Get all trades
+    // Get all trades with their landing page counts
     const { data: trades, error: tradesError } = await supabaseAdmin
       .from('trades')
       .select('id, name, slug, description, emoji, icon')
@@ -24,15 +13,11 @@ export async function GET() {
       console.error('Error fetching trades:', tradesError)
       return NextResponse.json({ 
         error: 'Failed to fetch trades', 
-        details: tradesError.message,
-        hint: tradesError.hint,
-        code: tradesError.code
+        details: tradesError.message 
       }, { status: 500 })
     }
 
-    console.log('Trades fetched:', trades?.length || 0)
-
-    // Get landing pages
+    // Get landing page counts per trade
     const { data: pages, error: pagesError } = await supabaseAdmin
       .from('landing_pages')
       .select('trade_id, status')
@@ -45,11 +30,13 @@ export async function GET() {
       }, { status: 500 })
     }
 
-    console.log('Pages fetched:', pages?.length || 0)
-
-    // Aggregate counts
+    // Aggregate counts per trade
     const tradeStats = (trades || []).map((trade) => {
       const tradePages = pages?.filter((p) => p.trade_id === trade.id) || []
+      const totalPages = tradePages.length
+      const rentedPages = tradePages.filter((p) => p.status === 'rented').length
+      const availablePages = tradePages.filter((p) => p.status === 'available').length
+
       return {
         id: trade.id,
         name: trade.name,
@@ -57,10 +44,10 @@ export async function GET() {
         description: trade.description,
         emoji: trade.emoji || '🏠',
         icon: trade.icon,
-        total_pages: tradePages.length,
-        rented_pages: tradePages.filter((p) => p.status === 'rented').length,
-        available_pages: tradePages.filter((p) => p.status === 'available').length,
-        status: tradePages.length > 0 ? 'live' : 'planned',
+        total_pages: totalPages,
+        rented_pages: rentedPages,
+        available_pages: availablePages,
+        status: totalPages > 0 ? 'live' : 'planned',
       }
     })
 
@@ -74,8 +61,7 @@ export async function GET() {
     console.error('Trades API error:', err)
     return NextResponse.json({ 
       error: 'Failed to fetch trades', 
-      details: err instanceof Error ? err.message : 'Unknown error',
-      stack: err instanceof Error ? err.stack : undefined
+      details: err instanceof Error ? err.message : 'Unknown error' 
     }, { status: 500 })
   }
 }
