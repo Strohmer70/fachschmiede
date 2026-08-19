@@ -282,7 +282,7 @@ function renderPagesOverview(pages) {
       : '<span class="text-xs font-bold bg-brand-100 text-brand-700 px-2 py-1 rounded-full">Frei</span>';
     
     return `
-      <tr class="hover:bg-ink-50 transition">
+      <tr class="hover:bg-ink-50 transition" data-gewerk="${p.trade?.name || ''}">
         <td class="px-6 py-4">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-full ${p.status === 'rented' ? 'bg-green-100 text-green-600' : 'bg-brand-100 text-brand-600'} flex items-center justify-center font-bold text-sm">
