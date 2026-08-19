@@ -783,7 +783,7 @@ async function loadBillingData() {
           </tr>
         `;
       } else {
-        tbody.innerHTML = data.tenants.map((t: any) => {
+        tbody.innerHTML = data.tenants.map((t) => {
           const page = t.landing_page || {};
           const trade = page.trade || {};
           const city = page.city || {};
@@ -809,13 +809,13 @@ async function loadBillingData() {
       if (!data.revenueByTrade || data.revenueByTrade.length === 0) {
         revEl.innerHTML = '<p class="text-ink-400 italic">Noch keine Umsatzdaten verfügbar</p>';
       } else {
-        const maxRev = Math.max(...data.revenueByTrade.map((r: any) => r.revenue), 1);
+        const maxRev = Math.max(...data.revenueByTrade.map((r) => r.revenue), 1);
         const colors = ['bg-orange-500', 'bg-blue-500', 'bg-teal-500', 'bg-brand-500', 'bg-purple-500', 'bg-red-500'];
-        const emojis: Record<string, string> = {
+        const emojis = {
           dachdecker: '🏠', elektriker: '⚡', shk: '🔧', zimmerer: '🔨', maler: '🖌️', fliesenleger: '🧱'
         };
         
-        revEl.innerHTML = data.revenueByTrade.map((r: any, i: number) => {
+        revEl.innerHTML = data.revenueByTrade.map((r, i) => {
           const pct = Math.round((r.revenue / maxRev) * 100);
           const color = colors[i % colors.length];
           const emoji = emojis[r.slug] || '🏢';
@@ -880,7 +880,7 @@ async function loadInvoiceData() {
       return;
     }
     
-    tbody.innerHTML = data.invoices.map((inv: any) => {
+    tbody.innerHTML = data.invoices.map((inv) => {
       const since = inv.created_at ? new Date(inv.created_at).toLocaleDateString('de-DE') : '-';
       return `
         <tr class="hover:bg-ink-50">
