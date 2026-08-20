@@ -13,7 +13,7 @@ interface PageProps {
 const tradeNames: Record<string, string> = {
   dachdecker: 'Dachdecker',
   elektriker: 'Elektriker',
-  shk: 'SHK (Klempner)',
+  klempner: 'Klempner',
   maler: 'Maler',
   zimmerer: 'Zimmerer',
 }

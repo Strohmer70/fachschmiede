@@ -49,7 +49,7 @@ async function loadTradeData(tradeSlug: string) {
 const tradeIcons: Record<string, string> = {
   dachdecker: '🏠',
   elektriker: '⚡',
-  shk: '🔥',
+  klempner: '🔥',
   maler: '🖌️',
   zimmerer: '🔨',
 }

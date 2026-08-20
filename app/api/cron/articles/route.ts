@@ -42,7 +42,7 @@ async function syncLandingPages(): Promise<number> {
         .single()
       
       if (!existing) {
-        const tradeName = trade.slug === 'shk' ? 'Klempner' : trade.name
+        const tradeName = trade.slug === 'klempner' || trade.slug === 'shk' ? 'Klempner' : trade.name
         const { error } = await supabaseAdmin
           .from('landing_pages')
           .insert({

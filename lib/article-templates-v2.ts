@@ -182,7 +182,7 @@ export const ECHECK_TEMPLATE: ArticleTemplate = {
 
 export const ROHRBRUCH_TEMPLATE: ArticleTemplate = {
   slug: 'rohrbruch-sofortmassnahmen',
-  category: 'shk',
+  category: 'klempner',
   unsplashKeyword: 'plumber emergency repair',
   relatedSlugs: ['heizungs-check-winter', 'schimmel-wohnung'],
   
@@ -627,7 +627,7 @@ export const SMARTHOME_TEMPLATE: ArticleTemplate = {
 export const ARTICLE_TEMPLATES = {
   dachdecker: [DACHDAEMMUNG_TEMPLATE, STURMSCHADEN_TEMPLATE, ANZEICHEN_TEMPLATE],
   elektriker: [ECHECK_TEMPLATE],
-  shk: [ROHRBRUCH_TEMPLATE],
+  klempner: [ROHRBRUCH_TEMPLATE],
   maler: [FASSADE_TEMPLATE],
   zimmerer: [CARPORT_TEMPLATE]
 };
