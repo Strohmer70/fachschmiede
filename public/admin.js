@@ -432,10 +432,10 @@ function renderWebsitesView(pages, pagination) {
           <p class="font-black text-ink-900">${p.city?.name || 'Unbekannt'}</p>
           ${statusBadge}
         </div>
-        <p class="text-xs text-ink-500 mt-1">${tradeEmoji} ${p.trade?.name || '-'} · fachschmiede.de/${p.trade?.slug || ''}/${p.city?.slug || ''}</p>
+        <p class="text-xs text-ink-500 mt-1">${tradeEmoji} ${p.trade?.name || '-'} · fachschmiede.de/${getUrlSlug(p.trade?.slug) || ''}/${p.city?.slug || ''}</p>
         <p class="text-xs text-ink-500 mt-2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</p>
         <div class="mt-4 flex gap-2">
-          <a href="/${p.trade?.slug || ''}/${p.city?.slug || ''}" target="_blank" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
+          <a href="/${getUrlSlug(p.trade?.slug) || ''}/${p.city?.slug || ''}" target="_blank" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
           ${isRented ? `
             <button onclick="showToast('Bereits vermietet')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Mieter</button>
           ` : `
@@ -475,7 +475,14 @@ function renderPaginationControls(pagination) {
   return html;
 }
 
-// Alle Gewerke (werden einmalig geladen)
+// URL-Slug Mapping: Interner Name → SEO-freundlicher URL-Name
+const URL_SLUG_MAP = {
+  'shk': 'klempner',
+};
+
+function getUrlSlug(slug) {
+  return URL_SLUG_MAP[slug] || slug;
+}
 let allTrades = [];
 
 async function loadAllTrades() {
