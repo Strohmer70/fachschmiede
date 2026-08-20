@@ -90,15 +90,56 @@ async function loadDashboard() {
     console.log('Dashboard Daten geladen:', dashboardData.stats);
     renderDashboard(dashboardData);
     
+    // Pages separat mit Pagination laden (skaliert auf 20.000+ Seiten)
+    await loadPages(1, 50);
+    
   } catch (err) {
     console.error('Dashboard load error:', err);
     showToast('❌ Fehler beim Laden der Daten');
   }
 }
 
+// ═══════════ PAGES MIT PAGINATION LADEN ═══════════
+let currentPages = [];
+let currentPageNum = 1;
+let currentPageLimit = 50;
+let totalPagesCount = 0;
+
+// Global verfügbar machen für Pagination-Buttons
+window.loadPages = async function(page = 1, limit = 50) {
+  if (!adminToken) return;
+  
+  try {
+    const res = await fetch(`${API_BASE}/admin/pages?page=${page}&limit=${limit}`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    
+    if (res.status === 401) {
+      showLoginGate();
+      return;
+    }
+    
+    const data = await res.json();
+    currentPages = data.pages || [];
+    currentPageNum = page;
+    currentPageLimit = limit;
+    totalPagesCount = data.pagination?.total || 0;
+    
+    // Views aktualisieren die Pages brauchen
+    renderPagesOverview(currentPages);
+    populateGenPageDropdown(currentPages);
+    renderWebsitesView(currentPages, data.pagination);
+    renderTodoList(dashboardData?.tenants || [], currentPages);
+    
+  } catch (err) {
+    console.error('Pages load error:', err);
+    showToast('❌ Fehler beim Laden der Seiten');
+  }
+}
+
 // ═══════════ DASHBOARD RENDERN ═══════════
 function renderDashboard(data) {
-  const { stats, recentLeads, pages, tenants } = data;
+  const { stats, recentLeads, tenants } = data;
   
   // ── KPI-Karten (per ID) ──
   setText('stat-rented', stats.rented || 0);
@@ -126,17 +167,9 @@ function renderDashboard(data) {
   // ── Leads-Liste ──
   renderLeadsList(recentLeads || []);
   
-  // ── Seiten-Übersicht ──
-  renderPagesOverview(pages || []);
-  
-  // ── Artikel-Generierung Dropdown ──
-  populateGenPageDropdown(pages || []);
-  
-  // ── Websites & Städte View ──
-  renderWebsitesView(pages || []);
-  
-  // ── Todo-Liste ──
-  renderTodoList(tenants || [], pages || []);
+  // NOTE: Pages werden über loadPages() separat geladen (Pagination)
+  // renderPagesOverview, populateGenPageDropdown, renderWebsitesView 
+  // werden in loadPages() aufgerufen
 }
 
 function populateGenPageDropdown(pages) {
@@ -354,7 +387,7 @@ function renderTodoList(tenants, pages) {
 }
 
 // ═══════════ WEBSITES & STÄDTE ═══════════
-function renderWebsitesView(pages) {
+function renderWebsitesView(pages, pagination) {
   console.log('renderWebsitesView() aufgerufen mit', pages.length, 'Seiten');
   const grid = document.getElementById('stadtGrid');
   const hint = document.getElementById('stadtGridHint');
@@ -369,7 +402,12 @@ function renderWebsitesView(pages) {
     return;
   }
   
-  if (hint) hint.textContent = `${pages.length} Stadt-Websites im Portfolio — alle live und indexierbar.`;
+  // Pagination Info
+  const total = pagination?.total || pages.length;
+  const currentPage = pagination?.page || 1;
+  const totalPages = pagination?.totalPages || 1;
+  
+  if (hint) hint.textContent = `${total} Stadt-Websites im Portfolio — Seite ${currentPage} von ${totalPages}.`;
   
   grid.innerHTML = pages.map(p => {
     const isRented = p.status === 'rented';
@@ -403,10 +441,35 @@ function renderWebsitesView(pages) {
         </div>
       </div>
     `;
-  }).join('');
+  }).join('') + renderPaginationControls(pagination);
   
   // Filter-Buttons dynamisch erstellen
   renderWebsitesFilter(pages);
+}
+
+// Pagination Controls
+function renderPaginationControls(pagination) {
+  if (!pagination || pagination.totalPages <= 1) return '';
+  
+  const { page, totalPages } = pagination;
+  
+  let html = '<div class="col-span-full flex justify-center gap-2 mt-6">';
+  
+  // Prev Button
+  if (page > 1) {
+    html += `<button onclick="loadPages(${page - 1}, ${currentPageLimit})" class="px-4 py-2 text-sm font-bold text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition">← Zurück</button>`;
+  }
+  
+  // Page Info
+  html += `<span class="px-4 py-2 text-sm font-bold text-ink-600">Seite ${page} von ${totalPages}</span>`;
+  
+  // Next Button
+  if (page < totalPages) {
+    html += `<button onclick="loadPages(${page + 1}, ${currentPageLimit})" class="px-4 py-2 text-sm font-bold text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition">Weiter →</button>`;
+  }
+  
+  html += '</div>';
+  return html;
 }
 
 function renderWebsitesFilter(pages) {

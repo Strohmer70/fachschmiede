@@ -3,31 +3,35 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    // Get counts from Supabase using admin client (bypasses RLS)
-    const { count: totalPages, error: pagesError } = await supabaseAdmin
+    // ═══════════════════════════════════════════
+    // COUNT QUERIES — Skalieren BELIEBIG!
+    // Kein Limit nötig, da { count: 'exact', head: true }
+    // ═══════════════════════════════════════════
+    
+    const { count: totalPages } = await supabaseAdmin
       .from('landing_pages')
       .select('*', { count: 'exact', head: true })
 
-    const { count: rentedPages, error: rentedError } = await supabaseAdmin
+    const { count: rentedPages } = await supabaseAdmin
       .from('landing_pages')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'rented')
 
-    const { count: availablePages, error: availError } = await supabaseAdmin
+    const { count: availablePages } = await supabaseAdmin
       .from('landing_pages')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'available')
 
-    const { count: totalLeads, error: leadsError } = await supabaseAdmin
+    const { count: totalLeads } = await supabaseAdmin
       .from('leads')
       .select('*', { count: 'exact', head: true })
 
-    const { count: totalTenants, error: tenantsError } = await supabaseAdmin
+    const { count: totalTenants } = await supabaseAdmin
       .from('tenants')
       .select('*', { count: 'exact', head: true })
 
     // Get MRR from active rentals
-    const { data: rentals, error: mrrError } = await supabaseAdmin
+    const { data: rentals } = await supabaseAdmin
       .from('landing_pages')
       .select('monthly_price')
       .eq('status', 'rented')
@@ -35,35 +39,23 @@ export async function GET() {
     const mrr = rentals?.reduce((sum, r) => sum + (r.monthly_price || 0), 0) || 0
     const arr = mrr * 12
 
-    // Get recent leads (last 30 days)
+    // Get recent leads (last 30 days) — immer nur 50, unabhängig von Gesamtzahl
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-    const { data: recentLeads, error: recentLeadsError } = await supabaseAdmin
+    const { data: recentLeads } = await supabaseAdmin
       .from('leads')
       .select('*, landing_page:landing_pages(slug, title)')
       .gte('created_at', thirtyDaysAgo)
       .order('created_at', { ascending: false })
       .limit(50)
 
-    // Get pages with trade and city info
-    const { data: pages, error: pagesListError } = await supabaseAdmin
-      .from('landing_pages')
-      .select(`
-        *,
-        trade:trades(name, slug),
-        city:cities(name, slug),
-        page_customizations(*, tenant:tenants(*))
-      `)
-      .order('created_at', { ascending: false })
-      .limit(200)
-
-    // Get all tenants
-    const { data: tenants, error: tenantsListError } = await supabaseAdmin
+    // Get tenants — nur 50, da es nie viele Mieter gibt
+    const { data: tenants } = await supabaseAdmin
       .from('tenants')
       .select('*, landing_page:landing_pages!inner(id, slug, title)')
       .order('created_at', { ascending: false })
       .limit(50)
 
-    // Get tenant status breakdown
+    // Tenant status breakdown — Count Queries, keine Limits nötig
     const { count: activeTenants } = await supabaseAdmin
       .from('tenants')
       .select('*', { count: 'exact', head: true })
@@ -91,7 +83,7 @@ export async function GET() {
         available: availablePages || 0,
         leads: totalLeads || 0,
         tenants: totalTenants || 0,
-        mrr: Math.round(mrr / 100), // cents to euros
+        mrr: Math.round(mrr / 100),
         arr: Math.round(arr * 100) / 100,
         tenantStats: {
           active: activeTenants || 0,
@@ -101,8 +93,9 @@ export async function GET() {
         }
       },
       recentLeads: recentLeads || [],
-      pages: pages || [],
       tenants: tenants || [],
+      // WICHTIG: Keine 'pages' mehr hier!
+      // Pages werden über /api/admin/pages?page=1&limit=50 geladen
     })
 
   } catch (error: any) {
@@ -112,7 +105,6 @@ export async function GET() {
       message: error.message,
       stats: { total: 0, rented: 0, available: 0, leads: 0, tenants: 0, mrr: 0, arr: 0 },
       recentLeads: [],
-      pages: [],
       tenants: [],
     }, { status: 500 })
   }
