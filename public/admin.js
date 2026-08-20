@@ -911,13 +911,12 @@ async function loadTrades() {
   if (!grid) return;
   
   // Fallback: Statische Daten direkt anzeigen (keine API-Abhängigkeit)
-  // WICHTIG: Diese Zahlen müssen mit den tatsächlichen statischen HTML-Dateien übereinstimmen
   const fallbackTrades = [
-    { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 20, rented_pages: 0, available_pages: 20 },
-    { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 20, rented_pages: 0, available_pages: 20 },
-    { name: 'Klempner', slug: 'shk', emoji: '🔥', total_pages: 20, rented_pages: 0, available_pages: 20 },
-    { name: 'Maler', slug: 'maler', emoji: '🎨', total_pages: 20, rented_pages: 0, available_pages: 20 },
-    { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 20, rented_pages: 0, available_pages: 20 },
+    { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Klempner', slug: 'shk', emoji: '🔥', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Maler', slug: 'maler', emoji: '🎨', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 21, rented_pages: 0, available_pages: 21 },
   ];
   
   renderTradeCards(fallbackTrades);
