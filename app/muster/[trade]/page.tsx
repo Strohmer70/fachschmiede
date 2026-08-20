@@ -1,4 +1,8 @@
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { FALLBACK_TRADES, FALLBACK_CITIES, FALLBACK_PAGES } from '@/lib/fallback-data'
+// @ts-ignore
+import articleIndex from '@/lib/article-index.json'
 
 interface PageProps {
   params: {
@@ -6,117 +10,54 @@ interface PageProps {
   }
 }
 
-const TRADE_DATA: Record<string, {
-  name: string
-  plural: string
-  emoji: string
-  services: Array<{icon: string, title: string, desc: string}>
-}> = {
-  dachdecker: {
-    name: 'Dachdecker',
-    plural: 'Dachdecker',
-    emoji: '🏠',
-    services: [
-      { icon: '🏠', title: 'Dachsanierung', desc: 'Komplette Sanierung Ihres Daches mit modernen Materialien und langjähriger Garantie.' },
-      { icon: '🔧', title: 'Dachreparatur', desc: 'Schnelle und zuverlässige Reparaturen für alle Dachschäden – auch im Notfall.' },
-      { icon: '🌡️', title: 'Dachdämmung', desc: 'Energieeffiziente Dämmung für beste Wärmedämmung und Kosteneinsparung.' },
-      { icon: '🪟', title: 'Dachfenster', desc: 'Fachgerechter Einbau und Austausch von Dachfenstern aller Marken.' },
-      { icon: '🚨', title: 'Dachnotdienst', desc: '24-Stunden-Notdienst für akute Dachschäden – wir sind rund um die Uhr für Sie da.' },
-      { icon: '🧹', title: 'Dachreinigung', desc: 'Professionelle Reinigung, Moosentfernung und Imprägnierung.' },
-    ],
-  },
-  elektriker: {
-    name: 'Elektriker',
-    plural: 'Elektriker',
-    emoji: '⚡',
-    services: [
-      { icon: '⚡', title: 'Elektroinstallation', desc: 'Komplette Elektroinstallation für Neubau, Sanierung und Gewerbe.' },
-      { icon: '🏠', title: 'Smart Home', desc: 'Vernetzung Ihres Zuhauses mit intelligenter Technik für mehr Komfort.' },
-      { icon: '🚗', title: 'Wallbox', desc: 'Professioneller Einbau von Ladestationen für E-Autos zu fairen Konditionen.' },
-      { icon: '✅', title: 'E-Check', desc: 'Sicherheitsprüfung Ihrer elektrischen Anlagen nach aktuellen Vorschriften.' },
-      { icon: '🚨', title: 'Elektronotdienst', desc: 'Schnelle Hilfe bei Stromausfall – Tag und Nacht im Einsatz.' },
-      { icon: '💡', title: 'LED-Beleuchtung', desc: 'Energieeffiziente Beleuchtungslösungen für Gewerbe und Privat.' },
-    ],
-  },
-  shk: {
-    name: 'SHK / Klempner',
-    plural: 'Klempner',
-    emoji: '🔥',
-    services: [
-      { icon: '🔥', title: 'Heizungsinstallation', desc: 'Installation und Austausch von Heizungsanlagen aller Marken.' },
-      { icon: '🚿', title: 'Sanitär', desc: 'Komplette Sanitärarbeiten für Bad, Küche und Gewerbe.' },
-      { icon: '💧', title: 'Wasserinstallation', desc: 'Neuinstallation und Reparatur von Wasserleitungen.' },
-      { icon: '🧹', title: 'Rohrreinigung', desc: 'Professionelle Reinigung verstopfter Rohre mit modernster Technik.' },
-      { icon: '🚨', title: 'Rohrnotdienst', desc: 'Schnelle Hilfe bei Rohrbruch und Wasserschäden.' },
-      { icon: '🌡️', title: 'Wärmepumpen', desc: 'Beratung und Installation energiesparender Wärmepumpen.' },
-    ],
-  },
-  maler: {
-    name: 'Maler',
-    plural: 'Maler',
-    emoji: '🎨',
-    services: [
-      { icon: '🎨', title: 'Innenanstrich', desc: 'Professionelle Malerarbeiten für alle Räume – sauber und termingerecht.' },
-      { icon: '🏠', title: 'Fassadenanstrich', desc: 'Schützende und verschönernde Anstriche für Ihr Gebäude.' },
-      { icon: '🖌️', title: 'Lackierarbeiten', desc: 'Hochwertige Lackierung von Türen, Fenstern und Möbeln.' },
-      { icon: '📜', title: 'Tapezierarbeiten', desc: 'Expertise in allen Tapeziertechniken und Mustern.' },
-      { icon: '🏗️', title: 'Spachtelarbeiten', desc: 'Glatte Wände und Decken für perfekte Ergebnisse.' },
-      { icon: '🎭', title: 'Dekorative Techniken', desc: 'Kreative Wandgestaltung nach Ihren Wünschen.' },
-    ],
-  },
-  zimmerer: {
-    name: 'Zimmerer',
-    plural: 'Zimmerer',
-    emoji: '🔨',
-    services: [
-      { icon: '🏠', title: 'Carport-Bau', desc: 'Maßgefertigte Carports aus Holz – wetterfest und langlebig.' },
-      { icon: '🌳', title: 'Holzbau', desc: 'Traditioneller und moderner Holzbau aus Meisterhand.' },
-      { icon: '🏗️', title: 'Dachstuhl', desc: 'Neubau und Reparatur von Dachstühlen aller Art.' },
-      { icon: '🌞', title: 'Terrassenbau', desc: 'Witterungsbeständige Holzterrassen für Ihr Zuhause.' },
-      { icon: '🔨', title: 'Holzreparatur', desc: 'Fachgerechte Reparatur und Restaurierung von Holzbauteilen.' },
-      { icon: '🏡', title: 'Gartenhäuser', desc: 'Individuelle Gartenhäuser und Geräteschuppen nach Maß.' },
-    ],
-  },
-}
-
-const FAQS = [
-  { q: 'Wie schnell können Sie vor Ort sein?', a: 'In der Regel sind wir innerhalb von 24 Stunden bei Ihnen vor Ort. Bei Notfällen bieten wir einen 24h-Notdienst an.' },
-  { q: 'Bieten Sie kostenlose Besichtigungen an?', a: 'Ja, wir bieten eine kostenlose und unverbindliche Erstbesichtigung vor Ort an.' },
-  { q: 'Gibt es eine Festpreis-Garantie?', a: 'Nach der Besichtigung erhalten Sie ein verbindliches Festpreisangebot. Keine versteckten Kosten.' },
-  { q: 'Wie lange dauern die Arbeiten?', a: 'Das hängt vom Umfang des Projekts ab. Nach der Besichtigung erhalten Sie einen genauen Zeitplan.' },
-  { q: 'Gibt es eine Garantie?', a: 'Ja, wir gewährleisten auf alle Arbeiten eine umfassende Garantie.' },
-]
-
-const SAMPLE_ARTICLES = [
-  { title: '5 Anzeichen, dass Sie einen Fachmann brauchen', excerpt: 'Woran Sie erkennen, dass es Zeit für den Profi wird.', tag: 'Ratgeber', gradient: 'from-accent-500 to-accent-700', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>' },
-  { title: 'Förderungen für Sanierungen: Diese Zuschüsse gibt es', excerpt: 'BAFA-Zuschuss oder KfW-Kredit? Ein Überblick über die Fördermöglichkeiten.', tag: 'Förderung', gradient: 'from-ink-700 to-ink-900', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>' },
-  { title: 'Notfall: Was Sie sofort tun sollten', excerpt: 'Die wichtigsten Schritte im Überblick – so bleiben Sie ruhig.', tag: 'Notfall', gradient: 'from-sky-600 to-ink-800', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10l-2 4h3l-2 4"></path>' },
-]
+const DEMO_CITY_SLUG = 'hattingen'
 
 export async function generateStaticParams() {
   return [
     { trade: 'dachdecker' },
     { trade: 'elektriker' },
-    { trade: 'shk' },
+    { trade: 'klempner' },
     { trade: 'maler' },
     { trade: 'zimmerer' },
   ]
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const trade = TRADE_DATA[params.trade]?.name || 'Handwerker'
+  const tradeSlug = params.trade?.replace(/\/$/, '') || params.trade
+  const trade = FALLBACK_TRADES[tradeSlug]
+  const city = FALLBACK_CITIES[DEMO_CITY_SLUG]
+  if (!trade || !city) return { title: 'Seite nicht gefunden' }
+
   return {
-    title: `${trade} in Musterstadt – Beispiel-Website`,
-    description: `Professionelle ${trade}-Website für Musterstadt. Sehen Sie ein Beispiel Ihrer zukünftigen Online-Präsenz.`,
+    title: `${trade.name} ${city.name} | Professionelle ${trade.name}-Website`,
+    description: `Erfahrene ${trade.plural_name || trade.name} in ${city.name}. Jetzt lokale Fachbetriebe finden.`,
   }
 }
 
 export default async function MusterPage({ params }: PageProps) {
   const tradeSlug = params.trade?.replace(/\/$/, '') || params.trade
-  const trade = TRADE_DATA[tradeSlug] || TRADE_DATA.dachdecker
+  const slug = `${tradeSlug}-${DEMO_CITY_SLUG}`
+
+  const page = FALLBACK_PAGES[slug]
+  let trade = FALLBACK_TRADES[tradeSlug]
+  let city = FALLBACK_CITIES[DEMO_CITY_SLUG]
+
+  if (!trade || !city) notFound()
+
+  const services = getServices(tradeSlug)
+  const faqs = getFAQ(trade.name)
+  const articles = getArticles(tradeSlug, DEMO_CITY_SLUG)
 
   return (
     <div className="min-h-screen bg-white text-ink-800 antialiased">
+      {/* Demo Banner */}
+      <div className="bg-accent-600 text-white text-center text-sm font-bold py-2.5 px-4">
+        🔍 Demo-Seite: So sieht Ihre {trade.name}-Website in {city.name} aus — 
+        <Link href="/mieten" className="underline hover:text-ink-100 ml-1">
+          Jetzt mieten
+        </Link>
+      </div>
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-ink-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
@@ -127,8 +68,8 @@ export default async function MusterPage({ params }: PageProps) {
               </svg>
             </span>
             <span className="leading-tight">
-              <span className="block font-extrabold text-lg text-ink-900">{trade.name} Musterstadt</span>
-              <span className="block text-xs text-ink-500 font-medium">{trade.name} · Musterstadt</span>
+              <span className="block font-extrabold text-lg text-ink-900">{trade.name} {city.name}</span>
+              <span className="block text-xs text-ink-500 font-medium">{trade.name} · {city.name}</span>
             </span>
           </Link>
           <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-600">
@@ -150,14 +91,14 @@ export default async function MusterPage({ params }: PageProps) {
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 bg-white/10 border border-white/25 backdrop-blur text-xs sm:text-sm font-semibold px-4 py-2 rounded-full mb-6">
               <span className="w-2 h-2 rounded-full bg-accent-400" />
-              {trade.name} aus Musterstadt
+              {trade.name} aus {city.name}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
-              Ihr {trade.name}<br />in <span className="text-accent-400">Musterstadt</span>.
+              Ihr {trade.name}<br />in <span className="text-accent-400">{city.name}</span>.
             </h1>
             <p className="text-lg sm:text-xl text-ink-200 mb-8 max-w-xl">
               Professionelle Leistungen aus einer Hand – persönlich, sauber und zuverlässig.
-              Für Privat- und Geschäftskunden in Musterstadt und Umgebung.
+              Für Privat- und Geschäftskunden in {city.name} und Umgebung.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a href="#kontakt" className="inline-flex justify-center items-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg">
@@ -217,11 +158,11 @@ export default async function MusterPage({ params }: PageProps) {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-ink-900 mb-4">Unsere Leistungen</h2>
             <p className="text-lg text-ink-500 max-w-2xl mx-auto">
-              Professionelle {trade.name}-Leistungen für Musterstadt und die gesamte Region.
+              Professionelle {trade.name}-Leistungen für {city.name} und die gesamte Region.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trade.services.map((service, i) => (
+            {services.map((service: any, i: number) => (
               <div key={i} className="bg-white p-6 rounded-2xl border border-ink-200 hover:shadow-lg hover:border-accent-200 transition">
                 <div className="w-12 h-12 rounded-xl bg-accent-100 text-accent-600 flex items-center justify-center text-xl mb-4">
                   {service.icon}
@@ -240,15 +181,12 @@ export default async function MusterPage({ params }: PageProps) {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-ink-900 mb-6">
-                Ihr {trade.name} in Musterstadt
+                Ihr {trade.name} in {city.name}
               </h2>
               <p className="text-ink-600 mb-4 leading-relaxed">
-                Musterstadt ist ein lebendiges Beispiel dafür, wie eine professionelle {trade.name}-Präsenz aussehen kann.
-                Wir zeigen Ihnen, wie Ihre zukünftige Website aussehen würde – mit echten Inhalten und lokalem Bezug.
-              </p>
-              <p className="text-ink-600 mb-6 leading-relaxed">
-                Diese Seite ist eine <strong>Demonstration</strong>. Sobald Sie eine Stadt-Website mieten,
-                wird sie mit Ihren Daten, Ihrem Logo und Ihren Kontaktdaten personalisiert.
+                {city.name} mit seinen {city.einwohner?.toLocaleString() || 'vielen'} Einwohnern
+                hat einen besonderen Bedarf an qualifizierten {trade.plural_name || trade.name}.
+                Wir kennen die Region und bieten maßgeschneiderte Lösungen.
               </p>
               <div className="flex flex-wrap gap-4">
                 <a href="#kontakt" className="inline-flex items-center bg-accent-600 hover:bg-accent-700 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg">
@@ -286,7 +224,7 @@ export default async function MusterPage({ params }: PageProps) {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-ink-900 mb-4">Häufige Fragen</h2>
           </div>
           <div className="space-y-4">
-            {FAQS.map((faq, i) => (
+            {faqs.map((faq: any, i: number) => (
               <details key={i} className="bg-white rounded-xl border border-ink-200 overflow-hidden group">
                 <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold text-ink-800 hover:bg-ink-50 transition">
                   {faq.q}
@@ -308,12 +246,12 @@ export default async function MusterPage({ params }: PageProps) {
             <p className="text-accent-600 font-bold text-sm uppercase tracking-widest mb-2">Ratgeber & Blog</p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-ink-900 mb-4">Wissen rund um {trade.name}</h2>
             <p className="text-lg text-ink-500 max-w-2xl mx-auto">
-              Praktische Tipps und Fachwissen für Musterstadt und Umgebung.
+              Praktische Tipps und Fachwissen für {city.name} und Umgebung.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {SAMPLE_ARTICLES.map((article, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-ink-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group block">
+            {articles.map((article: any, i: number) => (
+              <a key={i} href={article.url} className="bg-white rounded-2xl overflow-hidden border border-ink-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group block">
                 <div className={`h-44 bg-gradient-to-br ${article.gradient} flex items-center justify-center`}>
                   <svg className="w-16 h-16 text-white/80" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: article.svg }} />
                 </div>
@@ -323,7 +261,7 @@ export default async function MusterPage({ params }: PageProps) {
                   <p className="mt-2 text-sm text-ink-600 leading-relaxed">{article.excerpt}</p>
                   <p className="mt-4 text-sm font-bold text-accent-600">Beitrag lesen →</p>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -385,4 +323,79 @@ export default async function MusterPage({ params }: PageProps) {
       </footer>
     </div>
   )
+}
+
+function getServices(tradeSlug: string) {
+  const services: Record<string, Array<{icon: string, title: string, desc: string}>> = {
+    dachdecker: [
+      { icon: '🏠', title: 'Dachsanierung', desc: 'Komplette Sanierung Ihres Daches mit modernen Materialien.' },
+      { icon: '🔧', title: 'Dachreparatur', desc: 'Schnelle und zuverlässige Reparaturen für alle Dachschäden.' },
+      { icon: '🌡️', title: 'Dachdämmung', desc: 'Energieeffiziente Dämmung für beste Wärmedämmung.' },
+      { icon: '🪟', title: 'Dachfenster', desc: 'Einbau und Austausch von Dachfenstern aller Marken.' },
+      { icon: '🚨', title: 'Dachnotdienst', desc: '24-Stunden-Notdienst für akute Dachschäden.' },
+      { icon: '🧹', title: 'Dachreinigung', desc: 'Professionelle Reinigung und Moosentfernung.' },
+    ],
+    elektriker: [
+      { icon: '⚡', title: 'Elektroinstallation', desc: 'Komplette Elektroinstallation für Neubau und Sanierung.' },
+      { icon: '🏠', title: 'Smart Home', desc: 'Vernetzung Ihres Zuhauses mit intelligenter Technik.' },
+      { icon: '🚗', title: 'Wallbox', desc: 'Professioneller Einbau von Ladestationen für E-Autos.' },
+      { icon: '✅', title: 'E-Check', desc: 'Sicherheitsprüfung Ihrer elektrischen Anlagen.' },
+      { icon: '🚨', title: 'Elektronotdienst', desc: 'Schnelle Hilfe bei Stromausfall.' },
+      { icon: '💡', title: 'LED-Beleuchtung', desc: 'Energieeffiziente Beleuchtungslösungen.' },
+    ],
+    klempner: [
+      { icon: '🔥', title: 'Heizungsinstallation', desc: 'Installation und Austausch von Heizungsanlagen.' },
+      { icon: '🚿', title: 'Sanitär', desc: 'Komplette Sanitärarbeiten für Bad und Küche.' },
+      { icon: '💧', title: 'Wasserinstallation', desc: 'Neuinstallation und Reparatur von Wasserleitungen.' },
+      { icon: '🧹', title: 'Rohrreinigung', desc: 'Professionelle Reinigung verstopfter Rohre.' },
+      { icon: '🚨', title: 'Rohrnotdienst', desc: 'Schnelle Hilfe bei Rohrbruch.' },
+      { icon: '🌡️', title: 'Wärmepumpen', desc: 'Beratung und Installation energiesparender Wärmepumpen.' },
+    ],
+    maler: [
+      { icon: '🎨', title: 'Innenanstrich', desc: 'Professionelle Malerarbeiten für alle Räume.' },
+      { icon: '🏠', title: 'Fassadenanstrich', desc: 'Schützende und verschönernde Anstriche.' },
+      { icon: '🖌️', title: 'Lackierarbeiten', desc: 'Hochwertige Lackierung von Türen und Fenstern.' },
+      { icon: '📜', title: 'Tapezierarbeiten', desc: 'Expertise in allen Tapeziertechniken.' },
+      { icon: '🏗️', title: 'Spachtelarbeiten', desc: 'Glatte Wände und Decken.' },
+      { icon: '🎭', title: 'Dekorative Techniken', desc: 'Kreative Wandgestaltung.' },
+    ],
+    zimmerer: [
+      { icon: '🏠', title: 'Carport-Bau', desc: 'Maßgefertigte Carports aus Holz.' },
+      { icon: '🌳', title: 'Holzbau', desc: 'Traditioneller und moderner Holzbau.' },
+      { icon: '🏗️', title: 'Dachstuhl', desc: 'Neubau und Reparatur von Dachstühlen.' },
+      { icon: '🌞', title: 'Terrassenbau', desc: 'Witterungsbeständige Holzterrassen.' },
+      { icon: '🔨', title: 'Holzreparatur', desc: 'Fachgerechte Reparatur von Holzbauteilen.' },
+      { icon: '🏡', title: 'Gartenhäuser', desc: 'Individuelle Gartenhäuser und Geräteschuppen.' },
+    ],
+  }
+  return services[tradeSlug] || services.dachdecker
+}
+
+function getFAQ(tradeName: string) {
+  return [
+    { q: `Wie schnell können ${tradeName} vor Ort sein?`, a: 'In der Regel sind wir innerhalb von 24 Stunden bei Ihnen vor Ort. Bei Notfällen bieten wir einen 24h-Notdienst an.' },
+    { q: 'Bieten Sie kostenlose Besichtigungen an?', a: 'Ja, wir bieten eine kostenlose und unverbindliche Erstbesichtigung vor Ort an.' },
+    { q: 'Gibt es eine Festpreis-Garantie?', a: 'Nach der Besichtigung erhalten Sie ein verbindliches Festpreisangebot. Keine versteckten Kosten.' },
+    { q: 'Wie lange dauern die Arbeiten?', a: 'Das hängt vom Umfang des Projekts ab. Nach der Besichtigung erhalten Sie einen genauen Zeitplan.' },
+    { q: 'Gibt es eine Garantie?', a: 'Ja, wir gewährleisten auf alle Arbeiten eine umfassende Garantie.' },
+  ]
+}
+
+function getArticles(tradeSlug: string, citySlug: string) {
+  const idx = articleIndex[tradeSlug]?.[citySlug]
+  if (!idx || idx.length === 0) {
+    return [
+      { title: `5 Anzeichen, dass Sie einen Fachmann brauchen`, excerpt: 'Woran Sie erkennen, dass es Zeit für den Profi wird.', tag: 'Ratgeber', gradient: 'from-accent-500 to-accent-700', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>', url: '#' },
+      { title: 'Förderungen für Sanierungen: Diese Zuschüsse gibt es', excerpt: 'BAFA-Zuschuss oder KfW-Kredit? Ein Überblick über die Fördermöglichkeiten.', tag: 'Förderung', gradient: 'from-ink-700 to-ink-900', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>', url: '#' },
+      { title: 'Notfall: Was Sie sofort tun sollten', excerpt: 'Die wichtigsten Schritte im Überblick.', tag: 'Notfall', gradient: 'from-sky-600 to-ink-800', svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999A5.002 5.002 0 105.9 8.001 4.002 4.002 0 003 15z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M13 10l-2 4h3l-2 4"></path>', url: '#' },
+    ]
+  }
+  return idx.map((a: any) => ({
+    title: a.title,
+    excerpt: a.excerpt || 'Wertvolle Tipps und Fachwissen für Ihr Projekt.',
+    tag: a.tag,
+    gradient: a.gradient,
+    svg: a.svg,
+    url: a.url,
+  }))
 }

@@ -17,6 +17,18 @@ export const FALLBACK_TRADES: Record<string, any> = {
     name: 'Klempner',
     plural_name: 'Klempner',
     services: ['Rohrreinigung', 'Heizungsinstallation', 'Sanitärinstallation', 'Wasserhahn-Reparatur', 'Rohrbruch-Reparatur', 'Toiletten-Installation', 'Duschinstallation']
+  },
+  maler: {
+    slug: 'maler',
+    name: 'Maler',
+    plural_name: 'Maler',
+    services: ['Innenanstrich', 'Fassadenanstrich', 'Lackierarbeiten', 'Tapezierarbeiten', 'Spachtelarbeiten', 'Dekorative Techniken']
+  },
+  zimmerer: {
+    slug: 'zimmerer',
+    name: 'Zimmerer',
+    plural_name: 'Zimmerer',
+    services: ['Carport-Bau', 'Holzbau', 'Dachstuhl', 'Terrassenbau', 'Holzreparatur', 'Gartenhäuser']
   }
 }
 
@@ -83,5 +95,35 @@ export const FALLBACK_PAGES: Record<string, any> = {
     status: 'available',
     trade_id: 'klempner',
     city_id: 'muenchen'
+  },
+  'klempner-hattingen': {
+    slug: 'klempner-hattingen',
+    title: 'Klempner Hattingen | Professionelle Sanitärarbeiten ab €149/Monat',
+    meta_description: 'Erfahrene Klempner in Hattingen. Installation, Reparatur & Rohrreinigung. Jetzt lokale Fachbetriebe finden.',
+    h1: 'Ihr Klempner in Hattingen – Zuverlässig, Fair, Vor Ort',
+    monthly_price: 14900,
+    status: 'available',
+    trade_id: 'klempner',
+    city_id: 'hattingen'
+  },
+  'maler-hattingen': {
+    slug: 'maler-hattingen',
+    title: 'Maler Hattingen | Professionelle Malerarbeiten ab €149/Monat',
+    meta_description: 'Erfahrene Maler in Hattingen. Innenanstrich, Fassade & Lackierung. Jetzt lokale Fachbetriebe finden.',
+    h1: 'Ihr Maler in Hattingen – Zuverlässig, Fair, Vor Ort',
+    monthly_price: 14900,
+    status: 'available',
+    trade_id: 'maler',
+    city_id: 'hattingen'
+  },
+  'zimmerer-hattingen': {
+    slug: 'zimmerer-hattingen',
+    title: 'Zimmerer Hattingen | Professionelle Holzarbeiten ab €149/Monat',
+    meta_description: 'Erfahrene Zimmerer in Hattingen. Holzbau, Carports & Terrassen. Jetzt lokale Fachbetriebe finden.',
+    h1: 'Ihr Zimmerer in Hattingen – Zuverlässig, Fair, Vor Ort',
+    monthly_price: 14900,
+    status: 'available',
+    trade_id: 'zimmerer',
+    city_id: 'hattingen'
   }
 }
