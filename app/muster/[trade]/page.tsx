@@ -23,37 +23,39 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const tradeSlug = params.trade?.replace(/\/$/, '') || params.trade
-  const trade = FALLBACK_TRADES[tradeSlug]
-  const city = FALLBACK_CITIES[DEMO_CITY_SLUG]
-  if (!trade || !city) return { title: 'Seite nicht gefunden' }
+  const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
+  const slug = `${cleanTrade}-${DEMO_CITY_SLUG}`
+  
+  const page = FALLBACK_PAGES[slug]
+  if (!page) return { title: 'Seite nicht gefunden' }
 
   return {
-    title: `${trade.name} ${city.name} | Professionelle ${trade.name}-Website`,
-    description: `Erfahrene ${trade.plural_name || trade.name} in ${city.name}. Jetzt lokale Fachbetriebe finden.`,
+    title: page.title,
+    description: page.meta_description,
   }
 }
 
 export default async function MusterPage({ params }: PageProps) {
-  const tradeSlug = params.trade?.replace(/\/$/, '') || params.trade
-  const slug = `${tradeSlug}-${DEMO_CITY_SLUG}`
+  const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
+  const slug = `${cleanTrade}-${DEMO_CITY_SLUG}`
 
   const page = FALLBACK_PAGES[slug]
-  let trade = FALLBACK_TRADES[tradeSlug]
-  let city = FALLBACK_CITIES[DEMO_CITY_SLUG]
+  if (!page) notFound()
 
+  const trade = FALLBACK_TRADES[cleanTrade]
+  const city = FALLBACK_CITIES[DEMO_CITY_SLUG]
   if (!trade || !city) notFound()
 
-  const services = getServices(tradeSlug)
+  const services = getServices(trade.slug)
   const faqs = getFAQ(trade.name)
-  const articles = getArticles(tradeSlug, DEMO_CITY_SLUG)
+  const articles = getArticles(cleanTrade, DEMO_CITY_SLUG)
 
   return (
     <div className="min-h-screen bg-white text-ink-800 antialiased">
       {/* Demo Banner */}
-      <div className="bg-accent-600 text-white text-center text-sm font-bold py-2.5 px-4">
-        🔍 Demo-Seite: So sieht Ihre {trade.name}-Website in {city.name} aus — 
-        <Link href="/mieten" className="underline hover:text-ink-100 ml-1">
+      <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-center text-sm font-bold py-2.5 px-4">
+        🔍 Demo-Seite: So sieht Ihre {trade.name}-Website in {city.name} aus —{' '}
+        <Link href="/mieten" className="underline hover:text-white/80 ml-1">
           Jetzt mieten
         </Link>
       </div>
@@ -97,7 +99,7 @@ export default async function MusterPage({ params }: PageProps) {
               Ihr {trade.name}<br />in <span className="text-accent-400">{city.name}</span>.
             </h1>
             <p className="text-lg sm:text-xl text-ink-200 mb-8 max-w-xl">
-              Professionelle Leistungen aus einer Hand – persönlich, sauber und zuverlässig.
+              Professionelle Leistungen aus einer Hand – persönlich, sauber und zuverlässig. 
               Für Privat- und Geschäftskunden in {city.name} und Umgebung.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -162,7 +164,7 @@ export default async function MusterPage({ params }: PageProps) {
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service: any, i: number) => (
+            {services.map((service, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl border border-ink-200 hover:shadow-lg hover:border-accent-200 transition">
                 <div className="w-12 h-12 rounded-xl bg-accent-100 text-accent-600 flex items-center justify-center text-xl mb-4">
                   {service.icon}
@@ -184,8 +186,8 @@ export default async function MusterPage({ params }: PageProps) {
                 Ihr {trade.name} in {city.name}
               </h2>
               <p className="text-ink-600 mb-4 leading-relaxed">
-                {city.name} mit seinen {city.einwohner?.toLocaleString() || 'vielen'} Einwohnern
-                hat einen besonderen Bedarf an qualifizierten {trade.plural_name || trade.name}.
+                {city.name} mit seinen {city.einwohner?.toLocaleString() || 'vielen'} Einwohnern 
+                hat einen besonderen Bedarf an qualifizierten {trade.plural_name || trade.name}. 
                 Wir kennen die Region und bieten maßgeschneiderte Lösungen.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -224,7 +226,7 @@ export default async function MusterPage({ params }: PageProps) {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-ink-900 mb-4">Häufige Fragen</h2>
           </div>
           <div className="space-y-4">
-            {faqs.map((faq: any, i: number) => (
+            {faqs.map((faq, i) => (
               <details key={i} className="bg-white rounded-xl border border-ink-200 overflow-hidden group">
                 <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-semibold text-ink-800 hover:bg-ink-50 transition">
                   {faq.q}
@@ -382,6 +384,7 @@ function getFAQ(tradeName: string) {
 }
 
 function getArticles(tradeSlug: string, citySlug: string) {
+  // @ts-ignore
   const idx = articleIndex[tradeSlug]?.[citySlug]
   if (!idx || idx.length === 0) {
     return [
