@@ -12,6 +12,8 @@ interface TradeConfig {
   iconPath: string;
   name: string;
   label: string;
+  name: string;
+  label: string;
   services: { icon: string; title: string; desc: string }[];
   faq: { q: string; a: string }[];
   blog: { title: string; slug: string }[];
@@ -26,6 +28,7 @@ const TRADES: Record<string, TradeConfig> = {
     heroImage: "/images/hero.jpg",
     iconPath: "M3 12l9-8 9 8M5 10v10h14V10",
     teamImage: "/images/team.jpg",
+    name: "Dachdecker",
     label: "Dachdecker",
     services: [
       { icon: "🏠", title: "Dachsanierung", desc: "Komplette Sanierung von Steildächern mit Dachziegeln oder Schiefer. Inklusive Unterspannbahn, Lattung und Dachfenster." },
@@ -51,10 +54,11 @@ const TRADES: Record<string, TradeConfig> = {
     whatsappNumber: "4915123456789",
   },
   elektriker: {
-    color: "#2563eb",
+    color: "#3b82f6",
     heroImage: "/images/hero-elektro.jpg",
     iconPath: "M13 10V3L4 14h7v7l9-11h-7z",
     teamImage: "/images/team-elektro.jpg",
+    name: "Elektriker",
     label: "Elektriker",
     services: [
       { icon: "⚡", title: "Elektroinstallation", desc: "Neuinstallation, Erweiterung und Modernisierung – von der Leitung bis zum Schalterprogramm. Sauber geplant, normgerecht ausgeführt." },
@@ -80,10 +84,11 @@ const TRADES: Record<string, TradeConfig> = {
     whatsappNumber: "4915123456789",
   },
   klempner: {
-    color: "#0ea5e9",
+    color: "#14b8a6",
     heroImage: "/images/hero-shk.jpg",
     iconPath: "M12 2v4m0 12v4m-4-8H4m16 0h-4",
     teamImage: "/images/team-shk.jpg",
+    name: "Klempner",
     label: "SHK / Klempner",
     services: [
       { icon: "🔥", title: "Heizungsinstallation", desc: "Neuinstallation und Austausch von Heizungen aller Art. Inklusive Hydraulischer Abgleich, Thermostatventile und Energieberatung." },
@@ -109,10 +114,11 @@ const TRADES: Record<string, TradeConfig> = {
     whatsappNumber: "4915123456789",
   },
   maler: {
-    color: "#8b5cf6",
+    color: "#f43f5e",
     heroImage: "/images/hero-maler.jpg",
     iconPath: "M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12",
     teamImage: "/images/team-maler.jpg",
+    name: "Maler",
     label: "Maler",
     services: [
       { icon: "🎨", title: "Innenanstrich", desc: "Wohnräume, Küchen, Bäder und Büros professionell gestrichen. Inklusive Spachtelarbeit, Grundierung und zwei Deckanstrichen in Wunschfarbe." },
@@ -138,10 +144,11 @@ const TRADES: Record<string, TradeConfig> = {
     whatsappNumber: "4915123456789",
   },
   zimmerer: {
-    color: "#10b981",
+    color: "#f59e0b",
     heroImage: "/images/hero-zimmerer.jpg",
     iconPath: "M3 7l9-4 9 4v10l-9 4-9-4V7z",
     teamImage: "/images/team-zimmerer.jpg",
+    name: "Zimmerer",
     label: "Zimmerer",
     services: [
       { icon: "🏗️", title: "Dachstuhl", desc: "Neubau, Erneuerung und Reparatur von Dachstühlen aus Holz. Statisch berechnet, mit Nagelplatten oder traditioneller Zimmermannsart." },
@@ -179,7 +186,8 @@ const CITY = {
    CLIENT COMPONENT
    ═══════════════════════════════════════════════════════════════ */
 export default function MusterPageClient({ tradeKey }: { tradeKey: string }) {
-  const cfg = TRADES[tradeKey] || TRADES.elektriker;
+  const resolvedKey = tradeKey === "shk" ? "klempner" : tradeKey;
+  const cfg = TRADES[resolvedKey] || TRADES.elektriker;
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [formSuccess, setFormSuccess] = useState(false);

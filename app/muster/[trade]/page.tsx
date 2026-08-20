@@ -17,6 +17,11 @@ const TRADE_META: Record<string, { title: string; description: string }> = {
     description:
       "Miet-Website (Demo): Klempner Hattingen – Heizung, Rohrreinigung, Badsanierung & Wärmepumpe. Kostenlose Besichtigung & Festpreis-Angebot. Diese Stadt-Website ist noch frei und kann sofort angemietet werden.",
   },
+  shk: {
+    title: "SHK Hattingen | Miet-Website zum Anmieten – DEMO",
+    description:
+      "Miet-Website (Demo): SHK Hattingen – Heizung, Rohrreinigung, Badsanierung & Wärmepumpe. Kostenlose Besichtigung & Festpreis-Angebot. Diese Stadt-Website ist noch frei und kann sofort angemietet werden.",
+  },
   maler: {
     title: "Maler Hattingen | Miet-Website zum Anmieten – DEMO",
     description:
@@ -34,6 +39,7 @@ export function generateStaticParams() {
     { trade: "dachdecker" },
     { trade: "elektriker" },
     { trade: "klempner" },
+    { trade: "shk" },
     { trade: "maler" },
     { trade: "zimmerer" },
   ];
