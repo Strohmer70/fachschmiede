@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 interface TradeConfig {
   color: string;
   heroImage: string;
+  teamImage: string;
   iconPath: string;
   name: string;
   label: string;
@@ -22,9 +23,9 @@ interface TradeConfig {
 const TRADES: Record<string, TradeConfig> = {
   dachdecker: {
     color: "#f97316",
-    heroImage: "/images/hero-dach.jpg",
+    heroImage: "/images/hero.jpg",
     iconPath: "M3 12l9-8 9 8M5 10v10h14V10",
-    name: "Dachdecker",
+    teamImage: "/images/team.jpg",
     label: "Dachdecker",
     services: [
       { icon: "🏠", title: "Dachsanierung", desc: "Komplette Sanierung von Steildächern mit Dachziegeln oder Schiefer. Inklusive Unterspannbahn, Lattung und Dachfenster." },
@@ -53,7 +54,7 @@ const TRADES: Record<string, TradeConfig> = {
     color: "#2563eb",
     heroImage: "/images/hero-elektro.jpg",
     iconPath: "M13 10V3L4 14h7v7l9-11h-7z",
-    name: "Elektriker",
+    teamImage: "/images/team-elektro.jpg",
     label: "Elektriker",
     services: [
       { icon: "⚡", title: "Elektroinstallation", desc: "Neuinstallation, Erweiterung und Modernisierung – von der Leitung bis zum Schalterprogramm. Sauber geplant, normgerecht ausgeführt." },
@@ -80,9 +81,9 @@ const TRADES: Record<string, TradeConfig> = {
   },
   klempner: {
     color: "#0ea5e9",
-    heroImage: "/images/hero-heizung.jpg",
+    heroImage: "/images/hero-shk.jpg",
     iconPath: "M12 2v4m0 12v4m-4-8H4m16 0h-4",
-    name: "Klempner",
+    teamImage: "/images/team-shk.jpg",
     label: "SHK / Klempner",
     services: [
       { icon: "🔥", title: "Heizungsinstallation", desc: "Neuinstallation und Austausch von Heizungen aller Art. Inklusive Hydraulischer Abgleich, Thermostatventile und Energieberatung." },
@@ -111,7 +112,7 @@ const TRADES: Record<string, TradeConfig> = {
     color: "#8b5cf6",
     heroImage: "/images/hero-maler.jpg",
     iconPath: "M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12",
-    name: "Maler",
+    teamImage: "/images/team-maler.jpg",
     label: "Maler",
     services: [
       { icon: "🎨", title: "Innenanstrich", desc: "Wohnräume, Küchen, Bäder und Büros professionell gestrichen. Inklusive Spachtelarbeit, Grundierung und zwei Deckanstrichen in Wunschfarbe." },
@@ -138,9 +139,9 @@ const TRADES: Record<string, TradeConfig> = {
   },
   zimmerer: {
     color: "#10b981",
-    heroImage: "/images/hero-holz.jpg",
+    heroImage: "/images/hero-zimmerer.jpg",
     iconPath: "M3 7l9-4 9 4v10l-9 4-9-4V7z",
-    name: "Zimmerer",
+    teamImage: "/images/team-zimmerer.jpg",
     label: "Zimmerer",
     services: [
       { icon: "🏗️", title: "Dachstuhl", desc: "Neubau, Erneuerung und Reparatur von Dachstühlen aus Holz. Statisch berechnet, mit Nagelplatten oder traditioneller Zimmermannsart." },
@@ -463,12 +464,9 @@ export default function MusterPageClient({ tradeKey }: { tradeKey: string }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="reveal">
             <img
-              src={`/images/team-${tradeKey}.jpg`}
+              src={cfg.teamImage}
               alt={`${cfg.name} bei der Arbeit`}
               className="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = cfg.heroImage;
-              }}
             />
             <div className="mt-4 flex items-center gap-4 bg-ink-900 text-white rounded-2xl p-5">
               <p className="text-4xl font-black" style={{ color: c }}>
