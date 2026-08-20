@@ -90,6 +90,9 @@ async function loadDashboard() {
     console.log('Dashboard Daten geladen:', dashboardData.stats);
     renderDashboard(dashboardData);
     
+    // Alle Gewerke für Filter laden
+    await loadAllTrades();
+    
     // Pages separat mit Pagination laden (skaliert auf 20.000+ Seiten)
     await loadPages(1, 50);
     
@@ -472,11 +475,32 @@ function renderPaginationControls(pagination) {
   return html;
 }
 
+// Alle Gewerke (werden einmalig geladen)
+let allTrades = [];
+
+async function loadAllTrades() {
+  if (!adminToken || allTrades.length > 0) return;
+  try {
+    const res = await fetch(`${API_BASE}/admin/trades`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      allTrades = data.trades || [];
+    }
+  } catch (e) {
+    console.log('Trades laden fehlgeschlagen');
+  }
+}
+
 function renderWebsitesFilter(pages) {
   const container = document.getElementById('stadtFilter');
   if (!container) return;
   
-  const gewerke = [...new Set(pages.map(p => p.trade?.name).filter(Boolean))].sort();
+  // Verwende alle Gewerke (nicht nur aus aktuellen Pages)
+  const gewerke = allTrades.length > 0 
+    ? allTrades.map(t => t.name).sort()
+    : [...new Set(pages.map(p => p.trade?.name).filter(Boolean))].sort();
   
   container.innerHTML = `
     <span class="text-sm font-bold text-ink-700">Filter:</span>
