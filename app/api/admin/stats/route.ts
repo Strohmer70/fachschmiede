@@ -1,10 +1,43 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import fs from 'fs'
+import path from 'path'
+
+// Mapping: Datei-Kürzel → Trade-Slug
+const TRADE_MAP: Record<string, string> = {
+  'dach': 'dachdecker',
+  'elek': 'elektriker',
+  'shk': 'shk',
+  'zimm': 'zimmerer',
+  'maler': 'maler',
+}
+
+// Zählt statische HTML-Dateien im public-Ordner
+function countStaticPages(): number {
+  try {
+    const publicDir = path.join(process.cwd(), 'public')
+    const files = fs.readdirSync(publicDir)
+    
+    let count = 0
+    for (const file of files) {
+      if (file.startsWith('stadt-') && file.endsWith('.html')) {
+        count++
+      }
+    }
+    return count
+  } catch (e) {
+    console.error('Error counting static pages:', e)
+    return 0
+  }
+}
 
 export async function GET() {
   try {
+    // Zähle statische Dateien als Quelle der Wahrheit
+    const staticTotal = countStaticPages()
+
     // Get counts from Supabase using admin client (bypasses RLS)
-    const { count: totalPages, error: pagesError } = await supabaseAdmin
+    const { count: dbTotalPages, error: pagesError } = await supabaseAdmin
       .from('landing_pages')
       .select('*', { count: 'exact', head: true })
 
@@ -84,11 +117,17 @@ export async function GET() {
       .select('*', { count: 'exact', head: true })
       .eq('subscription_status', 'cancelled')
 
+    // Verwende statische Zählung als Quelle der Wahrheit für total
+    // Fallback auf DB wenn statisch 0
+    const total = staticTotal > 0 ? staticTotal : (dbTotalPages || 0)
+    const rented = rentedPages || 0
+    const available = Math.max(0, total - rented)
+
     return NextResponse.json({
       stats: {
-        total: totalPages || 0,
-        rented: rentedPages || 0,
-        available: availablePages || 0,
+        total: total,
+        rented: rented,
+        available: available,
         leads: totalLeads || 0,
         tenants: totalTenants || 0,
         mrr: Math.round(mrr / 100), // cents to euros
