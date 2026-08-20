@@ -93,8 +93,8 @@ async function loadDashboard() {
     // Alle Gewerke für Filter laden
     await loadAllTrades();
     
-    // Pages separat mit Pagination laden (skaliert auf 20.000+ Seiten)
-    await loadPages(1, 50);
+    // Pages laden — Limit auf 500 erhöht, damit alle 105+ Seiten geladen werden
+    await loadPages(1, 500);
     
   } catch (err) {
     console.error('Dashboard load error:', err);
@@ -105,11 +105,11 @@ async function loadDashboard() {
 // ═══════════ PAGES MIT PAGINATION LADEN ═══════════
 let currentPages = [];
 let currentPageNum = 1;
-let currentPageLimit = 50;
+let currentPageLimit = 500;
 let totalPagesCount = 0;
 
 // Global verfügbar machen für Pagination-Buttons
-window.loadPages = async function(page = 1, limit = 50) {
+window.loadPages = async function(page = 1, limit = 500) {
   if (!adminToken) return;
   
   try {
