@@ -12,8 +12,6 @@ interface TradeConfig {
   iconPath: string;
   name: string;
   label: string;
-  name: string;
-  label: string;
   services: { icon: string; title: string; desc: string }[];
   faq: { q: string; a: string }[];
   blog: { title: string; slug: string }[];
