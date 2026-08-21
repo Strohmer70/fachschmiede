@@ -1,4 +1,4 @@
-// ═══════════ ADMIN DASHBOARD — ECHTE DATEN ═══════════
+// ═══════════ ADMIN DASHBOARD - ECHTE DATEN ═══════════
 const API_BASE = '/api';
 let adminToken = localStorage.getItem('adminToken');
 let dashboardData = null;
@@ -12,12 +12,12 @@ async function doLogin() {
   const loginGate = document.getElementById('loginGate');
   const passwordInput = loginGate.querySelector('input[type="password"]');
   const password = passwordInput ? passwordInput.value : '';
-  
+
   if (!password) {
     showToast('Bitte Passwort eingeben');
     return;
   }
-  
+
   // Demo-Modus: Einfaches Passwort akzeptieren
   // In Produktion würde hier ein API-Call erfolgen
   if (password.length >= 4) {
@@ -25,10 +25,10 @@ async function doLogin() {
     adminToken = 'demo-' + Date.now();
     localStorage.setItem('adminToken', adminToken);
     console.log('Login erfolgreich, Token gesetzt:', adminToken);
-    
+
     hideLoginGate();
     showToast('✅ Admin-Login erfolgreich');
-    
+
     // Versuche trotzdem Dashboard-Daten zu laden
     try {
       await loadDashboard();
@@ -37,7 +37,7 @@ async function doLogin() {
     }
     return;
   }
-  
+
   showToast('❌ Passwort muss mindestens 4 Zeichen haben');
 }
 
@@ -60,7 +60,7 @@ function showLoginGate() {
 
 function logout() {
   showLoginGate();
-  showToast('Abgemeldet – der Bereich ist jetzt gesperrt.');
+  showToast('Abgemeldet - der Bereich ist jetzt gesperrt.');
 }
 
 // ═══════════ DASHBOARD LADEN ═══════════
@@ -70,32 +70,32 @@ async function loadDashboard() {
     showLoginGate();
     return;
   }
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/stats/`, {
       headers: {
         'Authorization': `Bearer ${adminToken}`
       }
     });
-    
+
     console.log('API Response Status:', res.status);
-    
+
     if (res.status === 401) {
-      showToast('⚠️ Session abgelaufen — bitte neu einloggen');
+      showToast('⚠️ Session abgelaufen - bitte neu einloggen');
       showLoginGate();
       return;
     }
-    
+
     dashboardData = await res.json();
     console.log('Dashboard Daten geladen:', dashboardData.stats);
     renderDashboard(dashboardData);
-    
+
     // Alle Gewerke für Filter laden
     await loadAllTrades();
-    
-    // Pages laden — Limit auf 500 erhöht, damit alle 105+ Seiten geladen werden
+
+    // Pages laden - Limit auf 500 erhöht, damit alle 105+ Seiten geladen werden
     await loadPages(1, 500);
-    
+
   } catch (err) {
     console.error('Dashboard load error:', err);
     showToast('❌ Fehler beim Laden der Daten');
@@ -111,29 +111,29 @@ let totalPagesCount = 0;
 // Global verfügbar machen für Pagination-Buttons
 window.loadPages = async function(page = 1, limit = 500) {
   if (!adminToken) return;
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/pages?page=${page}&limit=${limit}`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
-    
+
     if (res.status === 401) {
       showLoginGate();
       return;
     }
-    
+
     const data = await res.json();
     currentPages = data.pages || [];
     currentPageNum = page;
     currentPageLimit = limit;
     totalPagesCount = data.pagination?.total || 0;
-    
+
     // Views aktualisieren die Pages brauchen
     renderPagesOverview(currentPages);
     populateGenPageDropdown(currentPages);
     renderWebsitesView(currentPages, data.pagination);
     renderTodoList(dashboardData?.tenants || [], currentPages);
-    
+
   } catch (err) {
     console.error('Pages load error:', err);
     showToast('❌ Fehler beim Laden der Seiten');
@@ -143,19 +143,19 @@ window.loadPages = async function(page = 1, limit = 500) {
 // ═══════════ DASHBOARD RENDERN ═══════════
 function renderDashboard(data) {
   const { stats, recentLeads, tenants } = data;
-  
+
   // ── KPI-Karten (per ID) ──
   setText('stat-rented', stats.rented || 0);
   setText('stat-rented-trend', stats.rented > 0 ? 'Aktive Mieter' : 'Noch keine Mieter', 'text-ink-400');
-  
+
   setText('stat-mrr', (stats.mrr || 0) + ' €');
   setText('stat-mrr-trend', stats.mrr > 0 ? 'MRR' : 'Noch keine Einnahmen', 'text-ink-400');
-  
+
   setText('stat-leads', stats.leads || 0);
-  
+
   setText('stat-total', stats.total || 0);
   setText('stat-available', (stats.available || 0) + ' noch frei', 'text-brand-600');
-  
+
   // ── Tenant-Statistiken ──
   if (stats.tenantStats) {
     setText('tenantStatActive', stats.tenantStats.active || 0);
@@ -163,25 +163,25 @@ function renderDashboard(data) {
     setText('tenantStatOverdue', stats.tenantStats.overdue || 0);
     setText('tenantStatCanceled', stats.tenantStats.cancelled || 0);
   }
-  
+
   // ── Mieter-Tabelle ──
   renderMieterTable(tenants || []);
-  
+
   // ── Leads-Liste ──
   renderLeadsList(recentLeads || []);
-  
+
   // NOTE: Pages werden über loadPages() separat geladen (Pagination)
-  // renderPagesOverview, populateGenPageDropdown, renderWebsitesView 
+  // renderPagesOverview, populateGenPageDropdown, renderWebsitesView
   // werden in loadPages() aufgerufen
 }
 
 function populateGenPageDropdown(pages) {
   const select = document.getElementById('genPageId');
   if (!select) return;
-  
+
   // Keep first option
   select.innerHTML = '<option value="">Bitte wählen...</option>';
-  
+
   pages.forEach(page => {
     const option = document.createElement('option');
     option.value = page.id;
@@ -202,9 +202,9 @@ function setText(id, text, colorClass) {
 function renderMieterTable(tenants) {
   const tbody = document.getElementById('mieterTbody');
   const emptyMsg = document.getElementById('mieterEmpty');
-  
+
   if (!tbody) return;
-  
+
   if (tenants.length === 0) {
     tbody.innerHTML = `
       <tr>
@@ -221,9 +221,9 @@ function renderMieterTable(tenants) {
     if (emptyMsg) emptyMsg.classList.add('hidden');
     return;
   }
-  
+
   if (emptyMsg) emptyMsg.classList.add('hidden');
-  
+
   // Status-Mapping
   const statusConfig = {
     'active':    { label: 'Aktiv',      class: 'bg-green-100 text-green-700' },
@@ -231,11 +231,11 @@ function renderMieterTable(tenants) {
     'past_due':  { label: 'Überfällig', class: 'bg-red-100 text-red-700' },
     'cancelled': { label: 'Gekündigt',  class: 'bg-ink-100 text-ink-500' },
   };
-  
+
   tbody.innerHTML = tenants.map(t => {
     const page = t.landing_page || {};
     const status = statusConfig[t.subscription_status] || statusConfig['inactive'];
-    
+
     return `
       <tr class="hover:bg-ink-50 transition" data-status="${t.subscription_status || 'inactive'}">
         <td class="px-6 py-4">
@@ -250,7 +250,7 @@ function renderMieterTable(tenants) {
           </div>
         </td>
         <td class="px-6 py-4 text-sm text-ink-600">${page.title || page.slug || '-'}</td>
-        <td class="px-6 py-4 text-sm text-ink-600">—</td>
+        <td class="px-6 py-4 text-sm text-ink-600">-</td>
         <td class="px-6 py-4 text-sm text-ink-600">${formatDate(t.created_at)}</td>
         <td class="px-6 py-4">
           <span class="text-xs font-bold px-2.5 py-1 rounded-full ${status.class}">${status.label}</span>
@@ -267,7 +267,7 @@ function renderMieterTable(tenants) {
 function renderLeadsList(leads) {
   const container = document.getElementById('recentLeadsList');
   if (!container) return;
-  
+
   if (leads.length === 0) {
     container.innerHTML = `
       <li class="py-3 text-center text-sm text-ink-400 italic">
@@ -276,7 +276,7 @@ function renderLeadsList(leads) {
     `;
     return;
   }
-  
+
   container.innerHTML = leads.map(lead => {
     const page = lead.landing_page || {};
     const timeAgo = timeSince(new Date(lead.created_at));
@@ -299,7 +299,7 @@ function renderLeadsList(leads) {
 function renderPagesOverview(pages) {
   const tbody = document.getElementById('ovTbody');
   if (!tbody) return;
-  
+
   if (pages.length === 0) {
     tbody.innerHTML = `
       <tr>
@@ -310,13 +310,13 @@ function renderPagesOverview(pages) {
     `;
     return;
   }
-  
+
   tbody.innerHTML = pages.map(p => {
     const tenant = p.page_customizations?.[0]?.tenant;
-    const status = p.status === 'rented' 
+    const status = p.status === 'rented'
       ? '<span class="text-xs font-bold bg-green-100 text-green-700 px-2 py-1 rounded-full">Vermietet</span>'
       : '<span class="text-xs font-bold bg-brand-100 text-brand-700 px-2 py-1 rounded-full">Frei</span>';
-    
+
     return `
       <tr class="hover:bg-ink-50 transition" data-gewerk="${p.trade?.name || ''}">
         <td class="px-6 py-4">
@@ -346,18 +346,18 @@ function renderPagesOverview(pages) {
 function renderTodoList(tenants, pages) {
   const container = document.getElementById('todoList');
   if (!container) return;
-  
+
   const todos = [];
-  
+
   // Wenn es freie Seiten gibt
   const freePages = pages.filter(p => p.status === 'available');
   if (freePages.length > 0) {
     todos.push({
       color: 'bg-brand-400',
-      text: `<strong>Marketing:</strong> ${freePages.length} Website${freePages.length > 1 ? 's' : ''} noch frei — Salespage bewerben`
+      text: `<strong>Marketing:</strong> ${freePages.length} Website${freePages.length > 1 ? 's' : ''} noch frei - Salespage bewerben`
     });
   }
-  
+
   // Wenn es keine Seiten gibt
   if (pages.length === 0) {
     todos.push({
@@ -365,22 +365,22 @@ function renderTodoList(tenants, pages) {
       text: '<strong>Setup:</strong> Erstelle erste Landing-Pages mit dem Seed-Tool'
     });
   }
-  
+
   // Wenn es keine Mieter gibt
   if (tenants.length === 0 && pages.length > 0) {
     todos.push({
       color: 'bg-brand-400',
-      text: '<strong>Vertrieb:</strong> Noch keine Mieter — Social Media / Google Ads starten'
+      text: '<strong>Vertrieb:</strong> Noch keine Mieter - Social Media / Google Ads starten'
     });
   }
-  
+
   if (todos.length === 0) {
     container.innerHTML = `
-      <li class="text-ink-400 italic">Keine offenen Aufgaben – alles läuft!</li>
+      <li class="text-ink-400 italic">Keine offenen Aufgaben - alles läuft!</li>
     `;
     return;
   }
-  
+
   container.innerHTML = todos.map(todo => `
     <li class="flex items-start gap-3">
       <span class="mt-1 w-2.5 h-2.5 rounded-full ${todo.color} shrink-0"></span>
@@ -398,26 +398,26 @@ function renderWebsitesView(pages, pagination) {
     console.error('stadtGrid Element nicht gefunden!');
     return;
   }
-  
+
   if (pages.length === 0) {
     grid.innerHTML = '';
     if (hint) hint.textContent = 'Noch keine Seiten vorhanden.';
     return;
   }
-  
+
   // Pagination Info
   const total = pagination?.total || pages.length;
   const currentPage = pagination?.page || 1;
   const totalPages = pagination?.totalPages || 1;
-  
-  if (hint) hint.textContent = `${total} Stadt-Websites im Portfolio — Seite ${currentPage} von ${totalPages}.`;
-  
+
+  if (hint) hint.textContent = `${total} Stadt-Websites im Portfolio - Seite ${currentPage} von ${totalPages}.`;
+
   grid.innerHTML = pages.map(p => {
     const isRented = p.status === 'rented';
-    const statusBadge = isRented 
+    const statusBadge = isRented
       ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span>'
       : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span>';
-    
+
     const tradeEmoji = {
       'Dachdecker': '🏠',
       'Elektriker': '⚡',
@@ -425,7 +425,7 @@ function renderWebsitesView(pages, pagination) {
       'Zimmerer': '🔨',
       'Maler': '🖌️',
     }[p.trade?.name] || '🏗️';
-    
+
     return `
       <div class="stadt-card bg-white rounded-2xl border-2 ${isRented ? 'border-ink-200' : 'border-green-200'} p-5" data-gewerk="${p.trade?.name || ''}" data-status="${isRented ? 'vermietet' : 'frei'}">
         <div class="flex items-center justify-between">
@@ -445,7 +445,7 @@ function renderWebsitesView(pages, pagination) {
       </div>
     `;
   }).join('') + renderPaginationControls(pagination);
-  
+
   // Filter-Buttons dynamisch erstellen
   renderWebsitesFilter(pages);
 }
@@ -453,24 +453,24 @@ function renderWebsitesView(pages, pagination) {
 // Pagination Controls
 function renderPaginationControls(pagination) {
   if (!pagination || pagination.totalPages <= 1) return '';
-  
+
   const { page, totalPages } = pagination;
-  
+
   let html = '<div class="col-span-full flex justify-center gap-2 mt-6">';
-  
+
   // Prev Button
   if (page > 1) {
     html += `<button onclick="loadPages(${page - 1}, ${currentPageLimit})" class="px-4 py-2 text-sm font-bold text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition">← Zurück</button>`;
   }
-  
+
   // Page Info
   html += `<span class="px-4 py-2 text-sm font-bold text-ink-600">Seite ${page} von ${totalPages}</span>`;
-  
+
   // Next Button
   if (page < totalPages) {
     html += `<button onclick="loadPages(${page + 1}, ${currentPageLimit})" class="px-4 py-2 text-sm font-bold text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-50 transition">Weiter →</button>`;
   }
-  
+
   html += '</div>';
   return html;
 }
@@ -497,7 +497,7 @@ function getStaticFileUrl(tradeSlug, citySlug) {
   const prefix = TRADE_FILE_PREFIX[getUrlSlug(tradeSlug)] || getUrlSlug(tradeSlug);
   return `/stadt-${prefix}-${citySlug}.html`;
 }
-}
+
 let allTrades = [];
 
 async function loadAllTrades() {
@@ -518,12 +518,12 @@ async function loadAllTrades() {
 function renderWebsitesFilter(pages) {
   const container = document.getElementById('stadtFilter');
   if (!container) return;
-  
+
   // Verwende alle Gewerke (nicht nur aus aktuellen Pages)
-  const gewerke = allTrades.length > 0 
+  const gewerke = allTrades.length > 0
     ? allTrades.map(t => t.name).sort()
     : [...new Set(pages.map(p => p.trade?.name).filter(Boolean))].sort();
-  
+
   container.innerHTML = `
     <span class="text-sm font-bold text-ink-700">Filter:</span>
     <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
@@ -546,7 +546,7 @@ window.filterStaedte = function(gewerk, btn) {
     btn.classList.remove('bg-ink-100', 'text-ink-600');
     btn.classList.add('bg-ink-900', 'text-white');
   }
-  
+
   // Cards filtern
   document.querySelectorAll('.stadt-card').forEach(card => {
     if (!gewerk || card.dataset.gewerk === gewerk) {
@@ -566,7 +566,7 @@ function formatDate(dateStr) {
 
 function timeSince(date) {
   const seconds = Math.floor((new Date() - date) / 1000);
-  
+
   let interval = seconds / 31536000;
   if (interval > 1) return Math.floor(interval) + ' Jahren';
   interval = seconds / 2592000;
@@ -598,11 +598,11 @@ function showToast(msg) {
 }
 
 function showTenantDetail(id) {
-  showToast(`Mieter-Details für ID: ${id} — Funktion folgt`);
+  showToast(`Mieter-Details für ID: ${id} - Funktion folgt`);
 }
 
 function showPageDetail(id) {
-  showToast(`Seiten-Details für ID: ${id} — Funktion folgt`);
+  showToast(`Seiten-Details für ID: ${id} - Funktion folgt`);
 }
 
 // ═══════════ LEADS FUNKTIONEN ═══════════
@@ -611,31 +611,31 @@ let currentLeadFilter = { status: '', site: '' };
 
 async function loadLeads() {
   if (!adminToken) return;
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/leads/?limit=100`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
-    
+
     if (res.status === 401) {
       showLoginGate();
       return;
     }
-    
+
     const data = await res.json();
     allLeads = data.leads || [];
-    
+
     // Update KPIs
     setText('leadStatNew', data.stats.new || 0);
     setText('leadStat30d', data.stats.recent30d || 0);
     setText('leadStatTotal', data.stats.total || 0);
-    
+
     // Render table
     renderLeadsTable(allLeads);
-    
+
     // Populate site filter
     populateLeadSiteFilter(allLeads);
-    
+
   } catch (err) {
     console.error('Leads load error:', err);
     showToast('❌ Fehler beim Laden der Leads');
@@ -645,9 +645,9 @@ async function loadLeads() {
 function renderLeadsTable(leads) {
   const tbody = document.getElementById('leadTbody');
   const emptyMsg = document.getElementById('leadEmpty');
-  
+
   if (!tbody) return;
-  
+
   if (leads.length === 0) {
     tbody.innerHTML = `
       <tr>
@@ -663,15 +663,15 @@ function renderLeadsTable(leads) {
     if (emptyMsg) emptyMsg.classList.add('hidden');
     return;
   }
-  
+
   if (emptyMsg) emptyMsg.classList.add('hidden');
-  
+
   tbody.innerHTML = leads.map(lead => {
     const page = lead.landing_page || {};
     const trade = lead.trade || {};
     const city = lead.city || {};
     const timeAgo = timeSince(new Date(lead.created_at));
-    
+
     const statusColors = {
       'new': 'bg-red-100 text-red-700',
       'sent': 'bg-brand-100 text-brand-700',
@@ -686,7 +686,7 @@ function renderLeadsTable(leads) {
     };
     const statusClass = statusColors[lead.status] || 'bg-ink-100 text-ink-500';
     const statusLabel = statusLabels[lead.status] || lead.status || 'Neu';
-    
+
     return `
       <tr class="hover:bg-ink-50 transition" data-status="${lead.status || 'new'}" data-site="${page.slug || ''}">
         <td class="px-6 py-4 text-sm text-ink-600 whitespace-nowrap">${timeAgo}</td>
@@ -711,10 +711,10 @@ function renderLeadsTable(leads) {
 function populateLeadSiteFilter(leads) {
   const select = document.getElementById('leadSite');
   if (!select) return;
-  
+
   // Get unique sites
   const sites = [...new Set(leads.map(l => l.landing_page?.slug).filter(Boolean))];
-  
+
   // Keep first option, add new ones
   select.innerHTML = '<option value="">Alle Websites</option>';
   sites.forEach(slug => {
@@ -728,9 +728,9 @@ function populateLeadSiteFilter(leads) {
 function filterLeads() {
   const statusFilter = document.getElementById('leadStatus')?.value || '';
   const siteFilter = document.getElementById('leadSite')?.value || '';
-  
+
   let filtered = allLeads;
-  
+
   if (statusFilter) {
     // Map German labels to status codes
     const statusMap = {
@@ -741,11 +741,11 @@ function filterLeads() {
     const code = statusMap[statusFilter] || statusFilter;
     filtered = filtered.filter(l => (l.status || 'new') === code);
   }
-  
+
   if (siteFilter) {
     filtered = filtered.filter(l => (l.landing_page?.slug || '') === siteFilter);
   }
-  
+
   renderLeadsTable(filtered);
 }
 
@@ -755,11 +755,11 @@ function showLeadDetail(leadId) {
     showToast('Lead nicht gefunden');
     return;
   }
-  
+
   const page = lead.landing_page || {};
   const trade = lead.trade || {};
   const city = lead.city || {};
-  
+
   // Create modal content
   const modalHTML = `
     <div class="fixed inset-0 z-[80] bg-ink-900/60 backdrop-blur flex items-center justify-center p-4" id="leadDetailModal">
@@ -802,11 +802,11 @@ function showLeadDetail(leadId) {
       </div>
     </div>
   `;
-  
+
   // Remove existing modal
   const existing = document.getElementById('leadDetailModal');
   if (existing) existing.remove();
-  
+
   document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
@@ -820,7 +820,7 @@ async function updateLeadStatus(leadId, status) {
       },
       body: JSON.stringify({ id: leadId, status })
     });
-    
+
     if (res.ok) {
       showToast('✅ Status aktualisiert');
       // Update local data
@@ -843,42 +843,42 @@ async function updateLeadStatus(leadId, status) {
 // ═══════════ BILLING / MIETEN ═══════════
 async function loadBillingData() {
   if (!adminToken) return;
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/billing`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
-    
+
     if (res.status === 401) {
       showLoginGate();
       return;
     }
-    
+
     const data = await res.json();
-    
+
     if (!data.success) {
       console.error('Billing API error:', data.error);
       return;
     }
-    
+
     const stats = data.stats;
-    
+
     // KPI Cards
     const mrrEl = document.getElementById('billMrr');
     if (mrrEl) mrrEl.textContent = stats.mrr.toLocaleString('de-DE') + ' €';
-    
+
     const openEl = document.getElementById('billOpen');
     if (openEl) openEl.textContent = stats.openInvoicesTotal.toLocaleString('de-DE') + ' €';
-    
+
     const openCountEl = document.getElementById('billOpenCount');
     if (openCountEl) openCountEl.textContent = stats.openInvoicesCount + ' überfällig';
-    
+
     const basisEl = document.getElementById('billBasis');
     if (basisEl) basisEl.textContent = stats.basisCount + ' × ' + stats.basisPrice + ' €';
-    
+
     const proEl = document.getElementById('billPro');
     if (proEl) proEl.textContent = stats.proCount + ' × ' + stats.proPrice + ' €';
-    
+
     // Tenant table
     const tbody = document.getElementById('billTenantTbody');
     if (tbody) {
@@ -898,7 +898,7 @@ async function loadBillingData() {
           const city = page.city || {};
           const price = (page.monthly_price || 0) / 100;
           const since = t.created_at ? new Date(t.created_at).toLocaleDateString('de-DE') : '-';
-          
+
           return `
             <tr class="hover:bg-ink-50">
               <td class="px-6 py-4 font-bold text-ink-900">${t.company_name || t.contact_name || 'Unbekannt'}</td>
@@ -911,7 +911,7 @@ async function loadBillingData() {
         }).join('');
       }
     }
-    
+
     // Revenue by trade
     const revEl = document.getElementById('billRevenueByTrade');
     if (revEl) {
@@ -923,7 +923,7 @@ async function loadBillingData() {
         const emojis = {
           dachdecker: '🏠', elektriker: '⚡', klempner: '🔥', zimmerer: '🔨', maler: '🖌️', fliesenleger: '🧱'
         };
-        
+
         revEl.innerHTML = data.revenueByTrade.map((r, i) => {
           const pct = Math.round((r.revenue / maxRev) * 100);
           const color = colors[i % colors.length];
@@ -942,7 +942,7 @@ async function loadBillingData() {
         }).join('');
       }
     }
-    
+
   } catch (err) {
     console.error('Billing load error:', err);
   }
@@ -951,32 +951,32 @@ async function loadBillingData() {
 // ═══════════ INVOICE / RECHNUNGEN ═══════════
 async function loadInvoiceData() {
   if (!adminToken) return;
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/invoices`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
-    
+
     if (res.status === 401) {
       showLoginGate();
       return;
     }
-    
+
     const data = await res.json();
-    
+
     if (!data.success) {
       console.error('Invoice API error:', data.error);
       return;
     }
-    
+
     // Badge update
     const badge = document.getElementById('invoiceAutoBadge');
     if (badge) badge.textContent = data.stats.total + ' automatisch';
-    
+
     // Table
     const tbody = document.getElementById('invoiceList');
     if (!tbody) return;
-    
+
     if (!data.invoices || data.invoices.length === 0) {
       tbody.innerHTML = `
         <tr id="invoiceListEmpty">
@@ -988,7 +988,7 @@ async function loadInvoiceData() {
       `;
       return;
     }
-    
+
     tbody.innerHTML = data.invoices.map((inv) => {
       const since = inv.created_at ? new Date(inv.created_at).toLocaleDateString('de-DE') : '-';
       return `
@@ -1003,12 +1003,12 @@ async function loadInvoiceData() {
           <td class="px-6 py-4 text-ink-600">${inv.payment_method}</td>
           <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Bezahlt</span></td>
           <td class="px-6 py-4 text-right">
-            <button onclick="showToast('PDF-Download folgt…')" class="text-brand-600 font-semibold hover:underline">PDF</button>
+            <button onclick="showToast('PDF-Download folgt...')" class="text-brand-600 font-semibold hover:underline">PDF</button>
           </td>
         </tr>
       `;
     }).join('');
-    
+
   } catch (err) {
     console.error('Invoice load error:', err);
   }
@@ -1018,7 +1018,7 @@ async function loadInvoiceData() {
 async function loadTrades() {
   const grid = document.getElementById('gewerkGrid');
   if (!grid) return;
-  
+
   // Fallback: Statische Daten direkt anzeigen (keine API-Abhängigkeit)
   const fallbackTrades = [
     { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 21, rented_pages: 0, available_pages: 21 },
@@ -1027,17 +1027,17 @@ async function loadTrades() {
     { name: 'Maler', slug: 'maler', emoji: '🎨', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 21, rented_pages: 0, available_pages: 21 },
   ];
-  
+
   renderTradeCards(fallbackTrades);
-  
+
   // Optional: Versuche API im Hintergrund
   if (!adminToken) return;
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/trades?_=${Date.now()}`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
-    
+
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.trades?.length > 0) {
@@ -1052,7 +1052,7 @@ async function loadTrades() {
 function renderTradeCards(trades) {
   const grid = document.getElementById('gewerkGrid');
   if (!grid) return;
-  
+
   const salesPages = {
     'dachdecker': '/sales-dachdecker.html',
     'elektriker': '/sales-elektriker.html',
@@ -1060,26 +1060,24 @@ function renderTradeCards(trades) {
     'zimmerer': '/sales-zimmerer.html',
     'maler': '/sales-maler.html',
   };
-  
+
   const samplePages = {
     'dachdecker': '/muster/dachdecker',
     'elektriker': '/muster/elektriker',
     'klempner': '/muster/klempner',
     'zimmerer': '/muster/zimmerer',
     'maler': '/muster/maler',
-  };    'zimmerer': '/muster/zimmerer',
-    'maler': '/muster/maler',
   };
-  
+
   grid.innerHTML = trades.map((trade) => {
     const isLive = trade.total_pages > 0;
     const statusBadge = isLive
       ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Live</span>`
       : `<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">Geplant</span>`;
-    
+
     const salesUrl = salesPages[trade.slug] || `#`;
     const sampleUrl = samplePages[trade.slug] || `#`;
-    
+
     return `
       <div class="border border-ink-200 rounded-2xl p-5">
         <div class="flex items-center justify-between">
@@ -1098,12 +1096,12 @@ function renderTradeCards(trades) {
     `;
   }).join('') + `
     <button onclick="openModal('modalGewerk')" class="border-2 border-dashed border-brand-300 rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-brand-600 hover:bg-brand-50 transition min-h-[190px]">
-      <span class="text-3xl">＋</span>
+      <span class="text-3xl">+</span>
       <span class="font-bold">Neues Gewerk anfordern</span>
       <span class="text-xs text-ink-400 font-normal">Redaktion erstellt Texte, FAQ &amp; Blog-Paket</span>
     </button>
   `;
-  
+
   // Requests-Table leeren
   const reqBody = document.getElementById('tradeRequestsBody');
   if (reqBody) {
@@ -1117,32 +1115,32 @@ let currentArticleFilter = 'all';
 
 async function loadArticles() {
   if (!adminToken) return;
-  
+
   try {
     const res = await fetch(`${API_BASE}/articles/?status=all&limit=100`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
-    
+
     if (res.status === 401) {
       showLoginGate();
       return;
     }
-    
+
     const data = await res.json();
     allArticles = data.articles || [];
-    
+
     // Update KPIs
     const published = allArticles.filter(a => a.status === 'published').length;
     const drafts = allArticles.filter(a => a.status === 'draft').length;
     const aiGenerated = allArticles.filter(a => a.ai_generated).length;
-    
+
     setText('blogStatPublished', published);
     setText('blogStatDrafts', drafts);
     setText('blogStatAi', aiGenerated);
-    
+
     renderArticlesTable(allArticles);
     populateArticlePageFilter(allArticles);
-    
+
   } catch (err) {
     console.error('Articles load error:', err);
     showToast('❌ Fehler beim Laden der Artikel');
@@ -1152,9 +1150,9 @@ async function loadArticles() {
 function renderArticlesTable(articles) {
   const tbody = document.getElementById('blogTbody');
   const emptyMsg = document.getElementById('blogEmpty');
-  
+
   if (!tbody) return;
-  
+
   if (articles.length === 0) {
     tbody.innerHTML = `
       <tr>
@@ -1170,9 +1168,9 @@ function renderArticlesTable(articles) {
     if (emptyMsg) emptyMsg.classList.add('hidden');
     return;
   }
-  
+
   if (emptyMsg) emptyMsg.classList.add('hidden');
-  
+
   const statusColors = {
     'published': 'bg-green-100 text-green-700',
     'draft': 'bg-amber-100 text-amber-700',
@@ -1183,16 +1181,16 @@ function renderArticlesTable(articles) {
     'draft': 'Entwurf',
     'archived': 'Archiviert',
   };
-  
+
   tbody.innerHTML = articles.map(article => {
     const page = article.landing_page || {};
     const trade = page.trade || {};
     const city = page.city || {};
     const timeAgo = article.published_at ? timeSince(new Date(article.published_at)) : '-';
-    
+
     const statusClass = statusColors[article.status] || 'bg-ink-100 text-ink-500';
     const statusLabel = statusLabels[article.status] || article.status;
-    
+
     return `
       <tr class="hover:bg-ink-50 transition" data-status="${article.status}" data-page="${page.slug || ''}">
         <td class="px-6 py-4">
@@ -1218,9 +1216,9 @@ function renderArticlesTable(articles) {
 function populateArticlePageFilter(articles) {
   const select = document.getElementById('articlePage');
   if (!select) return;
-  
+
   const pages = [...new Set(articles.map(a => a.landing_page?.slug).filter(Boolean))];
-  
+
   select.innerHTML = '<option value="">Alle Seiten</option>';
   pages.forEach(slug => {
     const option = document.createElement('option');
@@ -1233,9 +1231,9 @@ function populateArticlePageFilter(articles) {
 function filterArticles() {
   const statusFilter = document.getElementById('articleStatus')?.value || '';
   const pageFilter = document.getElementById('articlePage')?.value || '';
-  
+
   let filtered = allArticles;
-  
+
   if (statusFilter) {
     const statusMap = {
       'Entwurf': 'draft',
@@ -1245,29 +1243,29 @@ function filterArticles() {
     const code = statusMap[statusFilter] || statusFilter;
     filtered = filtered.filter(a => (a.status || 'draft') === code);
   }
-  
+
   if (pageFilter) {
     filtered = filtered.filter(a => (a.landing_page?.slug || '') === pageFilter);
   }
-  
+
   renderArticlesTable(filtered);
 }
 
 async function generateArticle() {
   const pageId = document.getElementById('genPageId')?.value;
   const customTitle = document.getElementById('genTitle')?.value;
-  
+
   if (!pageId) {
     showToast('❌ Bitte wähle eine Seite aus');
     return;
   }
-  
+
   const btn = document.getElementById('genBtn');
   if (btn) {
     btn.disabled = true;
     btn.textContent = '⏳ Generiere...';
   }
-  
+
   try {
     const res = await fetch(`${API_BASE}/articles/generate`, {
       method: 'POST',
@@ -1280,9 +1278,9 @@ async function generateArticle() {
         custom_title: customTitle || undefined
       })
     });
-    
+
     const data = await res.json();
-    
+
     if (data.error) {
       showToast('❌ ' + (data.message || 'Generierung fehlgeschlagen'));
     } else {
@@ -1308,7 +1306,7 @@ async function runArticleSchedule() {
     btn.disabled = true;
     btn.textContent = '⏳ Plane Artikel...';
   }
-  
+
   try {
     const res = await fetch(`${API_BASE}/articles/schedule`, {
       method: 'POST',
@@ -1317,9 +1315,9 @@ async function runArticleSchedule() {
         'Content-Type': 'application/json',
       }
     });
-    
+
     const data = await res.json();
-    
+
     if (data.error) {
       showToast('❌ ' + (data.message || 'Planung fehlgeschlagen'));
     } else {
@@ -1343,11 +1341,11 @@ function showArticleDetail(articleId) {
     showToast('Artikel nicht gefunden');
     return;
   }
-  
+
   const page = article.landing_page || {};
   const trade = page.trade || {};
   const city = page.city || {};
-  
+
   const modalHTML = `
     <div class="fixed inset-0 z-[80] bg-ink-900/60 backdrop-blur flex items-center justify-center p-4" id="articleDetailModal">
       <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -1402,10 +1400,10 @@ function showArticleDetail(articleId) {
       </div>
     </div>
   `;
-  
+
   const existing = document.getElementById('articleDetailModal');
   if (existing) existing.remove();
-  
+
   document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
@@ -1419,7 +1417,7 @@ async function updateArticleStatus(articleId, status) {
       },
       body: JSON.stringify({ status })
     });
-    
+
     if (res.ok) {
       showToast('✅ Status aktualisiert');
       const article = allArticles.find(a => a.id === articleId);
@@ -1436,7 +1434,7 @@ async function updateArticleStatus(articleId, status) {
   }
 }
 
-// ═══════════ MARKETING — ECHTE DATEN ═══════════
+// ═══════════ MARKETING - ECHTE DATEN ═══════════
 let marketingContacts = [];
 let marketingCampaigns = [];
 let selectedContactIds = new Set();
@@ -1481,23 +1479,23 @@ async function loadMarketingContacts() {
 function renderProspectList(contacts) {
   const tbody = document.getElementById('prospectList');
   if (!tbody) return;
-  
+
   if (contacts.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400">Noch keine Kontakte. Klicke „Scrape starten", um erste Betriebe zu erfassen.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400">Noch keine Kontakte. Klicke "Scrape starten", um erste Betriebe zu erfassen.</td></tr>';
     return;
   }
-  
+
   tbody.innerHTML = contacts.map(c => `
     <tr data-id="${c.id}">
       <td class="px-4 py-3"><input type="checkbox" class="prospect-check" onchange="toggleProspect('${c.id}')"></td>
       <td class="px-4 py-3 font-semibold text-ink-900">${c.company_name}</td>
-      <td class="px-4 py-3 text-ink-600">${c.email || '—'}</td>
+      <td class="px-4 py-3 text-ink-600">${c.email || '-'}</td>
       <td class="px-4 py-3 text-ink-500">${c.source}</td>
       <td class="px-4 py-3"><span class="${getStatusBadge(c.status)}">${c.status}</span></td>
     </tr>
   `).join('');
-  
-  document.getElementById('scrapeResultMeta').innerHTML = 
+
+  document.getElementById('scrapeResultMeta').innerHTML =
     `<strong>${contacts.length} Kontakte</strong> in der Datenbank`;
   document.getElementById('selCount').textContent = selectedContactIds.size;
 }
@@ -1545,22 +1543,22 @@ async function startScrape() {
   const bar = document.getElementById('scrapeBar');
   const pct = document.getElementById('scrapePct');
   const step = document.getElementById('scrapeStep');
-  
+
   btn.disabled = true;
   progress.classList.remove('hidden');
-  
+
   // Simulation: generiere 5-15 Demo-Kontakte und speichere sie
   const count = 5 + Math.floor(Math.random() * 11);
   const sources = ['Google Maps', 'Branchenverzeichnis', 'Innungsliste'];
   const newContacts = [];
-  
+
   for (let i = 0; i < count; i++) {
     const pctVal = Math.round(((i + 1) / count) * 100);
     bar.style.width = pctVal + '%';
     pct.textContent = pctVal + ' %';
-    step.textContent = `Betrieb ${i + 1} von ${count} …`;
+    step.textContent = `Betrieb ${i + 1} von ${count} ...`;
     await new Promise(r => setTimeout(r, 300));
-    
+
     newContacts.push({
       company_name: `${stadt} ${gewerk.split(' ')[0]} ${String.fromCharCode(65 + i)}`,
       email: `info@${stadt.toLowerCase().replace(/[^a-z]/g,'')}-${gewerk.split(' ')[0].toLowerCase()}${i + 1}.de`,
@@ -1569,7 +1567,7 @@ async function startScrape() {
       source: sources[Math.floor(Math.random() * sources.length)],
     });
   }
-  
+
   // Speichere in DB
   for (const c of newContacts) {
     try {
@@ -1585,10 +1583,10 @@ async function startScrape() {
       console.error('Contact save error:', e);
     }
   }
-  
+
   await loadMarketingContacts();
   await loadMarketingStats();
-  
+
   btn.disabled = false;
   progress.classList.add('hidden');
   showToast(`✅ ${count} Kontakte für ${gewerk} ${stadt} erfasst`);
@@ -1600,32 +1598,32 @@ async function generateMails(regenerate = false) {
     showToast('❌ Bitte mindestens einen Kontakt auswählen');
     return;
   }
-  
+
   const mailSection = document.getElementById('mailSection');
   const drafts = document.getElementById('mailDrafts');
   const draftCount = document.querySelector('.draftCount');
-  
+
   mailSection.classList.remove('hidden');
-  drafts.innerHTML = '<p class="text-ink-400">⏳ Entwürfe werden generiert…</p>';
-  
+  drafts.innerHTML = '<p class="text-ink-400">⏳ Entwürfe werden generiert...</p>';
+
   await new Promise(r => setTimeout(r, 1500));
-  
+
   const selected = marketingContacts.filter(c => selectedContactIds.has(c.id));
   const gewerk = document.getElementById('scrapeGewerk').value;
   const stadt = document.getElementById('scrapeStadt').value;
-  
+
   drafts.innerHTML = selected.map((c, i) => `
     <div class="border border-ink-200 rounded-xl p-4">
       <div class="flex items-center justify-between mb-2">
         <span class="font-bold text-sm text-ink-900">${c.company_name}</span>
         <span class="text-xs text-ink-400">${c.email || 'Keine E-Mail'}</span>
       </div>
-      <input type="text" value="Ihre ${gewerk.split(' ')[0]}-Website für ${stadt} – mieten statt bauen" class="w-full text-sm font-bold border border-ink-200 rounded-lg px-3 py-2 mb-2">
+      <input type="text" value="Ihre ${gewerk.split(' ')[0]}-Website für ${stadt} - mieten statt bauen" class="w-full text-sm font-bold border border-ink-200 rounded-lg px-3 py-2 mb-2">
       <textarea rows="5" class="w-full text-sm border border-ink-200 rounded-lg px-3 py-2">Guten Tag ${c.company_name},
 
-Ihre Konkurrenz in ${stadt} ist bereits online – mit einer professionellen Website, die Kunden anzieht.
+Ihre Konkurrenz in ${stadt} ist bereits online - mit einer professionellen Website, die Kunden anzieht.
 
-Mieten Sie statt zu bauen: Eine fertige, suchmaschinenoptimierte ${gewerk.split(' ')[0]}-Website für ${stadt} – ab 189 €/Monat. Inklusive Leads, Dashboard und Support.
+Mieten Sie statt zu bauen: Eine fertige, suchmaschinenoptimierte ${gewerk.split(' ')[0]}-Website für ${stadt} - ab 189 €/Monat. Inklusive Leads, Dashboard und Support.
 
 14 Tage kostenlos testen: https://fachschmiede.de
 
@@ -1633,7 +1631,7 @@ Freundliche Grüße
 Das fachschmiede.de Team</textarea>
     </div>
   `).join('');
-  
+
   if (draftCount) draftCount.textContent = selected.length;
 }
 
@@ -1642,13 +1640,13 @@ async function sendCampaign(btn) {
     showToast('❌ Keine Kontakte ausgewählt');
     return;
   }
-  
+
   btn.disabled = true;
-  btn.textContent = '⏳ Sende…';
-  
+  btn.textContent = '⏳ Sende...';
+
   const gewerk = document.getElementById('scrapeGewerk').value;
   const stadt = document.getElementById('scrapeStadt').value;
-  
+
   try {
     const res = await fetch(`${API_BASE}/admin/marketing/campaigns`, {
       method: 'POST',
@@ -1664,10 +1662,10 @@ async function sendCampaign(btn) {
         contact_ids: Array.from(selectedContactIds)
       })
     });
-    
+
     const data = await res.json();
     if (data.success) {
-      showToast(`✅ Kampagne „${data.campaign.name}" angelegt — ${selectedContactIds.size} Kontakte`);
+      showToast(`✅ Kampagne "${data.campaign.name}" angelegt - ${selectedContactIds.size} Kontakte`);
       await loadMarketingCampaigns();
       await loadMarketingStats();
       document.getElementById('mailSection').classList.add('hidden');
@@ -1705,12 +1703,12 @@ async function loadMarketingCampaigns() {
 function renderCampaignList(campaigns) {
   const tbody = document.getElementById('campaignList');
   if (!tbody) return;
-  
+
   if (campaigns.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-ink-400">Noch keine Kampagnen gestartet.</td></tr>';
     return;
   }
-  
+
   tbody.innerHTML = campaigns.map(c => {
     const openRate = c.contacts_sent > 0 ? Math.round((c.opens / c.contacts_sent) * 100) : 0;
     let resultBadge = '';
@@ -1721,7 +1719,7 @@ function renderCampaignList(campaigns) {
     } else {
       resultBadge = `<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2 py-1 rounded-full">Versendet</span>`;
     }
-    
+
     return `<tr>
       <td class="py-3 font-bold text-ink-900">${c.name}</td>
       <td class="py-3 text-ink-500">${c.contacts_sent} · ${new Date(c.created_at).toLocaleDateString('de-DE')}</td>
@@ -1747,7 +1745,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.loadBillingData = loadBillingData;
   window.loadInvoiceData = loadInvoiceData;
   window.loadTrades = loadTrades;
-  
+
   // Prüfe, ob Token existiert
   if (adminToken) {
     hideLoginGate();
