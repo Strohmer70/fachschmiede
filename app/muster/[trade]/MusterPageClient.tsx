@@ -83,9 +83,9 @@ const TRADES: Record<string, TradeConfig> = {
   },
   klempner: {
     color: "#14b8a6",
-    heroImage: "/images/hero-shk.jpg",
+    heroImage: "/images/hero-klempner.jpg",
     iconPath: "M12 2v4m0 12v4m-4-8H4m16 0h-4",
-    teamImage: "/images/team-shk.jpg",
+    teamImage: "/images/team-klempner.jpg",
     name: "Klempner",
     label: "SHK / Klempner",
     services: [
@@ -238,7 +238,7 @@ export default function MusterPageClient({ tradeKey }: { tradeKey: string }) {
           <a href="/start" className="hover:text-white transition">💼 Salespage</a>
           <a href="/sales-dachdecker" className="hover:text-white transition">🏠 Gewerk Dachdecker</a>
           <a href="/sales-elektriker" className="hover:text-white transition">⚡ Gewerk Elektriker</a>
-          <a href="/sales-shk" className="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
+          <a href="/sales-klempner" className="hover:text-white transition">🔥 Gewerk Klempner</a>
           <a href="/sales-zimmerer" className="hover:text-white transition">🔨 Gewerk Zimmerer</a>
           <a href="/sales-maler" className="hover:text-white transition">🖌️ Gewerk Maler</a>
           <a href="/admin" className="hover:text-white transition">🛠 Admin-Dashboard</a>

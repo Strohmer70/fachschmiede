@@ -14,6 +14,15 @@ interface PageProps {
   }
 }
 
+// Mapping für SEO-freundliche URLs → interne Datenbank-Slugs
+const TRADE_SLUG_MAP: Record<string, string> = {
+  'klempner': 'shk',  // Datenbank hat noch 'shk'
+}
+
+function getDbTradeSlug(tradeSlug: string): string {
+  return TRADE_SLUG_MAP[tradeSlug] || tradeSlug
+}
+
 export async function generateStaticParams() {
   return Object.keys(FALLBACK_PAGES).map(slug => {
     const parts = slug.split('-')
@@ -41,7 +50,8 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function LandingPage({ params }: PageProps) {
   const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
   const cleanCity = params.city?.replace(/\/$/, '') || params.city
-  const slug = `${cleanTrade}-${cleanCity}`
+  const dbTradeSlug = getDbTradeSlug(cleanTrade)
+  const slug = `${dbTradeSlug}-${cleanCity}`
 
   let page = null
   try {
@@ -55,7 +65,7 @@ export default async function LandingPage({ params }: PageProps) {
     console.error('Supabase load error:', err)
   }
 
-  if (!page) page = FALLBACK_PAGES[slug]
+  if (!page) page = FALLBACK_PAGES[slug] || FALLBACK_PAGES[`${cleanTrade}-${cleanCity}`]
   if (!page) notFound()
 
   let trade = page.trade

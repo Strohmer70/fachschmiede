@@ -906,7 +906,7 @@ async function loadBillingData() {
         const maxRev = Math.max(...data.revenueByTrade.map((r) => r.revenue), 1);
         const colors = ['bg-orange-500', 'bg-blue-500', 'bg-teal-500', 'bg-brand-500', 'bg-purple-500', 'bg-red-500'];
         const emojis = {
-          dachdecker: '🏠', elektriker: '⚡', shk: '🔧', zimmerer: '🔨', maler: '🖌️', fliesenleger: '🧱'
+          dachdecker: '🏠', elektriker: '⚡', klempner: '🔥', zimmerer: '🔨', maler: '🖌️', fliesenleger: '🧱'
         };
         
         revEl.innerHTML = data.revenueByTrade.map((r, i) => {
@@ -1041,7 +1041,7 @@ function renderTradeCards(trades) {
   const salesPages = {
     'dachdecker': '/sales-dachdecker.html',
     'elektriker': '/sales-elektriker.html',
-    'klempner': '/sales-shk.html',
+    'klempner': '/sales-klempner.html',
     'zimmerer': '/sales-zimmerer.html',
     'maler': '/sales-maler.html',
   };
