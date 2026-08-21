@@ -9,6 +9,8 @@ interface PageProps {
   }
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams() {
   return Object.keys(FALLBACK_PAGES).map(slug => ({ slug }))
 }
