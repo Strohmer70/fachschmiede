@@ -494,8 +494,9 @@ function getUrlSlug(slug) {
 }
 
 function getStaticFileUrl(tradeSlug, citySlug) {
-  const prefix = TRADE_FILE_PREFIX[getUrlSlug(tradeSlug)] || getUrlSlug(tradeSlug);
-  return `/stadt-${prefix}-${citySlug}.html`;
+  // Nutze die Next.js App Route: /dachdecker/muenchen
+  const seoSlug = getUrlSlug(tradeSlug);
+  return `/${seoSlug}/${citySlug}`;
 }
 
 let allTrades = [];
