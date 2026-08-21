@@ -1008,7 +1008,7 @@ async function loadTrades() {
   const fallbackTrades = [
     { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Klempner', slug: 'shk', emoji: '🔥', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Klempner', slug: 'klempner', emoji: '🔥', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Maler', slug: 'maler', emoji: '🎨', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 21, rented_pages: 0, available_pages: 21 },
   ];
@@ -1041,7 +1041,6 @@ function renderTradeCards(trades) {
   const salesPages = {
     'dachdecker': '/sales-dachdecker.html',
     'elektriker': '/sales-elektriker.html',
-    'shk': '/sales-shk.html',
     'klempner': '/sales-shk.html',
     'zimmerer': '/sales-zimmerer.html',
     'maler': '/sales-maler.html',
@@ -1050,9 +1049,10 @@ function renderTradeCards(trades) {
   const samplePages = {
     'dachdecker': '/muster/dachdecker',
     'elektriker': '/muster/elektriker',
-    'shk': '/muster/shk',
-    'klempner': '/muster/shk',
+    'klempner': '/muster/klempner',
     'zimmerer': '/muster/zimmerer',
+    'maler': '/muster/maler',
+  };    'zimmerer': '/muster/zimmerer',
     'maler': '/muster/maler',
   };
   
