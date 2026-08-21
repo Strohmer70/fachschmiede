@@ -1,5 +1,7 @@
 import RentPageClient from './RentPageClient'
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
   params: {
     slug: string
