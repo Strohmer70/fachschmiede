@@ -11,10 +11,6 @@ interface PageProps {
 
 export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  return Object.keys(FALLBACK_PAGES).map(slug => ({ slug }))
-}
-
 export async function generateMetadata({ params }: PageProps) {
   const cleanSlug = params.slug?.replace(/\/$/, '') || params.slug
   const page = FALLBACK_PAGES[cleanSlug]
