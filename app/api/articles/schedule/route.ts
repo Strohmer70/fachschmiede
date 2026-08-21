@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
 import { supabaseAdmin } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
+
 
 interface ScheduleConfig {
   free_plan: number      // Articles per month for free pages (default: 1)

@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
 import { supabaseAdmin } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
+
 
 // GET /api/articles/[id] - Einzelnen Artikel abrufen
 export async function GET(

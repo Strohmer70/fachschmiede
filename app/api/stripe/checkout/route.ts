@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
+
 // Lazy-load stripe only when needed
 let stripe: any = null
 

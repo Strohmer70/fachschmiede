@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
 import { supabaseAdmin } from '@/lib/supabase'
+
+export const dynamic = 'force-dynamic'
+
 
 // Vercel Cron: Runs monthly on 1st at 9:00 AM
 // Schedule: 0 9 1 * *

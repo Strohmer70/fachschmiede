@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
+
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'fachschmiede2024'
 
 export async function POST(request: Request) {
