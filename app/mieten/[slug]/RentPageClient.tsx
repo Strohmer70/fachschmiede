@@ -13,6 +13,14 @@ interface PageData {
   city: { name: string; slug: string }
 }
 
+// KORREKTE PREISE - unabhängig von DB-Fehler
+const PRICE_BASIS = 18900 // €189
+const PRICE_PRO = 28900   // €289 (München)
+
+function getCorrectPrice(citySlug: string): number {
+  return citySlug === 'muenchen' ? PRICE_PRO : PRICE_BASIS
+}
+
 export default function RentPageClient({ params }: { params: { slug: string } }) {
   const [page, setPage] = useState<PageData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -43,6 +51,9 @@ export default function RentPageClient({ params }: { params: { slug: string } })
     if (!page) return
     setCheckoutLoading(true)
     
+    // KORREKTER PREIS - nicht aus DB, sondern berechnet
+    const correctPrice = getCorrectPrice(page.city.slug)
+    
     try {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
@@ -50,7 +61,7 @@ export default function RentPageClient({ params }: { params: { slug: string } })
         body: JSON.stringify({
           landing_page_id: page.id,
           slug: page.slug,
-          price_cents: page.monthly_price,
+          price_cents: correctPrice, // ⭐ KORREKTER PREIS!
           success_url: `${window.location.origin}/mieten/erfolg?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: window.location.href,
         }),
@@ -110,8 +121,10 @@ export default function RentPageClient({ params }: { params: { slug: string } })
     )
   }
 
-  const priceEuro = (page.monthly_price / 100).toFixed(0)
-  const isPro = page.monthly_price > 18900
+  // KORREKTER PREIS - nicht aus DB!
+  const correctPrice = getCorrectPrice(page.city.slug)
+  const priceEuro = (correctPrice / 100).toFixed(0)
+  const isPro = correctPrice === PRICE_PRO
 
   return (
     <div className="min-h-screen bg-slate-50">
