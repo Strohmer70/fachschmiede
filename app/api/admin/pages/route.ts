@@ -7,9 +7,10 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '50')
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200)
     const trade = searchParams.get('trade') || null
     const status = searchParams.get('status') || null
+    const slug = searchParams.get('slug') || null
     
     const offset = (page - 1) * limit
 
@@ -23,7 +24,12 @@ export async function GET(request: Request) {
         page_customizations(*, tenant:tenants(*))
       `, { count: 'exact' })
       .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
+
+    if (slug) {
+      query = query.eq('slug', slug)
+    } else {
+      query = query.range(offset, offset + limit - 1)
+    }
 
     if (trade) {
       query = query.eq('trade.slug', trade)

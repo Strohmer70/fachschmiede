@@ -30,9 +30,10 @@ export default function RentPageClient({ params }: { params: { slug: string } })
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await fetch('/api/admin/pages?page=1&limit=105')
+        // ⭐ DIREKTER SLUG-QUERY — keine Pagination-Probleme!
+        const res = await fetch(`/api/admin/pages?slug=${encodeURIComponent(params.slug)}`)
         const data = await res.json()
-        const found = data.pages?.find((p: PageData) => p.slug === params.slug)
+        const found = data.pages?.[0]
         if (found) {
           setPage(found)
         } else {
