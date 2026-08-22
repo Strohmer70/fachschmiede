@@ -999,5 +999,23 @@ if (citySearch) {
   });
 }
 </script>
+
+<!-- Auto-Open Checkout from Stadtseite -->
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const stadtSlug = params.get('stadt');
+  if(stadtSlug){
+    // Stadtname aus dem Slug ableiten
+    const CITY_NAMES = {'schwerte':'Schwerte','dortmund':'Dortmund','hagen':'Hagen','iserlohn':'Iserlohn','unna':'Unna','bochum':'Bochum','witten':'Witten','luenen':'Lünen','herne':'Herne','castrop-rauxel':'Castrop-Rauxel','kamen':'Kamen','bergkamen':'Bergkamen','froendenberg':'Fröndenberg','holzwickede':'Holzwickede','schwelm':'Schwelm','gevelsberg':'Gevelsberg','ennepetal':'Ennepetal','sprockhoevel':'Sprockhövel','hattingen':'Hattingen','wetter-ruhr':'Wetter (Ruhr)','muenchen':'München'};
+    const cityName = CITY_NAMES[stadtSlug];
+    if(cityName && typeof startOnboarding === 'function'){
+      // Kurz warten bis DOM bereit
+      setTimeout(() => startOnboarding(cityName), 500);
+    }
+  }
+})();
+</script>
+
 </body>
 </html>

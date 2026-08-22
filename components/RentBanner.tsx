@@ -31,12 +31,12 @@ export function RentBanner({ tradeName, cityName, price, slug }: RentBannerProps
             <p className="text-sm text-white/80">ab</p>
             <p className="text-xl sm:text-2xl font-bold">€{priceEuro}/Monat</p>
           </div>
-          <Link
-            href={`/mieten/${slug}`}
+          <a
+            href={`/sales-${trade.slug}.html?stadt=${city.slug}`}
             className="bg-white text-accent-700 font-bold py-2.5 px-6 rounded-xl hover:bg-ink-50 transition shadow-lg whitespace-nowrap"
           >
             🚀 Jetzt mieten
-          </Link>
+          </a>
         </div>
       </div>
     </div>

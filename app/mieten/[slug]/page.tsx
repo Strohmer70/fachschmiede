@@ -10,6 +10,27 @@ interface PageProps {
   }
 }
 
+// Statische Seiten zur Build-Zeit generieren
+export async function generateStaticParams() {
+  try {
+    const { data: pages } = await supabase
+      .from('landing_pages')
+      .select('slug')
+      .limit(200)
+    
+    return (pages || []).map((p: { slug: string }) => ({
+      slug: p.slug,
+    }))
+  } catch {
+    // Fallback: bekannte Slugs
+    return [
+      { slug: 'elektriker-bochum' },
+      { slug: 'dachdecker-dortmund' },
+      { slug: 'klempner-hagen' },
+    ]
+  }
+}
+
 export default async function RentPage({ params }: PageProps) {
   const { data: page } = await supabase
     .from('landing_pages')
