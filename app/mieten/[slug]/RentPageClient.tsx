@@ -17,6 +17,7 @@ export default function RentPageClient({ params }: { params: { slug: string } })
   const [page, setPage] = useState<PageData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
     async function loadData() {
@@ -38,12 +39,42 @@ export default function RentPageClient({ params }: { params: { slug: string } })
     loadData()
   }, [params.slug])
 
+  async function handleCheckout() {
+    if (!page) return
+    setCheckoutLoading(true)
+    
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          landing_page_id: page.id,
+          slug: page.slug,
+          price_cents: page.monthly_price,
+          success_url: `${window.location.origin}/mieten/erfolg?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: window.location.href,
+        }),
+      })
+      
+      const data = await res.json()
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url
+      } else {
+        setError('Checkout konnte nicht gestartet werden')
+        setCheckoutLoading(false)
+      }
+    } catch (err) {
+      setError('Fehler beim Checkout')
+      setCheckoutLoading(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-ink-600 font-medium">Laden...</p>
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 font-medium">Laden...</p>
         </div>
       </div>
     )
@@ -54,9 +85,9 @@ export default function RentPageClient({ params }: { params: { slug: string } })
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
           <div className="text-6xl mb-4">🏠</div>
-          <h1 className="text-2xl font-black text-ink-900 mb-2">Seite nicht verfügbar</h1>
-          <p className="text-ink-600 mb-6">{error || 'Diese Seite konnte nicht gefunden werden.'}</p>
-          <Link href="/" className="inline-flex items-center bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl transition">
+          <h1 className="text-2xl font-black text-slate-900 mb-2">Seite nicht verfügbar</h1>
+          <p className="text-slate-600 mb-6">{error || 'Diese Seite konnte nicht gefunden werden.'}</p>
+          <Link href="/" className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition">
             Zurück zur Startseite
           </Link>
         </div>
@@ -69,9 +100,9 @@ export default function RentPageClient({ params }: { params: { slug: string } })
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
           <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-black text-ink-900 mb-2">Bereits vermietet</h1>
-          <p className="text-ink-600 mb-6">Diese Seite ist bereits an einen Handwerker vermietet.</p>
-          <Link href="/" className="inline-flex items-center bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl transition">
+          <h1 className="text-2xl font-black text-slate-900 mb-2">Bereits vermietet</h1>
+          <p className="text-slate-600 mb-6">Diese Seite ist bereits an einen Handwerker vermietet.</p>
+          <Link href="/" className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition">
             Andere Seiten ansehen
           </Link>
         </div>
@@ -80,16 +111,17 @@ export default function RentPageClient({ params }: { params: { slug: string } })
   }
 
   const priceEuro = (page.monthly_price / 100).toFixed(0)
+  const isPro = page.monthly_price > 18900
 
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white border-b border-ink-100">
+      <header className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="font-black text-xl text-ink-900">
+          <Link href="/" className="font-black text-xl text-slate-900">
             fachschmiede.de
           </Link>
-          <a href={`/${page.trade.slug}/${page.city.slug}/`} className="text-sm font-semibold text-ink-600 hover:text-brand-600 transition">
+          <a href={`/${page.trade.slug}/${page.city.slug}/`} className="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">
             ← Zurück zur Seite
           </a>
         </div>
@@ -101,24 +133,31 @@ export default function RentPageClient({ params }: { params: { slug: string } })
             <span className="w-2 h-2 rounded-full bg-green-500" />
             Noch verfügbar
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-ink-900 mb-3">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-3">
             {page.trade.name} in {page.city.name}
           </h1>
-          <p className="text-ink-600 text-lg">
+          <p className="text-slate-600 text-lg">
             Diese Seite ist zur Miete verfügbar
           </p>
         </div>
 
         {/* Preis-Box */}
-        <div className="bg-white rounded-2xl border border-ink-200 p-8 shadow-sm mb-8">
+        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm mb-8">
           <div className="flex items-baseline justify-center gap-2 mb-2">
-            <span className="text-5xl font-black text-ink-900">€{priceEuro}</span>
-            <span className="text-ink-500 font-medium">/Monat</span>
+            <span className="text-5xl font-black text-slate-900">€{priceEuro}</span>
+            <span className="text-slate-500 font-medium">/Monat</span>
           </div>
-          <p className="text-center text-ink-600 mb-6">
+          <p className="text-center text-slate-600 mb-2">
             Inklusive Hosting, Updates & Support
           </p>
-          <ul className="space-y-3 text-ink-700 mb-8">
+          {isPro && (
+            <div className="text-center mb-6">
+              <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full">
+                ⭐ PRO Paket
+              </span>
+            </div>
+          )}
+          <ul className="space-y-3 text-slate-700 mb-8">
             <li className="flex items-center gap-3">
               <span className="text-green-500 text-xl">✓</span>
               Komplette Website mit Ihrem Branding
@@ -135,15 +174,38 @@ export default function RentPageClient({ params }: { params: { slug: string } })
               <span className="text-green-500 text-xl">✓</span>
               Kündbar monatlich
             </li>
+            {isPro && (
+              <>
+                <li className="flex items-center gap-3">
+                  <span className="text-purple-500 text-xl">✓</span>
+                  <strong>Priorität-Support</strong>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-purple-500 text-xl">✓</span>
+                  <strong>Erweiterte Anpassungen</strong>
+                </li>
+              </>
+            )}
           </ul>
-          <button className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-lg px-8 py-4 rounded-xl transition shadow-lg">
-            Jetzt mieten →
+          <button 
+            onClick={handleCheckout}
+            disabled={checkoutLoading}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-bold text-lg px-8 py-4 rounded-xl transition shadow-lg flex items-center justify-center gap-2"
+          >
+            {checkoutLoading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Weiterleitung...
+              </>
+            ) : (
+              <>Jetzt mieten →</>
+            )}
           </button>
         </div>
 
         {/* Verfügbarkeit */}
-        <div className="text-center text-sm text-ink-500">
-          <p>Seite: <strong className="text-ink-700">{page.slug}</strong></p>
+        <div className="text-center text-sm text-slate-500">
+          <p>Seite: <strong className="text-slate-700">{page.slug}</strong></p>
           <p className="mt-1">Status: <span className="text-green-600 font-semibold">Verfügbar</span></p>
         </div>
       </main>
