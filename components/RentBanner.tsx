@@ -1,15 +1,15 @@
 'use client'
 
-import Link from 'next/link'
-
 interface RentBannerProps {
   tradeName: string
   cityName: string
   price: number
   slug: string
+  tradeSlug: string
+  citySlug: string
 }
 
-export function RentBanner({ tradeName, cityName, price, slug }: RentBannerProps) {
+export function RentBanner({ tradeName, cityName, price, tradeSlug, citySlug }: RentBannerProps) {
   const priceEuro = (price / 100).toFixed(0)
 
   return (
@@ -32,7 +32,7 @@ export function RentBanner({ tradeName, cityName, price, slug }: RentBannerProps
             <p className="text-xl sm:text-2xl font-bold">€{priceEuro}/Monat</p>
           </div>
           <a
-            href={`/sales-${trade.slug}.html?stadt=${city.slug}`}
+            href={`/sales-${tradeSlug}.html?stadt=${citySlug}`}
             className="bg-white text-accent-700 font-bold py-2.5 px-6 rounded-xl hover:bg-ink-50 transition shadow-lg whitespace-nowrap"
           >
             🚀 Jetzt mieten
