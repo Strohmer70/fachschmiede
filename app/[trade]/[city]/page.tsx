@@ -30,10 +30,6 @@ function getDbTradeSlug(tradeSlug: string): string {
   return TRADE_SLUG_MAP[tradeSlug] || tradeSlug
 }
 
-// WICHTIG: Während des Builds NICHT auf Supabase zugreifen
-// Das verhindert Timeouts bei Vercel (60s Limit)
-const isBuildTime = typeof process !== 'undefined' && process.env.NEXT_PHASE === 'phase-production-build'
-
 export async function generateStaticParams() {
   return Object.keys(FALLBACK_PAGES).map(slug => {
     const parts = slug.split('-')
@@ -66,18 +62,21 @@ export default async function LandingPage({ params }: PageProps) {
 
   let page = null
   
-  // Supabase nur aufrufen wenn NICHT beim Build (Vercel 60s Timeout!)
-  if (!isBuildTime) {
-    try {
-      const { data } = await supabase
-        .from('landing_pages')
-        .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
-        .eq('slug', slug)
-        .single()
-      page = data
-    } catch (err) {
-      console.error('Supabase load error:', err)
-    }
+  // Supabase mit Timeout (verhindert Build-Hangs)
+  try {
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Supabase timeout')), 5000)
+    )
+    const supabasePromise = supabase
+      .from('landing_pages')
+      .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
+      .eq('slug', slug)
+      .single()
+    
+    const { data } = await Promise.race([supabasePromise, timeoutPromise])
+    page = data
+  } catch (err) {
+    console.log('Supabase load skipped:', err.message)
   }
 
   if (!page) page = FALLBACK_PAGES[slug] || FALLBACK_PAGES[`${cleanTrade}-${cleanCity}`]
