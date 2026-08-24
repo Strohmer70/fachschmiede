@@ -1201,10 +1201,14 @@ async function submitTradeRequest(form) {
     return;
   }
 
-  const region = form.querySelector('input[placeholder*="Region"]').value.trim();
-  const priority = form.querySelector('select').value;
-  const cityCount = form.querySelectorAll('select')[1].value;
-  const notes = form.querySelector('textarea').value.trim();
+  // Alle Inputs im Formular finden
+  const inputs = form.querySelectorAll('input[type="text"]');
+  const region = inputs[1] ? inputs[1].value.trim() : ''; // Zweites Text-Input = Region
+  const selects = form.querySelectorAll('select');
+  const priority = selects[0] ? selects[0].value : 'Normal (nach Plan)';
+  const cityCount = selects[1] ? selects[1].value : '10 Städte';
+  const textarea = form.querySelector('textarea');
+  const notes = textarea ? textarea.value.trim() : '';
 
   showToast('⏳ Sende Anfrage...');
 
@@ -1218,7 +1222,7 @@ async function submitTradeRequest(form) {
       body: JSON.stringify({
         name: name,
         region: region,
-        priority: priority.toLowerCase().includes('sofort') ? 'urgent' : priority.toLowerCase().includes('hoch') ? 'high' : 'normal',
+        priority: priority.toLowerCase().includes('hoch') ? 'high' : priority.toLowerCase().includes('sofort') ? 'urgent' : 'normal',
         city_count: parseInt(cityCount) || 10,
         notes: notes
       })
