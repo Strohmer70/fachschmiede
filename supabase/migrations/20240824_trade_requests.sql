@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS trade_requests (
   generated_articles INTEGER DEFAULT 0,    -- Wie viele Artikel generiert
   salespage_url TEXT,                      -- URL zur Salespage
   
+  -- Salespage-Build Tracking
+  salespage_build_requested BOOLEAN DEFAULT false,  -- Finn wurde angefragt
+  salespage_requested_at TIMESTAMPTZ,               -- Wann angefragt
+  salespage_built_at TIMESTAMPTZ,                   -- Wann fertig gebaut
+  
   -- Content-Einstellungen
   brand_color TEXT DEFAULT '#ea580c',      -- Akzentfarbe (Tailwind)
   services JSONB DEFAULT '[]',             -- Array von {icon, title, desc}

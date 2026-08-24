@@ -122,6 +122,17 @@ export async function PATCH(req: NextRequest) {
     if (status) updateData.status = status
     if (status === 'ready') updateData.completed_at = new Date().toISOString()
     
+    // Salespage-Build Tracking
+    if (updates.salespage_build_requested !== undefined) {
+      updateData.salespage_build_requested = updates.salespage_build_requested
+    }
+    if (updates.salespage_requested_at) {
+      updateData.salespage_requested_at = updates.salespage_requested_at
+    }
+    if (updates.salespage_built_at) {
+      updateData.salespage_built_at = updates.salespage_built_at
+    }
+    
     const { data, error } = await supabaseAdmin
       .from('trade_requests')
       .update(updateData)

@@ -1071,7 +1071,7 @@ async function loadTradeRequests() {
     // Requests-Tabelle aktualisieren
     renderTradeRequests();
 
-    // Gewerk-Grid aktualisieren mit Pending-Requests
+    // Gewerk-Grid aktualisieren mit Pending/Ready Requests
     const grid = document.getElementById('gewerkGrid');
     if (grid && allTradeRequests.length > 0) {
       // Pending/Generating requests als Karten anhängen
@@ -1103,8 +1103,49 @@ async function loadTradeRequests() {
           `;
         }).join('');
 
-      if (pendingCards) {
-        grid.insertAdjacentHTML('beforeend', pendingCards);
+      // Ready-Requests mit "Salespage bauen" Button
+      const readyCards = allTradeRequests
+        .filter(r => r.status === 'ready')
+        .map(req => {
+          const statusConfig = getRequestStatusConfig(req.status);
+          const needsSalespage = !req.salespage_build_requested;
+          return `
+            <div class="border ${statusConfig.border} ${statusConfig.bg} rounded-2xl p-5" data-request-id="${req.id}">
+              <div class="flex items-center justify-between">
+                <p class="font-black text-ink-900 text-lg">${req.emoji || '✅'} ${req.name}</p>
+                <span class="${statusConfig.badge} text-xs font-bold px-2.5 py-1 rounded-full">${statusConfig.label}</span>
+              </div>
+              <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
+                <li>✓ ${req.generated_pages || 0} Stadt-Seiten erstellt</li>
+                <li>✓ ${req.generated_articles || 0} Artikel-Platzhalter</li>
+                <li>○ Landing Pages: <a href="/${req.slug}/schwerte/" target="_blank" class="text-brand-600 hover:underline">/${req.slug}/schwerte/ ↗</a></li>
+              </ul>
+              
+              ${needsSalespage ? `
+                <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  <p class="text-xs font-bold text-amber-800 mb-2">⚠️ Salespage fehlt noch!</p>
+                  <p class="text-[11px] text-amber-700 mb-3">Die Landing Pages funktionieren, aber die Gewerk-Salespage (für Kunden) muss noch gebaut werden.</p>
+                  <button onclick="requestSalespageBuild('${req.id}', '${req.name}', '${req.slug}')" class="w-full text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg py-2 transition">
+                    🏗️ Salespage bauen (Finn benachrichtigen)
+                  </button>
+                </div>
+              ` : `
+                <div class="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-3">
+                  <p class="text-xs font-bold text-blue-800">✅ Salespage angefordert</p>
+                  <p class="text-[11px] text-blue-600 mt-1">Finn wurde benachrichtigt und baut die HTML-Salespage.</p>
+                  ${req.salespage_requested_at ? `<p class="text-[11px] text-blue-500 mt-1">Angefordert: ${new Date(req.salespage_requested_at).toLocaleString('de-DE')}</p>` : ''}
+                </div>
+              `}
+              
+              <div class="mt-3 flex gap-2">
+                <button onclick="deleteTradeRequest('${req.id}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition">🗑 Löschen</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      if (pendingCards || readyCards) {
+        grid.insertAdjacentHTML('beforeend', (pendingCards || '') + (readyCards || ''));
       }
     }
 
@@ -1135,6 +1176,7 @@ function renderTradeRequests() {
   reqBody.innerHTML = allTradeRequests.map(req => {
     const statusConfig = getRequestStatusConfig(req.status);
     const created = new Date(req.created_at).toLocaleDateString('de-DE');
+    const needsSalespage = req.status === 'ready' && !req.salespage_build_requested;
     return `
       <tr class="hover:bg-ink-50 transition">
         <td class="px-4 py-3 font-bold text-ink-900">${req.emoji || '🆕'} ${req.name}</td>
@@ -1143,6 +1185,7 @@ function renderTradeRequests() {
         <td class="px-4 py-3 text-sm text-ink-500">${created}</td>
         <td class="px-4 py-3 text-right">
           ${req.status === 'pending' ? `<button onclick="generateTrade('${req.id}')" class="text-brand-600 font-bold text-sm hover:underline">🚀 Generieren</button>` : ''}
+          ${needsSalespage ? `<button onclick="requestSalespageBuild('${req.id}', '${req.name}', '${req.slug}')" class="text-amber-600 font-bold text-sm hover:underline ml-2">🏗️ Salespage</button>` : ''}
           <button onclick="deleteTradeRequest('${req.id}')" class="text-red-600 font-bold text-sm hover:underline ml-3">Löschen</button>
         </td>
       </tr>
@@ -1252,6 +1295,60 @@ async function generateTrade(requestId) {
   } catch (err) {
     console.error('Generate trade error:', err);
     showToast('❌ Fehler bei der Generierung');
+  }
+}
+
+// Salespage bauen anfordern (Benachrichtigt Finn)
+async function requestSalespageBuild(requestId, tradeName, tradeSlug) {
+  if (!confirm(`🏗️ Salespage für "${tradeName}" bauen?\n\nDies benachrichtigt Finn (den AI-Assistenten), dass er:\n• Die HTML-Salespage basierend auf dem Template der bestehenden 5 Gewerke bauen soll\n• Alle Stadt-Links, Farben und Gewerk-Spezifika einbauen soll\n\nDu wirst benachrichtigt, sobald die Salespage fertig ist.`)) {
+    return;
+  }
+
+  showToast('🏗️ Sende Anfrage an Finn...');
+
+  try {
+    // Status in DB aktualisieren
+    const res = await fetch(`${API_BASE}/admin/trade-requests`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({
+        id: requestId,
+        salespage_build_requested: true,
+        salespage_requested_at: new Date().toISOString()
+      })
+    });
+
+    if (res.ok) {
+      showToast(`✅ Finn wurde benachrichtigt! Er baut jetzt die Salespage für "${tradeName}".`);
+      
+      // Lokalen Hinweis speichern (damit wir als Finn sehen dass eine Anfrage offen ist)
+      const pendingBuilds = JSON.parse(localStorage.getItem('pendingSalespageBuilds') || '[]');
+      pendingBuilds.push({
+        requestId: requestId,
+        tradeName: tradeName,
+        tradeSlug: tradeSlug,
+        requestedAt: new Date().toISOString(),
+        status: 'pending'
+      });
+      localStorage.setItem('pendingSalespageBuilds', JSON.stringify(pendingBuilds));
+      
+      // UI aktualisieren
+      await loadTradeRequests();
+      
+      // Hinweis anzeigen
+      setTimeout(() => {
+        showToast('💡 Hinweis: Die Landing Pages (/schwerte, /dortmund etc.) funktionieren bereits! Die Salespage ist nur für den Kunden-Check-in.');
+      }, 3000);
+    } else {
+      showToast('❌ Fehler beim Senden der Anfrage');
+    }
+
+  } catch (err) {
+    console.error('Request salespage build error:', err);
+    showToast('❌ Netzwerkfehler – bitte erneut versuchen');
   }
 }
 
