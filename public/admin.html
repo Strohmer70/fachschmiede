@@ -1618,7 +1618,7 @@ tailwind.config = {
       </div>
       <button onclick="closeModal('modalGewerk')" class="text-ink-400 hover:text-ink-900 text-2xl font-black leading-none">×</button>
     </div>
-    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); addGewerk(this);">
+    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); submitTradeRequest(this);">
       <div>
         <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk *</label>
         <input id="ngName" type="text" required placeholder="z. B. Garten- & Landschaftsbau" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">

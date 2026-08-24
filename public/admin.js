@@ -1011,6 +1011,8 @@ async function loadInvoiceData() {
 }
 
 // ═══════════ TRADES / GEWERKE ═══════════
+let allTradeRequests = [];
+
 async function loadTrades() {
   const grid = document.getElementById('gewerkGrid');
   if (!grid) return;
@@ -1026,22 +1028,252 @@ async function loadTrades() {
 
   renderTradeCards(fallbackTrades);
 
-  // Optional: Versuche API im Hintergrund
-  if (!adminToken) return;
+  // Echte Daten laden: API Trade Requests
+  if (adminToken) {
+    try {
+      await loadTradeRequests();
+    } catch (err) {
+      console.log('Trade requests konnten nicht geladen werden:', err);
+    }
+  }
+
+  // Optional: Versuche API im Hintergrund für echte Trade-Daten
+  if (adminToken) {
+    try {
+      const res = await fetch(`${API_BASE}/admin/trades?_=${Date.now()}`, {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.trades?.length > 0) {
+          renderTradeCards(data.trades);
+        }
+      }
+    } catch (err) {
+      console.log('API fallback used');
+    }
+  }
+}
+
+// Trade Requests aus Supabase laden
+async function loadTradeRequests() {
+  try {
+    const res = await fetch(`${API_BASE}/admin/trade-requests`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+
+    if (!res.ok) throw new Error('API Fehler');
+
+    const data = await res.json();
+    allTradeRequests = data.requests || [];
+
+    // Requests-Tabelle aktualisieren
+    renderTradeRequests();
+
+    // Gewerk-Grid aktualisieren mit Pending-Requests
+    const grid = document.getElementById('gewerkGrid');
+    if (grid && allTradeRequests.length > 0) {
+      // Pending/Generating requests als Karten anhängen
+      const pendingCards = allTradeRequests
+        .filter(r => r.status !== 'ready')
+        .map(req => {
+          const statusConfig = getRequestStatusConfig(req.status);
+          return `
+            <div class="border ${statusConfig.border} ${statusConfig.bg} rounded-2xl p-5" data-request-id="${req.id}">
+              <div class="flex items-center justify-between">
+                <p class="font-black text-ink-900 text-lg">${req.emoji || '🆕'} ${req.name}</p>
+                <span class="${statusConfig.badge} text-xs font-bold px-2.5 py-1 rounded-full">${statusConfig.label}</span>
+              </div>
+              <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
+                <li>◐ ${req.region || 'Region nicht angegeben'}</li>
+                <li>○ ${req.city_count || 10} Start-Städte geplant</li>
+                <li>○ Priorität: ${req.priority || 'normal'}</li>
+              </ul>
+              <div class="mt-4 flex gap-2">
+                ${req.status === 'pending' ? `
+                  <button onclick="generateTrade('${req.id}')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">🚀 Auto-Generieren</button>
+                ` : req.status === 'generating' ? `
+                  <button disabled class="flex-1 text-xs font-bold text-ink-400 bg-ink-100 rounded-lg py-2 cursor-wait">⏳ Generiere...</button>
+                ` : ''}
+                <button onclick="deleteTradeRequest('${req.id}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition">🗑</button>
+              </div>
+              ${req.notes ? `<p class="mt-2 text-[11px] text-ink-400 italic">Hinweis: ${req.notes}</p>` : ''}
+            </div>
+          `;
+        }).join('');
+
+      if (pendingCards) {
+        grid.insertAdjacentHTML('beforeend', pendingCards);
+      }
+    }
+
+  } catch (err) {
+    console.error('Load trade requests error:', err);
+  }
+}
+
+function getRequestStatusConfig(status) {
+  const configs = {
+    pending: { border: 'border-brand-300', bg: 'bg-brand-50', badge: 'bg-brand-600 text-white', label: 'Ausstehend' },
+    generating: { border: 'border-amber-300', bg: 'bg-amber-50', badge: 'bg-amber-500 text-white', label: 'Generiere...' },
+    ready: { border: 'border-green-300', bg: 'bg-green-50', badge: 'bg-green-600 text-white', label: 'Fertig' },
+    error: { border: 'border-red-300', bg: 'bg-red-50', badge: 'bg-red-600 text-white', label: 'Fehler' }
+  };
+  return configs[status] || configs.pending;
+}
+
+function renderTradeRequests() {
+  const reqBody = document.getElementById('tradeRequestsBody');
+  if (!reqBody) return;
+
+  if (allTradeRequests.length === 0) {
+    reqBody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400 text-sm">Noch keine Anfragen vorhanden.</td></tr>`;
+    return;
+  }
+
+  reqBody.innerHTML = allTradeRequests.map(req => {
+    const statusConfig = getRequestStatusConfig(req.status);
+    const created = new Date(req.created_at).toLocaleDateString('de-DE');
+    return `
+      <tr class="hover:bg-ink-50 transition">
+        <td class="px-4 py-3 font-bold text-ink-900">${req.emoji || '🆕'} ${req.name}</td>
+        <td class="px-4 py-3 text-sm text-ink-600">${req.region || '-'}</td>
+        <td class="px-4 py-3"><span class="${statusConfig.badge} text-xs font-bold px-2 py-1 rounded-full">${statusConfig.label}</span></td>
+        <td class="px-4 py-3 text-sm text-ink-500">${created}</td>
+        <td class="px-4 py-3 text-right">
+          ${req.status === 'pending' ? `<button onclick="generateTrade('${req.id}')" class="text-brand-600 font-bold text-sm hover:underline">🚀 Generieren</button>` : ''}
+          <button onclick="deleteTradeRequest('${req.id}')" class="text-red-600 font-bold text-sm hover:underline ml-3">Löschen</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Trade Request an API senden
+async function submitTradeRequest(form) {
+  const name = document.getElementById('ngName').value.trim();
+  if (!name) {
+    showToast('❌ Bitte Gewerk-Name eingeben');
+    return;
+  }
+
+  const region = form.querySelector('input[placeholder*="Region"]').value.trim();
+  const priority = form.querySelector('select').value;
+  const cityCount = form.querySelectorAll('select')[1].value;
+  const notes = form.querySelector('textarea').value.trim();
+
+  showToast('⏳ Sende Anfrage...');
 
   try {
-    const res = await fetch(`${API_BASE}/admin/trades?_=${Date.now()}`, {
+    const res = await fetch(`${API_BASE}/admin/trade-requests`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({
+        name: name,
+        region: region,
+        priority: priority.toLowerCase().includes('sofort') ? 'urgent' : priority.toLowerCase().includes('hoch') ? 'high' : 'normal',
+        city_count: parseInt(cityCount) || 10,
+        notes: notes
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      showToast(`✅ Gewerk "${name}" angefordert!`);
+      closeModal('modalGewerk');
+      form.reset();
+      
+      // Neu laden
+      await loadTradeRequests();
+      await loadTrades();
+      
+      // Zur Gewerke-Ansicht wechseln
+      showView('gewerke');
+    } else {
+      showToast(`❌ Fehler: ${data.error || 'Unbekannter Fehler'}`);
+    }
+
+  } catch (err) {
+    console.error('Submit trade request error:', err);
+    showToast('❌ Netzwerkfehler – bitte erneut versuchen');
+  }
+}
+
+// Trade auto-generieren
+async function generateTrade(requestId) {
+  if (!confirm('🚀 Auto-Generierung starten?\n\nDies erstellt:\n• Salespage HTML\n• Stadtseiten in der DB\n• Blog-Artikel\n• FAQ & Services\n\nDauer: ca. 2-5 Minuten.')) {
+    return;
+  }
+
+  showToast('🚀 Starte Auto-Generierung...');
+
+  try {
+    // Status auf "generating" setzen
+    await fetch(`${API_BASE}/admin/trade-requests`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({
+        id: requestId,
+        status: 'generating'
+      })
+    });
+
+    // UI aktualisieren
+    await loadTradeRequests();
+
+    // Generator-API aufrufen
+    const res = await fetch(`${API_BASE}/admin/generate-trade`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({ request_id: requestId })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      showToast(`✅ Gewerk "${data.trade_name}" erfolgreich generiert!`);
+      await loadTradeRequests();
+      await loadTrades();
+    } else {
+      showToast(`❌ Fehler bei Generierung: ${data.error}`);
+    }
+
+  } catch (err) {
+    console.error('Generate trade error:', err);
+    showToast('❌ Fehler bei der Generierung');
+  }
+}
+
+// Trade Request löschen
+async function deleteTradeRequest(requestId) {
+  if (!confirm('Anfrage wirklich löschen?')) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/trade-requests?id=${requestId}`, {
+      method: 'DELETE',
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
 
     if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.trades?.length > 0) {
-        renderTradeCards(data.trades);
-      }
+      showToast('✅ Anfrage gelöscht');
+      await loadTradeRequests();
+      await loadTrades();
+    } else {
+      showToast('❌ Fehler beim Löschen');
     }
   } catch (err) {
-    console.log('API fallback used');
+    showToast('❌ Netzwerkfehler');
   }
 }
 
