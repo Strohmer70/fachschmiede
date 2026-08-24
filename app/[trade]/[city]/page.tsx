@@ -30,13 +30,6 @@ function getDbTradeSlug(tradeSlug: string): string {
   return TRADE_SLUG_MAP[tradeSlug] || tradeSlug
 }
 
-// ═══════════════════════════════════════════
-// ISR: Seiten werden beim 1. Request gebaut, nicht beim Build
-// Das verhindert Build-Timeouts durch langsame Supabase-Calls
-// ═══════════════════════════════════════════
-export const revalidate = 3600  // Cache für 1 Stunde
-export const dynamicParams = true  // Neue Pfade werden dynamisch gerendert
-
 // WICHTIG: Während des Builds NICHT auf Supabase zugreifen
 // Das verhindert Timeouts bei Vercel (60s Limit)
 const isBuildTime = typeof process !== 'undefined' && process.env.NEXT_PHASE === 'phase-production-build'
