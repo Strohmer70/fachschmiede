@@ -14,6 +14,13 @@ interface PageProps {
   }
 }
 
+// ═══════════════════════════════════════════
+// ISR: Seiten werden beim 1. Request gebaut, nicht beim Build
+// Das verhindert Build-Timeouts durch langsame Supabase-Calls
+// ═══════════════════════════════════════════
+export const revalidate = 3600  // Cache für 1 Stunde
+export const dynamicParams = true  // Neue Pfade werden dynamisch gerendert
+
 // Mapping für SEO-freundliche URLs → interne Datenbank-Slugs
 const TRADE_SLUG_MAP: Record<string, string> = {
   'klempner': 'shk',  // Datenbank hat noch 'shk'
@@ -22,6 +29,17 @@ const TRADE_SLUG_MAP: Record<string, string> = {
 function getDbTradeSlug(tradeSlug: string): string {
   return TRADE_SLUG_MAP[tradeSlug] || tradeSlug
 }
+
+// ═══════════════════════════════════════════
+// ISR: Seiten werden beim 1. Request gebaut, nicht beim Build
+// Das verhindert Build-Timeouts durch langsame Supabase-Calls
+// ═══════════════════════════════════════════
+export const revalidate = 3600  // Cache für 1 Stunde
+export const dynamicParams = true  // Neue Pfade werden dynamisch gerendert
+
+// WICHTIG: Während des Builds NICHT auf Supabase zugreifen
+// Das verhindert Timeouts bei Vercel (60s Limit)
+const isBuildTime = typeof process !== 'undefined' && process.env.NEXT_PHASE === 'phase-production-build'
 
 export async function generateStaticParams() {
   return Object.keys(FALLBACK_PAGES).map(slug => {
@@ -54,15 +72,19 @@ export default async function LandingPage({ params }: PageProps) {
   const slug = `${dbTradeSlug}-${cleanCity}`
 
   let page = null
-  try {
-    const { data } = await supabase
-      .from('landing_pages')
-      .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
-      .eq('slug', slug)
-      .single()
-    page = data
-  } catch (err) {
-    console.error('Supabase load error:', err)
+  
+  // Supabase nur aufrufen wenn NICHT beim Build (Vercel 60s Timeout!)
+  if (!isBuildTime) {
+    try {
+      const { data } = await supabase
+        .from('landing_pages')
+        .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
+        .eq('slug', slug)
+        .single()
+      page = data
+    } catch (err) {
+      console.error('Supabase load error:', err)
+    }
   }
 
   if (!page) page = FALLBACK_PAGES[slug] || FALLBACK_PAGES[`${cleanTrade}-${cleanCity}`]

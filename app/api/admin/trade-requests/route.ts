@@ -5,6 +5,9 @@ import { supabaseAdmin } from '@/lib/supabase'
 // API: Gewerk-Anfragen verwalten
 // ═══════════════════════════════════════════
 
+// API-Routen dürfen NIEMALS statisch generiert werden
+export const dynamic = 'force-dynamic'
+
 // GET: Alle Anfragen abrufen
 export async function GET(req: NextRequest) {
   try {

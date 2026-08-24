@@ -5,6 +5,9 @@ import { supabaseAdmin } from '@/lib/supabase'
 // API: Auto-Generator für neue Gewerke
 // ═══════════════════════════════════════════
 
+// API-Routen dürfen NIEMALS statisch generiert werden
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: NextRequest) {
   // request_id vor try Block extrahieren für Fehler-Logging
   let requestId: string | null = null
