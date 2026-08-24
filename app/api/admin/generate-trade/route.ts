@@ -6,9 +6,13 @@ import { supabaseAdmin } from '@/lib/supabase'
 // ═══════════════════════════════════════════
 
 export async function POST(req: NextRequest) {
+  // request_id vor try Block extrahieren für Fehler-Logging
+  let requestId: string | null = null
+  
   try {
     const body = await req.json()
     const { request_id } = body
+    requestId = request_id
 
     if (!request_id) {
       return NextResponse.json(
@@ -183,11 +187,11 @@ export async function POST(req: NextRequest) {
     console.error('Generate trade error:', err)
     
     // Fehler loggen
-    if (body?.request_id) {
+    if (requestId) {
       await supabaseAdmin
         .from('generation_logs')
         .insert({
-          trade_request_id: body.request_id,
+          trade_request_id: requestId,
           step: 'generation_error',
           status: 'error',
           message: err.message
