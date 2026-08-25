@@ -1235,12 +1235,27 @@ async function submitTradeRequest(form) {
       closeModal('modalGewerk');
       form.reset();
       
+      console.log('Trade request erfolgreich, lade Daten neu...');
+      
       // Neu laden
       await loadTradeRequests();
+      console.log('Trade requests geladen:', allTradeRequests.length, 'Einträge');
+      
       await loadTrades();
+      console.log('Trades geladen');
       
       // Zur Gewerke-Ansicht wechseln
+      console.log('Wechsle zu Gewerke-Ansicht...');
       showView('gewerke');
+      
+      // Explizit den Gewerke-Tab aktivieren
+      const gewerkeTab = document.querySelector('[data-tab="gewerke"]');
+      if (gewerkeTab) {
+        gewerkeTab.click();
+        console.log('Gewerke-Tab aktiviert');
+      }
+      
+      showToast(`📋 ${allTradeRequests.length} Anfrage(n) in der Liste`);
     } else {
       showToast(`❌ Fehler: ${data.error || 'Unbekannter Fehler'}`);
     }
