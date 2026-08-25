@@ -1017,7 +1017,7 @@ async function loadTrades() {
   const grid = document.getElementById('gewerkGrid');
   if (!grid) return;
 
-  // Fallback: Statische Daten direkt anzeigen (keine API-Abhängigkeit)
+  // Fallback: Statische Daten
   const fallbackTrades = [
     { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 21, rented_pages: 0, available_pages: 21 },
@@ -1026,9 +1026,7 @@ async function loadTrades() {
     { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 21, rented_pages: 0, available_pages: 21 },
   ];
 
-  renderTradeCards(fallbackTrades);
-
-  // Echte Daten laden: API Trade Requests
+  // 1. Zuerst Trade Requests laden (pending items)
   if (adminToken) {
     try {
       await loadTradeRequests();
@@ -1037,7 +1035,8 @@ async function loadTrades() {
     }
   }
 
-  // Optional: Versuche API im Hintergrund für echte Trade-Daten
+  // 2. Echte Trades von API laden
+  let trades = fallbackTrades;
   if (adminToken) {
     try {
       const res = await fetch(`${API_BASE}/admin/trades?_=${Date.now()}`, {
@@ -1047,13 +1046,17 @@ async function loadTrades() {
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.trades?.length > 0) {
-          renderTradeCards(data.trades);
+          trades = data.trades;
         }
       }
     } catch (err) {
       console.log('API fallback used');
     }
   }
+
+  // 3. Alles zusammen rendern: Trades + Pending Requests
+  const pendingRequests = (allTradeRequests || []).filter(r => r.status !== 'ready');
+  renderCombinedTradeGrid(trades, pendingRequests);
 }
 
 // Trade Requests aus Supabase laden
@@ -1068,86 +1071,9 @@ async function loadTradeRequests() {
     const data = await res.json();
     allTradeRequests = data.requests || [];
 
-    // Requests-Tabelle aktualisieren
+    // Nur die Requests-Tabelle aktualisieren
+    // Das Grid wird von loadTrades() / renderCombinedTradeGrid() verwaltet
     renderTradeRequests();
-
-    // Gewerk-Grid aktualisieren mit Pending/Ready Requests
-    const grid = document.getElementById('gewerkGrid');
-    if (grid && allTradeRequests.length > 0) {
-      // Pending/Generating requests als Karten anhängen
-      const pendingCards = allTradeRequests
-        .filter(r => r.status !== 'ready')
-        .map(req => {
-          const statusConfig = getRequestStatusConfig(req.status);
-          return `
-            <div class="border ${statusConfig.border} ${statusConfig.bg} rounded-2xl p-5" data-request-id="${req.id}">
-              <div class="flex items-center justify-between">
-                <p class="font-black text-ink-900 text-lg">${req.emoji || '🆕'} ${req.name}</p>
-                <span class="${statusConfig.badge} text-xs font-bold px-2.5 py-1 rounded-full">${statusConfig.label}</span>
-              </div>
-              <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
-                <li>◐ ${req.region || 'Region nicht angegeben'}</li>
-                <li>○ ${req.city_count || 10} Start-Städte geplant</li>
-                <li>○ Priorität: ${req.priority || 'normal'}</li>
-              </ul>
-              <div class="mt-4 flex gap-2">
-                ${req.status === 'pending' ? `
-                  <button onclick="generateTrade('${req.id}')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">🚀 Auto-Generieren</button>
-                ` : req.status === 'generating' ? `
-                  <button disabled class="flex-1 text-xs font-bold text-ink-400 bg-ink-100 rounded-lg py-2 cursor-wait">⏳ Generiere...</button>
-                ` : ''}
-                <button onclick="deleteTradeRequest('${req.id}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition">🗑</button>
-              </div>
-              ${req.notes ? `<p class="mt-2 text-[11px] text-ink-400 italic">Hinweis: ${req.notes}</p>` : ''}
-            </div>
-          `;
-        }).join('');
-
-      // Ready-Requests mit "Salespage bauen" Button
-      const readyCards = allTradeRequests
-        .filter(r => r.status === 'ready')
-        .map(req => {
-          const statusConfig = getRequestStatusConfig(req.status);
-          const needsSalespage = !req.salespage_build_requested;
-          return `
-            <div class="border ${statusConfig.border} ${statusConfig.bg} rounded-2xl p-5" data-request-id="${req.id}">
-              <div class="flex items-center justify-between">
-                <p class="font-black text-ink-900 text-lg">${req.emoji || '✅'} ${req.name}</p>
-                <span class="${statusConfig.badge} text-xs font-bold px-2.5 py-1 rounded-full">${statusConfig.label}</span>
-              </div>
-              <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
-                <li>✓ ${req.generated_pages || 0} Stadt-Seiten erstellt</li>
-                <li>✓ ${req.generated_articles || 0} Artikel-Platzhalter</li>
-                <li>○ Landing Pages: <a href="/${req.slug}/schwerte/" target="_blank" class="text-brand-600 hover:underline">/${req.slug}/schwerte/ ↗</a></li>
-              </ul>
-              
-              ${needsSalespage ? `
-                <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
-                  <p class="text-xs font-bold text-amber-800 mb-2">⚠️ Salespage fehlt noch!</p>
-                  <p class="text-[11px] text-amber-700 mb-3">Die Landing Pages funktionieren, aber die Gewerk-Salespage (für Kunden) muss noch gebaut werden.</p>
-                  <button onclick="requestSalespageBuild('${req.id}', '${req.name}', '${req.slug}')" class="w-full text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg py-2 transition">
-                    🏗️ Salespage bauen (Finn benachrichtigen)
-                  </button>
-                </div>
-              ` : `
-                <div class="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-3">
-                  <p class="text-xs font-bold text-blue-800">✅ Salespage angefordert</p>
-                  <p class="text-[11px] text-blue-600 mt-1">Finn wurde benachrichtigt und baut die HTML-Salespage.</p>
-                  ${req.salespage_requested_at ? `<p class="text-[11px] text-blue-500 mt-1">Angefordert: ${new Date(req.salespage_requested_at).toLocaleString('de-DE')}</p>` : ''}
-                </div>
-              `}
-              
-              <div class="mt-3 flex gap-2">
-                <button onclick="deleteTradeRequest('${req.id}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition">🗑 Löschen</button>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-      if (pendingCards || readyCards) {
-        grid.insertAdjacentHTML('beforeend', (pendingCards || '') + (readyCards || ''));
-      }
-    }
 
   } catch (err) {
     console.error('Load trade requests error:', err);
@@ -1451,6 +1377,100 @@ function renderTradeCards(trades) {
   if (reqBody) {
     reqBody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-ink-400 text-sm">Noch keine Anfragen vorhanden.</td></tr>`;
   }
+}
+
+function renderCombinedTradeGrid(trades, pendingRequests) {
+  const grid = document.getElementById('gewerkGrid');
+  if (!grid) return;
+
+  const salesPages = {
+    'dachdecker': '/sales-dachdecker.html',
+    'elektriker': '/sales-elektriker.html',
+    'klempner': '/sales-klempner.html',
+    'zimmerer': '/sales-zimmerer.html',
+    'maler': '/sales-maler.html',
+  };
+
+  const samplePages = {
+    'dachdecker': '/muster/dachdecker',
+    'elektriker': '/muster/elektriker',
+    'klempner': '/muster/klempner',
+    'zimmerer': '/muster/zimmerer',
+    'maler': '/muster/maler',
+  };
+
+  const statusConfig = {
+    pending: { badge: 'bg-amber-100 text-amber-700', label: 'Ausstehend', border: 'border-amber-200', bg: 'bg-amber-50' },
+    generating: { badge: 'bg-blue-100 text-blue-700', label: 'Generiere...', border: 'border-blue-200', bg: 'bg-blue-50' },
+    ready: { badge: 'bg-green-100 text-green-700', label: 'Bereit', border: 'border-green-200', bg: 'bg-green-50' },
+  };
+
+  // Bestehende Trades rendern
+  let html = trades.map((trade) => {
+    const isLive = trade.total_pages > 0;
+    const statusBadge = isLive
+      ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Live</span>`
+      : `<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">Geplant</span>`;
+
+    const salesUrl = salesPages[trade.slug] || `#`;
+    const sampleUrl = samplePages[trade.slug] || `#`;
+
+    return `
+      <div class="border border-ink-200 rounded-2xl p-5">
+        <div class="flex items-center justify-between">
+          <p class="font-black text-ink-900 text-lg">${trade.emoji || '🏠'} ${trade.name}</p>
+          ${statusBadge}
+        </div>
+        <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
+          <li>✓ ${trade.total_pages} Stadt-Websites (${trade.rented_pages} vermietet)</li>
+          <li>✓ ${trade.available_pages} verfügbar zur Vermietung</li>
+        </ul>
+        <div class="mt-4 flex gap-2">
+          <a href="${salesUrl}" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Salespage</a>
+          <a href="${sampleUrl}" class="flex-1 text-center text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Musterseite</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Pending Requests rendern
+  if (pendingRequests && pendingRequests.length > 0) {
+    html += pendingRequests.map(req => {
+      const cfg = statusConfig[req.status] || statusConfig.pending;
+      return `
+        <div class="border ${cfg.border} ${cfg.bg} rounded-2xl p-5" data-request-id="${req.id}">
+          <div class="flex items-center justify-between">
+            <p class="font-black text-ink-900 text-lg">${req.emoji || '🆕'} ${req.name}</p>
+            <span class="${cfg.badge} text-xs font-bold px-2.5 py-1 rounded-full">${cfg.label}</span>
+          </div>
+          <ul class="mt-3 text-xs text-ink-500 space-y-1.5">
+            <li>◐ ${req.region || 'Region nicht angegeben'}</li>
+            <li>○ ${req.city_count || 10} Start-Städte geplant</li>
+            <li>○ Priorität: ${req.priority || 'normal'}</li>
+          </ul>
+          <div class="mt-4 flex gap-2">
+            ${req.status === 'pending' ? `
+              <button onclick="generateTrade('${req.id}')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">🚀 Auto-Generieren</button>
+            ` : req.status === 'generating' ? `
+              <button disabled class="flex-1 text-xs font-bold text-ink-400 bg-ink-100 rounded-lg py-2 cursor-wait">⏳ Generiere...</button>
+            ` : ''}
+            <button onclick="deleteTradeRequest('${req.id}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-3 hover:bg-red-50 transition">🗑</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // "Neues Gewerk" Button
+  html += `
+    <button onclick="openModal('modalGewerk')" class="border-2 border-dashed border-brand-300 rounded-2xl p-5 flex flex-col items-center justify-center gap-2 text-brand-600 hover:bg-brand-50 transition min-h-[190px]">
+      <span class="text-3xl">+</span>
+      <span class="font-bold">Neues Gewerk anfordern</span>
+      <span class="text-xs text-ink-400 font-normal">Redaktion erstellt Texte, FAQ &amp; Blog-Paket</span>
+    </button>
+  `;
+
+  grid.innerHTML = html;
 }
 
 // ═══════════ BLOG / ARTIKEL ═══════════
