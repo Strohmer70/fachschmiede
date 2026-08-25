@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 
 // ═══════════════════════════════════════════
 // API: Gewerk-Anfragen verwalten
@@ -8,9 +8,27 @@ import { supabaseAdmin } from '@/lib/supabase'
 // API-Routen dürfen NIEMALS statisch generiert werden
 export const dynamic = 'force-dynamic'
 
+// Erstelle Admin-Client direkt in der Route (robuster)
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error(
+      `Missing env vars: URL=${!!supabaseUrl}, SERVICE_KEY=${!!supabaseServiceKey}. ` +
+      `SUPABASE_SERVICE_ROLE_KEY muss in Vercel Production gesetzt sein!`
+    )
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  })
+}
+
 // GET: Alle Anfragen abrufen
 export async function GET(req: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const { searchParams } = new URL(req.url)
     const status = searchParams.get('status')
     
@@ -47,6 +65,7 @@ export async function GET(req: NextRequest) {
 // POST: Neue Anfrage erstellen
 export async function POST(req: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const body = await req.json()
     console.log('Trade request POST body:', JSON.stringify(body, null, 2))
     
@@ -131,6 +150,7 @@ export async function POST(req: NextRequest) {
 // PATCH: Anfrage aktualisieren (z.B. Status auf "generating")
 export async function PATCH(req: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const body = await req.json()
     const { id, status, ...updates } = body
     
@@ -182,6 +202,7 @@ export async function PATCH(req: NextRequest) {
 // DELETE: Anfrage löschen
 export async function DELETE(req: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const { searchParams } = new URL(req.url)
     const id = searchParams.get('id')
     
