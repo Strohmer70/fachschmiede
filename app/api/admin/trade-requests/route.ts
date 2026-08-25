@@ -11,7 +11,12 @@ export const dynamic = 'force-dynamic'
 // Erstelle Admin-Client direkt in der Route (robuster)
 function getSupabaseAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  let supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  // Fallback: Hardcodierter Key (funktioniert lokal)
+  if (!supabaseServiceKey) {
+    supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRseGxrbWV3YmhucHp2cmJwaGNxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDAzMzA2MSwiZXhwIjoyMDk5NjA5MDYxfQ.NfaeZ5ai8EubyA-4fVaT1WEEb2bBvj1WVpr7ZMaZvF0'
+  }
   
   if (!supabaseUrl || !supabaseServiceKey) {
     throw new Error(
