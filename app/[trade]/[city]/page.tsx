@@ -64,7 +64,7 @@ export default async function LandingPage({ params }: PageProps) {
   
   // Supabase mit Timeout (verhindert Build-Hangs)
   try {
-    const timeoutPromise = new Promise((_, reject) => 
+    const timeoutPromise = new Promise<never>((_, reject) => 
       setTimeout(() => reject(new Error('Supabase timeout')), 5000)
     )
     const supabasePromise = supabase
@@ -73,9 +73,9 @@ export default async function LandingPage({ params }: PageProps) {
       .eq('slug', slug)
       .single()
     
-    const { data } = await Promise.race([supabasePromise, timeoutPromise])
-    page = data
-  } catch (err) {
+    const result = await Promise.race([supabasePromise, timeoutPromise])
+    page = result.data
+  } catch (err: any) {
     console.log('Supabase load skipped:', err.message)
   }
 
