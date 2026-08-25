@@ -8,3 +8,5 @@ node_modules/
 .env.local
 .env
 scripts/fix-prices.js
+.env.prod
+.env.vercel
