@@ -206,14 +206,19 @@ export async function POST(req: NextRequest) {
     
     // Fehler loggen
     if (requestId) {
-      await supabaseAdmin
-        .from('generation_logs')
-        .insert({
-          trade_request_id: requestId,
-          step: 'generation_error',
-          status: 'error',
-          message: err.message
-        })
+      try {
+        const adminClient = getSupabaseAdmin()
+        await adminClient
+          .from('generation_logs')
+          .insert({
+            trade_request_id: requestId,
+            step: 'generation_error',
+            status: 'error',
+            message: err.message
+          })
+      } catch (logErr) {
+        console.error('Could not log error:', logErr)
+      }
     }
 
     return NextResponse.json(
