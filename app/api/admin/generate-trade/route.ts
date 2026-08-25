@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 
 // ═══════════════════════════════════════════
 // API: Auto-Generator für neue Gewerke
@@ -8,11 +8,26 @@ import { supabaseAdmin } from '@/lib/supabase'
 // API-Routen dürfen NIEMALS statisch generiert werden
 export const dynamic = 'force-dynamic'
 
+// Erstelle Admin-Client direkt in der Route
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY fehlt!')
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  })
+}
+
 export async function POST(req: NextRequest) {
   // request_id vor try Block extrahieren für Fehler-Logging
   let requestId: string | null = null
   
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const body = await req.json()
     const { request_id } = body
     requestId = request_id
@@ -55,7 +70,6 @@ export async function POST(req: NextRequest) {
         .insert({
           name: request.name,
           slug: request.slug,
-          emoji: request.emoji || '🏠',
           plural_name: request.name,
           description: `Professionelle ${request.name}-Leistungen`,
           is_active: true
