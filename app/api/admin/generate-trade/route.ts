@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // ═══════════════════════════════════════════
 // API: Auto-Generator für neue Gewerke
+// Build: v2.1 - emoji-Spalte entfernt
 // ═══════════════════════════════════════════
 
 // API-Routen dürfen NIEMALS statisch generiert werden
