@@ -25,7 +25,10 @@ export async function GET(req: NextRequest) {
     
     const { data, error } = await query
     
-    if (error) throw error
+    if (error) {
+      console.error('Trade requests GET error:', error)
+      throw new Error(`Datenbank-Fehler: ${error.message}`)
+    }
     
     return NextResponse.json({
       success: true,
@@ -45,6 +48,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
+    console.log('Trade request POST body:', JSON.stringify(body, null, 2))
     
     // Validierung
     if (!body.name) {
@@ -58,11 +62,15 @@ export async function POST(req: NextRequest) {
     const slug = body.slug || generateSlug(body.name)
     
     // Prüfen ob Slug schon existiert
-    const { data: existing } = await supabaseAdmin
+    const { data: existing, error: existingError } = await supabaseAdmin
       .from('trade_requests')
       .select('id')
       .eq('slug', slug)
-      .single()
+      .maybeSingle()
+    
+    if (existingError) {
+      console.error('Error checking existing trade:', existingError)
+    }
     
     if (existing) {
       return NextResponse.json(
@@ -71,27 +79,39 @@ export async function POST(req: NextRequest) {
       )
     }
     
+    // Minimale Daten — nur die Spalten die definitiv existieren
+    const insertData: any = {
+      name: body.name,
+      slug: slug,
+      status: 'pending'
+    }
+    
+    // Optionale Felder nur hinzufügen wenn sie existieren
+    if (body.emoji) insertData.emoji = body.emoji
+    if (body.region) insertData.region = body.region
+    if (body.priority) insertData.priority = body.priority
+    if (body.city_count) insertData.city_count = body.city_count
+    if (body.notes) insertData.notes = body.notes
+    if (body.brand_color) insertData.brand_color = body.brand_color
+    if (body.created_by) insertData.created_by = body.created_by
+    
+    // Arrays nur wenn sie nicht leer sind
+    if (body.services && body.services.length > 0) insertData.services = body.services
+    if (body.faqs && body.faqs.length > 0) insertData.faqs = body.faqs
+    
+    console.log('Insert data:', JSON.stringify(insertData, null, 2))
+    
     // Anfrage speichern
     const { data, error } = await supabaseAdmin
       .from('trade_requests')
-      .insert({
-        name: body.name,
-        slug: slug,
-        emoji: body.emoji || '🆕',
-        region: body.region,
-        priority: body.priority || 'normal',
-        city_count: body.city_count || 10,
-        notes: body.notes,
-        status: 'pending',
-        brand_color: body.brand_color || '#ea580c',
-        services: body.services || [],
-        faqs: body.faqs || [],
-        created_by: body.created_by || 'admin'
-      })
+      .insert(insertData)
       .select()
       .single()
     
-    if (error) throw error
+    if (error) {
+      console.error('Supabase insert error:', error)
+      throw new Error(`Datenbank-Fehler: ${error.message} (Code: ${error.code})`)
+    }
     
     return NextResponse.json({
       success: true,
@@ -102,7 +122,7 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     console.error('Trade request POST error:', err)
     return NextResponse.json(
-      { success: false, error: err.message },
+      { success: false, error: err.message || 'Unbekannter Server-Fehler' },
       { status: 500 }
     )
   }
