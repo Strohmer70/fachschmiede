@@ -39,13 +39,49 @@ export async function GET(req: NextRequest) {
       query = query.eq('is_active', true)
     }
     
-    const { data, error } = await query
+    const { data: trades, error } = await query
     
     if (error) throw error
+
+    // Page-Counts für jedes Trade berechnen
+    const tradesWithCounts = await Promise.all(
+      (trades || []).map(async (trade) => {
+        try {
+          const { count: total, error: countErr } = await supabaseAdmin
+            .from('landing_pages')
+            .select('*', { count: 'exact', head: true })
+            .eq('trade_id', trade.id)
+
+          const { count: rented, error: rentedErr } = await supabaseAdmin
+            .from('landing_pages')
+            .select('*', { count: 'exact', head: true })
+            .eq('trade_id', trade.id)
+            .eq('status', 'rented')
+
+          const totalPages = total || 0
+          const rentedPages = rented || 0
+
+          return {
+            ...trade,
+            total_pages: totalPages,
+            rented_pages: rentedPages,
+            available_pages: totalPages - rentedPages
+          }
+        } catch (err) {
+          console.error(`[Trades] Fehler beim Zählen für ${trade.slug}:`, err)
+          return {
+            ...trade,
+            total_pages: 0,
+            rented_pages: 0,
+            available_pages: 0
+          }
+        }
+      })
+    )
     
     return NextResponse.json({
       success: true,
-      trades: data || []
+      trades: tradesWithCounts
     })
     
   } catch (err: any) {
