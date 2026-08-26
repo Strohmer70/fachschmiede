@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { RentBanner } from '@/components/RentBanner'
 import { TenantBranding } from '@/components/TenantBranding'
 import { FALLBACK_TRADES, FALLBACK_CITIES, FALLBACK_PAGES } from '@/lib/fallback-data'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 // @ts-ignore
 import articleIndex from '@/lib/article-index.json'
 
@@ -66,18 +66,20 @@ export default async function LandingPage({ params }: PageProps) {
 
   let page = null
   
-  // Supabase mit Timeout (verhindert Build-Hangs)
+  // Supabase Admin mit Timeout (bypasses RLS)
   try {
     const timeoutPromise = new Promise<never>((_, reject) => 
       setTimeout(() => reject(new Error('Supabase timeout')), 5000)
     )
-    const supabasePromise = supabase
-      .from('landing_pages')
-      .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
-      .eq('slug', slug)
-      .single()
     
-    const result = await Promise.race([supabasePromise, timeoutPromise])
+    const result = await Promise.race([
+      supabaseAdmin
+        .from('landing_pages')
+        .select(`*, trade:trades(*), city:cities(*), page_customizations(*, tenant:tenants(*))`)
+        .eq('slug', slug)
+        .single(),
+      timeoutPromise
+    ])
     page = result.data
   } catch (err: any) {
     console.log('Supabase load skipped:', err.message)

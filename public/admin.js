@@ -1413,8 +1413,18 @@ function renderCombinedTradeGrid(trades, pendingRequests) {
       ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Live</span>`
       : `<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">Geplant</span>`;
 
-    const salesUrl = salesPages[trade.slug] || `#`;
-    const sampleUrl = samplePages[trade.slug] || `#`;
+    // Dynamische Links: Bei unbekanntem Gewerk, erste Stadtseite als Muster
+    let salesUrl = salesPages[trade.slug];
+    let sampleUrl = samplePages[trade.slug];
+    
+    if (!salesUrl) {
+      salesUrl = `/${trade.slug}/`;
+    }
+    if (!sampleUrl && trade.total_pages > 0) {
+      sampleUrl = `/${trade.slug}/muenchen/`;
+    } else if (!sampleUrl) {
+      sampleUrl = '#';
+    }
 
     return `
       <div class="border border-ink-200 rounded-2xl p-5">
