@@ -24,13 +24,65 @@ export async function generateMetadata({ params }: PageProps) {
   const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
   const cleanCity = params.city?.replace(/\/$/, '') || params.city
   return {
-    title: `${capitalize(cleanTrade)} ${capitalize(cleanCity)} | Miet-Website zum Anmieten – DEMO`,
-    description: `Miet-Website (Demo): ${capitalize(cleanTrade)} ${capitalize(cleanCity)} – professionelle Leistungen vor Ort. Kostenlose Besichtigung & Festpreis-Angebot.`,
+    title: `${capitalize(cleanTrade)} ${capitalize(cleanCity)} | Professionelle Leistungen ab €149/Monat`,
+    description: `Erfahrene ${capitalize(cleanTrade)} in ${capitalize(cleanCity)}. Kostenlose Besichtigung & Festpreis-Angebot. Jetzt lokale Fachbetriebe finden.`,
   }
 }
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, ' ')
+}
+
+// ═══════════════════════════════════════════
+// GEWERKESPEZIFISCHE FALLBACK-TEXT
+// Jeder Text enthält den Stadtnamen und ist gewerkespezifisch
+// ═══════════════════════════════════════════
+function getTradeContent(tradeSlug: string, cityName: string, tradeName: string) {
+  const contents: Record<string, any> = {
+    'dachdecker': {
+      heroTitle: `${tradeName} in ${cityName}. Festpreis. Feste Termine.`,
+      heroSubtitle: `Ein Dach zeigt seine Schwächen meist erst, wenn es zu spät ist – undichte Stellen, lose Ziegel, verstopfte Rinnen. In ${cityName} schauen wir uns Ihr Dach kostenlos an und sagen Ihnen ehrlich, was nötig ist und was warten kann.`,
+      aboutTitle: 'Ein Betrieb, auf den Sie sich verlassen können',
+      aboutText: `Ein ${tradeName.toLowerCase()}betrieb aus ${cityName}, auf den Sie sich verlassen können. Wir kennen die typischen Dachprobleme in der Region und bieten maßgeschneiderte Lösungen – von der Dachreparatur bis zur kompletten Sanierung.`,
+      ctaText: `Schnelle Hilfe für ${cityName} und Umgebung`,
+    },
+    'elektriker': {
+      heroTitle: `${tradeName} in ${cityName}. Sicher. Kompetent. Vor Ort.`,
+      heroSubtitle: `Ob Stromausfall, neue Elektroinstallation oder Smart-Home-Umstellung – in ${cityName} sind wir Ihr zuverlässiger Partner für alle elektrischen Arbeiten. Kostenlose Erstberatung vor Ort.`,
+      aboutTitle: 'Ihr Elektrofachbetrieb in der Region',
+      aboutText: `Als ${tradeName} in ${cityName} kennen wir die örtlichen Gegebenheiten und die typischen Herausforderungen älterer Elektroinstallationen. Wir arbeiten nach den aktuellen VDE-Vorschriften und dokumentieren alles ordnungsgemäß.`,
+      ctaText: `Elektro-Notdienst für ${cityName} und Umgebung`,
+    },
+    'klempner': {
+      heroTitle: `${tradeName} in ${cityName}. Sauber. Schnell. Fair.`,
+      heroSubtitle: `Rohrbruch, verstopfter Abfluss oder neue Heizungsinstallation? In ${cityName} helfen wir Ihnen schnell und zuverlässig – mit transparenten Preisen und terminlicher Zuverlässigkeit.`,
+      aboutTitle: 'Ihr Sanitärfachbetrieb vor Ort',
+      aboutText: `Als erfahrener ${tradeName} in ${cityName} kennen wir die typischen Probleme der Region – von alten Bleirohren bis zu modernen Heizungssystemen. Wir finden die passende Lösung für Ihr Projekt.`,
+      ctaText: `Sanitär-Notdienst für ${cityName} und Umgebung`,
+    },
+    'garten-und-landschaftsbau': {
+      heroTitle: `${tradeName} in ${cityName}. Ihr Garten. Unsere Leidenschaft.`,
+      heroSubtitle: `Von der Gartenpflege über die Neugestaltung bis zur professionellen Baumpflege – in ${cityName} verwandeln wir Ihren Garten in eine Wohlfühloase. Kostenlose Beratung vor Ort.`,
+      aboutTitle: 'Grünanlagen-Experten in Ihrer Region',
+      aboutText: `Als ${tradeName} in ${cityName} kennen wir die örtlichen Bodenverhältnisse, das Klima und die typischen Gartenherausforderungen der Region. Wir schaffen Gärten, die Freude bereiten und pflegeleicht sind.`,
+      ctaText: `Garten-Experten für ${cityName} und Umgebung`,
+    },
+    'bestatter': {
+      heroTitle: `${tradeName} in ${cityName}. Würdevoll. Menschlich. Nahe.`,
+      heroSubtitle: `In schwierigen Zeiten brauchen Sie einen verlässlichen Partner an Ihrer Seite. Wir begleiten Familien in ${cityName} mit Würde, Respekt und professioneller Beratung bei der letzten Reise Ihres Angehörigen.`,
+      aboutTitle: 'Ein Bestattungshaus, das Sie versteht',
+      aboutText: `Als erfahrener ${tradeName} in ${cityName} wissen wir, wie wichtig es ist, in Trauerfällen schnell, diskret und einfühlsam zu handeln. Wir übernehmen alle Formalitäten und gestalten die Trauerfeier nach Ihren Wünschen.`,
+      ctaText: `24h Erreichbar für ${cityName} und Umgebung`,
+    },
+  }
+  
+  return contents[tradeSlug] || {
+    heroTitle: `${tradeName} in ${cityName}. Professionell. Zuverlässig.`,
+    heroSubtitle: `Professionelle ${tradeName}-Leistungen in ${cityName} und Umgebung. Kostenlose Besichtigung und transparente Festpreise.`,
+    aboutTitle: 'Ihr Fachbetrieb in der Region',
+    aboutText: `Wir sind Ihr zuverlässiger ${tradeName} in ${cityName} und der Umgebung. Mit langjähriger Erfahrung und einem engagierten Team realisieren wir Ihr Projekt professionell und termingerecht.`,
+    ctaText: `Schnelle Hilfe für ${cityName} und Umgebung`,
+  }
 }
 
 export default async function LandingPage({ params }: PageProps) {
@@ -70,8 +122,28 @@ export default async function LandingPage({ params }: PageProps) {
   const cityName = city.name
   const tradeSlug = trade.slug
   const services = trade.services || []
-  const heroImage = trade.hero_image || '/images/hero.jpg'
-  const teamImage = trade.team_image || '/images/team.jpg'
+  
+  // ═══════════════════════════════════════════
+  // GEWERKESPEZIFISCHE BILDER (nicht generisch!)
+  // ═══════════════════════════════════════════
+  const heroImage = trade.hero_image || `/images/${tradeSlug}-hero.jpg`
+  const teamImage = trade.team_image || `/images/${tradeSlug}-team.jpg`
+  
+  // ═══════════════════════════════════════════
+  // CONTENT: Erst DB (content_json), dann Fallback
+  // ═══════════════════════════════════════════
+  const dbContent = page.content_json || {}
+  const fallbackContent = getTradeContent(tradeSlug, cityName, tradeName)
+  
+  const content = {
+    heroTitle: dbContent.hero_title || fallbackContent.heroTitle,
+    heroSubtitle: dbContent.hero_subtitle || fallbackContent.heroSubtitle,
+    aboutTitle: dbContent.about_title || fallbackContent.aboutTitle,
+    aboutText: dbContent.about_text || fallbackContent.aboutText,
+    ctaText: dbContent.cta_text || fallbackContent.ctaText,
+    faq: dbContent.faq || null,
+    articleTitles: dbContent.article_titles || null,
+  }
 
   return (
     <div className="min-h-screen bg-white text-ink-800 antialiased" style={{fontFamily: "'Inter',system-ui,sans-serif"}}>
@@ -113,12 +185,10 @@ export default async function LandingPage({ params }: PageProps) {
               {tradeName} in {cityName} – kostenlose Besichtigung
             </p>
             <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05]">
-              {tradeName} in {cityName}.<br />
-              <span className="text-brand-400">Festpreis. Feste Termine.</span>
+              {content.heroTitle}
             </h1>
             <p className="mt-6 text-lg text-ink-200 leading-relaxed max-w-xl">
-              Professionelle {tradeName}-Leistungen aus einer Hand – persönlich, sauber und zuverlässig. 
-              Für Privat- und Geschäftskunden in {cityName} und Umgebung.
+              {content.heroSubtitle}
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <a href="#kontakt" className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-brand-600/30">
@@ -168,7 +238,7 @@ export default async function LandingPage({ params }: PageProps) {
                 </span>
                 <h3 className="mt-4 text-lg font-bold text-ink-900">{service}</h3>
                 <p className="mt-2 text-ink-600 text-sm leading-relaxed">
-                  Professionelle {service} in {cityName} und Umgebung. Kostenlose Besichtigung vor Ort.
+                  {service} in {cityName} und Umgebung. Kostenlose Besichtigung vor Ort und transparente Festpreise.
                 </p>
               </div>
             ))}
@@ -180,7 +250,7 @@ export default async function LandingPage({ params }: PageProps) {
       <section id="ort" className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <img src={teamImage} alt={`${tradeName} bei der Arbeit`} className="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]" />
+            <img src={teamImage} alt={`${tradeName} Team in ${cityName}`} className="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]" />
             <div className="mt-4 flex items-center gap-4 bg-ink-900 text-white rounded-2xl p-5">
               <p className="text-4xl font-black text-brand-400">{cityName}</p>
               <p className="text-sm text-ink-200 leading-snug">unser Standort –<br />kurze Wege in der gesamten Region</p>
@@ -189,13 +259,10 @@ export default async function LandingPage({ params }: PageProps) {
           <div>
             <p className="text-brand-600 font-bold text-sm uppercase tracking-widest">Über uns</p>
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">
-              Ein Betrieb, auf den Sie sich verlassen können
+              {content.aboutTitle}
             </h2>
             <p className="mt-6 text-ink-600 text-lg leading-relaxed">
-              Ein {tradeName.toLowerCase()}betrieb aus {cityName}, auf den Sie sich verlassen können. Wir kennen die Region und bieten maßgeschneiderte Lösungen.
-            </p>
-            <p className="mt-4 text-ink-600 leading-relaxed">
-              Wir wissen, welche Materialien sich in {cityName} bewähren und worauf es bei den typischen Wetterlagen ankommt.
+              {content.aboutText}
             </p>
             <ul className="mt-8 space-y-4">
               {[
@@ -231,18 +298,18 @@ export default async function LandingPage({ params }: PageProps) {
             <div>
               <p className="text-brand-600 font-bold text-sm uppercase tracking-widest">Ratgeber & Fachwissen</p>
               <h2 className="mt-2 text-3xl sm:text-4xl font-black text-ink-900">Aktuelle Artikel für {cityName}</h2>
-              <p className="mt-3 text-ink-600 max-w-2xl">Praxisnahe Ratgeber für Eigentümer in {cityName} – mit lokalem Fachwissen.</p>
+              <p className="mt-3 text-ink-600 max-w-2xl">Praxisnahe Ratgeber für {cityName} – mit lokalem Fachwissen aus der Region.</p>
             </div>
             <Link href={`/${cleanTrade}/${cleanCity}/blog/`} className="text-brand-600 font-bold hover:underline shrink-0">Alle Beiträge →</Link>
           </div>
           <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((_, i) => (
+            {(content.articleTitles || getDefaultArticleTitles(tradeName, cityName)).slice(0, 3).map((title: string, i: number) => (
               <Link key={i} href={`/${cleanTrade}/${cleanCity}/blog/`} className="block bg-white rounded-2xl overflow-hidden border border-ink-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 group">
                 <div className="h-44 bg-gradient-to-br from-brand-100 to-amber-100 flex items-center justify-center text-5xl group-hover:scale-105 transition duration-500">📖</div>
                 <div className="p-5">
                   <p className="text-xs font-bold text-brand-600 uppercase tracking-wider">{tradeName} · {cityName}</p>
                   <h3 className="mt-1.5 text-lg font-bold text-ink-900 leading-snug group-hover:text-brand-600 transition">
-                    {getArticleTitle(i, tradeName)}
+                    {title}
                   </h3>
                   <span className="mt-3 inline-flex items-center text-sm font-bold text-brand-600">Weiterlesen →</span>
                 </div>
@@ -261,7 +328,7 @@ export default async function LandingPage({ params }: PageProps) {
             <h2 className="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Das fragen Kunden aus {cityName}</h2>
           </div>
           <div className="mt-10 space-y-4">
-            {getFAQ(tradeName, cityName).map((faq, i) => (
+            {(content.faq || getDefaultFAQ(tradeName, cityName)).map((faq: any, i: number) => (
               <details key={i} className="bg-white rounded-xl border border-ink-200 overflow-hidden group">
                 <summary className="flex items-center justify-between p-5 cursor-pointer list-none font-bold text-ink-800 hover:bg-ink-50 transition">
                   {faq.q}
@@ -286,7 +353,7 @@ export default async function LandingPage({ params }: PageProps) {
               </svg>
             </span>
             <div>
-              <p className="text-xl sm:text-2xl font-black">Schnelle Hilfe für {cityName} und Umgebung</p>
+              <p className="text-xl sm:text-2xl font-black">{content.ctaText}</p>
               <p className="text-brand-100 mt-1">Rufen Sie uns einfach an – wir sind für Sie da.</p>
             </div>
           </div>
@@ -455,16 +522,15 @@ function getServiceIcon(index: number): string {
   return icons[index % icons.length]
 }
 
-function getArticleTitle(index: number, tradeName: string): string {
-  const titles = [
+function getDefaultArticleTitles(tradeName: string, cityName: string): string[] {
+  return [
     `5 Anzeichen, dass Sie einen ${tradeName} brauchen`,
-    `${tradeName}: Förderungen und Zuschüsse`,
-    `Notfall: Was Sie sofort tun sollten`,
+    `${tradeName}: Was kostet es in ${cityName}?`,
+    `Notfall: Was tun, wenn der ${tradeName} nicht erreichbar ist?`,
   ]
-  return titles[index % titles.length]
 }
 
-function getFAQ(tradeName: string, cityName: string) {
+function getDefaultFAQ(tradeName: string, cityName: string) {
   return [
     { q: `Was kostet ein ${tradeName.toLowerCase()} in ${cityName}?`, a: 'Die Kosten hängen vom Umfang des Projekts ab. Nach der kostenlosen Besichtigung erhalten Sie einen verbindlichen Festpreis – ohne versteckte Kosten.' },
     { q: 'Wie lange dauern die Arbeiten?', a: 'Die Dauer hängt vom Projekt ab. Ein typischer Auftrag dauert zwischen einem Tag und zwei Wochen. Den genauen Zeitplan erhalten Sie vor Baubeginn schriftlich.' },
