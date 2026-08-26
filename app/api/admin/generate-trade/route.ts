@@ -148,9 +148,7 @@ export async function POST(req: NextRequest) {
             title: `${request.name} ${city.name}`,
             meta_description: cityContent.metaDescription,
             monthly_price: 18900,
-            status: 'available',
-            content: cityContent.content,
-            is_active: true
+            status: 'available'
           })
           .select()
           .single()
@@ -182,12 +180,9 @@ export async function POST(req: NextRequest) {
                 title: `${topic.title} in ${city.name}`,
                 slug: `${request.slug}-${city.slug}-${topic.slug}`,
                 excerpt: topic.excerpt.replace('{city}', city.name),
-                content: `<!-- Platzhalter - wird von KI generiert -->\n\nThema: ${topic.title} in ${city.name}\nStadt: ${city.name}\nGewerk: ${request.name}\n\nDieser Artikel wird automatisch generiert...`,
+                content: `Platzhalter - wird von KI generiert. Thema: ${topic.title} in ${city.name}`,
                 status: 'draft',
-                ai_generated: true,
-                word_count: 0,
-                city_id: city.id,
-                trade_id: tradeId
+                ai_generated: true
               })
               .select()
               .single()
