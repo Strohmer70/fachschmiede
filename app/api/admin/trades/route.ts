@@ -27,17 +27,11 @@ function getSupabaseAdmin() {
 export async function GET(req: NextRequest) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
-    const { searchParams } = new URL(req.url)
-    const activeOnly = searchParams.get('active') === 'true'
     
     let query = supabaseAdmin
       .from('trades')
       .select('*')
       .order('name', { ascending: true })
-    
-    if (activeOnly) {
-      query = query.eq('is_active', true)
-    }
     
     const { data: trades, error } = await query
     

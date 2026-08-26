@@ -77,8 +77,7 @@ export async function POST(req: NextRequest) {
             name: request.name,
             slug: request.slug,
             plural_name: request.name,
-            description: `Professionelle ${request.name}-Leistungen`,
-            is_active: true
+            description: `Professionelle ${request.name}-Leistungen`
           })
           .select()
           .single()
