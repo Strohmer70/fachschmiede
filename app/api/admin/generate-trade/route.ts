@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
     console.log(`[Generate] ${cities.length} Städte geladen`)
 
     // 4. Landing Pages erstellen
-    const createdPages = []
+    const createdPages: Array<{id: string, city_name: string, city_slug: string}> = []
     for (const city of cities) {
       const slug = `${request.slug}-${city.slug}`
       
@@ -146,6 +146,7 @@ export async function POST(req: NextRequest) {
             trade_id: tradeId,
             city_id: city.id,
             title: `${request.name} ${city.name}`,
+            h1: `${request.name} in ${city.name}`,
             meta_description: cityContent.metaDescription,
             monthly_price: 18900,
             status: 'available'
@@ -158,7 +159,11 @@ export async function POST(req: NextRequest) {
           continue
         }
 
-        createdPages.push(page)
+        createdPages.push({
+          id: page.id,
+          city_name: city.name,
+          city_slug: city.slug
+        })
         console.log(`[Generate] Landing Page erstellt: ${slug}`)
       } catch (pageErr) {
         console.error(`[Generate] Exception bei ${slug}:`, pageErr)
@@ -166,21 +171,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 5. Artikel-Platzhalter erstellen
+    // 5. Artikel-Platzhalter erstellen (nur für erfolgreich erstellte Pages)
     const createdArticles = []
     try {
       const articleTopics = generateArticleTopics(request.name)
       
-      for (const topic of articleTopics) {
-        for (const city of cities.slice(0, 3)) {
+      for (const page of createdPages.slice(0, 3)) { // Nur für erste 3 Pages
+        for (const topic of articleTopics) {
           try {
             const { data: article, error: articleError } = await supabaseAdmin
               .from('articles')
               .insert({
-                title: `${topic.title} in ${city.name}`,
-                slug: `${request.slug}-${city.slug}-${topic.slug}`,
-                excerpt: topic.excerpt.replace('{city}', city.name),
-                content: `Platzhalter - wird von KI generiert. Thema: ${topic.title} in ${city.name}`,
+                landing_page_id: page.id,
+                title: `${topic.title} in ${page.city_name}`,
+                slug: `${request.slug}-${page.city_slug}-${topic.slug}`,
+                excerpt: topic.excerpt.replace('{city}', page.city_name),
+                content: `Platzhalter - wird von KI generiert.`,
                 status: 'draft',
                 ai_generated: true
               })
@@ -199,7 +205,6 @@ export async function POST(req: NextRequest) {
       }
     } catch (articlesErr) {
       console.error('[Generate] Artikel-Generierung Fehler:', articlesErr)
-      // Nicht fatal - Artikel sind optional
     }
 
     // 6. Status aktualisieren
