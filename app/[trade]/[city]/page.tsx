@@ -15,11 +15,11 @@ interface PageProps {
 }
 
 // ═══════════════════════════════════════════
-// ISR: Seiten werden beim 1. Request gebaut, nicht beim Build
-// Das verhindert Build-Timeouts durch langsame Supabase-Calls
+// SSR: Seiten werden bei JEDEM Request dynamisch gerendert
+// Kein generateStaticParams → neue Pfade funktionieren sofort
 // ═══════════════════════════════════════════
-export const revalidate = 3600  // Cache für 1 Stunde
-export const dynamicParams = true  // Neue Pfade werden dynamisch gerendert
+export const dynamic = 'force-dynamic'
+export const revalidate = 0  // Kein Cache für Admin-Seiten
 
 // Mapping für SEO-freundliche URLs → interne Datenbank-Slugs
 const TRADE_SLUG_MAP: Record<string, string> = {
@@ -30,6 +30,9 @@ function getDbTradeSlug(tradeSlug: string): string {
   return TRADE_SLUG_MAP[tradeSlug] || tradeSlug
 }
 
+/*
+// Entfernt: generateStaticParams verhindert neue Pfade
+// Stattdessen: Komplett dynamisches SSR
 export async function generateStaticParams() {
   return Object.keys(FALLBACK_PAGES).map(slug => {
     const parts = slug.split('-')
@@ -39,6 +42,7 @@ export async function generateStaticParams() {
     }
   })
 }
+*/
 
 export async function generateMetadata({ params }: PageProps) {
   const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
