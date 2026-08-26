@@ -1233,6 +1233,7 @@ async function generateTrade(requestId) {
       showToast(`✅ Gewerk "${data.trade_name}" erfolgreich generiert!`);
       await loadTradeRequests();
       await loadTrades();
+      await loadPages(1, 500); // Pages neu laden damit neue Seiten sichtbar sind
     } else {
       showToast(`❌ Fehler bei Generierung: ${data.error}`);
     }
