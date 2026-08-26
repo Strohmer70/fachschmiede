@@ -168,9 +168,9 @@ export default async function LandingPage({ params }: PageProps) {
             <a href="#faq" className="hover:text-brand-600 transition">FAQ</a>
             <a href="#kontakt" className="hover:text-brand-600 transition">Kontakt</a>
           </nav>
-          <a href="#kontakt" className="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-sm">
-            {isAvailable ? 'Diese Seite mieten' : 'Angebot anfragen'}
-          </a>
+              <a href={`/sales-${cleanTrade}.html?stadt=${cleanCity}`} className="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-sm">
+                Diese Seite mieten
+              </a>
         </div>
       </header>
 
@@ -213,9 +213,9 @@ export default async function LandingPage({ params }: PageProps) {
               </p>
             </div>
             <div className="lg:text-right">
-              <Link href={`/mieten?gewerk=${cleanTrade}&stadt=${cleanCity}`} className="inline-block bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-brand-600/25">
+              <a href={`/sales-${cleanTrade}.html?stadt=${cleanCity}`} className="inline-block bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-brand-600/25">
                 Jetzt für {cityName} sichern →
-              </Link>
+              </a>
               <p className="mt-2 text-xs text-ink-500">Self-Check-in · sofort online · monatlich kündbar</p>
             </div>
           </div>
@@ -384,9 +384,9 @@ export default async function LandingPage({ params }: PageProps) {
                 <p className="mt-1.5 text-sm text-ink-600 leading-relaxed">
                   {tradeName} aus {cityName} oder Umgebung? Miete diese Website und erscheine mit deinem Firmennamen genau hier – inklusive deiner Rufnummer, WhatsApp und Google-Maps-Standort.
                 </p>
-                <Link href={`/mieten?gewerk=${cleanTrade}&stadt=${cleanCity}`} className="mt-4 inline-block bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-6 py-3 rounded-lg transition">
+                <a href={`/sales-${cleanTrade}.html?stadt=${cleanCity}`} className="mt-4 inline-block bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-6 py-3 rounded-lg transition">
                   Seite anmieten →
-                </Link>
+                </a>
               </div>
             )}
           </div>
@@ -488,7 +488,7 @@ export default async function LandingPage({ params }: PageProps) {
           <div>
             <p className="font-bold text-white text-sm uppercase tracking-widest">Miet-Website</p>
             <ul className="mt-4 space-y-2.5 text-sm">
-              <li><Link href={`/mieten?gewerk=${cleanTrade}&stadt=${cleanCity}`} className="hover:text-brand-400 transition">Diese Seite mieten</Link></li>
+              <li><a href={`/sales-${cleanTrade}.html?stadt=${cleanCity}`} className="hover:text-brand-400 transition">Diese Seite mieten</a></li>
               <li><Link href={`/${cleanTrade}/${cleanCity}/blog/`} className="hover:text-brand-400 transition">Ratgeber</Link></li>
               <li><a href="#kontakt" className="hover:text-brand-400 transition">Kontakt</a></li>
               <li><Link href="/impressum" className="hover:text-brand-400 transition">Impressum</Link></li>
