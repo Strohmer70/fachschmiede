@@ -47,18 +47,11 @@ export async function GET() {
       .eq('subscription_status', 'past_due')
       .order('created_at', { ascending: false })
 
-    // ── Tarif breakdown ──
-    const { data: basisPages } = await supabaseAdmin
+    // ── Tarif breakdown (vereinfacht: nur ein Preis) ──
+    const { data: allRentedPages } = await supabaseAdmin
       .from('landing_pages')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'rented')
-      .lte('monthly_price', 18900)
-
-    const { data: proPages } = await supabaseAdmin
-      .from('landing_pages')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'rented')
-      .gt('monthly_price', 18900)
 
     const openInvoicesTotal = overdueTenants?.reduce((sum, t) => {
       const price = t.landing_page?.monthly_price || 0
@@ -72,10 +65,8 @@ export async function GET() {
         arr,
         openInvoicesTotal: Math.round(openInvoicesTotal * 100) / 100,
         openInvoicesCount: overdueTenants?.length || 0,
-        basisCount: basisPages?.length || 0,
-        basisPrice: 189,
-        proCount: proPages?.length || 0,
-        proPrice: 289,
+        totalCount: allRentedPages?.length || 0,
+        standardPrice: 189,
       },
       revenueByTrade: Object.values(revenueByTrade).map((t: any) => ({
         ...t,
