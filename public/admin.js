@@ -1119,6 +1119,73 @@ function renderTradeRequests() {
   }).join('');
 }
 
+// Neue Stadt-Website anlegen
+async function addStadt(form) {
+  const gewerkSelect = document.getElementById('nbGewerk');
+  const stadtInput = document.getElementById('nbStadt');
+  const regionInput = form.querySelector('input[placeholder*="Region"]');
+
+  const gewerkName = gewerkSelect.value;
+  const stadt = stadtInput.value.trim();
+  const region = regionInput ? regionInput.value.trim() : '';
+
+  if (!gewerkName || gewerkName === 'Bitte wählen …') {
+    showToast('❌ Bitte Gewerk auswählen');
+    return;
+  }
+  if (!stadt) {
+    showToast('❌ Bitte Stadt eingeben');
+    return;
+  }
+
+  // Gewerk-Slug ermitteln
+  const gewerkMap = {
+    '🏠 Dachdecker': 'dachdecker',
+    '⚡ Elektriker': 'elektriker',
+    '🔧 SHK / Heizung (nach Launch)': 'klempner',
+    '🎨 Maler (nach Launch)': 'maler',
+    '🧱 Fliesenleger (nach Launch)': 'fliesenleger',
+    '🪵 Zimmerer': 'zimmerer',
+  };
+
+  const tradeSlug = gewerkMap[gewerkName];
+  if (!tradeSlug) {
+    showToast('❌ Unbekanntes Gewerk: ' + gewerkName);
+    return;
+  }
+
+  showToast('⏳ Erstelle Stadt-Website...');
+
+  try {
+    const res = await fetch(`${API_BASE}/admin/pages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({
+        trade_slug: tradeSlug,
+        city_name: stadt,
+        region: region
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      showToast(`✅ ${stadt} wurde gelistet!`);
+      closeModal('modalWebsite');
+      form.reset();
+      await loadPages();
+    } else {
+      showToast('❌ Fehler: ' + (data.error || data.message || 'Unbekannter Fehler'));
+    }
+  } catch (err) {
+    console.error('addStadt error:', err);
+    showToast('❌ Netzwerk-Fehler: ' + err.message);
+  }
+}
+
 // Trade Request an API senden
 async function submitTradeRequest(form) {
   const name = document.getElementById('ngName').value.trim();
