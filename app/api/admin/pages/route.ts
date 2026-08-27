@@ -146,7 +146,7 @@ export async function POST(request: Request) {
         h1: `${trade.name} in ${city_name}`,
         content_json: contentJson,
         status: 'available',
-        monthly_price: 14900,
+        monthly_price: 18900,
       })
       .select('*')
       .single()

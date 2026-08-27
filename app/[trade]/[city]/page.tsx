@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps) {
   const cleanTrade = params.trade?.replace(/\/$/, '') || params.trade
   const cleanCity = params.city?.replace(/\/$/, '') || params.city
   return {
-    title: `${capitalize(cleanTrade)} ${capitalize(cleanCity)} | Professionelle Leistungen ab €149/Monat`,
+    title: `${capitalize(cleanTrade)} ${capitalize(cleanCity)} | Professionelle Leistungen ab €189/Monat`,
     description: `Erfahrene ${capitalize(cleanTrade)} in ${capitalize(cleanCity)}. Kostenlose Besichtigung & Festpreis-Angebot. Jetzt lokale Fachbetriebe finden.`,
   }
 }

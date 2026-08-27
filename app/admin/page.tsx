@@ -704,7 +704,7 @@ export default function AdminPage() {
                       <p className="font-bold">Standard-Mietpreis</p>
                       <p className="text-sm text-slate-500">Monatliche Gebühr für Mieter</p>
                     </div>
-                    <span className="font-bold text-slate-900">€149/Monat</span>
+                    <span className="font-bold text-slate-900">€189/Monat</span>
                   </div>
                 </div>
               </div>
