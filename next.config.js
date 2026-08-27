@@ -136,10 +136,17 @@ const nextConfig = {
         { source: '/artikel-sturmschaden-sofortmassnahmen/', destination: '/artikel-sturmschaden-sofortmassnahmen.html' },
         { source: '/artikel-wallbox-zuhause/', destination: '/artikel-wallbox-zuhause.html' },
         
-        // Musterseiten (Fallback für alte Links)
+        // Musterseiten (Gewerk-Beispiele)
+        { source: '/muster/dachdecker/', destination: '/index.html' },
+        { source: '/muster/elektriker/', destination: '/elektriker.html' },
+        { source: '/muster/klempner/', destination: '/klempner.html' },
+        { source: '/muster/maler/', destination: '/maler.html' },
+        { source: '/muster/zimmerer/', destination: '/zimmerer.html' },
+        
+        // Alte Musterseiten (Fallback)
         { source: '/muster-dachdecker/', destination: '/index.html' },
         { source: '/muster-elektriker/', destination: '/elektriker.html' },
-        { source: '/muster-shk/', destination: '/shk.html' },
+        { source: '/muster-shk/', destination: '/klempner.html' },
         { source: '/muster-zimmerer/', destination: '/zimmerer.html' },
         { source: '/muster-maler/', destination: '/maler.html' },
         

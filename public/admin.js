@@ -1338,6 +1338,7 @@ function renderTradeCards(trades) {
     'klempner': '/muster/klempner',
     'zimmerer': '/muster/zimmerer',
     'maler': '/muster/maler',
+    'shk': '/muster/klempner',
   };
 
   grid.innerHTML = trades.map((trade) => {
@@ -1398,6 +1399,7 @@ function renderCombinedTradeGrid(trades, pendingRequests) {
     'klempner': '/muster/klempner',
     'zimmerer': '/muster/zimmerer',
     'maler': '/muster/maler',
+    'shk': '/muster/klempner',
   };
 
   const statusConfig = {
