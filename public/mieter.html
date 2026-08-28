@@ -582,14 +582,12 @@ function logout(){
   if(m.firma) document.getElementById('mFirmenname').textContent = m.firma;
   document.getElementById('mSub').innerHTML = (m.domain || 'miet-website-muster.de') + ' · Tarif <span class="font-bold text-brand-600">' + (m.tarif || 'Basis') + '</span>';
   var t = document.getElementById('mTarif');
-  if(m.tarif === 'Pro'){
-    t.textContent = 'Pro · 289 €/Monat';
-    var b = document.getElementById('mUpgradeBtn');
-    b.textContent = '✓ Pro-Tarif aktiv – alle Module freigeschaltet';
+  t.textContent = '189 €/Monat';
+  var b = document.getElementById('mUpgradeBtn');
+  if(b) {
+    b.textContent = '✓ Website aktiv – alle Funktionen freigeschaltet';
     b.className = 'mt-5 w-full bg-green-50 border border-green-300 text-green-700 text-sm font-bold py-2.5 rounded-lg cursor-default';
-    b.onclick = function(){ showToast('Sie nutzen bereits den Pro-Tarif. (Demo)'); };
-  } else {
-    t.textContent = 'Basis · 189 €/Monat';
+    b.onclick = function(){ showToast('Website ist aktiv. (Demo)'); };
   }
   if(m.farbe){
     var st = document.createElement('style');
@@ -610,7 +608,7 @@ function logout(){
     var days = Math.max(0, Math.ceil((new Date(m.testEnde).getTime() - Date.now())/86400000));
     var endeStr = new Date(m.testEnde).toLocaleDateString('de-DE');
     document.getElementById('mSub').innerHTML += ' · <span class="font-bold text-amber-600">Testphase</span>';
-    document.getElementById('mTarif').textContent = 'Testphase · danach ' + (m.tarif || 'Basis') + ' ' + (m.tarif === 'Pro' ? '289' : '189') + ' €/Monat';
+    document.getElementById('mTarif').textContent = 'Testphase · danach 189 €/Monat';
     var np = document.getElementById('mNextPay');
     if(np) np.textContent = 'erst nach Testphase (' + endeStr + ')';
     var stEl = document.getElementById('mStatus');

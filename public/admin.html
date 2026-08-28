@@ -453,12 +453,8 @@ tailwind.config = {
             <p class="mt-1 text-xs font-bold text-ink-400" id="billOpenCount">0 überfällig</p>
           </div>
           <div class="bg-white rounded-2xl border border-ink-200 p-5">
-            <p class="text-sm font-semibold text-ink-500">Basis-Tarife</p>
+            <p class="text-sm font-semibold text-ink-500">Aktive Mieten</p>
             <p class="mt-2 text-3xl font-black text-ink-900" id="billBasis">0 × 189 €</p>
-          </div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5">
-            <p class="text-sm font-semibold text-ink-500">Pro-Tarife</p>
-            <p class="mt-2 text-3xl font-black text-ink-900" id="billPro">0 × 289 €</p>
           </div>
         </div>
 
@@ -1127,18 +1123,13 @@ tailwind.config = {
                       </div>
                     </div>
                   </div>
-                  <!-- Tarife -->
-                  <div class="px-4 py-3 border-b border-ink-100 grid grid-cols-2 gap-1.5">
-                    <div class="border border-ink-200 rounded-lg p-2 text-center">
-                      <p class="text-[8px] font-black text-ink-900">Basis</p>
-                      <p class="font-black text-ink-900 text-sm">189 €<span class="text-[8px] font-semibold text-ink-400">/Monat</span></p>
-                      <p class="text-[7px] text-ink-500 leading-tight mt-0.5">Website · Leads · Dashboard</p>
-                    </div>
+                  <!-- Tarif -->
+                  <div class="px-4 py-3 border-b border-ink-100">
                     <div class="border-2 border-brand-600 rounded-lg p-2 text-center relative">
                       <span class="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-[7px] font-black px-1.5 rounded-full">beliebt</span>
-                      <p class="text-[8px] font-black text-brand-700">Pro</p>
-                      <p class="font-black text-ink-900 text-sm">289 €<span class="text-[8px] font-semibold text-ink-400">/Monat</span></p>
-                      <p class="text-[7px] text-ink-500 leading-tight mt-0.5">+ Blog · Review-Module · SEO</p>
+                      <p class="text-[8px] font-black text-brand-700">Website mieten</p>
+                      <p class="font-black text-ink-900 text-sm">189 €<span class="text-[8px] font-semibold text-ink-400">/Monat</span></p>
+                      <p class="text-[7px] text-ink-500 leading-tight mt-0.5">Website · Leads · Dashboard · Blog</p>
                     </div>
                   </div>
                   <!-- Individualisierung -->
@@ -1356,12 +1347,8 @@ tailwind.config = {
             <p class="text-sm text-ink-500 mt-1">Gilt für alle Neuanmietungen. Bestandskunden behalten ihren Preis (Bestandsschutz).</p>
             <div class="mt-5 space-y-4">
               <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between gap-4">
-                <div><p class="font-bold text-ink-900">Basis</p><p class="text-xs text-ink-500">Website + Blog + E-Mail-Leads</p></div>
+                <div><p class="font-bold text-ink-900">Website mieten</p><p class="text-xs text-ink-500">Website + Blog + E-Mail-Leads + Dashboard</p></div>
                 <div class="flex items-center gap-2"><input type="text" value="189" class="w-20 text-sm text-center rounded-lg border border-ink-200 px-3 py-2"><span class="text-sm font-bold text-ink-600">€/Monat</span></div>
-              </div>
-              <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between gap-4">
-                <div><p class="font-bold text-ink-900">Pro</p><p class="text-xs text-ink-500">+ SMS, Terminbuchung, Google-Bewertungen</p></div>
-                <div class="flex items-center gap-2"><input type="text" value="289" class="w-20 text-sm text-center rounded-lg border border-ink-200 px-3 py-2"><span class="text-sm font-bold text-ink-600">€/Monat</span></div>
               </div>
               <button onclick="showToast('Preise gespeichert – gelten ab dem 01.08.2026 für Neukunden (Demo).')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">Preise speichern</button>
             </div>
@@ -1685,8 +1672,7 @@ tailwind.config = {
         <div>
           <label class="block text-sm font-bold text-ink-800 mb-1.5">Tarif *</label>
           <select class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <option>Basis · 189 €/Monat</option>
-            <option>Pro · 289 €/Monat</option>
+            <option>Website mieten · 189 €/Monat</option>
           </select>
         </div>
       </div>
