@@ -55,6 +55,12 @@ export async function GET(request: Request) {
       }
     })
 
+  } catch (error) {
+    console.error('GET error:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
