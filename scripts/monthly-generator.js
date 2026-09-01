@@ -20,7 +20,7 @@ const fetch = require('node-fetch');
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY || 'sk-dflfmQZYslaRgqiVP8edlrh6JKG8Kepm5GkTqZkSmf7pmGgp';
+const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY;
 const MOONSHOT_API_URL = process.env.MOONSHOT_API_URL || 'https://api.moonshot.ai/v1/chat/completions';
 
 const CITIES = [
@@ -142,9 +142,24 @@ const TRADES = {
   }
 };
 
-// ─── SUPABASE CLIENT ────────────────────────────────────────────────
+// ─── SUPABASE CLIENT (mit Fallback) ─────────────────────────────────
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+let supabase = null;
+let supabaseAvailable = false;
+
+function initSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.log('⚠️  Supabase Credentials nicht gesetzt — verwende Fallback-Modus');
+    return false;
+  }
+  try {
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    return true;
+  } catch (err) {
+    console.log('⚠️  Supabase Initialisierung fehlgeschlagen:', err.message);
+    return false;
+  }
+}
 
 // ─── HILFSFUNKTIONEN ────────────────────────────────────────────────
 
@@ -599,25 +614,39 @@ async function main() {
   console.log('🚀 Monatlicher Artikel-Generator mit Kimi API gestartet');
   console.log(`📅 Monat: ${getMonthSlug()}`);
   console.log(`🌐 API-URL: ${MOONSHOT_API_URL}`);
-  console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅ Vorhanden' : '❌ Fehlt!'}`);
+  console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅ Vorhanden (via Secret)' : '❌ FEHLT! Setze MOONSHOT_API_KEY als GitHub Secret!'}`);
   
-  // Prüfe Umgebungsvariablen
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error('❌ Supabase Credentials fehlen!');
+  // Prüfe API-Key
+  if (!MOONSHOT_API_KEY) {
+    console.error('❌ MOONSHOT_API_KEY fehlt! Bitte in GitHub Secrets unter Settings > Secrets and variables > Actions hinzufügen.');
     process.exit(1);
   }
   
-  console.log('✅ Kimi API Key:', MOONSHOT_API_KEY ? 'Vorhanden (via Env oder Fallback)' : 'FEHLT!');
+  // Initialisiere Supabase (optional)
+  supabaseAvailable = initSupabase();
   
-  // Lade Mieter aus Supabase
-  console.log('📊 Lade Mieter-Daten...');
-  const { data: tenants, error } = await supabase
-    .from('tenants')
-    .select('*, landing_page:landing_pages(slug)');
-  
-  if (error) {
-    console.error('❌ Supabase Fehler:', error.message);
-    process.exit(1);
+  // Lade Mieter aus Supabase (oder Fallback)
+  let tenants = [];
+  if (supabaseAvailable) {
+    console.log('📊 Lade Mieter-Daten aus Supabase...');
+    try {
+      const { data, error } = await supabase
+        .from('tenants')
+        .select('*, landing_page:landing_pages(slug)');
+      
+      if (error) {
+        console.log('⚠️  Supabase Fehler (ignoriert):', error.message);
+        console.log('   → Verwende Fallback: Alle Städte als "frei" behandeln');
+      } else {
+        tenants = data || [];
+        console.log(`✅ ${tenants.length} Mieter geladen`);
+      }
+    } catch (err) {
+      console.log('⚠️  Supabase Verbindung fehlgeschlagen:', err.message);
+      console.log('   → Verwende Fallback: Alle Städte als "frei" behandeln');
+    }
+  } else {
+    console.log('📊 Supabase nicht verfügbar — verwende Fallback-Modus');
   }
   
   // Erstelle Stadt-Plan-Mapping
