@@ -650,9 +650,13 @@ async function main() {
   }
   
   // Erstelle Stadt-Plan-Mapping
+  // Fallback: Wenn Supabase nicht verfügbar, alle Städte als 'basic' (2 Artikel statt nur 1)
+  const supabaseWorking = tenants && tenants.length > 0;
+  const defaultPlan = supabaseWorking ? null : 'basic';
+  
   const cityPlanMap = {};
   for (const city of CITIES) {
-    cityPlanMap[city] = null; // Freie Stadt
+    cityPlanMap[city] = defaultPlan;
   }
   
   for (const tenant of tenants || []) {
