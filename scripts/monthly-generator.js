@@ -614,76 +614,29 @@ async function main() {
   console.log('🚀 Monatlicher Artikel-Generator mit Kimi API gestartet');
   console.log(`📅 Monat: ${getMonthSlug()}`);
   console.log(`🌐 API-URL: ${MOONSHOT_API_URL}`);
-  console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅ Vorhanden (via Secret)' : '❌ FEHLT! Setze MOONSHOT_API_KEY als GitHub Secret!'}`);
+  console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅ Vorhanden' : '❌ FEHLT!'}`);
   
   // Prüfe API-Key
   if (!MOONSHOT_API_KEY) {
-    console.error('❌ MOONSHOT_API_KEY fehlt! Bitte in GitHub Secrets unter Settings > Secrets and variables > Actions hinzufügen.');
+    console.error('❌ MOONSHOT_API_KEY fehlt!');
     process.exit(1);
   }
   
   // Initialisiere Supabase (optional)
   supabaseAvailable = initSupabase();
   
-  // Lade Mieter aus Supabase (oder Fallback)
-  let tenants = [];
-  if (supabaseAvailable) {
-    console.log('📊 Lade Mieter-Daten aus Supabase...');
-    try {
-      const { data, error } = await supabase
-        .from('tenants')
-        .select('*, landing_page:landing_pages(slug)');
-      
-      if (error) {
-        console.log('⚠️  Supabase Fehler (ignoriert):', error.message);
-        console.log('   → Verwende Fallback: Alle Städte als "frei" behandeln');
-      } else {
-        tenants = data || [];
-        console.log(`✅ ${tenants.length} Mieter geladen`);
-      }
-    } catch (err) {
-      console.log('⚠️  Supabase Verbindung fehlgeschlagen:', err.message);
-      console.log('   → Verwende Fallback: Alle Städte als "frei" behandeln');
-    }
-  } else {
-    console.log('📊 Supabase nicht verfügbar — verwende Fallback-Modus');
-  }
+  // Erstelle Liste: Jede Stadt-Gewerk-Kombination bekommt EINEN Artikel
+  const tradeSlugs = Object.keys(TRADES);
+  const activeCombinations = [];
   
-  // Erstelle Stadt-Plan-Mapping
-  // Fallback: Wenn Supabase nicht verfügbar, alle Städte als 'basic' (2 Artikel statt nur 1)
-  const supabaseWorking = tenants && tenants.length > 0;
-  const defaultPlan = supabaseWorking ? null : 'basic';
-  
-  const cityPlanMap = {};
   for (const city of CITIES) {
-    cityPlanMap[city] = defaultPlan;
-  }
-  
-  for (const tenant of tenants || []) {
-    const slug = tenant.landing_page?.slug;
-    if (slug) {
-      const parts = slug.split('-');
-      const citySlug = parts.slice(1).join('-');
-      if (CITIES.includes(citySlug)) {
-        cityPlanMap[citySlug] = tenant.plan || 'basic';
-      }
+    for (const tradeSlug of tradeSlugs) {
+      activeCombinations.push({ city, tradeSlug });
     }
   }
   
-  // Zähle Artikel
-  let totalArticles = 0;
-  const generationPlan = [];
-  
-  for (const [citySlug, plan] of Object.entries(cityPlanMap)) {
-    const count = getArticleCountByPlan(plan);
-    totalArticles += count;
-    generationPlan.push({ city: citySlug, plan: plan || 'frei', count });
-  }
-  
-  console.log(`\n📋 Generierungsplan:`);
-  console.table(generationPlan);
-  console.log(`\n📝 Gesamt: ${totalArticles} neue Artikel`);
-  console.log(`⚡ Rate-Limit: Max 1 API-Call alle 3 Sekunden`);
+  console.log(`\n📋 Ziel: ${activeCombinations.length} Stadt-Gewerk-Kombinationen`);
+  console.log(`   ${CITIES.length} Städte × ${tradeSlugs.length} Gewerke = ${activeCombinations.length} Artikel`);
   
   // Lade bestehenden Index
   const indexPath = path.join(process.cwd(), 'lib', 'article-index.json');
@@ -694,105 +647,94 @@ async function main() {
     articleIndex = {};
   }
   
-  // Generiere Artikel
+  // Generiere Artikel für JEDE Kombination
   const monthSlug = getMonthSlug();
   let generatedCount = 0;
+  let skippedCount = 0;
   let apiCalls = 0;
   
-  for (const { city, count } of generationPlan) {
+  for (const { city, tradeSlug } of activeCombinations) {
     const cityName = getCityDisplayName(city);
+    const trade = TRADES[tradeSlug];
     
-    for (let i = 0; i < count; i++) {
-      // Wähle Gewerk rotierend
-      const tradeKeys = Object.keys(TRADES);
-      const tradeSlug = tradeKeys[generatedCount % tradeKeys.length];
-      const trade = TRADES[tradeSlug];
+    // Wähle Topic basierend auf Monat + Kombination (damit jede Kombination ein anderes Thema kriegt)
+    const comboIndex = CITIES.indexOf(city) * tradeSlugs.length + tradeSlugs.indexOf(tradeSlug);
+    const topicIndex = (new Date().getMonth() + comboIndex) % trade.topics.length;
+    const topic = trade.topics[topicIndex];
+    
+    const fullSlug = `${topic.slug}-${monthSlug}`;
+    const filePath = path.join(process.cwd(), 'public', 'blog', tradeSlug, city, `${fullSlug}.html`);
+    
+    // Prüfe ob Artikel bereits existiert
+    if (fs.existsSync(filePath)) {
+      console.log(`⏭️  Existiert: ${tradeSlug}/${city}/${fullSlug}`);
+      skippedCount++;
+      continue;
+    }
+    
+    console.log(`\n📝 [${generatedCount + 1}/${activeCombinations.length}] ${tradeSlug}/${city}/${fullSlug}`);
+    console.log(`   Thema: ${topic.title} | Stadt: ${cityName} | Gewerk: ${trade.name}`);
+    
+    try {
+      // Generiere Artikel
+      console.log(`   ✍️  Rufe Kimi API auf...`);
+      const startCall = Date.now();
+      const { content: articleContent, faqs, howToSteps } = await generateFullArticle(tradeSlug, city, cityName, trade.name, topic);
+      const callDuration = ((Date.now() - startCall) / 1000).toFixed(1);
+      apiCalls++;
       
-      // Wähle Topic rotierend
-      const topicIndex = Math.floor(generatedCount / tradeKeys.length) % trade.topics.length;
-      const topic = trade.topics[topicIndex];
+      console.log(`   ✅ API-Call fertig in ${callDuration}s (${articleContent.length} Zeichen)`);
       
-      // Erstelle Artikel
-      const fullSlug = `${topic.slug}-${monthSlug}`;
-      const filePath = path.join(process.cwd(), 'public', 'blog', tradeSlug, city, `${fullSlug}.html`);
-      
-      // Prüfe ob Artikel bereits existiert
-      if (fs.existsSync(filePath)) {
-        console.log(`⏭️  Überspringe (existiert): ${tradeSlug}/${city}/${fullSlug}`);
-        continue;
+      // Verzeichnis erstellen
+      const dir = path.dirname(filePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
       }
       
-      console.log(`\n📝 Generiere: ${tradeSlug}/${city}/${fullSlug}`);
-      console.log(`   Thema: ${topic.title} | Stadt: ${cityName} | Gewerk: ${trade.name}`);
+      // Generiere HTML
+      const relatedSlugs = trade.topics
+        .filter((_, idx) => idx !== topicIndex)
+        .slice(0, 2)
+        .map(t => t.slug);
       
-      try {
-        // Generiere kompletten Artikel in EINEM API-Call
-        console.log(`   ✍️  Rufe Kimi API auf (1 Call = kompletter Artikel)...`);
-        const startCall = Date.now();
-        const { content: articleContent, faqs, howToSteps } = await generateFullArticle(tradeSlug, city, cityName, trade.name, topic);
-        const callDuration = ((Date.now() - startCall) / 1000).toFixed(1);
-        apiCalls++;
-        
-        console.log(`   ✅ API-Call fertig in ${callDuration}s (${articleContent.length} Zeichen)`);
-        
-        // Stelle sicher, dass Verzeichnis existiert
-        const dir = path.dirname(filePath);
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir, { recursive: true });
-        }
-        
-        // Generiere HTML
-        const relatedSlugs = trade.topics
-          .filter((_, idx) => idx !== topicIndex)
-          .slice(0, 2)
-          .map(t => t.slug);
-        
-        const html = generateArticleHTML(tradeSlug, city, cityName, trade.name, topic, monthSlug, articleContent, faqs, howToSteps, relatedSlugs);
-        
-        fs.writeFileSync(filePath, html, 'utf-8');
-        
-        // Füge zu Index hinzu
-        if (!articleIndex[tradeSlug]) {
-          articleIndex[tradeSlug] = {};
-        }
-        if (!articleIndex[tradeSlug][city]) {
-          articleIndex[tradeSlug][city] = [];
-        }
-        
-        // Prüfe ob bereits im Index
-        const existingIndex = articleIndex[tradeSlug][city].findIndex(a => a.url.includes(fullSlug));
-        if (existingIndex === -1) {
-          articleIndex[tradeSlug][city].push({
-            title: `${topic.title} in ${cityName}`,
-            excerpt: `Wertvolle Tipps zu ${topic.title} in ${cityName} und dem Ruhrgebiet.`,
-            tag: 'Ratgeber',
-            gradient: 'from-accent-500 to-accent-700',
-            svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
-            url: `/${tradeSlug}/${city}/blog/${fullSlug}/`
-          });
-        }
-        
-        console.log(`   ✅ Erfolgreich generiert! (${articleContent.length} Zeichen)`);
-        generatedCount++;
-        
-        // Warte vor nächster Stadt (Rate-Limit)
-        if (generatedCount < totalArticles) {
-          console.log(`   ⏳ Warte 5s vor nächstem Artikel...`);
-          await new Promise(r => setTimeout(r, 5000));
-        }
-        
-      } catch (error) {
-        console.error(`   ❌ Fehler bei Generierung: ${error.message}`);
-        console.log(`   ⚠️  Überspringe diesen Artikel und fahre fort...`);
-        continue;
+      const html = generateArticleHTML(tradeSlug, city, cityName, trade.name, topic, monthSlug, articleContent, faqs, howToSteps, relatedSlugs);
+      fs.writeFileSync(filePath, html, 'utf-8');
+      
+      // Füge zu Index hinzu
+      if (!articleIndex[tradeSlug]) articleIndex[tradeSlug] = {};
+      if (!articleIndex[tradeSlug][city]) articleIndex[tradeSlug][city] = [];
+      
+      const existingIndex = articleIndex[tradeSlug][city].findIndex(a => a.url.includes(fullSlug));
+      if (existingIndex === -1) {
+        articleIndex[tradeSlug][city].push({
+          title: `${topic.title} in ${cityName}`,
+          excerpt: `Wertvolle Tipps zu ${topic.title} in ${cityName} und dem Ruhrgebiet.`,
+          tag: 'Ratgeber',
+          gradient: 'from-accent-500 to-accent-700',
+          svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
+          url: `/${tradeSlug}/${city}/blog/${fullSlug}/`
+        });
       }
+      
+      console.log(`   ✅ Gespeichert!`);
+      generatedCount++;
+      
+      // Rate-Limit: 3 Sekunden Pause
+      if (generatedCount + skippedCount < activeCombinations.length) {
+        console.log(`   ⏳ Warte 3s...`);
+        await new Promise(r => setTimeout(r, 3000));
+      }
+      
+    } catch (error) {
+      console.error(`   ❌ Fehler: ${error.message}`);
+      continue;
     }
   }
   
   // Speichere Index
   fs.writeFileSync(indexPath, JSON.stringify(articleIndex, null, 2), 'utf-8');
   
-  // Zähle Gesamt-Artikel im verschachtelten Index
+  // Zähle Gesamt-Artikel
   let totalIndexedArticles = 0;
   for (const trade of Object.values(articleIndex)) {
     for (const cityArticles of Object.values(trade)) {
@@ -800,15 +742,11 @@ async function main() {
     }
   }
   
-  console.log(`\n🎉 Fertig! ${generatedCount} neue Artikel generiert.`);
-  console.log(`🌐 Insgesamt ${apiCalls} API-Calls an Kimi/Moonshot`);
-  console.log(`📚 Index aktualisiert: ${totalIndexedArticles} Gesamt-Artikel`);
-  
-  // Git commit Info
-  console.log(`\n💡 Nächste Schritte:`);
-  console.log(`   git add -A`);
-  console.log(`   git commit -m "feat: ${generatedCount} monatliche Artikel mit Kimi API (${monthSlug})"`);
-  console.log(`   git push`);
+  console.log(`\n🎉 Fertig!`);
+  console.log(`   ✅ ${generatedCount} neue Artikel generiert`);
+  console.log(`   ⏭️  ${skippedCount} übersprungen (existierten bereits)`);
+  console.log(`   🌐 ${apiCalls} API-Calls an Kimi/Moonshot`);
+  console.log(`   📚 ${totalIndexedArticles} Gesamt-Artikel im Index`);
 }
 
 // Ausführen
