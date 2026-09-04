@@ -50,6 +50,7 @@ tailwind.config = {
     <a href="/klempner/" class="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
     <a href="/zimmerer/" class="hover:text-white transition">🔨 Gewerk Zimmerer</a>
     <a href="/maler/" class="hover:text-white transition">🖌️ Gewerk Maler</a>
+    <a href="/garten-und-landschaftsbau/" class="hover:text-white transition">🌳 Gewerk Garten</a>
     <a href="index.html" class="hover:text-white transition">🏠 Musterseite Dachdecker</a>
     <a href="elektriker.html" class="hover:text-white transition">⚡ Musterseite Elektriker</a>
     <a href="klempner.html" class="hover:text-white transition">🔥 Musterseite SHK</a>
@@ -447,6 +448,20 @@ tailwind.config = {
         </div>
       </a>
 
+      <!-- Garten: aktiv -->
+      <a href="/garten-und-landschaftsbau/" class="reveal block bg-white rounded-2xl border border-ink-200 p-6 sm:p-8 hover:shadow-xl hover:-translate-y-0.5 transition duration-300 group">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-3xl">🌳</span>
+            <div>
+              <h3 class="text-xl font-black text-ink-900 group-hover:text-brand-600 transition">Garten &amp; Landschaftsbau <span class="text-sm font-bold text-ink-400">Gestaltung · Pflege · Rasen</span></h3>
+              <p class="text-sm text-ink-500" data-trade="garten-und-landschaftsbau">Lade Verfügbarkeit...</p>
+            </div>
+          </div>
+          <span class="bg-brand-600 group-hover:bg-brand-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition">Stadt wählen →</span>
+        </div>
+      </a>
+
       <!-- Weitere Gewerke: in Vorbereitung -->
       <div class="reveal grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-ink-50 rounded-2xl border border-ink-200 border-dashed p-6 flex items-center gap-4">
@@ -600,6 +615,7 @@ tailwind.config = {
       <p class="font-bold text-white text-xs uppercase tracking-widest">Portal</p>
       <ul class="mt-4 space-y-2">
         <li><a href="/dachdecker/" class="hover:text-white transition">Gewerk: Dachdecker</a></li>
+        <li><a href="/garten-und-landschaftsbau/" class="hover:text-white transition">Gewerk: Garten</a></li>
         <li><a href="index.html" class="hover:text-white transition">Musterseite: Dachdecker Schwerte</a></li>
         <li><a href="elektriker.html" class="hover:text-white transition">Musterseite: Elektriker Dortmund</a></li>
         <li><a href="ratgeber.html" class="hover:text-white transition">Ratgeber-Blog (Beispiel)</a></li>
@@ -710,6 +726,7 @@ document.getElementById('jahr').textContent = new Date().getFullYear();
       klempner:      { total: 20, free: 20, rented: 0 },
       zimmerer:      { total: 20, free: 20, rented: 0 },
       maler:         { total: 20, free: 20, rented: 0 },
+      garten-und-landschaftsbau: { total: 21, free: 21, rented: 0 },
     };
     
     document.querySelectorAll('[data-trade]').forEach(el => {
