@@ -87,7 +87,13 @@ export async function GET(req: NextRequest) {
 
       const { error } = await supabaseAdmin
         .from('landing_pages')
-        .insert({ slug, trade_id: trade.id, city_id: cityId, status: 'available' })
+        .insert({ 
+          slug, 
+          trade_id: trade.id, 
+          city_id: cityId, 
+          status: 'available',
+          title: `Garten und Landschaftsbau ${city.name}`
+        })
 
       if (error) {
         errors.push(`${slug}: ${error.message}`)
