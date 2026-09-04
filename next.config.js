@@ -106,7 +106,7 @@ const nextConfig = {
         { source: '/shk/', destination: '/sales-shk.html' },
         { source: '/maler/', destination: '/sales-maler.html' },
         { source: '/zimmerer/', destination: '/sales-zimmerer.html' },
-        { source: '/garten-und-landschaftsbau/', destination: '/sales-garten-und-landschaftsbau.html' },,
+        { source: '/garten-und-landschaftsbau/', destination: '/sales-garten-und-landschaftsbau.html' },
         
         // Statische Seiten
         { source: '/impressum/', destination: '/impressum.html' },
