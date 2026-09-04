@@ -93,9 +93,11 @@ export async function GET(req: NextRequest) {
     }
     results.push(`✅ ${Object.keys(cityMap).length} Cities bereit`)
 
-    // 3. Landing Pages
+    // 3. Landing Pages — nur bekannte Spalten (schema-sicher)
     let created = 0
     let existed = 0
+    const errors: string[] = []
+    
     for (const city of CITIES) {
       const cityId = cityMap[city.slug]
       if (!cityId) continue
@@ -112,21 +114,20 @@ export async function GET(req: NextRequest) {
         continue
       }
 
+      // Nur Felder die garantiert existieren
+      const insertData: any = {
+        slug,
+        trade_id: tradeId,
+        city_id: cityId,
+        status: 'available',
+      }
+
       const { error } = await supabaseAdmin
         .from('landing_pages')
-        .insert({
-          slug,
-          trade_id: tradeId,
-          city_id: cityId,
-          title: `Garten und Landschaftsbau ${city.name}`,
-          description: `Professionelle Garten- und Landschaftsbau-Leistungen in ${city.name}. Rasen, Beete, Hecken und mehr.`,
-          status: 'available',
-          monthly_price: 14900,
-          is_published: true
-        })
+        .insert(insertData)
 
       if (error) {
-        results.push(`❌ Page-Fehler ${slug}: ${error.message}`)
+        errors.push(`${slug}: ${error.message}`)
       } else {
         created++
       }
