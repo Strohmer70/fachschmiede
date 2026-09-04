@@ -7,6 +7,7 @@ const TRADE_MAP = {
   zimm: 'zimmerer',
   maler: 'maler',
   shk: 'klempner',
+  garten: 'garten-und-landschaftsbau',
 }
 
 // Generiere Rewrites für alle Stadt-HTML-Dateien
@@ -105,6 +106,7 @@ const nextConfig = {
         { source: '/shk/', destination: '/sales-shk.html' },
         { source: '/maler/', destination: '/sales-maler.html' },
         { source: '/zimmerer/', destination: '/sales-zimmerer.html' },
+        { source: '/garten-und-landschaftsbau/', destination: '/sales-garten-und-landschaftsbau.html' },,
         
         // Statische Seiten
         { source: '/impressum/', destination: '/impressum.html' },

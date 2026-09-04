@@ -424,6 +424,7 @@ function renderWebsitesView(pages, pagination) {
       'Klempner': '🔧',
       'Zimmerer': '🔨',
       'Maler': '🖌️',
+      'Garten und Landschaftsbau': '🌳',
     }[p.trade?.name] || '🏗️';
 
     return `
@@ -482,6 +483,7 @@ const TRADE_FILE_PREFIX = {
   'elektriker': 'elek',
   'maler': 'maler',
   'zimmerer': 'zimm',
+  'garten-und-landschaftsbau': 'garten',
 };
 
 function getUrlSlug(slug) {
