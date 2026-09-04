@@ -92,7 +92,11 @@ export async function GET(req: NextRequest) {
           trade_id: trade.id, 
           city_id: cityId, 
           status: 'available',
-          title: `Garten und Landschaftsbau ${city.name}`
+          title: `Garten- & Landschaftsbau ${city.name}`,
+          h1: `Garten- & Landschaftsbau in ${city.name}`,
+          meta_description: `Ihr Garten- & Landschaftsbau in ${city.name} ✓ Professionelle Leistungen ✓ Kostenlose Beratung ✓ Festpreis-Garantie. Jetzt anrufen!`,
+          content_json: {},
+          monthly_price: 14900
         })
 
       if (error) {
