@@ -24,7 +24,14 @@ tailwind.config = {
 <style>
   body{font-family:'Inter',system-ui,sans-serif}
   .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  /* Fallback: Wenn JS fehlschlägt, Inhalte trotzdem sichtbar */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal{opacity:1;transform:none}
+  }
   .reveal.visible{opacity:1;transform:none}
+  /* Wenn JS läuft, erst ausblenden für Animation */
+  .js-enabled .reveal{opacity:0;transform:translateY(24px)}
+  .js-enabled .reveal.visible{opacity:1;transform:none}
   .hero-gradient{background:linear-gradient(115deg,rgba(15,23,42,.97) 0%,rgba(30,27,75,.92) 55%,rgba(49,46,129,.85) 100%)}
   .faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease}
   .faq-item.open .faq-answer{max-height:500px}
@@ -34,6 +41,7 @@ tailwind.config = {
 </style>
 </head>
 <body class="bg-white text-ink-800 antialiased">
+<script>document.body.classList.add('js-enabled');</script>
 
 <!-- ═══════════ DEMO-HINWEIS ═══════════ -->
 <div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
