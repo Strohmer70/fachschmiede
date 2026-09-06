@@ -18,6 +18,9 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_P
 const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY || 'sk-dflfmQZYslaRgqiVP8edlrh6JKG8Kepm5GkTqZkSmf7pmGgp';
 const MOONSHOT_API_URL = process.env.MOONSHOT_API_URL || 'https://api.moonshot.ai/v1/chat/completions';
 
+// Max Artikel pro Durchlauf (Safety-Limit)
+const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '10', 10);
+
 // Trade Mapping: Kurzform → Voller Name
 const TRADE_MAP = {
   'dach': { slug: 'dachdecker', name: 'Dachdecker' },
@@ -288,6 +291,7 @@ async function main() {
   console.log('🚀 Monatlicher Artikel-Generator gestartet');
   console.log(`📅 Monat: ${getMonthSlug()}`);
   console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅' : '❌'}`);
+  console.log(`🛡️  Max Artikel pro Run: ${MAX_ARTICLES_PER_RUN}`);
   
   if (!MOONSHOT_API_KEY) {
     console.error('❌ MOONSHOT_API_KEY fehlt!');
@@ -314,13 +318,20 @@ async function main() {
     articleIndex = {};
   }
   
-  // 3. Generiere Artikel
+  // 3. Generiere Artikel (mit Limit)
   const monthSlug = getMonthSlug();
   let generatedCount = 0;
   let skippedCount = 0;
+  let errorCount = 0;
   let apiCalls = 0;
   
   for (let i = 0; i < combinations.length; i++) {
+    // Safety-Limit prüfen
+    if (generatedCount >= MAX_ARTICLES_PER_RUN) {
+      console.log(`\n🛡️  Safety-Limit erreicht (${MAX_ARTICLES_PER_RUN} Artikel). Stoppe hier.`);
+      break;
+    }
+    
     const { citySlug, tradeSlug, tradeName } = combinations[i];
     const cityName = getCityDisplayName(citySlug);
     const topic = getTopicForCombination(tradeSlug, i);
@@ -363,12 +374,18 @@ async function main() {
       generatedCount++;
       
       // Rate-Limit
-      if (i < combinations.length - 1) {
+      if (i < combinations.length - 1 && generatedCount < MAX_ARTICLES_PER_RUN) {
         console.log(`   ⏳ Warte 3s...`);
         await new Promise(r => setTimeout(r, 3000));
       }
     } catch (error) {
       console.error(`   ❌ Fehler: ${error.message}`);
+      errorCount++;
+      // Bei kritischem Fehler nicht abbrechen, sondern nächste Kombination versuchen
+      if (error.message.includes('401') || error.message.includes('403')) {
+        console.error('   🚨 API-Auth-Fehler — breche ab.');
+        break;
+      }
     }
   }
   
@@ -378,10 +395,9 @@ async function main() {
   console.log(`\n🎉 FERTIG!`);
   console.log(`   ✅ ${generatedCount} neue Artikel`);
   console.log(`   ⏭️  ${skippedCount} übersprungen`);
+  console.log(`   ❌ ${errorCount} Fehler`);
   console.log(`   🌐 ${apiCalls} API-Calls`);
+  
+  // Exit-Code: 0 auch wenn einzelne Fehler auftraten (nicht-kritisch)
+  process.exit(errorCount > 5 ? 1 : 0);
 }
-
-main().catch(err => {
-  console.error('❌ Kritischer Fehler:', err);
-  process.exit(1);
-});
