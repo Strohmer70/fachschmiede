@@ -401,3 +401,8 @@ async function main() {
   // Exit-Code: 0 auch wenn einzelne Fehler auftraten (nicht-kritisch)
   process.exit(errorCount > 5 ? 1 : 0);
 }
+
+main().catch(err => {
+  console.error('Fatal error:', err);
+  process.exit(1);
+});
