@@ -4,6 +4,11 @@
  * 
  * Scannt automatisch alle stadt-*.html Dateien und generiert
  * für jede Stadt-Gewerk-Kombination genau 1 Artikel pro Monat.
+ * 
+ * INTEGRIERTES SYSTEM:
+ * 1. Generiert HTML-Dateien
+ * 2. Schreibt in Supabase articles Tabelle
+ * 3. Aktualisiert article-index.json
  */
 
 const fs = require('fs');
@@ -47,14 +52,22 @@ const TOPICS = {
   schreiner: ['Maßgefertigte Möbel', 'Küchenbau', 'Treppenbau', 'Fenster erneuern', 'Innenausbau', 'Holzrestaurierung'],
 };
 
-// ─── SUPABASE CLIENT (optional) ─────────────────────────────────────
+// ─── SUPABASE CLIENT ────────────────────────────────────────────────
 
 let supabase = null;
+let supabaseAvailable = false;
 
 function initSupabase() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return false;
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.log('⚠️  Supabase Umgebungsvariablen nicht gesetzt');
+    return false;
+  }
   try {
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+    supabaseAvailable = true;
+    console.log('✅ Supabase Client initialisiert');
     return true;
   } catch (err) {
     console.log('⚠️  Supabase nicht verfügbar:', err.message);
@@ -101,7 +114,6 @@ function discoverCityTradeCombinations() {
 }
 
 function getCityDisplayName(citySlug) {
-  // Einfache Konvertierung: bochum → Bochum, castrop-rauxel → Castrop-Rauxel
   return citySlug
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -285,6 +297,57 @@ ${faqHTML}
 </html>`;
 }
 
+// ─── SUPABASE INTEGRATION ──────────────────────────────────────────
+
+async function saveArticleToDatabase(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, filePath, wordCount) {
+  if (!supabaseAvailable || !supabase) {
+    console.log('   ⚠️  Supabase nicht verfügbar — überspringe DB-Speicherung');
+    return false;
+  }
+  
+  try {
+    const fullSlug = `${topic.slug}-${monthSlug}`;
+    const title = `${topic.title} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
+    const excerpt = `Ratgeber zu ${topic.title} in ${cityName}. Fachbetriebe, Kosten & Tipps.`;
+    const metaDescription = `${topic.title} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.`;
+    
+    const articleData = {
+      title,
+      slug: fullSlug,
+      file_path: filePath.replace(process.cwd(), ''),
+      url_path: `/${tradeSlug}/${citySlug}/blog/${fullSlug}/`,
+      trade_slug: tradeSlug,
+      city_slug: citySlug,
+      excerpt,
+      meta_description: metaDescription,
+      word_count: wordCount,
+      status: 'published',
+      ai_generated: true,
+      published_at: new Date().toISOString(),
+      month_slug: monthSlug
+    };
+    
+    const { data, error } = await supabase
+      .from('articles')
+      .upsert(articleData, { 
+        onConflict: 'trade_slug,city_slug,slug,month_slug',
+        ignoreDuplicates: false 
+      })
+      .select();
+    
+    if (error) {
+      console.log(`   ⚠️  DB-Fehler: ${error.message}`);
+      return false;
+    }
+    
+    console.log(`   ✅ In Datenbank gespeichert`);
+    return true;
+  } catch (err) {
+    console.log(`   ⚠️  DB-Speicherung fehlgeschlagen: ${err.message}`);
+    return false;
+  }
+}
+
 // ─── HAUPTFUNKTION ──────────────────────────────────────────────────
 
 async function main() {
@@ -292,6 +355,9 @@ async function main() {
   console.log(`📅 Monat: ${getMonthSlug()}`);
   console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅' : '❌'}`);
   console.log(`🛡️  Max Artikel pro Run: ${MAX_ARTICLES_PER_RUN}`);
+  
+  // Supabase initialisieren
+  initSupabase();
   
   if (!MOONSHOT_API_KEY) {
     console.error('❌ MOONSHOT_API_KEY fehlt!');
@@ -324,6 +390,7 @@ async function main() {
   let skippedCount = 0;
   let errorCount = 0;
   let apiCalls = 0;
+  let dbSaved = 0;
   
   for (let i = 0; i < combinations.length; i++) {
     // Safety-Limit prüfen
@@ -359,6 +426,15 @@ async function main() {
       const html = generateHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, content, faqs);
       fs.writeFileSync(filePath, html, 'utf-8');
       
+      // Wörter zählen
+      const wordCount = content.split(/\s+/).length;
+      
+      // In Datenbank speichern
+      const dbSuccess = await saveArticleToDatabase(
+        tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, filePath, wordCount
+      );
+      if (dbSuccess) dbSaved++;
+      
       // Index aktualisieren
       if (!articleIndex[tradeSlug]) articleIndex[tradeSlug] = {};
       if (!articleIndex[tradeSlug][citySlug]) articleIndex[tradeSlug][citySlug] = [];
@@ -367,10 +443,16 @@ async function main() {
         title: `${topic.title} in ${cityName}`,
         excerpt: `Ratgeber zu ${topic.title} in ${cityName}.`,
         tag: 'Ratgeber',
-        url: `/${tradeSlug}/${citySlug}/blog/${fullSlug}/`
+        url: `/${tradeSlug}/${citySlug}/blog/${fullSlug}/`,
+        slug: fullSlug,
+        status: 'online',
+        wordCount,
+        aiGenerated: true,
+        publishedAt: new Date().toISOString(),
+        monthSlug
       });
       
-      console.log(`   ✅ Gespeichert (${content.length} Zeichen)`);
+      console.log(`   ✅ Gespeichert (${content.length} Zeichen, ~${wordCount} Wörter)`);
       generatedCount++;
       
       // Rate-Limit
@@ -394,6 +476,7 @@ async function main() {
   
   console.log(`\n🎉 FERTIG!`);
   console.log(`   ✅ ${generatedCount} neue Artikel`);
+  console.log(`   💾 ${dbSaved} in Datenbank gespeichert`);
   console.log(`   ⏭️  ${skippedCount} übersprungen`);
   console.log(`   ❌ ${errorCount} Fehler`);
   console.log(`   🌐 ${apiCalls} API-Calls`);

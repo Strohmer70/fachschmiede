@@ -1560,12 +1560,19 @@ let allArticles = [];
 let currentArticleFilter = 'all';
 
 async function loadArticles() {
-  if (!adminToken) return;
+  console.log('loadArticles() aufgerufen');
+  if (!adminToken) {
+    console.log('Kein Token, überspringe');
+    return;
+  }
 
   try {
-    const res = await fetch(`${API_BASE}/articles/?status=all&limit=100`, {
+    // Lade Artikel von API (mit Fallback auf article-index.json)
+    const res = await fetch(`${API_BASE}/articles/?status=all&limit=500`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
+
+    console.log('API Response Status:', res.status);
 
     if (res.status === 401) {
       showLoginGate();
@@ -1573,23 +1580,70 @@ async function loadArticles() {
     }
 
     const data = await res.json();
+    console.log('API Response:', data.success, data.articles?.length, 'Artikel');
+    
+    if (!data.success) {
+      throw new Error(data.error || 'API-Fehler');
+    }
+    
     allArticles = data.articles || [];
 
-    // Update KPIs
-    const published = allArticles.filter(a => a.status === 'published').length;
-    const drafts = allArticles.filter(a => a.status === 'draft').length;
-    const aiGenerated = allArticles.filter(a => a.ai_generated).length;
+    // Update KPIs aus API-Stats ODER berechne selbst
+    const stats = data.stats || {};
+    const published = stats.published || allArticles.filter(a => a.status === 'published' || a.status === 'online').length;
+    const drafts = stats.draft || allArticles.filter(a => a.status === 'draft').length;
+    const aiGenerated = stats.ai_generated || allArticles.filter(a => a.ai_generated).length;
 
-    setText('blogStatPublished', published);
-    setText('blogStatDrafts', drafts);
-    setText('blogStatAi', aiGenerated);
+    console.log('Stats:', { published, drafts, aiGenerated, total: allArticles.length });
+
+    // KPI-Karten aktualisieren
+    const publishedEl = document.getElementById('blogStatPublished');
+    const draftsEl = document.getElementById('blogStatDrafts');
+    const aiEl = document.getElementById('blogStatAi');
+    
+    if (publishedEl) publishedEl.textContent = published;
+    if (draftsEl) draftsEl.textContent = drafts;
+    if (aiEl) aiEl.textContent = aiGenerated;
 
     renderArticlesTable(allArticles);
-    populateArticlePageFilter(allArticles);
 
   } catch (err) {
     console.error('Articles load error:', err);
-    showToast('❌ Fehler beim Laden der Artikel');
+    showToast('❌ Fehler beim Laden: ' + err.message);
+    
+    // Fallback: Versuche lokale JSON direkt zu laden
+    try {
+      const localRes = await fetch('/lib/article-index.json');
+      const localData = await localRes.json();
+      let localArticles = [];
+      Object.keys(localData).forEach(trade => {
+        Object.keys(localData[trade]).forEach(city => {
+          localData[trade][city].forEach(a => {
+            localArticles.push({
+              ...a,
+              trade_slug: trade,
+              city_slug: city,
+              status: a.status === 'online' ? 'published' : 'published',
+              ai_generated: true
+            });
+          });
+        });
+      });
+      allArticles = localArticles;
+      
+      const publishedEl = document.getElementById('blogStatPublished');
+      const draftsEl = document.getElementById('blogStatDrafts');
+      const aiEl = document.getElementById('blogStatAi');
+      
+      if (publishedEl) publishedEl.textContent = localArticles.length;
+      if (draftsEl) draftsEl.textContent = '0';
+      if (aiEl) aiEl.textContent = localArticles.length;
+      
+      renderArticlesTable(localArticles);
+      showToast(`⚡ Fallback: ${localArticles.length} Artikel aus lokaler JSON geladen`);
+    } catch (fallbackErr) {
+      console.error('Fallback auch fehlgeschlagen:', fallbackErr);
+    }
   }
 }
 
@@ -1597,7 +1651,10 @@ function renderArticlesTable(articles) {
   const tbody = document.getElementById('blogTbody');
   const emptyMsg = document.getElementById('blogEmpty');
 
-  if (!tbody) return;
+  if (!tbody) {
+    console.error('blogTbody nicht gefunden!');
+    return;
+  }
 
   if (articles.length === 0) {
     tbody.innerHTML = `
@@ -1607,6 +1664,9 @@ function renderArticlesTable(articles) {
             <p class="text-4xl mb-3">📝</p>
             <p class="font-bold text-ink-600 text-lg">Noch keine Artikel</p>
             <p class="text-sm mt-1">Erstelle deinen ersten Artikel oder nutze die KI-Generierung.</p>
+            <button onclick="runArticleSchedule()" class="mt-4 bg-brand-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-brand-700 transition">
+              🚀 Automatisch generieren
+            </button>
           </div>
         </td>
       </tr>
@@ -1621,30 +1681,34 @@ function renderArticlesTable(articles) {
     'published': 'bg-green-100 text-green-700',
     'draft': 'bg-amber-100 text-amber-700',
     'archived': 'bg-ink-100 text-ink-500',
+    'online': 'bg-green-100 text-green-700',
   };
   const statusLabels = {
     'published': 'Veröffentlicht',
     'draft': 'Entwurf',
     'archived': 'Archiviert',
+    'online': 'Veröffentlicht',
   };
 
   tbody.innerHTML = articles.map(article => {
-    const page = article.landing_page || {};
-    const trade = page.trade || {};
-    const city = page.city || {};
-    const timeAgo = article.published_at ? timeSince(new Date(article.published_at)) : '-';
+    const timeAgo = article.published_at ? timeSince(new Date(article.published_at)) : 
+                   article.created_at ? timeSince(new Date(article.created_at)) : '-';
 
-    const statusClass = statusColors[article.status] || 'bg-ink-100 text-ink-500';
-    const statusLabel = statusLabels[article.status] || article.status;
+    const statusClass = statusColors[article.status] || 'bg-green-100 text-green-700';
+    const statusLabel = statusLabels[article.status] || 'Veröffentlicht';
+    
+    // URL für den Artikel
+    const articleUrl = article.url_path || article.url || 
+                      `/blog/${article.trade_slug}/${article.city_slug}/${article.slug}.html`;
 
     return `
-      <tr class="hover:bg-ink-50 transition" data-status="${article.status}" data-page="${page.slug || ''}">
+      <tr class="hover:bg-ink-50 transition">
         <td class="px-6 py-4">
           <p class="font-bold text-ink-900">${article.title || 'Ohne Titel'}</p>
           <p class="text-xs text-ink-500">${article.slug || ''}</p>
         </td>
-        <td class="px-6 py-4 text-sm text-ink-600">${trade.name || '-'}</td>
-        <td class="px-6 py-4 text-sm text-ink-600">${city.name || '-'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">${article.trade_slug || '-'}</td>
+        <td class="px-6 py-4 text-sm text-ink-600">${article.city_slug || '-'}</td>
         <td class="px-6 py-4 text-sm text-ink-600">${article.word_count || 0} Wörter</td>
         <td class="px-6 py-4 text-sm text-ink-600 whitespace-nowrap">${timeAgo}</td>
         <td class="px-6 py-4">
@@ -1652,72 +1716,12 @@ function renderArticlesTable(articles) {
           ${article.ai_generated ? '<span class="text-xs font-bold px-2 py-1 rounded-full bg-purple-100 text-purple-700 ml-1">KI</span>' : ''}
         </td>
         <td class="px-6 py-4 text-right">
-          <button onclick="showArticleDetail('${article.id}')" class="text-brand-600 font-semibold hover:underline">Details</button>
+          <a href="${articleUrl}" target="_blank" class="text-brand-600 font-semibold hover:underline mr-3">Ansehen</a>
         </td>
       </tr>
     `;
   }).join('');
 }
-
-function populateArticlePageFilter(articles) {
-  const select = document.getElementById('articlePage');
-  if (!select) return;
-
-  const pages = [...new Set(articles.map(a => a.landing_page?.slug).filter(Boolean))];
-
-  select.innerHTML = '<option value="">Alle Seiten</option>';
-  pages.forEach(slug => {
-    const option = document.createElement('option');
-    option.value = slug;
-    option.textContent = slug;
-    select.appendChild(option);
-  });
-}
-
-function filterArticles() {
-  const statusFilter = document.getElementById('articleStatus')?.value || '';
-  const pageFilter = document.getElementById('articlePage')?.value || '';
-
-  let filtered = allArticles;
-
-  if (statusFilter) {
-    const statusMap = {
-      'Entwurf': 'draft',
-      'Veröffentlicht': 'published',
-      'Archiviert': 'archived',
-    };
-    const code = statusMap[statusFilter] || statusFilter;
-    filtered = filtered.filter(a => (a.status || 'draft') === code);
-  }
-
-  if (pageFilter) {
-    filtered = filtered.filter(a => (a.landing_page?.slug || '') === pageFilter);
-  }
-
-  renderArticlesTable(filtered);
-}
-
-async function generateArticle() {
-  const pageId = document.getElementById('genPageId')?.value;
-  const customTitle = document.getElementById('genTitle')?.value;
-
-  if (!pageId) {
-    showToast('❌ Bitte wähle eine Seite aus');
-    return;
-  }
-
-  const btn = document.getElementById('genBtn');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = '⏳ Generiere...';
-  }
-
-  try {
-    const res = await fetch(`${API_BASE}/articles/generate`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${adminToken}`,
-        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         landing_page_id: pageId,
