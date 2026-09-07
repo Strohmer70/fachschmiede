@@ -1,12 +1,11 @@
-name: Monatliche Artikel-Generierung
+permissions:
+  contents: write
+  name: Monatliche Artikel-Generierung
 
 on:
   schedule:
     - cron: '0 6 1 * *'  # Jeden 1. des Monats um 06:00 UTC
   workflow_dispatch:      # Manuelle Ausführung möglich
-
-permissions:
-  contents: write
 
 jobs:
   generate-articles:
