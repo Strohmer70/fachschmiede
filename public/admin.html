@@ -641,17 +641,13 @@ tailwind.config = {
               <h3 class="font-black text-ink-900 text-lg">Wie das Blog-System funktioniert</h3>
               <div class="mt-2 text-sm text-ink-700 space-y-1.5">
                 <p><strong class="text-brand-700">1. KI-Generierung:</strong> Jeder Artikel wird mit der <strong>Kimi API</strong> (Moonshot AI) echt generiert – keine Templates, keine Copy-Paste. Jeder Text ist einzigartig.</p>
-                <p><strong class="text-brand-700">2. Das 1-2-4 System:</strong> 
-                  <span class="inline-flex items-center gap-1 ml-1"><span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-0.5 rounded">Frei</span> = 1 Artikel/Monat</span>
-                  <span class="inline-flex items-center gap-1 ml-1"><span class="bg-brand-100 text-brand-700 text-xs font-bold px-2 py-0.5 rounded">Basis</span> = 2 Artikel/Monat</span>
-                  <span class="inline-flex items-center gap-1 ml-1"><span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded">Pro</span> = 4 Artikel/Monat</span>
-                </p>
-                <p><strong class="text-brand-700">3. Automatische Verteilung:</strong> Am 1. jedes Monats läuft der Generator und erstellt Artikel basierend auf dem Mietplan jeder Stadt-Website.</p>
-                <p><strong class="text-brand-700">4. SEO-Optimierung:</strong> Jeder Artikel enthält H1, H2, Meta-Description, FAQ, HowTo Schema und lokale Bezüge (Stadtname, Ruhrgebiet) – für maximale Google-Sichtbarkeit.</p>
+                <p><strong class="text-brand-700">2. Automatische Verteilung:</strong> Artikel werden für alle 126 Stadt-Websites generiert und lokalisiert (Stadtname, Region, Bezüge).</p>
+                <p><strong class="text-brand-700">3. SEO-Optimierung:</strong> Jeder Artikel enthält H1, H2, Meta-Description, FAQ, HowTo Schema und lokale Bezüge – für maximale Google-Sichtbarkeit.</p>
+                <p><strong class="text-brand-700">4. Verknüpfung:</strong> Artikel sind direkt mit Stadt-Websites verknüpft und erscheinen automatisch im Blog-Bereich jeder Seite.</p>
               </div>
               <div class="mt-3 flex items-center gap-2 text-xs text-ink-500">
                 <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> API Status: Online</span>
-                <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Nächster Lauf: 1. September 2026</span>
+                <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span> <span id="articleTotalCount">301</span> Artikel im System</span>
               </div>
             </div>
           </div>
@@ -687,7 +683,7 @@ tailwind.config = {
                 <span>+</span> Artikel generieren
               </button>
               <button onclick="runArticleSchedule()" id="scheduleBtn" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
-                <span>📅</span> Automatisch planen (1-2-4)
+                <span>📅</span> Artikel planen
               </button>
             </div>
             <div class="flex flex-wrap gap-3">

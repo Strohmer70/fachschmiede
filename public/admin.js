@@ -1606,6 +1606,7 @@ async function loadArticles() {
     if (aiEl) aiEl.textContent = aiGenerated;
 
     renderArticlesTable(allArticles);
+    populateArticleFilters(allArticles);
 
   } catch (err) {
     console.error('Articles load error:', err);
@@ -1640,6 +1641,7 @@ async function loadArticles() {
       if (aiEl) aiEl.textContent = localArticles.length;
       
       renderArticlesTable(localArticles);
+      populateArticleFilters(localArticles);
       showToast(`⚡ Fallback: ${localArticles.length} Artikel aus lokaler JSON geladen`);
     } catch (fallbackErr) {
       console.error('Fallback auch fehlgeschlagen:', fallbackErr);
@@ -1722,12 +1724,25 @@ function renderArticlesTable(articles) {
     `;
   }).join('');
 }
-      },
-      body: JSON.stringify({
-        landing_page_id: pageId,
-        custom_title: customTitle || undefined
-      })
-    });
+
+function populateArticleFilters(articles) {
+  const tradeSelect = document.getElementById('articleTrade');
+  const citySelect = document.getElementById('articleCity');
+
+  if (tradeSelect) {
+    const trades = [...new Set(articles.map(a => a.trade_slug).filter(Boolean))].sort();
+    tradeSelect.innerHTML = '<option value="">Alle Gewerke</option>' +
+      trades.map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('');
+  }
+
+  if (citySelect) {
+    const cities = [...new Set(articles.map(a => a.city_slug).filter(Boolean))].sort();
+    citySelect.innerHTML = '<option value="">Alle Städte</option>' +
+      cities.map(c => `<option value="${c}">${c.charAt(0).toUpperCase() + c.slice(1)}</option>`).join('');
+  }
+}
+
+async function generateArticle() {
 
     const data = await res.json();
 
@@ -2178,6 +2193,34 @@ function renderCampaignList(campaigns) {
       <td class="py-3">${resultBadge}</td>
     </tr>`;
   }).join('');
+}
+
+function filterArticles() {
+  const statusFilter = document.getElementById('articleStatus')?.value || '';
+  const tradeFilter = document.getElementById('articleTrade')?.value || '';
+  const cityFilter = document.getElementById('articleCity')?.value || '';
+
+  let filtered = allArticles;
+
+  if (statusFilter) {
+    const statusMap = {
+      'Entwurf': 'draft',
+      'Veröffentlicht': 'published',
+      'Archiviert': 'archived',
+    };
+    const code = statusMap[statusFilter] || statusFilter;
+    filtered = filtered.filter(a => (a.status || 'published') === code);
+  }
+
+  if (tradeFilter) {
+    filtered = filtered.filter(a => (a.trade_slug || '') === tradeFilter);
+  }
+
+  if (cityFilter) {
+    filtered = filtered.filter(a => (a.city_slug || '') === cityFilter);
+  }
+
+  renderArticlesTable(filtered);
 }
 
 // ═══════════ INIT ═══════════
