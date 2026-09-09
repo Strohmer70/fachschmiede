@@ -246,15 +246,38 @@ tailwind.config = {
         <div class="bg-white rounded-2xl border border-ink-200 p-6">
           <h2 class="font-bold text-ink-900 text-lg">Vorlagen pro Gewerk</h2>
           <p class="text-sm text-ink-500 mt-1">Aus jeder Vorlage lässt sich eine neue Miet-Website in Minuten erzeugen: Gewerk + Stadt wählen, Inhalte werden automatisch befüllt.</p>
-          <div class="mt-5 grid sm:grid-cols-2 gap-3">
-            <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🏠 Dachdecker</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
-            <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">⚡ Elektriker</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
-            <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🔧 SHK / Klempner</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
-            <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🔨 Zimmerer</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
-            <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🖌️ Maler</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
-            <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🧱 Fliesenleger</span><span class="text-xs font-bold text-ink-500 bg-ink-100 px-2 py-1 rounded-full">geplant</span></div>
-            <button onclick="showView('gewerke')" class="border border-dashed border-brand-300 rounded-xl p-4 flex items-center justify-center text-brand-600 font-bold cursor-pointer hover:bg-brand-50 transition">+ Gewerk anlegen</button>
+          <div class="mt-5 grid sm:grid-cols-2 gap-3" id="gewerkVorlagen">
+            <!-- WIRD DYNAMISCH GEFÜLLT -->
           </div>
+          <script>
+            (function() {
+              const container = document.getElementById('gewerkVorlagen');
+              fetch('/api/system/config')
+                .then(r => r.json())
+                .then(data => {
+                  if (data.success && data.trades) {
+                    container.innerHTML = data.trades.map(t => `
+                      <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between">
+                        <span class="font-bold text-ink-800">${t.emoji} ${t.name}</span>
+                        <span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span>
+                      </div>
+                    `).join('') + `
+                      <button onclick="showView('gewerke')" class="border border-dashed border-brand-300 rounded-xl p-4 flex items-center justify-center text-brand-600 font-bold cursor-pointer hover:bg-brand-50 transition">+ Gewerk anlegen</button>
+                    `;
+                  }
+                })
+                .catch(() => {
+                  container.innerHTML = `
+                    <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🏠 Dachdecker</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
+                    <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">⚡ Elektriker</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
+                    <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🔥 Klempner / SHK</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
+                    <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🔨 Zimmerer</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
+                    <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🖌️ Maler</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
+                    <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between"><span class="font-bold text-ink-800">🌳 Garten & Landschaftsbau</span><span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">fertig</span></div>
+                    <button onclick="showView('gewerke')" class="border border-dashed border-brand-300 rounded-xl p-4 flex items-center justify-center text-brand-600 font-bold cursor-pointer hover:bg-brand-50 transition">+ Gewerk anlegen</button>`;
+                });
+            })();
+          </script>
         </div>
         <div class="bg-white rounded-2xl border border-ink-200 p-6">
           <h2 class="font-bold text-ink-900 text-lg">Letzte Leads (alle Websites)</h2>
@@ -344,12 +367,32 @@ tailwind.config = {
             <span class="text-sm font-bold text-ink-700">Filter:</span>
             <div class="flex flex-wrap gap-2" id="stadtFilter">
               <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
-              <button onclick="filterStaedte('Dachdecker', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🏠 Dachdecker</button>
-              <button onclick="filterStaedte('Elektriker', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">⚡ Elektriker</button>
-              <button onclick="filterStaedte('SHK', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔧 SHK</button>
-              <button onclick="filterStaedte('Zimmerer', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔨 Zimmerer</button>
-              <button onclick="filterStaedte('Maler', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🖌️ Maler</button>
+              <!-- WIRD DYNAMISCH GEFÜLLT -->
             </div>
+            <script>
+              (function() {
+                const container = document.getElementById('stadtFilter');
+                fetch('/api/system/config')
+                  .then(r => r.json())
+                  .then(data => {
+                    if (data.success && data.trades) {
+                      container.innerHTML = '<button onclick="filterStaedte(\'\', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>' +
+                        data.trades.map(t => `<button onclick="filterStaedte('${t.name}', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">${t.emoji} ${t.name}</button>`).join('');
+                    }
+                  })
+                  .catch(() => {
+                    // Fallback
+                    container.innerHTML = `
+                      <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
+                      <button onclick="filterStaedte('Dachdecker', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🏠 Dachdecker</button>
+                      <button onclick="filterStaedte('Elektriker', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">⚡ Elektriker</button>
+                      <button onclick="filterStaedte('Klempner / SHK', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔥 Klempner / SHK</button>
+                      <button onclick="filterStaedte('Zimmerer', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔨 Zimmerer</button>
+                      <button onclick="filterStaedte('Maler', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🖌️ Maler</button>
+                      <button onclick="filterStaedte('Garten & Landschaftsbau', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🌳 Garten & Landschaftsbau</button>`;
+                  });
+              })();
+            </script>
             <span class="ml-auto text-xs text-ink-400 font-semibold"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>frei · <span class="inline-block w-2.5 h-2.5 rounded-full bg-ink-300 mr-1 ml-2"></span>vermietet</span>
           </div>
         </div>
@@ -705,12 +748,28 @@ tailwind.config = {
               </select>
               <select id="articleTrade" onchange="filterArticles()" class="text-sm border border-ink-200 rounded-lg px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option value="">Alle Gewerke</option>
-                <option>Dachdecker</option>
-                <option>Elektriker</option>
-                <option>SHK / Klempner</option>
-                <option>Zimmerer</option>
-                <option>Maler</option>
+                <!-- WIRD DYNAMISCH GEFÜLLT -->
               </select>
+              <script>
+                (function() {
+                  const select = document.getElementById('articleTrade');
+                  fetch('/api/system/config')
+                    .then(r => r.json())
+                    .then(data => {
+                      if (data.success && data.trades) {
+                        select.innerHTML = '<option value="">Alle Gewerke</option>' +
+                          data.trades.map(t => `<option>${t.name}</option>`).join('');
+                      }
+                    })
+                    .catch(() => {
+                      select.innerHTML = `
+                        <option value="">Alle Gewerke</option>
+                        <option>Dachdecker</option><option>Elektriker</option>
+                        <option>Klempner / SHK</option><option>Zimmerer</option>
+                        <option>Maler</option><option>Garten & Landschaftsbau</option>`;
+                    });
+                })();
+              </script>
               <select id="articleStatus" onchange="filterArticles()" class="text-sm border border-ink-200 rounded-lg px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option value="">Alle Stati</option>
                 <option>Entwurf</option>
@@ -888,9 +947,26 @@ tailwind.config = {
             <div class="mt-5 space-y-4">
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk</label>
-                <select id="scrapeGewerk" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                  <option>Dachdecker</option><option>Elektriker</option><option>SHK / Klempner</option><option>Zimmerer</option><option>Maler</option>
-                </select>
+              <select id="scrapeGewerk" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <!-- WIRD DYNAMISCH GEFÜLLT -->
+              </select>
+              <script>
+                // Dynamisch aus System-Config füllen
+                fetch('/api/system/config')
+                  .then(r => r.json())
+                  .then(data => {
+                    if (data.success && data.trades) {
+                      const select = document.getElementById('scrapeGewerk');
+                      select.innerHTML = data.trades.map(t => `<option value="${t.slug}">${t.emoji} ${t.name}</option>`).join('');
+                    }
+                  })
+                  .catch(() => {
+                    // Fallback
+                    document.getElementById('scrapeGewerk').innerHTML = `
+                      <option>Dachdecker</option><option>Elektriker</option><option>SHK / Klempner</option>
+                      <option>Zimmerer</option><option>Maler</option><option>🌳 Garten & Landschaftsbau</option>`;
+                  });
+              </script>
               </div>
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Stadt / Region</label>
@@ -1564,13 +1640,32 @@ tailwind.config = {
         <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk *</label>
         <select id="nbGewerk" required class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           <option value="">Bitte wählen …</option>
-          <option>🏠 Dachdecker</option>
-          <option>⚡ Elektriker</option>
-          <option>🔧 SHK / Heizung (nach Launch)</option>
-          <option>🎨 Maler (nach Launch)</option>
-          <option>🧱 Fliesenleger (nach Launch)</option>
-          <option>🪵 Zimmerer</option>
+          <!-- WIRD DYNAMISCH GEFÜLLT -->
         </select>
+        <script>
+          (function() {
+            const select = document.getElementById('nbGewerk');
+            fetch('/api/system/config')
+              .then(r => r.json())
+              .then(data => {
+                if (data.success && data.trades) {
+                  select.innerHTML = '<option value="">Bitte wählen …</option>' + 
+                    data.trades.map(t => `<option>${t.emoji} ${t.name}</option>`).join('');
+                }
+              })
+              .catch(() => {
+                // Fallback mit korrekten Daten
+                select.innerHTML = `
+                  <option value="">Bitte wählen …</option>
+                  <option>🏠 Dachdecker</option>
+                  <option>⚡ Elektriker</option>
+                  <option>🔥 Klempner / SHK</option>
+                  <option>🖌️ Maler</option>
+                  <option>🔨 Zimmerer</option>
+                  <option>🌳 Garten & Landschaftsbau</option>`;
+              });
+          })();
+        </script>
       </div>
       <div>
         <label class="block text-sm font-bold text-ink-800 mb-1.5">Stadt / Ort *</label>
