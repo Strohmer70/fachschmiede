@@ -63,6 +63,22 @@ function logout() {
   showToast('Abgemeldet - der Bereich ist jetzt gesperrt.');
 }
 
+// ═══════════ SYSTEM CONFIG LADEN ═══════════
+async function loadSystemConfig() {
+  try {
+    const res = await fetch(`${API_BASE}/system/config`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success) {
+        window.systemConfig = data;
+        console.log('✅ System Config geladen:', data.trades?.length, 'Gewerke,', data.cities?.length, 'Städte');
+      }
+    }
+  } catch (err) {
+    console.log('System Config konnte nicht geladen werden:', err);
+  }
+}
+
 // ═══════════ DASHBOARD LADEN ═══════════
 async function loadDashboard() {
   console.log('loadDashboard() aufgerufen. Token:', adminToken ? 'vorhanden' : 'fehlt');
@@ -70,6 +86,9 @@ async function loadDashboard() {
     showLoginGate();
     return;
   }
+
+  // Zuerst System-Config laden (für dynamische Gewerke)
+  await loadSystemConfig();
 
   try {
     const res = await fetch(`${API_BASE}/admin/stats/`, {
@@ -418,14 +437,15 @@ function renderWebsitesView(pages, pagination) {
       ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span>'
       : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span>';
 
-    const tradeEmoji = {
+    const tradeEmoji = window.systemConfig?.trades?.reduce?.((map, t) => { map[t.name] = t.emoji; return map; }, {}) || {
       'Dachdecker': '🏠',
       'Elektriker': '⚡',
-      'Klempner': '🔧',
+      'Klempner / SHK': '🔥',
       'Zimmerer': '🔨',
       'Maler': '🖌️',
-      'Garten und Landschaftsbau': '🌳',
-    }[p.trade?.name] || '🏗️';
+      'Garten & Landschaftsbau': '🌳',
+    };
+    const emoji = tradeEmoji[p.trade?.name] || '🏗️';
 
     return `
       <div class="stadt-card bg-white rounded-2xl border-2 ${isRented ? 'border-ink-200' : 'border-green-200'} p-5" data-gewerk="${p.trade?.name || ''}" data-status="${isRented ? 'vermietet' : 'frei'}">
@@ -526,7 +546,8 @@ function renderWebsitesFilter(pages) {
     <span class="text-sm font-bold text-ink-700">Filter:</span>
     <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
     ${gewerke.map(g => {
-      const emoji = {'Dachdecker':'🏠','Elektriker':'⚡','Klempner':'🔧','Zimmerer':'🔨','Maler':'🖌️'}[g] || '🏗️';
+      const trade = allTrades.find(t => t.name === g);
+      const emoji = trade?.emoji || window.systemConfig?.trades?.find?.(t => t.name === g)?.emoji || '🏗️';
       return `<button onclick="filterStaedte('${g}', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">${emoji} ${g}</button>`;
     }).join('')}
     <span class="ml-auto text-xs text-ink-400 font-semibold"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>frei · <span class="inline-block w-2.5 h-2.5 rounded-full bg-ink-300 mr-1 ml-2"></span>vermietet</span>
@@ -918,8 +939,11 @@ async function loadBillingData() {
       } else {
         const maxRev = Math.max(...data.revenueByTrade.map((r) => r.revenue), 1);
         const colors = ['bg-orange-500', 'bg-blue-500', 'bg-teal-500', 'bg-brand-500', 'bg-purple-500', 'bg-red-500'];
-        const emojis = {
-          dachdecker: '🏠', elektriker: '⚡', klempner: '🔥', zimmerer: '🔨', maler: '🖌️', fliesenleger: '🧱'
+        const emojis = window.systemConfig?.trades?.reduce?.((map, t) => {
+          map[t.slug] = t.emoji;
+          return map;
+        }, {}) || {
+          dachdecker: '🏠', elektriker: '⚡', klempner: '🔥', zimmerer: '🔨', maler: '🖌️', 'garten-und-landschaftsbau': '🌳'
         };
 
         revEl.innerHTML = data.revenueByTrade.map((r, i) => {
@@ -1023,9 +1047,10 @@ async function loadTrades() {
   const fallbackTrades = [
     { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Klempner', slug: 'klempner', emoji: '🔥', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Maler', slug: 'maler', emoji: '🎨', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Klempner / SHK', slug: 'klempner', emoji: '🔥', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Maler', slug: 'maler', emoji: '🖌️', total_pages: 21, rented_pages: 0, available_pages: 21 },
     { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Garten & Landschaftsbau', slug: 'garten-und-landschaftsbau', emoji: '🌳', total_pages: 21, rented_pages: 0, available_pages: 21 },
   ];
 
   // 1. Zuerst Trade Requests laden (pending items)
@@ -1140,14 +1165,17 @@ async function addStadt(form) {
     return;
   }
 
-  // Gewerk-Slug ermitteln
-  const gewerkMap = {
+  // Gewerk-Slug ermitteln — DYNAMISCH aus System-Config oder Fallback
+  const gewerkMap = window.systemConfig?.trades?.reduce?.((map, t) => {
+    map[`${t.emoji} ${t.name}`] = t.slug;
+    return map;
+  }, {}) || {
     '🏠 Dachdecker': 'dachdecker',
     '⚡ Elektriker': 'elektriker',
-    '🔧 SHK / Heizung (nach Launch)': 'klempner',
-    '🎨 Maler (nach Launch)': 'maler',
-    '🧱 Fliesenleger (nach Launch)': 'fliesenleger',
-    '🪵 Zimmerer': 'zimmerer',
+    '🔥 Klempner / SHK': 'klempner',
+    '🖌️ Maler': 'maler',
+    '🔨 Zimmerer': 'zimmerer',
+    '🌳 Garten & Landschaftsbau': 'garten-und-landschaftsbau',
   };
 
   const tradeSlug = gewerkMap[gewerkName];

@@ -2608,5 +2608,527 @@
         "url": "/zimmerer/witten/blog/dachdaemmung-foerderung/"
       }
     ]
+  },
+  "garten-und-landschaftsbau": {
+    "bergkamen": [
+      {
+        "title": "Gartenplanung in Bergkamen: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/bergkamen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Bergkamen: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/bergkamen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Bergkamen: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/bergkamen/blog/terrasse-bauen/"
+      }
+    ],
+    "bochum": [
+      {
+        "title": "Gartenplanung in Bochum: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/bochum/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Bochum: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/bochum/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Bochum: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/bochum/blog/terrasse-bauen/"
+      }
+    ],
+    "castrop-rauxel": [
+      {
+        "title": "Gartenplanung in Castrop-Rauxel: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/castrop-rauxel/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Castrop-Rauxel: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/castrop-rauxel/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Castrop-Rauxel: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/castrop-rauxel/blog/terrasse-bauen/"
+      }
+    ],
+    "dortmund": [
+      {
+        "title": "Gartenplanung in Dortmund: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/dortmund/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Dortmund: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/dortmund/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Dortmund: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/dortmund/blog/terrasse-bauen/"
+      }
+    ],
+    "ennepetal": [
+      {
+        "title": "Gartenplanung in Ennepetal: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/ennepetal/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Ennepetal: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/ennepetal/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Ennepetal: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/ennepetal/blog/terrasse-bauen/"
+      }
+    ],
+    "froendenberg": [
+      {
+        "title": "Gartenplanung in Fröndenberg: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/froendenberg/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Fröndenberg: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/froendenberg/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Fröndenberg: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/froendenberg/blog/terrasse-bauen/"
+      }
+    ],
+    "gevelsberg": [
+      {
+        "title": "Gartenplanung in Gevelsberg: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/gevelsberg/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Gevelsberg: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/gevelsberg/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Gevelsberg: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/gevelsberg/blog/terrasse-bauen/"
+      }
+    ],
+    "hagen": [
+      {
+        "title": "Gartenplanung in Hagen: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/hagen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Hagen: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/hagen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Hagen: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/hagen/blog/terrasse-bauen/"
+      }
+    ],
+    "hattingen": [
+      {
+        "title": "Gartenplanung in Hattingen: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/hattingen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Hattingen: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/hattingen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Hattingen: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/hattingen/blog/terrasse-bauen/"
+      }
+    ],
+    "herne": [
+      {
+        "title": "Gartenplanung in Herne: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/herne/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Herne: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/herne/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Herne: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/herne/blog/terrasse-bauen/"
+      }
+    ],
+    "holzwickede": [
+      {
+        "title": "Gartenplanung in Holzwickede: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/holzwickede/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Holzwickede: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/holzwickede/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Holzwickede: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/holzwickede/blog/terrasse-bauen/"
+      }
+    ],
+    "iserlohn": [
+      {
+        "title": "Gartenplanung in Iserlohn: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/iserlohn/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Iserlohn: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/iserlohn/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Iserlohn: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/iserlohn/blog/terrasse-bauen/"
+      }
+    ],
+    "kamen": [
+      {
+        "title": "Gartenplanung in Kamen: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/kamen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Kamen: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/kamen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Kamen: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/kamen/blog/terrasse-bauen/"
+      }
+    ],
+    "luenen": [
+      {
+        "title": "Gartenplanung in Lünen: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/luenen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Lünen: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/luenen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Lünen: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/luenen/blog/terrasse-bauen/"
+      }
+    ],
+    "schwelm": [
+      {
+        "title": "Gartenplanung in Schwelm: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/schwelm/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Schwelm: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/schwelm/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Schwelm: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/schwelm/blog/terrasse-bauen/"
+      }
+    ],
+    "schwerte": [
+      {
+        "title": "Gartenplanung in Schwerte: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/schwerte/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Schwerte: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/schwerte/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Schwerte: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/schwerte/blog/terrasse-bauen/"
+      }
+    ],
+    "sprockhoevel": [
+      {
+        "title": "Gartenplanung in Sprockhövel: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/sprockhoevel/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Sprockhövel: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/sprockhoevel/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Sprockhövel: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/sprockhoevel/blog/terrasse-bauen/"
+      }
+    ],
+    "unna": [
+      {
+        "title": "Gartenplanung in Unna: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/unna/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Unna: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/unna/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Unna: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/unna/blog/terrasse-bauen/"
+      }
+    ],
+    "wetter-ruhr": [
+      {
+        "title": "Gartenplanung in Wetter (Ruhr): Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/wetter-ruhr/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Wetter (Ruhr): Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/wetter-ruhr/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Wetter (Ruhr): Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/wetter-ruhr/blog/terrasse-bauen/"
+      }
+    ],
+    "witten": [
+      {
+        "title": "Gartenplanung in Witten: Ideen & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/witten/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Witten: Kosten & Pflege",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/witten/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Witten: Materialien & Kosten",
+        "excerpt": "Wertvolle Tipps und Fachwissen für Ihr Projekt.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"></path>",
+        "url": "/garten-und-landschaftsbau/witten/blog/terrasse-bauen/"
+      }
+    ]
   }
 }
