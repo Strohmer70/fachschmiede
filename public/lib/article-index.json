@@ -3130,5 +3130,527 @@
         "url": "/garten-und-landschaftsbau/witten/blog/terrasse-bauen/"
       }
     ]
+  },
+  "gartenbau": {
+    "bergkamen": [
+      {
+        "title": "Gartenplanung in Bergkamen: Ideen & Kosten",
+        "excerpt": "Ratgeber für Bergkamen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/bergkamen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Bergkamen: Kosten & Pflege",
+        "excerpt": "Ratgeber für Bergkamen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/bergkamen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Bergkamen: Materialien & Kosten",
+        "excerpt": "Ratgeber für Bergkamen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/bergkamen/blog/terrasse-bauen/"
+      }
+    ],
+    "bochum": [
+      {
+        "title": "Gartenplanung in Bochum: Ideen & Kosten",
+        "excerpt": "Ratgeber für Bochum.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/bochum/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Bochum: Kosten & Pflege",
+        "excerpt": "Ratgeber für Bochum.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/bochum/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Bochum: Materialien & Kosten",
+        "excerpt": "Ratgeber für Bochum.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/bochum/blog/terrasse-bauen/"
+      }
+    ],
+    "castrop-rauxel": [
+      {
+        "title": "Gartenplanung in Castrop-Rauxel: Ideen & Kosten",
+        "excerpt": "Ratgeber für Castrop-Rauxel.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/castrop-rauxel/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Castrop-Rauxel: Kosten & Pflege",
+        "excerpt": "Ratgeber für Castrop-Rauxel.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/castrop-rauxel/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Castrop-Rauxel: Materialien & Kosten",
+        "excerpt": "Ratgeber für Castrop-Rauxel.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/castrop-rauxel/blog/terrasse-bauen/"
+      }
+    ],
+    "dortmund": [
+      {
+        "title": "Gartenplanung in Dortmund: Ideen & Kosten",
+        "excerpt": "Ratgeber für Dortmund.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/dortmund/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Dortmund: Kosten & Pflege",
+        "excerpt": "Ratgeber für Dortmund.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/dortmund/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Dortmund: Materialien & Kosten",
+        "excerpt": "Ratgeber für Dortmund.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/dortmund/blog/terrasse-bauen/"
+      }
+    ],
+    "ennepetal": [
+      {
+        "title": "Gartenplanung in Ennepetal: Ideen & Kosten",
+        "excerpt": "Ratgeber für Ennepetal.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/ennepetal/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Ennepetal: Kosten & Pflege",
+        "excerpt": "Ratgeber für Ennepetal.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/ennepetal/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Ennepetal: Materialien & Kosten",
+        "excerpt": "Ratgeber für Ennepetal.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/ennepetal/blog/terrasse-bauen/"
+      }
+    ],
+    "froendenberg": [
+      {
+        "title": "Gartenplanung in Fröndenberg: Ideen & Kosten",
+        "excerpt": "Ratgeber für Fröndenberg.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/froendenberg/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Fröndenberg: Kosten & Pflege",
+        "excerpt": "Ratgeber für Fröndenberg.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/froendenberg/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Fröndenberg: Materialien & Kosten",
+        "excerpt": "Ratgeber für Fröndenberg.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/froendenberg/blog/terrasse-bauen/"
+      }
+    ],
+    "gevelsberg": [
+      {
+        "title": "Gartenplanung in Gevelsberg: Ideen & Kosten",
+        "excerpt": "Ratgeber für Gevelsberg.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/gevelsberg/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Gevelsberg: Kosten & Pflege",
+        "excerpt": "Ratgeber für Gevelsberg.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/gevelsberg/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Gevelsberg: Materialien & Kosten",
+        "excerpt": "Ratgeber für Gevelsberg.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/gevelsberg/blog/terrasse-bauen/"
+      }
+    ],
+    "hagen": [
+      {
+        "title": "Gartenplanung in Hagen: Ideen & Kosten",
+        "excerpt": "Ratgeber für Hagen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/hagen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Hagen: Kosten & Pflege",
+        "excerpt": "Ratgeber für Hagen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/hagen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Hagen: Materialien & Kosten",
+        "excerpt": "Ratgeber für Hagen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/hagen/blog/terrasse-bauen/"
+      }
+    ],
+    "hattingen": [
+      {
+        "title": "Gartenplanung in Hattingen: Ideen & Kosten",
+        "excerpt": "Ratgeber für Hattingen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/hattingen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Hattingen: Kosten & Pflege",
+        "excerpt": "Ratgeber für Hattingen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/hattingen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Hattingen: Materialien & Kosten",
+        "excerpt": "Ratgeber für Hattingen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/hattingen/blog/terrasse-bauen/"
+      }
+    ],
+    "herne": [
+      {
+        "title": "Gartenplanung in Herne: Ideen & Kosten",
+        "excerpt": "Ratgeber für Herne.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/herne/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Herne: Kosten & Pflege",
+        "excerpt": "Ratgeber für Herne.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/herne/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Herne: Materialien & Kosten",
+        "excerpt": "Ratgeber für Herne.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/herne/blog/terrasse-bauen/"
+      }
+    ],
+    "holzwickede": [
+      {
+        "title": "Gartenplanung in Holzwickede: Ideen & Kosten",
+        "excerpt": "Ratgeber für Holzwickede.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/holzwickede/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Holzwickede: Kosten & Pflege",
+        "excerpt": "Ratgeber für Holzwickede.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/holzwickede/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Holzwickede: Materialien & Kosten",
+        "excerpt": "Ratgeber für Holzwickede.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/holzwickede/blog/terrasse-bauen/"
+      }
+    ],
+    "iserlohn": [
+      {
+        "title": "Gartenplanung in Iserlohn: Ideen & Kosten",
+        "excerpt": "Ratgeber für Iserlohn.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/iserlohn/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Iserlohn: Kosten & Pflege",
+        "excerpt": "Ratgeber für Iserlohn.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/iserlohn/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Iserlohn: Materialien & Kosten",
+        "excerpt": "Ratgeber für Iserlohn.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/iserlohn/blog/terrasse-bauen/"
+      }
+    ],
+    "kamen": [
+      {
+        "title": "Gartenplanung in Kamen: Ideen & Kosten",
+        "excerpt": "Ratgeber für Kamen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/kamen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Kamen: Kosten & Pflege",
+        "excerpt": "Ratgeber für Kamen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/kamen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Kamen: Materialien & Kosten",
+        "excerpt": "Ratgeber für Kamen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/kamen/blog/terrasse-bauen/"
+      }
+    ],
+    "luenen": [
+      {
+        "title": "Gartenplanung in Lünen: Ideen & Kosten",
+        "excerpt": "Ratgeber für Lünen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/luenen/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Lünen: Kosten & Pflege",
+        "excerpt": "Ratgeber für Lünen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/luenen/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Lünen: Materialien & Kosten",
+        "excerpt": "Ratgeber für Lünen.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/luenen/blog/terrasse-bauen/"
+      }
+    ],
+    "schwelm": [
+      {
+        "title": "Gartenplanung in Schwelm: Ideen & Kosten",
+        "excerpt": "Ratgeber für Schwelm.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/schwelm/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Schwelm: Kosten & Pflege",
+        "excerpt": "Ratgeber für Schwelm.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/schwelm/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Schwelm: Materialien & Kosten",
+        "excerpt": "Ratgeber für Schwelm.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/schwelm/blog/terrasse-bauen/"
+      }
+    ],
+    "schwerte": [
+      {
+        "title": "Gartenplanung in Schwerte: Ideen & Kosten",
+        "excerpt": "Ratgeber für Schwerte.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/schwerte/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Schwerte: Kosten & Pflege",
+        "excerpt": "Ratgeber für Schwerte.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/schwerte/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Schwerte: Materialien & Kosten",
+        "excerpt": "Ratgeber für Schwerte.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/schwerte/blog/terrasse-bauen/"
+      }
+    ],
+    "sprockhoevel": [
+      {
+        "title": "Gartenplanung in Sprockhövel: Ideen & Kosten",
+        "excerpt": "Ratgeber für Sprockhövel.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/sprockhoevel/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Sprockhövel: Kosten & Pflege",
+        "excerpt": "Ratgeber für Sprockhövel.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/sprockhoevel/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Sprockhövel: Materialien & Kosten",
+        "excerpt": "Ratgeber für Sprockhövel.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/sprockhoevel/blog/terrasse-bauen/"
+      }
+    ],
+    "unna": [
+      {
+        "title": "Gartenplanung in Unna: Ideen & Kosten",
+        "excerpt": "Ratgeber für Unna.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/unna/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Unna: Kosten & Pflege",
+        "excerpt": "Ratgeber für Unna.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/unna/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Unna: Materialien & Kosten",
+        "excerpt": "Ratgeber für Unna.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/unna/blog/terrasse-bauen/"
+      }
+    ],
+    "wetter-ruhr": [
+      {
+        "title": "Gartenplanung in Wetter (Ruhr): Ideen & Kosten",
+        "excerpt": "Ratgeber für Wetter (Ruhr).",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/wetter-ruhr/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Wetter (Ruhr): Kosten & Pflege",
+        "excerpt": "Ratgeber für Wetter (Ruhr).",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/wetter-ruhr/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Wetter (Ruhr): Materialien & Kosten",
+        "excerpt": "Ratgeber für Wetter (Ruhr).",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/wetter-ruhr/blog/terrasse-bauen/"
+      }
+    ],
+    "witten": [
+      {
+        "title": "Gartenplanung in Witten: Ideen & Kosten",
+        "excerpt": "Ratgeber für Witten.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/witten/blog/gartenplanung-ideen/"
+      },
+      {
+        "title": "Rasen neu anlegen in Witten: Kosten & Pflege",
+        "excerpt": "Ratgeber für Witten.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/witten/blog/rasen-neuanlage/"
+      },
+      {
+        "title": "Terrasse bauen in Witten: Materialien & Kosten",
+        "excerpt": "Ratgeber für Witten.",
+        "tag": "Ratgeber",
+        "gradient": "from-accent-500 to-accent-700",
+        "svg": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\"></path>",
+        "url": "/gartenbau/witten/blog/terrasse-bauen/"
+      }
+    ]
   }
 }

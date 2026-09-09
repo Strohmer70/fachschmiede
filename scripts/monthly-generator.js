@@ -2,17 +2,25 @@
 /**
  * Monatlicher Artikel-Generator für fachschmiede.de
  * 
- * Scannt automatisch alle stadt-*.html Dateien und generiert
- * für jede Stadt-Gewerk-Kombination genau 1 Artikel pro Monat.
- * 
- * INTEGRIERTES SYSTEM:
- * 1. Generiert HTML-Dateien
- * 2. Schreibt in Supabase articles Tabelle
- * 3. Aktualisiert article-index.json
+ * NUTZT DIE ZENTRALE CONFIG: /config/system-config.js
+ * Keine Hardcodes mehr! Alle Gewerke/Städte kommen aus der SSOT.
  */
 
 const fs = require('fs');
 const path = require('path');
+
+// ═══ ZENTRALE CONFIG LADEN ═══
+const {
+  SYSTEM_CONFIG,
+  getAllCombinations,
+  getTrade,
+  getCity,
+  getTradeName,
+  getCityName,
+  getArticleTopics,
+  getTradeEmoji,
+} = require('../config/system-config.js');
+
 const { createClient } = require('@supabase/supabase-js');
 const fetch = require('node-fetch');
 
@@ -25,32 +33,6 @@ const MOONSHOT_API_URL = process.env.MOONSHOT_API_URL || 'https://api.moonshot.a
 
 // Max Artikel pro Durchlauf (Safety-Limit)
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '10', 10);
-
-// Trade Mapping: Kurzform → Voller Name
-const TRADE_MAP = {
-  'dach': { slug: 'dachdecker', name: 'Dachdecker' },
-  'elek': { slug: 'elektriker', name: 'Elektriker' },
-  'klempner': { slug: 'klempner', name: 'Klempner' },
-  'maler': { slug: 'maler', name: 'Maler' },
-  'zimm': { slug: 'zimmerer', name: 'Zimmerer' },
-  'garten': { slug: 'gartenpflege', name: 'Gartenpflege' },
-  'fliesen': { slug: 'fliesenleger', name: 'Fliesenleger' },
-  'schorn': { slug: 'schornsteinfeger', name: 'Schornsteinfeger' },
-  'schrein': { slug: 'schreiner', name: 'Schreiner' },
-};
-
-// Themen pro Gewerk (rotieren monatlich)
-const TOPICS = {
-  dachdecker: ['Dachdämmung Kosten', 'Sturmschaden Reparatur', 'Dachsanierung planen', 'Dachziegel Arten', 'Dachfenster einbauen', 'Dachrinne reinigen'],
-  elektriker: ['E-Check 2026', 'LED Beleuchtung', 'Sicherungskasten erneuern', 'Photovoltaik Anschluss', 'Smart Home nachrüsten', 'Wallbox Installation'],
-  klempner: ['Wasserdruck optimieren', 'Abfluss verstopft', 'Warmwasserspeicher tauschen', 'Heizkörper entlüften', 'Badrenovierung planen', 'Wasserschaden Sanierung'],
-  maler: ['Tapezierarbeiten Kosten', 'Fassadensanierung 2026', 'Malerkosten pro m²', 'Tapeten Trends', 'Lasuren Holzschutz', 'Keller anstreichen'],
-  zimmerer: ['Holzschutz Terrassen', 'Carport Planung', 'Gauben ausbauen', 'Holzterrasse verlegen', 'Dachstuhl Reparatur', 'Wintergarten Holz'],
-  gartenpflege: ['Rasenpflege Frühling', 'Hecke schneiden', 'Baumfällung', 'Gartengestaltung', 'Unkrautbekämpfung', 'Gartenwintervorbereitung'],
-  fliesenleger: ['Badfliesen verlegen', 'Bodenfliesen verlegen', 'Naturstein verlegen', 'Fugen erneuern', 'Dusche abdichten', 'Küchenrückwand gestalten'],
-  schornsteinfeger: ['Regelmäßige Kehrung', 'Feuerstätten-Bescheid', 'Schornstein Sanierung', 'Kamin reinigen', 'Abgasuntersuchung', 'Pelletofen Beratung'],
-  schreiner: ['Maßgefertigte Möbel', 'Küchenbau', 'Treppenbau', 'Fenster erneuern', 'Innenausbau', 'Holzrestaurierung'],
-};
 
 // ─── SUPABASE CLIENT ────────────────────────────────────────────────
 
@@ -82,56 +64,19 @@ function getMonthSlug() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function discoverCityTradeCombinations() {
-  const publicDir = path.join(process.cwd(), 'public');
-  const files = fs.readdirSync(publicDir);
-  
-  const combinations = [];
-  const cities = new Set();
-  const trades = new Set();
-  
-  for (const file of files) {
-    const match = file.match(/^stadt-([a-z]+)-(.+)\.html$/);
-    if (match) {
-      const tradeCode = match[1];
-      const citySlug = match[2];
-      const tradeInfo = TRADE_MAP[tradeCode];
-      
-      if (tradeInfo) {
-        combinations.push({
-          citySlug,
-          tradeCode,
-          tradeSlug: tradeInfo.slug,
-          tradeName: tradeInfo.name
-        });
-        cities.add(citySlug);
-        trades.add(tradeInfo.slug);
-      }
-    }
-  }
-  
-  return { combinations, cities: Array.from(cities), trades: Array.from(trades) };
-}
-
-function getCityDisplayName(citySlug) {
-  return citySlug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-    .replace('Ruhr', '(Ruhr)');
-}
-
 function getTopicForCombination(tradeSlug, comboIndex) {
-  const topics = TOPICS[tradeSlug] || TOPICS['dachdecker'];
+  const topics = getArticleTopics(tradeSlug);
+  if (!topics || topics.length === 0) {
+    // Fallback-Topic wenn keins definiert
+    return {
+      slug: 'allgemeiner-ratgeber',
+      title: (city) => `Ratgeber ${getTradeName(tradeSlug)} in ${city}`,
+      tag: 'Ratgeber'
+    };
+  }
   const monthIndex = new Date().getMonth();
   const topicIndex = (monthIndex + comboIndex) % topics.length;
-  const topicTitle = topics[topicIndex];
-  
-  return {
-    slug: topicTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-    title: topicTitle,
-    keyword: topicTitle.split(' ')[0]
-  };
+  return topics[topicIndex];
 }
 
 // ─── KIMI API ───────────────────────────────────────────────────────
@@ -182,7 +127,9 @@ async function callKimiAPI(prompt, maxRetries = 3) {
 }
 
 async function generateArticle(tradeSlug, citySlug, cityName, tradeName, topic) {
-  const prompt = `Schreibe einen umfassenden, SEO-optimierten Ratgeber-Artikel über "${topic.title}" in ${cityName}.
+  const topicTitle = typeof topic.title === 'function' ? topic.title(cityName) : topic.title;
+  
+  const prompt = `Schreibe einen umfassenden, SEO-optimierten Ratgeber-Artikel über "${topicTitle}" in ${cityName}.
 
 ANFORDERUNGEN:
 - Länge: 1200-1500 Wörter
@@ -204,7 +151,7 @@ LOKALE BEZÜGE:
 - Erwähne "Ruhrgebiet" wenn relevant
 - Bezug auf Altbautypen aus den 60er/70er Jahren
 
-SEO: Keyword "${topic.keyword} ${cityName}", kurze Absätze, konkrete Zahlen.
+SEO: Keyword "${topicTitle.split(' ')[0]} ${cityName}", kurze Absätze, konkrete Zahlen.
 GIB NUR DEN ARTIKEL-TEXT ZURÜCK.`;
 
   const content = await callKimiAPI(prompt);
@@ -219,8 +166,8 @@ GIB NUR DEN ARTIKEL-TEXT ZURÜCK.`;
   
   if (faqs.length === 0) {
     faqs.push(
-      { q: `Wie lange dauert ${topic.title} in ${cityName}?`, a: `In der Regel 1-3 Werktage je nach Umfang.` },
-      { q: `Was kostet ${topic.title} in ${cityName}?`, a: `Zwischen 500 und 3.000 Euro je nach Projektgröße.` },
+      { q: `Wie lange dauert ${topicTitle} in ${cityName}?`, a: `In der Regel 1-3 Werktage je nach Umfang.` },
+      { q: `Was kostet ${topicTitle} in ${cityName}?`, a: `Zwischen 500 und 3.000 Euro je nach Projektgröße.` },
       { q: `Benötige ich eine Genehmigung?`, a: `Für kleinere Reparaturen meist nicht. Bei größeren Projekten kann eine Baugenehmigung nötig sein.` }
     );
   }
@@ -230,7 +177,8 @@ GIB NUR DEN ARTIKEL-TEXT ZURÜCK.`;
 
 function generateHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, content, faqs) {
   const fullSlug = `${topic.slug}-${monthSlug}`;
-  const title = `${topic.title} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
+  const topicTitle = typeof topic.title === 'function' ? topic.title(cityName) : topic.title;
+  const title = `${topicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
   const today = new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
   
   const faqHTML = faqs.map(faq => `
@@ -252,7 +200,7 @@ function generateHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
-<meta name="description" content="${topic.title} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.">
+<meta name="description" content="${topicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.7;margin:0}
@@ -275,7 +223,7 @@ a{color:#2563eb;text-decoration:none}
 <header>
 <div class="container">
 <div style="font-size:0.875rem;text-transform:uppercase;color:#60a5fa;margin-bottom:8px;">${tradeName} ${cityName}</div>
-<h1>${topic.title} in ${cityName}</h1>
+<h1>${topicTitle} in ${cityName}</h1>
 <div class="meta">Aktualisiert: ${today} · 8 Min. Lesezeit</div>
 </div>
 </header>
@@ -307,9 +255,10 @@ async function saveArticleToDatabase(tradeSlug, citySlug, cityName, tradeName, t
   
   try {
     const fullSlug = `${topic.slug}-${monthSlug}`;
-    const title = `${topic.title} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
-    const excerpt = `Ratgeber zu ${topic.title} in ${cityName}. Fachbetriebe, Kosten & Tipps.`;
-    const metaDescription = `${topic.title} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.`;
+    const topicTitle = typeof topic.title === 'function' ? topic.title(cityName) : topic.title;
+    const title = `${topicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
+    const excerpt = `Ratgeber zu ${topicTitle} in ${cityName}. Fachbetriebe, Kosten & Tipps.`;
+    const metaDescription = `${topicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.`;
     
     const articleData = {
       title,
@@ -351,10 +300,12 @@ async function saveArticleToDatabase(tradeSlug, citySlug, cityName, tradeName, t
 // ─── HAUPTFUNKTION ──────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 Monatlicher Artikel-Generator gestartet');
+  console.log('🚀 Monatlicher Artikel-Generator (SSOT-Version)');
   console.log(`📅 Monat: ${getMonthSlug()}`);
   console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅' : '❌'}`);
   console.log(`🛡️  Max Artikel pro Run: ${MAX_ARTICLES_PER_RUN}`);
+  console.log(`📊 Gewerke: ${Object.keys(SYSTEM_CONFIG.trades).length}`);
+  console.log(`🏙️  Städte: ${Object.keys(SYSTEM_CONFIG.cities).length}`);
   
   // Supabase initialisieren
   initSupabase();
@@ -364,19 +315,14 @@ async function main() {
     process.exit(1);
   }
   
-  // 1. Entdecke alle Stadt-Gewerk-Kombinationen
-  const { combinations, cities, trades } = discoverCityTradeCombinations();
-  console.log(`\n📊 Gefunden: ${combinations.length} Kombinationen`);
-  console.log(`   ${cities.length} Städte × ~${trades.length} Gewerke`);
-  console.log(`   Gewerke: ${trades.join(', ')}`);
-  
-  if (combinations.length === 0) {
-    console.error('❌ Keine stadt-*.html Dateien gefunden!');
-    process.exit(1);
-  }
+  // ═══ ZENTRALE CONFIG NUTZEN ═══
+  // Kein Datei-Scanning mehr! Direkt aus SSOT
+  const combinations = getAllCombinations();
+  console.log(`\n📊 Kombinationen: ${combinations.length}`);
+  console.log(`   ${Object.keys(SYSTEM_CONFIG.cities).length} Städte × ${Object.keys(SYSTEM_CONFIG.trades).length} Gewerke`);
   
   // 2. Lade bestehenden Index
-  const indexPath = path.join(process.cwd(), 'lib', 'article-index.json');
+  const indexPath = path.join(process.cwd(), 'public', 'lib', 'article-index.json');
   let articleIndex = {};
   try {
     articleIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
@@ -399,8 +345,17 @@ async function main() {
       break;
     }
     
-    const { citySlug, tradeSlug, tradeName } = combinations[i];
-    const cityName = getCityDisplayName(citySlug);
+    const { tradeSlug, citySlug } = combinations[i];
+    const trade = getTrade(tradeSlug);
+    const city = getCity(citySlug);
+    
+    if (!trade || !city) {
+      console.log(`⚠️  Ungültige Kombination: ${tradeSlug}/${citySlug}`);
+      continue;
+    }
+    
+    const cityName = city.name;
+    const tradeName = trade.name;
     const topic = getTopicForCombination(tradeSlug, i);
     const fullSlug = `${topic.slug}-${monthSlug}`;
     const filePath = path.join(process.cwd(), 'public', 'blog', tradeSlug, citySlug, `${fullSlug}.html`);
@@ -412,8 +367,8 @@ async function main() {
       continue;
     }
     
-    console.log(`\n📝 [${i+1}/${combinations.length}] ${tradeSlug}/${citySlug}`);
-    console.log(`   Thema: ${topic.title} | Stadt: ${cityName}`);
+    console.log(`\n📝 [${i+1}/${combinations.length}] ${trade.emoji} ${tradeName} in ${cityName}`);
+    console.log(`   Thema: ${typeof topic.title === 'function' ? topic.title(cityName) : topic.title}`);
     
     try {
       const { content, faqs } = await generateArticle(tradeSlug, citySlug, cityName, tradeName, topic);
@@ -440,9 +395,9 @@ async function main() {
       if (!articleIndex[tradeSlug][citySlug]) articleIndex[tradeSlug][citySlug] = [];
       
       articleIndex[tradeSlug][citySlug].push({
-        title: `${topic.title} in ${cityName}`,
-        excerpt: `Ratgeber zu ${topic.title} in ${cityName}.`,
-        tag: 'Ratgeber',
+        title: typeof topic.title === 'function' ? topic.title(cityName) : topic.title,
+        excerpt: `Ratgeber zu ${typeof topic.title === 'function' ? topic.title(cityName) : topic.title} in ${cityName}.`,
+        tag: topic.tag || 'Ratgeber',
         url: `/${tradeSlug}/${citySlug}/blog/${fullSlug}/`,
         slug: fullSlug,
         status: 'online',
