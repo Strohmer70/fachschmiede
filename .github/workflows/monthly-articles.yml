@@ -4,9 +4,9 @@ permissions:
   contents: write
 
 on:
-  schedule:
-    - cron: '0 6 1 * *'  # Jeden 1. des Monats um 06:00 UTC
-  workflow_dispatch:      # Manuelle Ausfuehrung moeglich
+  # schedule:
+  #   - cron: '0 6 1 * *'  # DEAKTIVIERT wegen Kosten
+  workflow_dispatch:      # Nur manuell
 
 jobs:
   generate-articles:
