@@ -5,8 +5,8 @@ permissions:
 
 on:
   schedule:
-    - cron: '0 6 1 * *'
-  workflow_dispatch:
+    - cron: '0 6 1 * *'  # Jeden 1. des Monats um 06:00 UTC
+  workflow_dispatch:      # Manuelle Ausfuehrung moeglich
 
 jobs:
   generate-articles:
