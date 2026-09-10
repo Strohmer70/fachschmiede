@@ -97,7 +97,7 @@ async function callKimiAPI(prompt, maxRetries = 3) {
       { role: 'user', content: prompt }
     ],
     temperature: 1,
-    max_tokens: 16000
+    max_tokens: 32000
   };
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -116,6 +116,10 @@ async function callKimiAPI(prompt, maxRetries = 3) {
       const data = await response.json();
       if (data.choices?.[0]?.message?.content) {
         return data.choices[0].message.content;
+      }
+      // Kimi API manchmal in reasoning_content
+      if (data.choices?.[0]?.message?.reasoning_content) {
+        return data.choices[0].message.reasoning_content;
       }
       throw new Error('Ungültige API-Antwort');
     } catch (error) {
