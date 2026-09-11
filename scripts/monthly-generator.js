@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Monatlicher Artikel-Generator für fachschmiede.de
+ * TEMPLATE-BASIERTER Artikel-Generator für fachschmiede.de
  * 
- * NUTZT DIE ZENTRALE CONFIG: /config/system-config.js
- * Keine Hardcodes mehr! Alle Gewerke/Städte kommen aus der SSOT.
+ * KEINE API-ANRUFE! 100% kostenlos, sofort einsatzbereit.
+ * Nutzt lokale Templates mit Stadt/Gewerk-Variablen.
  */
 
 const fs = require('fs');
@@ -21,160 +21,118 @@ const {
   getTradeEmoji,
 } = require('../config/system-config.js');
 
-const { createClient } = require('@supabase/supabase-js');
-const fetch = require('node-fetch');
-
 // ─── KONFIGURATION ──────────────────────────────────────────────────
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY || 'sk-dflfmQZYslaRgqiVP8edlrh6JKG8Kepm5GkTqZkSmf7pmGgp';
-const MOONSHOT_API_URL = process.env.MOONSHOT_API_URL || 'https://api.moonshot.ai/v1/chat/completions';
 
 // Max Artikel pro Durchlauf (Safety-Limit)
 const MAX_ARTICLES_PER_RUN = parseInt(process.env.MAX_ARTICLES_PER_RUN || '10', 10);
 
-// ─── SUPABASE CLIENT ────────────────────────────────────────────────
+// ─── TEMPLATE-SYSTEM ────────────────────────────────────────────────
 
-let supabase = null;
-let supabaseAvailable = false;
-
-function initSupabase() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.log('⚠️  Supabase Umgebungsvariablen nicht gesetzt');
-    return false;
-  }
-  try {
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: { autoRefreshToken: false, persistSession: false }
-    });
-    supabaseAvailable = true;
-    console.log('✅ Supabase Client initialisiert');
-    return true;
-  } catch (err) {
-    console.log('⚠️  Supabase nicht verfügbar:', err.message);
-    return false;
-  }
-}
-
-// ─── HILFSFUNKTIONEN ────────────────────────────────────────────────
-
-function getMonthSlug() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-}
-
-function getTopicForCombination(tradeSlug, comboIndex) {
-  const topics = getArticleTopics(tradeSlug);
-  if (!topics || topics.length === 0) {
-    // Fallback-Topic wenn keins definiert
-    return {
-      slug: 'allgemeiner-ratgeber',
-      title: (city) => `Ratgeber ${getTradeName(tradeSlug)} in ${city}`,
-      tag: 'Ratgeber'
-    };
-  }
-  const monthIndex = new Date().getMonth();
-  const topicIndex = (monthIndex + comboIndex) % topics.length;
-  return topics[topicIndex];
-}
-
-// ─── KIMI API ───────────────────────────────────────────────────────
-
-async function callKimiAPI(prompt, maxRetries = 3) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${MOONSHOT_API_KEY}`
-  };
-
-  const body = {
-    model: 'kimi-k2.6',
-    messages: [
-      {
-        role: 'system',
-        content: 'Du bist ein erfahrener deutscher SEO-Content-Writer spezialisiert auf Handwerker- und Baubranche. Du schreibst fundierte, lokale Ratgeber-Artikel.'
-      },
-      { role: 'user', content: prompt }
-    ],
-    temperature: 1,
-    max_tokens: 32000
-  };
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(MOONSHOT_API_URL, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-
-      const data = await response.json();
-      if (data.choices?.[0]?.message?.content) {
-        return data.choices[0].message.content;
-      }
-      // Kimi API manchmal in reasoning_content
-      if (data.choices?.[0]?.message?.reasoning_content) {
-        return data.choices[0].message.reasoning_content;
-      }
-      throw new Error('Ungültige API-Antwort');
-    } catch (error) {
-      if (attempt === maxRetries) throw error;
-      const delay = Math.pow(2, attempt) * 1000;
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-}
-
-async function generateArticle(tradeSlug, citySlug, cityName, tradeName, topic) {
+/**
+ * Generiert Artikel-Content aus Templates
+ * Kein API-Aufruf! Variablen werden ersetzt.
+ */
+function generateArticleFromTemplate(tradeSlug, citySlug, cityName, tradeName, topic) {
   const topicTitle = typeof topic.title === 'function' ? topic.title(cityName) : topic.title;
+  const trade = getTrade(tradeSlug);
+  const services = trade?.services?.join(', ') || 'verschiedene Leistungen';
+  const painPoints = trade?.painPoints || 'typische Probleme';
   
-  const prompt = `Schreibe einen umfassenden, SEO-optimierten Ratgeber-Artikel über "${topicTitle}" in ${cityName}.
-
-ANFORDERUNGEN:
-- Länge: 1200-1500 Wörter
-- Sprache: Deutsch (Deutschland)
-- Zielgruppe: Hausbesitzer in ${cityName}
-- Ton: Professionell, vertrauenswürdig, lokal
-
-STRUKTUR (mit ## Überschriften):
-
-## Einleitung (150-200 Wörter)
-## Warum ist das wichtig? (200-250 Wörter)
-## Die 5 wichtigsten Punkte (250-300 Wörter)
-## Kosten in ${cityName} (200-250 Wörter)
-## Häufig gestellte Fragen (4-5 Fragen)
-## Fazit (150-200 Wörter)
-
-LOKALE BEZÜGE:
-- Erwähne "${cityName}" natürlich
-- Erwähne "Ruhrgebiet" wenn relevant
-- Bezug auf Altbautypen aus den 60er/70er Jahren
-
-SEO: Keyword "${topicTitle.split(' ')[0]} ${cityName}", kurze Absätze, konkrete Zahlen.
-GIB NUR DEN ARTIKEL-TEXT ZURÜCK.`;
-
-  const content = await callKimiAPI(prompt);
+  // Haupt-Keyword für SEO
+  const mainKeyword = topicTitle.split(':')[0];
   
-  // Parse FAQs
-  const faqs = [];
-  const faqRegex = /\*\*Frage:\*\*\s*(.+?)\n\*\*Antwort:\*\*\s*(.+?)(?=\n\*\*Frage:|\n## |$)/gs;
-  let match;
-  while ((match = faqRegex.exec(content)) !== null) {
-    faqs.push({ q: match[1].trim(), a: match[2].trim() });
-  }
-  
-  if (faqs.length === 0) {
-    faqs.push(
-      { q: `Wie lange dauert ${topicTitle} in ${cityName}?`, a: `In der Regel 1-3 Werktage je nach Umfang.` },
-      { q: `Was kostet ${topicTitle} in ${cityName}?`, a: `Zwischen 500 und 3.000 Euro je nach Projektgröße.` },
-      { q: `Benötige ich eine Genehmigung?`, a: `Für kleinere Reparaturen meist nicht. Bei größeren Projekten kann eine Baugenehmigung nötig sein.` }
-    );
-  }
+  // Template-Content mit Variablen
+  const content = `## Einleitung
+
+Wenn Sie als Hausbesitzer in ${cityName} mit ${topicTitle} beschäftigt sind, stehen Sie vor einer wichtigen Entscheidung. Die Wahl des richtigen Fachbetriebs macht den Unterschied zwischen einem reibungslosen Projekt und jahrelangen Nacharbeiten.
+
+In ${cityName} und dem gesamten Ruhrgebiet gibt es spezifische Herausforderungen: Die typischen Altbauten aus den 60er und 70er Jahren erfordern besonderes Fachwissen. Ein erfahrener ${tradeName} kennt diese Eigenheiten und plant entsprechend.
+
+## Warum ist das wichtig?
+
+Viele Hausbesitzer in ${cityName} unterschätzen die Komplexität von ${mainKeyword}. Die Folgen: Verzögerungen, Kostensteigerungen und im schlimmsten Fall Mängel, die erst nach Monaten auffallen.
+
+Die gute Nachricht: Mit der richtigen Vorbereitung und einem qualifizierten ${tradeName} aus der Region lässt sich das Projekt effizient umsetzen. Die kurzen Wege in ${cityName} und die Umgebung ermöglichen schnelle Reaktionszeiten – besonders wichtig bei ${painPoints}.
+
+## Die 5 wichtigsten Punkte
+
+### 1. Fachgerechte Planung
+Jedes Projekt beginnt mit einer gründlichen Analyse. Ein professioneller ${tradeName} in ${cityName} erstellt zunächst ein Konzept, das Ihre spezifischen Anforderungen berücksichtigt. Dabei werden auch bauliche Gegebenheiten wie die typischen Dachformen oder Elektroinstallationen älterer Gebäude im Ruhrgebiet einbezogen.
+
+### 2. Transparente Kostenkalkulation
+Überraschende Zusatzkosten sind der größte Stressfaktor bei Bauprojekten. Seriöse Fachbetriebe in ${cityName} erstellen daher ein detailliertes, schriftliches Angebot. Darin enthalten sind alle Leistungen, Materialien und Zeitpläne – ohne versteckte Kosten.
+
+### 3. Qualität der Materialien
+Die Wahl der richtigen Materialien ist entscheidend für die Haltbarkeit. In ${cityName}, wo das Klima mit seinen feuchten Herbsttagen und kalten Wintern besondere Anforderungen stellt, kommt es auf Qualität an. Günstige Alternativen führen oft zu teuren Nacharbeiten.
+
+### 4. Termintreue und Zuverlässigkeit
+Ein zuverlässiger ${tradeName} hält Einhaltung der vereinbarten Termine. Das ist besonders wichtig, wenn das Projekt zeitkritisch ist – etwa bei ${painPoints}. Fragen Sie vorab nach Referenzen und Erfahrungen mit ähnlichen Projekten in ${cityName}.
+
+### 5. Garantie und Service
+Professionelle Anbieter gewährleisten ihre Arbeit. Eine umfassende Garantie gibt Ihnen die Sicherheit, dass eventuelle Probleme kostenlos behoben werden. Achten Sie auf die genauen Konditionen und die Reaktionszeit im Garantiefall.
+
+## Kosten in ${cityName}
+
+Die Kosten für ${mainKeyword} in ${cityName} variieren je nach Projektumfang:
+
+**Kleine Projekte:** 500 – 1.500 €  
+**Mittlere Projekte:** 1.500 – 5.000 €  
+**Große Projekte:** 5.000 – 15.000 €
+
+Diese Angaben sind Richtwerte. Für ein verbindliches Angebot ist eine kostenlose Besichtigung vor Ort notwendig. Der Fachbetrieb kann dann die spezifischen Gegebenheiten Ihres Objekts in ${cityName} bewerten und ein maßgeschneidertes Konzept erstellen.
+
+**Was beeinflusst die Kosten?**
+- Umfang und Komplexität des Projekts
+- Zugänglichkeit der Baustelle
+- Materialwahl (Standard vs. Premium)
+- Dringlichkeit (Normaltermin vs. Express)
+
+**Tipp:** Lassen Sie sich von mehreren Fachbetrieben in ${cityName} ein Angebot erstellen. Vergleichen Sie nicht nur den Preis, sondern auch den Leistungsumfang und die eingesetzten Materialien.
+
+## Häufig gestellte Fragen
+
+**Wie lange dauert ${mainKeyword} in ${cityName}?**
+Die Dauer hängt stark vom Projektumfang ab. Kleine Aufträge sind oft innerhalb eines Tages erledigt, größere Projekte können mehrere Wochen in Anspruch nehmen. Bei der Besichtigung erhalten Sie einen konkreten Zeitplan.
+
+**Was kostet ein ${tradeName} in ${cityName}?**
+Die Kosten variieren je nach Aufwand. Für eine erste Einschätzung reicht oft eine telefonische Beschreibung des Problems. Ein verbindliches Angebot erhalten Sie nach der kostenlosen Besichtigung vor Ort.
+
+**Benötige ich eine Genehmigung?**
+Für viele Arbeiten ist keine Genehmigung nötig. Bei umfangreicheren Projekten oder Eingriffen in die Bausubstanz kann jedoch eine Baugenehmigung erforderlich sein. Ein erfahrener ${tradeName} aus ${cityName} berät Sie hierzu.
+
+**Wie finde ich einen zuverlässigen ${tradeName} in ${cityName}?**
+Achten Sie auf nachweisbare Erfahrung, transparente Kommunikation und schriftliche Angebote. Lokale Betriebe haben den Vorteil kurzer Anfahrtswege und Kenntnis der regionalen Besonderheiten.
+
+**Was ist bei Altbauten in ${cityName} zu beachten?**
+Die typischen Wohngebäude aus den 60er und 70er Jahren im Ruhrgebiet haben oft spezifische Eigenschaften. Ein ortsansässiger Fachbetrieb kennt diese Herausforderungen und plant entsprechend.
+
+## Fazit
+
+${mainKeyword} in ${cityName} erfordert Fachwissen und eine sorgfältige Planung. Die Investition in einen qualifizierten ${tradeName} zahlt sich durch qualitativ hochwertige Ergebnisse und langfristige Haltbarkeit aus.
+
+Nutzen Sie die kostenlose Erstberatung vor Ort, um Ihr Projekt professionell zu planen. Ein verlässlicher Partner aus der Region ${cityName} begleitet Sie von der ersten Idee bis zur fertigen Umsetzung – und darüber hinaus mit umfassendem Service.
+
+**Kontaktieren Sie noch heute einen erfahrenen ${tradeName} in ${cityName} und sichern Sie sich Ihr kostenloses Angebot.**`;
+
+  // FAQs generieren
+  const faqs = [
+    { 
+      q: `Wie lange dauert ${mainKeyword} in ${cityName}?`, 
+      a: `Die Dauer hängt vom Umfang ab. Kleine Projekte: 1-3 Tage. Mittlere Projekte: 1-2 Wochen. Bei der kostenlosen Besichtigung erhalten Sie einen konkreten Zeitplan.` 
+    },
+    { 
+      q: `Was kostet ${mainKeyword} in ${cityName}?`, 
+      a: `Kleine Projekte: 500-1.500 €, Mittlere: 1.500-5.000 €, Große: 5.000-15.000 €. Ein verbindliches Angebot erhalten Sie nach der kostenlosen Besichtigung.` 
+    },
+    { 
+      q: `Benötige ich eine Baugenehmigung in ${cityName}?`, 
+      a: `Für kleinere Arbeiten meist nicht. Bei größeren Eingriffen oder Änderungen an der Bausubstanz kann eine Genehmigung nötig sein. Ihr ${tradeName} berät Sie dazu.` 
+    },
+    { 
+      q: `Wie finde ich einen zuverlässigen ${tradeName} in ${cityName}?`, 
+      a: `Achten Sie auf: nachweisbare Erfahrung, transparente Kommunikation, schriftliche Angebote, lokale Referenzen und umfassende Garantieleistungen.` 
+    }
+  ];
   
   return { content, faqs };
 }
@@ -182,8 +140,12 @@ GIB NUR DEN ARTIKEL-TEXT ZURÜCK.`;
 function generateHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, content, faqs) {
   const fullSlug = `${topic.slug}-${monthSlug}`;
   const topicTitle = typeof topic.title === 'function' ? topic.title(cityName) : topic.title;
-  const title = `${topicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
+  // Vermeide doppeltes "in Stadtname" im Titel
+  const cleanTopicTitle = topicTitle.replace(new RegExp(`\\s+in\\s+${cityName}$`, 'i'), '');
+  const title = `${cleanTopicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
   const today = new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+  const trade = getTrade(tradeSlug);
+  const ctaText = trade?.ctaPrimary || 'Kostenlose Besichtigung anfragen';
   
   const faqHTML = faqs.map(faq => `
 <details style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;">
@@ -204,7 +166,7 @@ function generateHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
-<meta name="description" content="${topicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.">
+<meta name="description" content="${cleanTopicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.7;margin:0}
@@ -227,7 +189,7 @@ a{color:#2563eb;text-decoration:none}
 <header>
 <div class="container">
 <div style="font-size:0.875rem;text-transform:uppercase;color:#60a5fa;margin-bottom:8px;">${tradeName} ${cityName}</div>
-<h1>${topicTitle} in ${cityName}</h1>
+<h1>${cleanTopicTitle} in ${cityName}</h1>
 <div class="meta">Aktualisiert: ${today} · 8 Min. Lesezeit</div>
 </div>
 </header>
@@ -240,7 +202,7 @@ ${faqHTML}
 </div>
 <div class="cta-box">
 <h3>Benötigen Sie einen ${tradeName} in ${cityName}?</h3>
-<a href="/${tradeSlug}/${citySlug}/#kontakt" class="cta-button">Kostenloses Angebot anfordern</a>
+<a href="/${tradeSlug}/${citySlug}/#kontakt" class="cta-button">${ctaText}</a>
 </div>
 </article>
 <a href="/${tradeSlug}/${citySlug}/" class="back-link">← Zurück zu ${tradeName} ${cityName}</a>
@@ -249,83 +211,22 @@ ${faqHTML}
 </html>`;
 }
 
-// ─── SUPABASE INTEGRATION ──────────────────────────────────────────
-
-async function saveArticleToDatabase(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, filePath, wordCount) {
-  if (!supabaseAvailable || !supabase) {
-    console.log('   ⚠️  Supabase nicht verfügbar — überspringe DB-Speicherung');
-    return false;
-  }
-  
-  try {
-    const fullSlug = `${topic.slug}-${monthSlug}`;
-    const topicTitle = typeof topic.title === 'function' ? topic.title(cityName) : topic.title;
-    const title = `${topicTitle} in ${cityName}: Ratgeber & Kosten ${new Date().getFullYear()}`;
-    const excerpt = `Ratgeber zu ${topicTitle} in ${cityName}. Fachbetriebe, Kosten & Tipps.`;
-    const metaDescription = `${topicTitle} in ${cityName} ✓ Fachbetriebe ✓ Kosten ✓ Tipps. Erfahren Sie alles Wichtige.`;
-    
-    const articleData = {
-      title,
-      slug: fullSlug,
-      file_path: filePath.replace(process.cwd(), ''),
-      url_path: `/${tradeSlug}/${citySlug}/blog/${fullSlug}/`,
-      trade_slug: tradeSlug,
-      city_slug: citySlug,
-      excerpt,
-      meta_description: metaDescription,
-      word_count: wordCount,
-      status: 'published',
-      ai_generated: true,
-      published_at: new Date().toISOString(),
-      month_slug: monthSlug
-    };
-    
-    const { data, error } = await supabase
-      .from('articles')
-      .upsert(articleData, { 
-        onConflict: 'trade_slug,city_slug,slug,month_slug',
-        ignoreDuplicates: false 
-      })
-      .select();
-    
-    if (error) {
-      console.log(`   ⚠️  DB-Fehler: ${error.message}`);
-      return false;
-    }
-    
-    console.log(`   ✅ In Datenbank gespeichert`);
-    return true;
-  } catch (err) {
-    console.log(`   ⚠️  DB-Speicherung fehlgeschlagen: ${err.message}`);
-    return false;
-  }
-}
-
 // ─── HAUPTFUNKTION ──────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 Monatlicher Artikel-Generator (SSOT-Version)');
-  console.log(`📅 Monat: ${getMonthSlug()}`);
-  console.log(`🔑 API-Key: ${MOONSHOT_API_KEY ? '✅' : '❌'}`);
+  console.log('🚀 TEMPLATE-BASIERTER Artikel-Generator');
+  console.log('💰 KOSTEN: 0€ — Keine API-Aufrufe!');
+  console.log(`📅 Monat: ${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
   console.log(`🛡️  Max Artikel pro Run: ${MAX_ARTICLES_PER_RUN}`);
   console.log(`📊 Gewerke: ${Object.keys(SYSTEM_CONFIG.trades).length}`);
   console.log(`🏙️  Städte: ${Object.keys(SYSTEM_CONFIG.cities).length}`);
   
-  // Supabase initialisieren
-  initSupabase();
-  
-  if (!MOONSHOT_API_KEY) {
-    console.error('❌ MOONSHOT_API_KEY fehlt!');
-    process.exit(1);
-  }
-  
   // ═══ ZENTRALE CONFIG NUTZEN ═══
-  // Kein Datei-Scanning mehr! Direkt aus SSOT
   const combinations = getAllCombinations();
   console.log(`\n📊 Kombinationen: ${combinations.length}`);
   console.log(`   ${Object.keys(SYSTEM_CONFIG.cities).length} Städte × ${Object.keys(SYSTEM_CONFIG.trades).length} Gewerke`);
   
-  // 2. Lade bestehenden Index
+  // Lade bestehenden Index
   const indexPath = path.join(process.cwd(), 'public', 'lib', 'article-index.json');
   let articleIndex = {};
   try {
@@ -334,13 +235,11 @@ async function main() {
     articleIndex = {};
   }
   
-  // 3. Generiere Artikel (mit Limit)
-  const monthSlug = getMonthSlug();
+  // Generiere Artikel (mit Limit)
+  const monthSlug = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
   let generatedCount = 0;
   let skippedCount = 0;
   let errorCount = 0;
-  let apiCalls = 0;
-  let dbSaved = 0;
   
   for (let i = 0; i < combinations.length; i++) {
     // Safety-Limit prüfen
@@ -360,7 +259,16 @@ async function main() {
     
     const cityName = city.name;
     const tradeName = trade.name;
-    const topic = getTopicForCombination(tradeSlug, i);
+    
+    // Bestimme Topic (rotierend nach Monat)
+    const topics = getArticleTopics(tradeSlug);
+    const topicIndex = new Date().getMonth() % (topics?.length || 1);
+    const topic = topics?.[topicIndex] || { 
+      slug: 'allgemeiner-ratgeber', 
+      title: (c) => `Ratgeber ${tradeName} in ${c}`,
+      tag: 'Ratgeber'
+    };
+    
     const fullSlug = `${topic.slug}-${monthSlug}`;
     const filePath = path.join(process.cwd(), 'public', 'blog', tradeSlug, citySlug, `${fullSlug}.html`);
     
@@ -375,8 +283,8 @@ async function main() {
     console.log(`   Thema: ${typeof topic.title === 'function' ? topic.title(cityName) : topic.title}`);
     
     try {
-      const { content, faqs } = await generateArticle(tradeSlug, citySlug, cityName, tradeName, topic);
-      apiCalls++;
+      // TEMPLATE statt API!
+      const { content, faqs } = generateArticleFromTemplate(tradeSlug, citySlug, cityName, tradeName, topic);
       
       // Speichern
       const dir = path.dirname(filePath);
@@ -388,12 +296,6 @@ async function main() {
       // Wörter zählen
       const wordCount = content.split(/\s+/).length;
       
-      // In Datenbank speichern
-      const dbSuccess = await saveArticleToDatabase(
-        tradeSlug, citySlug, cityName, tradeName, topic, monthSlug, filePath, wordCount
-      );
-      if (dbSuccess) dbSaved++;
-      
       // Index aktualisieren
       if (!articleIndex[tradeSlug]) articleIndex[tradeSlug] = {};
       if (!articleIndex[tradeSlug][citySlug]) articleIndex[tradeSlug][citySlug] = [];
@@ -402,31 +304,24 @@ async function main() {
         title: typeof topic.title === 'function' ? topic.title(cityName) : topic.title,
         excerpt: `Ratgeber zu ${typeof topic.title === 'function' ? topic.title(cityName) : topic.title} in ${cityName}.`,
         tag: topic.tag || 'Ratgeber',
+        gradient: 'from-accent-500 to-accent-700',
+        svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
         url: `/${tradeSlug}/${citySlug}/blog/${fullSlug}/`,
         slug: fullSlug,
         status: 'online',
         wordCount,
-        aiGenerated: true,
+        aiGenerated: false,
+        templateGenerated: true,
         publishedAt: new Date().toISOString(),
         monthSlug
       });
       
-      console.log(`   ✅ Gespeichert (${content.length} Zeichen, ~${wordCount} Wörter)`);
+      console.log(`   ✅ Gespeichert (~${wordCount} Wörter)`);
       generatedCount++;
       
-      // Rate-Limit
-      if (i < combinations.length - 1 && generatedCount < MAX_ARTICLES_PER_RUN) {
-        console.log(`   ⏳ Warte 3s...`);
-        await new Promise(r => setTimeout(r, 3000));
-      }
     } catch (error) {
       console.error(`   ❌ Fehler: ${error.message}`);
       errorCount++;
-      // Bei kritischem Fehler nicht abbrechen, sondern nächste Kombination versuchen
-      if (error.message.includes('401') || error.message.includes('403')) {
-        console.error('   🚨 API-Auth-Fehler — breche ab.');
-        break;
-      }
     }
   }
   
@@ -434,13 +329,11 @@ async function main() {
   fs.writeFileSync(indexPath, JSON.stringify(articleIndex, null, 2), 'utf-8');
   
   console.log(`\n🎉 FERTIG!`);
-  console.log(`   ✅ ${generatedCount} neue Artikel`);
-  console.log(`   💾 ${dbSaved} in Datenbank gespeichert`);
+  console.log(`   ✅ ${generatedCount} neue Artikel (Template)`);
   console.log(`   ⏭️  ${skippedCount} übersprungen`);
   console.log(`   ❌ ${errorCount} Fehler`);
-  console.log(`   🌐 ${apiCalls} API-Calls`);
+  console.log(`   💰 Kosten: 0€`);
   
-  // Exit-Code: 0 auch wenn einzelne Fehler auftraten (nicht-kritisch)
   process.exit(errorCount > 5 ? 1 : 0);
 }
 
