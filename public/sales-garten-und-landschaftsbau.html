@@ -22,7 +22,7 @@ tailwind.config = {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   body{font-family:'Inter',system-ui,sans-serif}
-  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal{opacity:1;transform:none}
   .reveal.visible{opacity:1;transform:none}
   ::selection{background:#16a34a;color:#fff}
   .onb-step{display:none}
@@ -734,10 +734,8 @@ tailwind.config = {
 
 <script>
 // Reveal
-const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
 }, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // Stadtsuche
 const search = document.getElementById('citySearch');
