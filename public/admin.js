@@ -453,7 +453,7 @@ function renderWebsitesView(pages, pagination) {
           <p class="font-black text-ink-900">${p.city?.name || 'Unbekannt'}</p>
           ${statusBadge}
         </div>
-        <p class="text-xs text-ink-500 mt-1">${tradeEmoji} ${p.trade?.name || '-'} · fachschmiede.de${getStaticFileUrl(p.trade?.slug, p.city?.slug)}</p>
+        <p class="text-xs text-ink-500 mt-1">${emoji} ${p.trade?.name || '-'} · fachschmiede.de${getStaticFileUrl(p.trade?.slug, p.city?.slug)}</p>
         <p class="text-xs text-ink-500 mt-2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</p>
         <div class="mt-4 flex gap-2">
           <a href="${getStaticFileUrl(p.trade?.slug, p.city?.slug)}" target="_blank" class="w-full text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
