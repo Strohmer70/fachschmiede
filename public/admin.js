@@ -13,32 +13,41 @@ async function doLogin() {
   const passwordInput = loginGate.querySelector('input[type="password"]');
   const password = passwordInput ? passwordInput.value : '';
 
-  if (!password) {
-    showToast('Bitte Passwort eingeben');
+  if (!password || password.length < 6) {
+    showToast('❌ Passwort muss mindestens 6 Zeichen haben');
     return;
   }
 
-  // Demo-Modus: Einfaches Passwort akzeptieren
-  // In Produktion würde hier ein API-Call erfolgen
-  if (password.length >= 4) {
-    // Demo-Modus: Token setzen damit API-Calls funktionieren
-    adminToken = 'demo-' + Date.now();
+  // Echte Authentifizierung gegen API
+  try {
+    const res = await fetch(`${API_BASE}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      showToast('❌ Falsches Passwort');
+      return;
+    }
+
+    adminToken = data.token;
     localStorage.setItem('adminToken', adminToken);
-    console.log('Login erfolgreich, Token gesetzt:', adminToken);
+    console.log('Login erfolgreich, Token gesetzt');
 
     hideLoginGate();
     showToast('✅ Admin-Login erfolgreich');
 
-    // Versuche trotzdem Dashboard-Daten zu laden
     try {
       await loadDashboard();
     } catch(e) {
       console.log('Dashboard-Daten konnten nicht geladen werden:', e);
     }
-    return;
+  } catch(e) {
+    showToast('❌ Login-Fehler: ' + e.message);
   }
-
-  showToast('❌ Passwort muss mindestens 4 Zeichen haben');
 }
 
 function hideLoginGate() {
