@@ -1890,32 +1890,6 @@ function showArticleDetail(articleId) {
 async function updateArticleStatus(articleId, status) {
   showToast('Status-Update für Artikel ' + articleId + ' auf ' + status + ' - Funktion folgt');
 }
-  const statusFilter = document.getElementById('articleStatus')?.value || '';
-  const tradeFilter = document.getElementById('articleTrade')?.value || '';
-  const cityFilter = document.getElementById('articleCity')?.value || '';
-
-  let filtered = allArticles;
-
-  if (statusFilter) {
-    const statusMap = {
-      'Entwurf': 'draft',
-      'Veröffentlicht': 'published',
-      'Archiviert': 'archived',
-    };
-    const code = statusMap[statusFilter] || statusFilter;
-    filtered = filtered.filter(a => (a.status || 'published') === code);
-  }
-
-  if (tradeFilter) {
-    filtered = filtered.filter(a => (a.trade_slug || '') === tradeFilter);
-  }
-
-  if (cityFilter) {
-    filtered = filtered.filter(a => (a.city_slug || '') === cityFilter);
-  }
-
-  renderArticlesTable(filtered);
-}
 
 // ═══════════ INIT ═══════════
 document.addEventListener('DOMContentLoaded', () => {
