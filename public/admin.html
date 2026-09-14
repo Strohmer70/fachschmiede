@@ -109,7 +109,19 @@ tailwind.config = {
     </form>
   </div>
 </div>
-<script>document.body.style.overflow='hidden';</script>
+<script>
+  // Auto-hide login gate if already authenticated
+  (function() {
+    const token = localStorage.getItem('adminToken');
+    const loginGate = document.getElementById('loginGate');
+    if (token && loginGate) {
+      loginGate.classList.add('hidden');
+      document.body.style.overflow = '';
+    } else {
+      document.body.style.overflow = 'hidden';
+    }
+  })();
+</script>
 
 
 <!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->
