@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 // @ts-ignore
-import articleIndex from '@/lib/article-index.json'
+import articleIndex from '@/public/lib/article-index.json'
 // SSOT: Namen aus zentraler Config — keine Hardcodes!
 // @ts-ignore
 import { getTradeName, getCityName } from '@/config/system-config.js'
