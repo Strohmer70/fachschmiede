@@ -227,7 +227,10 @@ const SYSTEM_CONFIG = {
 // ═══════════════════════════════════════════
 
 function getTrade(tradeSlug) {
-  return SYSTEM_CONFIG.trades[tradeSlug] || null;
+  // Findet Gewerk per Key ('gartenbau') ODER Slug ('garten-und-landschaftsbau')
+  return SYSTEM_CONFIG.trades[tradeSlug] 
+    || Object.values(SYSTEM_CONFIG.trades).find(t => t.slug === tradeSlug)
+    || null;
 }
 
 function getAllTrades() {
@@ -235,7 +238,8 @@ function getAllTrades() {
 }
 
 function getTradeSlugs() {
-  return Object.keys(SYSTEM_CONFIG.trades);
+  // Gibt kanonische URL-Slugs zurück (nicht Config-Keys)
+  return Object.values(SYSTEM_CONFIG.trades).map(t => t.slug);
 }
 
 function getCity(citySlug) {
