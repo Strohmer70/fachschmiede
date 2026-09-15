@@ -332,6 +332,10 @@ async function main() {
   
   // Speichere Index
   fs.writeFileSync(indexPath, JSON.stringify(articleIndex, null, 2), 'utf-8');
+  // SSOT-Sync: Kopie für Next.js Build-Import (blog/page.tsx liest @/lib/)
+  const libIndexPath = path.join(process.cwd(), 'lib', 'article-index.json');
+  fs.writeFileSync(libIndexPath, JSON.stringify(articleIndex, null, 2), 'utf-8');
+  console.log('🔄 Index zu lib/article-index.json synchronisiert');
   
   console.log(`\n🎉 FERTIG!`);
   console.log(`   ✅ ${generatedCount} neue Artikel (Template)`);
