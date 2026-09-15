@@ -7,6 +7,7 @@ const TRADE_MAP = {
   zimm: 'zimmerer',
   maler: 'maler',
   shk: 'klempner',
+  klempner: 'klempner',
   garten: 'garten-und-landschaftsbau',
 }
 

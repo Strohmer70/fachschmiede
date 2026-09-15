@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dachdecker Holzwickede | Miet-Website zum Anmieten – DEMO</title>
-<meta name="description" content="Miet-Website (Demo): Dachdecker Holzwickede – Dachsanierung, Reparatur, Dämmung & Notdienst. Kostenlose Besichtigung & Festpreis-Angebot. Diese Stadt-Website ist noch frei und kann sofort angemietet werden.">
-<meta name="robots" content="noindex, nofollow">
+<title>Dachdecker Holzwickede | Festpreis. Feste Termine.</title>
+<meta name="description" content="Dachdecker Holzwickede – Dachsanierung, Reparatur, Dämmung & Notdienst. Kostenlose Besichtigung & Festpreis-Angebot. Diese Stadt-Website ist noch frei und kann sofort angemietet werden.">
+<meta name="robots" content="index, follow">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -483,7 +483,7 @@ document.getElementById('jahr').textContent = new Date().getFullYear();
   }
   if(m.firma){
     document.querySelectorAll('header .leading-tight .font-extrabold, footer .leading-tight .font-extrabold').forEach(function(el){ el.textContent = m.firma; });
-    document.title = m.firma + ' \u2013 ' + m.gewerk + ' ' + m.stadt + ' (Miet-Website DEMO)';
+    document.title = m.firma + ' \u2013 ' + m.gewerk + ' ' + m.stadt;
   }
   var sub = document.querySelector('header .leading-tight .text-xs');
   if(sub) sub.innerHTML = (m.gewerk || '') + ' in ' + (m.stadt || '') + ' \u00b7 offizielle Website';
