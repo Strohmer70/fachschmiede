@@ -2,43 +2,15 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 // @ts-ignore
 import articleIndex from '@/lib/article-index.json'
+// SSOT: Namen aus zentraler Config — keine Hardcodes!
+// @ts-ignore
+import { getTradeName, getCityName } from '@/config/system-config.js'
 
 interface PageProps {
   params: {
     trade: string
     city: string
   }
-}
-
-const tradeNames: Record<string, string> = {
-  dachdecker: 'Dachdecker',
-  elektriker: 'Elektriker',
-  klempner: 'Klempner',
-  maler: 'Maler',
-  zimmerer: 'Zimmerer',
-}
-
-const cityNames: Record<string, string> = {
-  bergkamen: 'Bergkamen',
-  bochum: 'Bochum',
-  'castrop-rauxel': 'Castrop-Rauxel',
-  dortmund: 'Dortmund',
-  ennepetal: 'Ennepetal',
-  froendenberg: 'Fröndenberg',
-  gevelsberg: 'Gevelsberg',
-  hagen: 'Hagen',
-  hattingen: 'Hattingen',
-  herne: 'Herne',
-  holzwickede: 'Holzwickede',
-  iserlohn: 'Iserlohn',
-  kamen: 'Kamen',
-  luenen: 'Lünen',
-  schwelm: 'Schwelm',
-  schwerte: 'Schwerte',
-  sprockhoevel: 'Sprockhövel',
-  unna: 'Unna',
-  'wetter-ruhr': 'Wetter (Ruhr)',
-  witten: 'Witten',
 }
 
 export async function generateStaticParams() {
@@ -54,8 +26,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const tradeName = tradeNames[params.trade] || params.trade
-  const cityName = cityNames[params.city] || params.city
+  const tradeName = getTradeName(params.trade)
+  const cityName = getCityName(params.city)
   
   return {
     title: `Ratgeber & Blog: ${tradeName} in ${cityName}`,
@@ -64,8 +36,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default function BlogOverviewPage({ params }: PageProps) {
-  const tradeName = tradeNames[params.trade] || params.trade
-  const cityName = cityNames[params.city] || params.city
+  const tradeName = getTradeName(params.trade)
+  const cityName = getCityName(params.city)
   
   // @ts-ignore
   const articles = articleIndex[params.trade]?.[params.city]

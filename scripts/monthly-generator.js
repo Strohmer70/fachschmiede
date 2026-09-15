@@ -38,13 +38,14 @@ function generateArticleFromTemplate(tradeSlug, citySlug, cityName, tradeName, t
   const services = trade?.services?.join(', ') || 'verschiedene Leistungen';
   const painPoints = trade?.painPoints || 'typische Probleme';
   
-  // Haupt-Keyword für SEO
-  const mainKeyword = topicTitle.split(':')[0];
+  // Haupt-Keyword für SEO — Stadtname aus dem Topic-Titel entfernen (vermeidet Dopplung)
+  const cleanTopic = topicTitle.replace(new RegExp(`\\s+in\\s+${cityName}$`, 'i'), '');
+  const mainKeyword = cleanTopic.split(':')[0].trim();
   
   // Template-Content mit Variablen
   const content = `## Einleitung
 
-Wenn Sie als Hausbesitzer in ${cityName} mit ${topicTitle} beschäftigt sind, stehen Sie vor einer wichtigen Entscheidung. Die Wahl des richtigen Fachbetriebs macht den Unterschied zwischen einem reibungslosen Projekt und jahrelangen Nacharbeiten.
+Wenn Sie als Hausbesitzer in ${cityName} sich mit dem Thema ${mainKeyword} beschäftigen, stehen Sie vor einer wichtigen Entscheidung. Die Wahl des richtigen Fachbetriebs macht den Unterschied zwischen einem reibungslosen Projekt und jahrelangen Nacharbeiten.
 
 In ${cityName} und dem gesamten Ruhrgebiet gibt es spezifische Herausforderungen: Die typischen Altbauten aus den 60er und 70er Jahren erfordern besonderes Fachwissen. Ein erfahrener ${tradeName} kennt diese Eigenheiten und plant entsprechend.
 
@@ -52,7 +53,7 @@ In ${cityName} und dem gesamten Ruhrgebiet gibt es spezifische Herausforderungen
 
 Viele Hausbesitzer in ${cityName} unterschätzen die Komplexität von ${mainKeyword}. Die Folgen: Verzögerungen, Kostensteigerungen und im schlimmsten Fall Mängel, die erst nach Monaten auffallen.
 
-Die gute Nachricht: Mit der richtigen Vorbereitung und einem qualifizierten ${tradeName} aus der Region lässt sich das Projekt effizient umsetzen. Die kurzen Wege in ${cityName} und die Umgebung ermöglichen schnelle Reaktionszeiten – besonders wichtig bei ${painPoints}.
+Die gute Nachricht: Mit der richtigen Vorbereitung und einem qualifizierten ${tradeName} aus der Region lässt sich das Projekt effizient umsetzen. Die kurzen Wege in ${cityName} und die Umgebung ermöglichen schnelle Reaktionszeiten – besonders wichtig bei typischen Problemen wie ${painPoints}.
 
 ## Die 5 wichtigsten Punkte
 
@@ -66,7 +67,7 @@ Jedes Projekt beginnt mit einer gründlichen Analyse. Ein professioneller ${trad
 Die Wahl der richtigen Materialien ist entscheidend für die Haltbarkeit. In ${cityName}, wo das Klima mit seinen feuchten Herbsttagen und kalten Wintern besondere Anforderungen stellt, kommt es auf Qualität an. Günstige Alternativen führen oft zu teuren Nacharbeiten.
 
 ### 4. Termintreue und Zuverlässigkeit
-Ein zuverlässiger ${tradeName} hält Einhaltung der vereinbarten Termine. Das ist besonders wichtig, wenn das Projekt zeitkritisch ist – etwa bei ${painPoints}. Fragen Sie vorab nach Referenzen und Erfahrungen mit ähnlichen Projekten in ${cityName}.
+Ein zuverlässiger ${tradeName} hält die vereinbarten Termine ein. Das ist besonders wichtig, wenn das Projekt zeitkritisch ist – etwa bei akuten Problemen wie ${painPoints}. Fragen Sie vorab nach Referenzen und Erfahrungen mit ähnlichen Projekten in ${cityName}.
 
 ### 5. Garantie und Service
 Professionelle Anbieter gewährleisten ihre Arbeit. Eine umfassende Garantie gibt Ihnen die Sicherheit, dass eventuelle Probleme kostenlos behoben werden. Achten Sie auf die genauen Konditionen und die Reaktionszeit im Garantiefall.
@@ -89,26 +90,9 @@ Diese Angaben sind Richtwerte. Für ein verbindliches Angebot ist eine kostenlos
 
 **Tipp:** Lassen Sie sich von mehreren Fachbetrieben in ${cityName} ein Angebot erstellen. Vergleichen Sie nicht nur den Preis, sondern auch den Leistungsumfang und die eingesetzten Materialien.
 
-## Häufig gestellte Fragen
-
-**Wie lange dauert ${mainKeyword} in ${cityName}?**
-Die Dauer hängt stark vom Projektumfang ab. Kleine Aufträge sind oft innerhalb eines Tages erledigt, größere Projekte können mehrere Wochen in Anspruch nehmen. Bei der Besichtigung erhalten Sie einen konkreten Zeitplan.
-
-**Was kostet ein ${tradeName} in ${cityName}?**
-Die Kosten variieren je nach Aufwand. Für eine erste Einschätzung reicht oft eine telefonische Beschreibung des Problems. Ein verbindliches Angebot erhalten Sie nach der kostenlosen Besichtigung vor Ort.
-
-**Benötige ich eine Genehmigung?**
-Für viele Arbeiten ist keine Genehmigung nötig. Bei umfangreicheren Projekten oder Eingriffen in die Bausubstanz kann jedoch eine Baugenehmigung erforderlich sein. Ein erfahrener ${tradeName} aus ${cityName} berät Sie hierzu.
-
-**Wie finde ich einen zuverlässigen ${tradeName} in ${cityName}?**
-Achten Sie auf nachweisbare Erfahrung, transparente Kommunikation und schriftliche Angebote. Lokale Betriebe haben den Vorteil kurzer Anfahrtswege und Kenntnis der regionalen Besonderheiten.
-
-**Was ist bei Altbauten in ${cityName} zu beachten?**
-Die typischen Wohngebäude aus den 60er und 70er Jahren im Ruhrgebiet haben oft spezifische Eigenschaften. Ein ortsansässiger Fachbetrieb kennt diese Herausforderungen und plant entsprechend.
-
 ## Fazit
 
-${mainKeyword} in ${cityName} erfordert Fachwissen und eine sorgfältige Planung. Die Investition in einen qualifizierten ${tradeName} zahlt sich durch qualitativ hochwertige Ergebnisse und langfristige Haltbarkeit aus.
+${mainKeyword} erfordert Fachwissen und eine sorgfältige Planung. Die Investition in einen qualifizierten ${tradeName} zahlt sich durch qualitativ hochwertige Ergebnisse und langfristige Haltbarkeit aus.
 
 Nutzen Sie die kostenlose Erstberatung vor Ort, um Ihr Projekt professionell zu planen. Ein verlässlicher Partner aus der Region ${cityName} begleitet Sie von der ersten Idee bis zur fertigen Umsetzung – und darüber hinaus mit umfassendem Service.
 
@@ -117,11 +101,11 @@ Nutzen Sie die kostenlose Erstberatung vor Ort, um Ihr Projekt professionell zu 
   // FAQs generieren
   const faqs = [
     { 
-      q: `Wie lange dauert ${mainKeyword} in ${cityName}?`, 
+      q: `Wie lange dauert ein ${tradeName}-Projekt in ${cityName}?`, 
       a: `Die Dauer hängt vom Umfang ab. Kleine Projekte: 1-3 Tage. Mittlere Projekte: 1-2 Wochen. Bei der kostenlosen Besichtigung erhalten Sie einen konkreten Zeitplan.` 
     },
     { 
-      q: `Was kostet ${mainKeyword} in ${cityName}?`, 
+      q: `Was kostet ein ${tradeName} in ${cityName}?`, 
       a: `Kleine Projekte: 500-1.500 €, Mittlere: 1.500-5.000 €, Große: 5.000-15.000 €. Ein verbindliches Angebot erhalten Sie nach der kostenlosen Besichtigung.` 
     },
     { 
@@ -153,11 +137,29 @@ function generateHTML(tradeSlug, citySlug, cityName, tradeName, topic, monthSlug
   <div style="padding:0 16px 16px;">${faq.a}</div>
 </details>`).join('');
   
+  // Markdown → HTML: Headings korrekt, Text getrennt
   const contentHTML = content
-    .replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .split('\n\n')
-    .map(p => p.trim() ? `<p>${p}</p>` : '')
+    .map(block => {
+      const trimmed = block.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('### ')) {
+        // Heading + optionaler Fließtext (durch \n getrennt)
+        const lines = trimmed.split('\n');
+        const heading = lines[0].slice(4);
+        const rest = lines.slice(1).join(' ').trim();
+        let html = `<h3>${heading}</h3>`;
+        if (rest) {
+          const withBold = rest.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          html += `\n<p>${withBold}</p>`;
+        }
+        return html;
+      }
+      if (trimmed.startsWith('## ')) return `<h2>${trimmed.slice(3)}</h2>`;
+      const withBold = trimmed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      return `<p>${withBold.replace(/\n/g, '<br>')}</p>`;
+    })
+    .filter(Boolean)
     .join('\n');
 
   return `<!DOCTYPE html>
@@ -300,9 +302,12 @@ async function main() {
       if (!articleIndex[tradeSlug]) articleIndex[tradeSlug] = {};
       if (!articleIndex[tradeSlug][citySlug]) articleIndex[tradeSlug][citySlug] = [];
       
+      const cleanTitleForIndex = (typeof topic.title === 'function' ? topic.title(cityName) : topic.title)
+        .replace(new RegExp(`\\s+in\\s+${cityName}$`, 'i'), '');
+      
       articleIndex[tradeSlug][citySlug].push({
         title: typeof topic.title === 'function' ? topic.title(cityName) : topic.title,
-        excerpt: `Ratgeber zu ${typeof topic.title === 'function' ? topic.title(cityName) : topic.title} in ${cityName}.`,
+        excerpt: `Praxisnahe Tipps zu ${cleanTitleForIndex} – mit lokalen Preisen, Förderungen und Expertenwissen für ${cityName}.`,
         tag: topic.tag || 'Ratgeber',
         gradient: 'from-accent-500 to-accent-700',
         svg: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>',
