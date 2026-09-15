@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-// @ts-ignore
-import articleIndex from '@/public/lib/article-index.json'
 // SSOT: Namen aus zentraler Config — keine Hardcodes!
 // @ts-ignore
 import { getTradeName, getCityName } from '@/config/system-config.js'
@@ -14,6 +12,11 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
+  // SSOT: Index direkt aus public/lib einlesen (Build-Time)
+  const fs = require('fs')
+  const path = require('path')
+  const indexPath = path.join(process.cwd(), 'public', 'lib', 'article-index.json')
+  const articleIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'))
   const params: { trade: string; city: string }[] = []
   
   Object.entries(articleIndex).forEach(([trade, cities]) => {
@@ -39,6 +42,11 @@ export default function BlogOverviewPage({ params }: PageProps) {
   const tradeName = getTradeName(params.trade)
   const cityName = getCityName(params.city)
   
+  // SSOT: Index direkt aus public/lib einlesen
+  const fs = require('fs')
+  const path = require('path')
+  const indexPath = path.join(process.cwd(), 'public', 'lib', 'article-index.json')
+  const articleIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'))
   // @ts-ignore
   const articles = articleIndex[params.trade]?.[params.city]
   
