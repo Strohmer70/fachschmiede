@@ -1,10 +1,20 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-// @ts-ignore
-import articleIndex from '@/lib/article-index.json'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 // SSOT: Namen aus zentraler Config — keine Hardcodes!
 // @ts-ignore
 import { getTradeName, getCityName } from '@/config/system-config.js'
+
+// Lies den aktuellen Artikel-Index (zur Laufzeit, nicht Build-Time)
+function loadArticleIndex(): Record<string, Record<string, any[]>> {
+  try {
+    const indexPath = join(process.cwd(), 'lib', 'article-index.json')
+    return JSON.parse(readFileSync(indexPath, 'utf-8'))
+  } catch {
+    return {}
+  }
+}
 
 interface PageProps {
   params: {
@@ -14,6 +24,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
+  const articleIndex = loadArticleIndex()
   const params: { trade: string; city: string }[] = []
   
   Object.entries(articleIndex).forEach(([trade, cities]) => {
@@ -39,7 +50,7 @@ export default function BlogOverviewPage({ params }: PageProps) {
   const tradeName = getTradeName(params.trade)
   const cityName = getCityName(params.city)
   
-  // @ts-ignore
+  const articleIndex = loadArticleIndex()
   const articles = articleIndex[params.trade]?.[params.city]
   
   if (!articles || articles.length === 0) {
@@ -103,7 +114,7 @@ export default function BlogOverviewPage({ params }: PageProps) {
                     stroke="currentColor" 
                     strokeWidth={1.5} 
                     viewBox="0 0 24 24" 
-                    dangerouslySetInnerHTML={{ __html: article.svg }} 
+                    dangerouslySetInnerHTML={{ __html: article.svg || '<path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10" />' }} 
                   />
                 </div>
                 <div className="p-7">
