@@ -1947,9 +1947,6 @@ const SCRAPE_STEPS = [
 let scrapeTimer = null;
 // ═══════════ ECHTER SCRAPER (API-basiert) ═══════════
 let prospects = [];
-let scrapeTimer = null;
-const SCRAPE_STEPS = ['Verbindung aufbauen …', 'Branchenverzeichnisse durchsuchen …', 'Google Maps API abfragen …', 'Daten bereinigen & deduplizieren …'];
-
 async function startScrape(){
   const gewerk = document.getElementById('scrapeGewerk').value;
   const stadt = document.getElementById('scrapeStadt').value;
