@@ -1989,7 +1989,8 @@ async function startScrape(){
     if (data.contacts && data.contacts.length > 0) {
       prospects = data.contacts.map(c => ({...c, sel: true}));
       renderProspects();
-      document.getElementById('scrapeResultMeta').innerHTML = 'Letzter Lauf: ' + gewerk + ' ' + stadt + ' · ' + data.totalFound + ' gefunden · ' + data.removed + ' entfernt → <strong class="text-ink-800">' + prospects.length + ' neue Kontakte</strong>';
+      const demoBadge = data.mode === 'demo' ? ' <span class="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full align-middle">Demo-Daten</span>' : '';
+      document.getElementById('scrapeResultMeta').innerHTML = 'Letzter Lauf: ' + gewerk + ' ' + stadt + ' · ' + data.totalFound + ' gefunden · ' + data.removed + ' entfernt → <strong class="text-ink-800">' + prospects.length + ' neue Kontakte</strong>' + demoBadge;
       document.getElementById('kpiScraped').textContent = prospects.length.toLocaleString('de-DE');
       document.getElementById('scrapeStep').textContent = 'Fertig – ' + prospects.length + ' neue Kontakte';
       document.getElementById('scrapeHint').innerHTML = '💡 <strong>' + gewerk + ' ' + stadt + ':</strong> freie Miet-Stadt! Die gescrapten Betriebe sind direkte Interessenten für die Stadt-Website.';
