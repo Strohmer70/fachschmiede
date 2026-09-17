@@ -98,8 +98,8 @@ const nextConfig = {
         // Blog-Artikel (statische HTML) - HÖCHSTE PRIORITÄT
         ...blogRewrites,
         
-        // Portal-Startseite
-        { source: '/', destination: '/start.html' },
+        // Portal-Startseite (NEU: React-Portal unter app/page.tsx)
+        { source: '/fuer-dienstleister/', destination: '/fuer-dienstleister.html' },
         
         // Gewerk-Salespages
         { source: '/dachdecker/', destination: '/sales-dachdecker.html' },
