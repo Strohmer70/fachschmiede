@@ -112,13 +112,8 @@ const nextConfig = {
         // Portal-Startseite (NEU: React-Portal unter app/page.tsx)
         { source: '/fuer-dienstleister/', destination: '/fuer-dienstleister.html' },
         
-        // Gewerk-Salespages
-        { source: '/dachdecker/', destination: '/sales-dachdecker.html' },
-        { source: '/elektriker/', destination: '/sales-elektriker.html' },
-        { source: '/shk/', destination: '/sales-shk.html' },
-        { source: '/maler/', destination: '/sales-maler.html' },
-        { source: '/zimmerer/', destination: '/sales-zimmerer.html' },
-        { source: '/garten-und-landschaftsbau/', destination: '/sales-garten-und-landschaftsbau.html' },
+        // Gewerk-Salespages — ENTFERNT, damit [trade]/page.tsx Übersichtsseiten greifen
+        // Sales-Seiten sind direkt unter /sales-*.html erreichbar
         
         // Statische Seiten
         { source: '/impressum/', destination: '/impressum.html' },
