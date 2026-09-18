@@ -33,6 +33,66 @@ tailwind.config = {
   .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
   ::selection{background:#16a34a;color:#fff}
 </style>
+
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LandscapingBusiness",
+  "@id": "https://www.fachschmiede.de/gartenbau/schwelm/#business",
+  "name": "Garten- und Landschaftsbau Schwelm",
+  "description": "Garten- und Landschaftsbau in Schwelm – Gartengestaltung, Terrassen & Pflege. Festpreis. Feste Termine.",
+  "url": "https://www.fachschmiede.de/gartenbau/schwelm/",
+  "telephone": "+49-2304-12345678",
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Schwelm",
+    "addressRegion": "NRW",
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Schwelm"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "address": "Schwelm, Germany"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  "knowsAbout": [
+    "Gartengestaltung",
+    "Terrassenbau",
+    "Pflasterarbeiten",
+    "Gartenpflege",
+    "Zaunbau"
+  ],
+  "serviceType": [
+    "Gartengestaltung",
+    "Terrassenbau",
+    "Pflasterarbeiten",
+    "Gartenpflege",
+    "Zaunbau"
+  ],
+  "additionalType": "https://www.fachschmiede.de/",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "fachschmiede.de",
+    "url": "https://www.fachschmiede.de"
+  }
+}
+</script>
 </head>
 <body class="bg-white text-ink-800 antialiased">
 

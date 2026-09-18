@@ -33,6 +33,66 @@ tailwind.config = {
   .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
   ::selection{background:#e11d48;color:#fff}
 </style>
+
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Painter",
+  "@id": "https://www.fachschmiede.de/maler/castrop-rauxel/#business",
+  "name": "Maler Castrop-Rauxel",
+  "description": "Maler in Castrop-Rauxel – Innenanstrich, Fassade & Trockenbau. Festpreis. Feste Termine.",
+  "url": "https://www.fachschmiede.de/maler/castrop-rauxel/",
+  "telephone": "+49-2304-12345678",
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Castrop-Rauxel",
+    "addressRegion": "NRW",
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Castrop-Rauxel"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "address": "Castrop-Rauxel, Germany"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  "knowsAbout": [
+    "Innenanstrich",
+    "Fassadenanstrich",
+    "Trockenbau",
+    "Lackieren",
+    "Tapezieren"
+  ],
+  "serviceType": [
+    "Innenanstrich",
+    "Fassadenanstrich",
+    "Trockenbau",
+    "Lackieren",
+    "Tapezieren"
+  ],
+  "additionalType": "https://www.fachschmiede.de/",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "fachschmiede.de",
+    "url": "https://www.fachschmiede.de"
+  }
+}
+</script>
 </head>
 <body class="bg-white text-ink-800 antialiased">
 <!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->

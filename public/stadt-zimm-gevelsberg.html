@@ -33,6 +33,66 @@ tailwind.config = {
   .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
   ::selection{background:#d97706;color:#fff}
 </style>
+
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Carpenter",
+  "@id": "https://www.fachschmiede.de/zimmerer/gevelsberg/#business",
+  "name": "Zimmerer Gevelsberg",
+  "description": "Zimmerer in Gevelsberg – Dachstuhl, Holzbau & Carport. Festpreis. Feste Termine.",
+  "url": "https://www.fachschmiede.de/zimmerer/gevelsberg/",
+  "telephone": "+49-2304-12345678",
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Gevelsberg",
+    "addressRegion": "NRW",
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Gevelsberg"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "address": "Gevelsberg, Germany"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  "knowsAbout": [
+    "Dachstuhl",
+    "Holzbau",
+    "Carport",
+    "Terrassenüberdachung",
+    "Innenausbau"
+  ],
+  "serviceType": [
+    "Dachstuhl",
+    "Holzbau",
+    "Carport",
+    "Terrassenüberdachung",
+    "Innenausbau"
+  ],
+  "additionalType": "https://www.fachschmiede.de/",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "fachschmiede.de",
+    "url": "https://www.fachschmiede.de"
+  }
+}
+</script>
 </head>
 <body class="bg-white text-ink-800 antialiased">
 <!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->

@@ -33,6 +33,66 @@ tailwind.config = {
   .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
   ::selection{background:#f97316;color:#fff}
 </style>
+
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "RoofingContractor",
+  "@id": "https://www.fachschmiede.de/dachdecker/hagen/#business",
+  "name": "Dachdecker Hagen",
+  "description": "Dachdecker in Hagen – Dachsanierung, Reparatur & Dämmung. Festpreis. Feste Termine. Kostenlose Besichtigung.",
+  "url": "https://www.fachschmiede.de/dachdecker/hagen/",
+  "telephone": "+49-2304-12345678",
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Hagen",
+    "addressRegion": "NRW",
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Hagen"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "address": "Hagen, Germany"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  "knowsAbout": [
+    "Dachsanierung",
+    "Dachreparatur",
+    "Dachdämmung",
+    "Dachrinnenreinigung",
+    "Sturmschaden-Reparatur"
+  ],
+  "serviceType": [
+    "Dachsanierung",
+    "Dachreparatur",
+    "Dachdämmung",
+    "Dachrinnenreinigung",
+    "Sturmschaden-Reparatur"
+  ],
+  "additionalType": "https://www.fachschmiede.de/",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "fachschmiede.de",
+    "url": "https://www.fachschmiede.de"
+  }
+}
+</script>
 </head>
 <body class="bg-white text-ink-800 antialiased">
 

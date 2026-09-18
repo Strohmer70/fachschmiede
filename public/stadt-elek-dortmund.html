@@ -33,6 +33,66 @@ tailwind.config = {
   .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
   ::selection{background:#2563eb;color:#fff}
 </style>
+
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Electrician",
+  "@id": "https://www.fachschmiede.de/elektriker/dortmund/#business",
+  "name": "Elektriker Dortmund",
+  "description": "Elektriker in Dortmund – Elektroinstallation, Smart Home & Wallbox. Festpreis. Feste Termine.",
+  "url": "https://www.fachschmiede.de/elektriker/dortmund/",
+  "telephone": "+49-2304-12345678",
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dortmund",
+    "addressRegion": "NRW",
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Dortmund"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "address": "Dortmund, Germany"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  "knowsAbout": [
+    "Elektroinstallation",
+    "Smart Home",
+    "Wallbox-Installation",
+    "E-Check",
+    "Leitungsreparatur"
+  ],
+  "serviceType": [
+    "Elektroinstallation",
+    "Smart Home",
+    "Wallbox-Installation",
+    "E-Check",
+    "Leitungsreparatur"
+  ],
+  "additionalType": "https://www.fachschmiede.de/",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "fachschmiede.de",
+    "url": "https://www.fachschmiede.de"
+  }
+}
+</script>
 </head>
 <body class="bg-white text-ink-800 antialiased">
 

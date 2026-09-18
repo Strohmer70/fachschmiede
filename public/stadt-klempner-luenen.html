@@ -33,6 +33,66 @@ tailwind.config = {
   .hero-gradient{background:linear-gradient(105deg,rgba(15,23,42,.92) 0%,rgba(15,23,42,.75) 45%,rgba(15,23,42,.35) 100%)}
   ::selection{background:#0d9488;color:#fff}
 </style>
+
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Plumber",
+  "@id": "https://www.fachschmiede.de/klempner/luenen/#business",
+  "name": "Klempner Lünen",
+  "description": "Klempner & SHK-Meisterbetrieb in Lünen – Sanitär, Heizung, Badsanierung & Notdienst. Festpreis. Feste Termine.",
+  "url": "https://www.fachschmiede.de/klempner/luenen/",
+  "telephone": "+49-2304-12345678",
+  "priceRange": "€€",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Lünen",
+    "addressRegion": "NRW",
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Lünen"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "address": "Lünen, Germany"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "07:00",
+    "closes": "18:00"
+  },
+  "knowsAbout": [
+    "Badsanierung",
+    "Heizungsinstallation",
+    "Rohrreinigung",
+    "Notdienst",
+    "Klempnerarbeiten"
+  ],
+  "serviceType": [
+    "Badsanierung",
+    "Heizungsinstallation",
+    "Rohrreinigung",
+    "Notdienst",
+    "Klempnerarbeiten"
+  ],
+  "additionalType": "https://www.fachschmiede.de/",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "fachschmiede.de",
+    "url": "https://www.fachschmiede.de"
+  }
+}
+</script>
 </head>
 <body class="bg-white text-ink-800 antialiased">
 <!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->
