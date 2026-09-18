@@ -164,7 +164,7 @@ export default function PortalHomePage() {
                   {trade.services.slice(0, 3).join(' · ')}
                 </span>
                 <a
-                  href={`/${trade.slug}/${cities[0].slug}/`}
+                  href={`/${trade.slug}/`}
                   className="ml-auto text-sm font-bold text-brand-600 hover:text-brand-700 whitespace-nowrap"
                 >
                   Zur Übersicht →
