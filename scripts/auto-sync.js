@@ -101,7 +101,7 @@ function generateLandingPageHTML(trade, city) {
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6}
 .container{max-width:1200px;margin:0 auto;padding:0 20px}
-.hero{background:linear-gradient(135deg,${trade.color[700]},${trade.color[900]});color:white;padding:80px 0;text-align:center}
+.hero{background:linear-gradient(rgba(15,23,42,0.55),rgba(15,23,42,0.55)),url('${trade.images?.hero || '/images/hero.jpg'}') center/cover no-repeat;color:white;padding:80px 0;text-align:center}
 .hero h1{font-size:3rem;font-weight:800;margin-bottom:16px}
 .hero p{font-size:1.25rem;opacity:0.9;margin-bottom:32px}
 .cta-button{display:inline-block;padding:16px 32px;background:white;color:${trade.color[700]};font-weight:700;border-radius:12px;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,0.1);transition:transform 0.2s}
@@ -140,6 +140,29 @@ ${trade.services.map(s => `
 </div>
 </section>
 
+<section style="padding:60px 0;background:white;">
+<div class="container" style="max-width:1000px;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;" class="about-grid">
+<div>
+<p style="color:${trade.color[700]};font-weight:700;text-transform:uppercase;font-size:0.8rem;letter-spacing:0.1em;margin-bottom:12px;">Über uns</p>
+<h2 style="font-size:2rem;font-weight:800;margin-bottom:20px;color:#1e293b;">Ihr ${tradeName} in ${cityName}</h2>
+<p style="color:#64748b;margin-bottom:16px;line-height:1.8;">Wir sind Ihr zuverlässiger Partner für ${tradeName.toLowerCase()}-Arbeiten in ${cityName} und Umgebung. Mit jahrelanger Erfahrung und einem eingespielten Team sorgen wir dafür, dass Ihr Projekt termingerecht und in höchster Qualität umgesetzt wird.</p>
+<p style="color:#64748b;margin-bottom:24px;line-height:1.8;">Festpreis-Garantie, feste Termine und saubere Arbeitsweise — das ist unser Versprechen an Sie.</p>
+<div style="display:flex;gap:24px;flex-wrap:wrap;">
+<div style="text-align:center;"><p style="font-size:2rem;font-weight:800;color:${trade.color[700]};">15+</p><p style="font-size:0.8rem;color:#94a3b8;">Jahre Erfahrung</p></div>
+<div style="text-align:center;"><p style="font-size:2rem;font-weight:800;color:${trade.color[700]};">500+</p><p style="font-size:0.8rem;color:#94a3b8;">Projekte</p></div>
+<div style="text-align:center;"><p style="font-size:2rem;font-weight:800;color:${trade.color[700]};">100%</p><p style="font-size:0.8rem;color:#94a3b8;">Festpreis</p></div>
+</div>
+</div>
+<div style="display:grid;gap:16px;">
+<img src="${trade.images?.team || '/images/team.jpg'}" alt="${tradeName} Team ${cityName}" loading="lazy" style="width:100%;border-radius:16px;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+<img src="${trade.images?.project || '/images/projekt.jpg'}" alt="${tradeName} Projekt ${cityName}" loading="lazy" style="width:100%;border-radius:16px;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+</div>
+</div>
+</div>
+</section>
+<style>@media(max-width:768px){.about-grid{grid-template-columns:1fr!important;}}</style>
+
 <section id="kontakt" style="padding:60px 0;background:#f8fafc;">
 <div class="container" style="max-width:600px;text-align:center;">
 <h2 style="margin-bottom:24px;">Kontaktieren Sie uns</h2>
@@ -151,6 +174,11 @@ ${trade.services.map(s => `
 <footer class="footer">
 <div class="container">
 <p>© 2026 fachschmiede.de | ${tradeName} in ${cityName}</p>
+<p style="margin-top:12px;font-size:0.85rem;opacity:0.7;">
+<a href="/impressum/" style="color:white;text-decoration:underline;">Impressum</a> · 
+<a href="/datenschutz/" style="color:white;text-decoration:underline;">Datenschutz</a> · 
+<a href="/" style="color:white;text-decoration:underline;">Portal</a>
+</p>
 </div>
 </footer>
 </body>

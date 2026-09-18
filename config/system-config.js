@@ -238,8 +238,9 @@ function getAllTrades() {
 }
 
 function getTradeSlugs() {
-  // Gibt kanonische URL-Slugs zurück (nicht Config-Keys)
-  return Object.values(SYSTEM_CONFIG.trades).map(t => t.slug);
+  // Gibt Config-Keys zurück (= Verzeichnisnamen, z.B. 'gartenbau')
+  // NICHT trade.slug — das ist der URL-Slug (z.B. 'garten-und-landschaftsbau')
+  return Object.keys(SYSTEM_CONFIG.trades);
 }
 
 function getCity(citySlug) {

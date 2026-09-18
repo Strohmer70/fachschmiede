@@ -656,8 +656,11 @@ document.querySelectorAll('.faq-q').forEach(btn => {
   });
 });
 
+// Reveal-on-Scroll Animationen
+const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
 }, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 let tTimer;
 function showToastDemo(){
@@ -728,7 +731,7 @@ document.getElementById('jahr').textContent = new Date().getFullYear();
       klempner:      { total: 20, free: 20, rented: 0 },
       zimmerer:      { total: 20, free: 20, rented: 0 },
       maler:         { total: 20, free: 20, rented: 0 },
-      garten-und-landschaftsbau: { total: 21, free: 21, rented: 0 },
+      'garten-und-landschaftsbau': { total: 21, free: 21, rented: 0 },
     };
     
     document.querySelectorAll('[data-trade]').forEach(el => {

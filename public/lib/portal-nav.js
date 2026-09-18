@@ -11,7 +11,7 @@
     trades: [],
     cities: [],
     nav: {
-      portal: { url: '/start.html', label: '💼 Portal', emoji: '💼' },
+      portal: { url: '/fuer-dienstleister/', label: '💼 Portal', emoji: '💼' },
       admin: { url: '/admin.html', label: '⚙️ Admin', emoji: '⚙️' },
       mieter: { url: '/mieter.html', label: '👤 Mieter', emoji: '👤' }
     }
@@ -55,7 +55,7 @@
       <div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
           <span class="font-bold text-white uppercase tracking-widest text-[10px] sm:text-xs">Portal:</span>
-          <a href="/start.html" class="hover:text-white transition font-semibold">💼 Start</a>
+          <a href="/fuer-dienstleister/" class="hover:text-white transition font-semibold">💼 Start</a>
           ${tradeLinks}
           <a href="/admin.html" class="hover:text-white transition">⚙️ Admin</a>
           <a href="/mieter.html" class="hover:text-white transition">👤 Mieter</a>
@@ -140,7 +140,7 @@
           <div>
             <h4 class="font-bold text-white mb-3">Portal</h4>
             <div class="text-xs space-y-1">
-              <a href="/start.html" class="hover:text-white transition block">Startseite</a>
+              <a href="/fuer-dienstleister/" class="hover:text-white transition block">Startseite</a>
               <a href="/admin.html" class="hover:text-white transition block">Admin-Bereich</a>
               <a href="/mieter.html" class="hover:text-white transition block">Mieter-Login</a>
             </div>
