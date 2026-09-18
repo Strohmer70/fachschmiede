@@ -129,7 +129,7 @@ const nextConfig = {
         // Ratgeber/Blog
         { source: '/ratgeber/', destination: '/ratgeber.html' },
         { source: '/ratgeber-elektriker/', destination: '/ratgeber-elektriker.html' },
-        { source: '/ratgeber-shk/', destination: '/ratgeber-shk.html' },
+        { source: '/ratgeber-shk/', destination: '/ratgeber-klempner.html' },
         { source: '/ratgeber-zimmerer/', destination: '/ratgeber-zimmerer.html' },
         { source: '/ratgeber-maler/', destination: '/ratgeber-maler.html' },
         
