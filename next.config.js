@@ -11,6 +11,37 @@ const TRADE_MAP = {
   garten: 'garten-und-landschaftsbau',
 }
 
+// Generiere Rewrites für neue Landing Pages (public/{trade}/{city}.html)
+// Diese haben PRIORITÄT vor alten stadt-* Rewrites!
+function generateLandingPageRewrites() {
+  const fs = require('fs')
+  const path = require('path')
+  
+  const publicDir = path.join(__dirname, 'public')
+  const rewrites = []
+  
+  const TRADE_DIRS = ['dachdecker', 'elektriker', 'klempner', 'zimmerer', 'maler', 'gartenbau']
+  
+  for (const tradeDir of TRADE_DIRS) {
+    const dirPath = path.join(publicDir, tradeDir)
+    if (!fs.existsSync(dirPath)) continue
+    
+    const files = fs.readdirSync(dirPath)
+      .filter(f => f.endsWith('.html'))
+      .map(f => f.replace('.html', ''))
+    
+    for (const citySlug of files) {
+      rewrites.push({
+        source: `/${tradeDir}/${citySlug}/`,
+        destination: `/${tradeDir}/${citySlug}.html`,
+      })
+    }
+  }
+  
+  console.log(`✅ Generated ${rewrites.length} landing page rewrites`)
+  return rewrites
+}
+
 // Generiere Rewrites für alle Stadt-HTML-Dateien
 function generateCityRewrites() {
   const fs = require('fs')
@@ -101,12 +132,16 @@ const nextConfig = {
   trailingSlash: true,
   
   async rewrites() {
+    const landingPageRewrites = generateLandingPageRewrites()
     const cityRewrites = generateCityRewrites()
     const blogRewrites = generateBlogRewrites()
     
     return {
       beforeFiles: [
-        // Blog-Artikel (statische HTML) - HÖCHSTE PRIORITÄT
+        // NEUE Landing Pages (public/{trade}/{city}.html) - ABSOLUTE PRIORITÄT
+        ...landingPageRewrites,
+        
+        // Blog-Artikel (statische HTML)
         ...blogRewrites,
         
         // Portal-Startseite (NEU: React-Portal unter app/page.tsx)
