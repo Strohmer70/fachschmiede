@@ -321,7 +321,16 @@ async function main() {
     }
   }
   
-  // 7. Git Commit
+  // 7. UNIQUE CONTENT: Immer unique Content für alle stadt-*.html anwenden
+  log('Wende Unique-Content-Upgrade an (Services, FAQs, Kalender, Guides)...', 'action');
+  try {
+    execSync('node scripts/upgrade-old-pages-content.js', { stdio: 'inherit', cwd: process.cwd() });
+    log('Unique Content Upgrade abgeschlossen', 'success');
+  } catch (err) {
+    log('Unique Content Upgrade fehlgeschlagen (nicht kritisch)', 'warning');
+  }
+
+  // 8. Git Commit
   if (!DRY_RUN) {
     log('Erstelle Git Commit...', 'action');
     try {
