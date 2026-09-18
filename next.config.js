@@ -41,7 +41,7 @@ function generateCityRewrites() {
   return rewrites
 }
 
-// Generiere Rewrites für Blog-Artikel
+// Generiere Rewrites für Blog-Artikel + Blog-Index
 function generateBlogRewrites() {
   const fs = require('fs')
   const path = require('path')
@@ -66,13 +66,24 @@ function generateBlogRewrites() {
       const cityDir = path.join(tradeDir, citySlug)
       if (!fs.statSync(cityDir).isDirectory()) continue
       
+      // Blog-Index Rewrite: /{trade}/{city}/blog/ → /blog/{trade}/{city}/index.html
+      if (fs.existsSync(path.join(cityDir, 'index.html'))) {
+        // URL-Slug für gartenbau: Verzeichnis heißt 'garten-und-landschaftsbau', URL ist 'gartenbau'
+        const urlTradeSlug = tradeSlug === 'garten-und-landschaftsbau' ? 'gartenbau' : tradeSlug
+        rewrites.push({
+          source: `/${urlTradeSlug}/${citySlug}/blog/`,
+          destination: `/blog/${tradeSlug}/${citySlug}/index.html`,
+        })
+      }
+      
       const articles = fs.readdirSync(cityDir)
-        .filter(f => f.endsWith('.html'))
+        .filter(f => f.endsWith('.html') && f !== 'index.html')
         .map(f => f.replace('.html', ''))
       
       for (const slug of articles) {
+        const urlTradeSlug = tradeSlug === 'garten-und-landschaftsbau' ? 'gartenbau' : tradeSlug
         rewrites.push({
-          source: `/${tradeSlug}/${citySlug}/blog/${slug}/`,
+          source: `/${urlTradeSlug}/${citySlug}/blog/${slug}/`,
           destination: `/blog/${tradeSlug}/${citySlug}/${slug}.html`,
         })
       }
