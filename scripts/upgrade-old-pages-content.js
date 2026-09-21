@@ -604,20 +604,22 @@ function generateExtraFAQs(tradeKey, citySlug) {
   const city = CITY_DATA[citySlug];
   if (!trade || !city) return '';
   
+  // Dropdown-Format (einheitlich mit Original-FAQs — faq-item/faq-q/faq-answer)
+  const chev = '<svg class="chev w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>';
+  const toDropdown = (f) => `<div class="faq-item reveal bg-white rounded-xl border border-ink-200">
+        <button class="faq-q w-full flex items-center justify-between gap-4 px-6 py-5 text-left">
+          <span class="font-bold text-ink-900">${f.q}</span>
+          ${chev}
+        </button>
+        <div class="faq-answer"><p class="px-6 pb-5 text-ink-600 text-sm leading-relaxed">${f.a}</p></div>
+      </div>`;
+  
   // GARTENBAU: Use completely unique FAQs per city
   if (tradeKey === 'garten' && GARDEN_FAQS[citySlug]) {
-    return GARDEN_FAQS[citySlug].map(f => `
-    <div class="bg-white rounded-xl p-6 shadow-sm">
-      <h3 class="font-bold text-ink-900 mb-2">${f.q}</h3>
-      <p class="text-ink-600 leading-relaxed">${f.a}</p>
-    </div>`).join('\n');
+    return GARDEN_FAQS[citySlug].map(toDropdown).join('\n      ');
   }
   
-  return trade.faq(city).map(f => `
-    <div class="bg-white rounded-xl p-6 shadow-sm">
-      <h3 class="font-bold text-ink-900 mb-2">${f.q}</h3>
-      <p class="text-ink-600 leading-relaxed">${f.a}</p>
-    </div>`).join('\n');
+  return trade.faq(city).map(toDropdown).join('\n      ');
 }
 
 function generateCityGuideSection(tradeKey, citySlug) {
@@ -1433,12 +1435,14 @@ for (const file of files) {
         // Find the inner grid container and add our FAQs before the closing </div></div>
         // The FAQ structure ends with: ... </div>\n  </div>\n</section>
         // We insert before the last "  </div>\n</section>"
-        const insertPoint = html.lastIndexOf('  </div>\n</section>', sectionCloseIdx + 20);
+        // Die Extra-FAQs sind jetzt Dropdown-Items (faq-item) — direkt in den
+        // space-y-4 Container einfügen (vor dessen schließendem </div>)
+        const insertPoint = html.lastIndexOf('    </div>\n  </div>\n</section>', sectionCloseIdx + 20);
         if (insertPoint > faqIdx) {
-          const faqBlock = `    <div class="mt-6 grid gap-4">\n${extraFAQs}\n    </div>\n`;
+          const faqBlock = `\n      ${extraFAQs}`;
           html = html.slice(0, insertPoint) + faqBlock + html.slice(insertPoint);
         } else {
-          // Fallback: just insert before </section>
+          // Fallback: Wrapper vor </section>
           const faqBlock = `  <div class="mt-6 grid gap-4">\n${extraFAQs}\n  </div>\n`;
           html = html.slice(0, sectionCloseIdx) + faqBlock + html.slice(sectionCloseIdx);
         }
