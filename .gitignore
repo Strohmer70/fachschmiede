@@ -10,3 +10,4 @@ node_modules/
 scripts/fix-prices.js
 .env.prod
 .env.vercel
+.backup-dedup-*

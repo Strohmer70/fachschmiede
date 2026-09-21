@@ -881,7 +881,7 @@ function generateGartenLocalSection(citySlug) {
 <!-- UNIQUE-GARDEN-v4 -->
 <section class="py-16 bg-ink-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl sm:text-4xl font-black text-ink-900 mb-4">${city.name} — wir kennen die Stadt</h2>
+    <h2 class="text-3xl sm:text-4xl font-black text-ink-900 mb-4">${city.name} — Gärten mit lokalem Charakter</h2>
     <p class="text-lg text-ink-600 leading-relaxed mb-8 max-w-3xl">Von ${city.pop} Einwohnern, geprägt durch ${city.character}. Unsere Gärten passen zu dieser Vielfalt.</p>
     <div class="grid md:grid-cols-3 gap-6">
       ${projects.map(p => `<div class="bg-white rounded-xl p-6 shadow-sm"><div class="text-brand-500 text-sm font-bold mb-2">${p.district}</div><h3 class="font-bold text-ink-900 mb-2">${p.title}</h3><p class="text-ink-600 text-sm leading-relaxed">${p.desc}</p></div>`).join('\n      ')}
@@ -1394,10 +1394,10 @@ for (const file of files) {
   
   const [, tradeKey, citySlug] = match;
   
-  // Check if already upgraded v4
+  // Check if already upgraded (v4 = Gartenbau, v5 = universal marker)
   let html = fs.readFileSync(filePath, 'utf-8');
-  if (html.includes('UNIQUE-GARDEN-v4')) {
-    console.log(`  ⏭️  ${file} — already v4`);
+  if (html.includes('UNIQUE-GARDEN-v4') || html.includes('UNIQUE-CONTENT-v5')) {
+    console.log(`  ⏭️  ${file} — already upgraded`);
     skipped++;
     continue;
   }
@@ -1502,6 +1502,11 @@ for (const file of files) {
     html = applyGartenServiceDescriptions(html, citySlug);
   }
   
+  // Idempotenz-Marker: verhindert 3x-Duplikate bei erneutem Lauf
+  if (!html.includes('UNIQUE-CONTENT-v5')) {
+    html = html.replace(/<\/body>/, '<!-- UNIQUE-CONTENT-v5 -->\n</body>');
+  }
+
   fs.writeFileSync(filePath, html, 'utf-8');
   updated++;
   console.log(`  ✅ ${file} — local section + ${TRADE_DATA[tradeKey].faq(CITY_DATA[citySlug]).length} extra FAQs`);
