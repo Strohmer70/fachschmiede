@@ -361,6 +361,8 @@ const TRADE_DATA = {
     faq: (city) => [
       { q: `Wie oft sollte ich mein Dach in ${city.name} kontrollieren lassen?`, a: `Wir empfehlen eine jährliche Dachkontrolle — idealerweise im Frühjahr nach der Winterbelastung. In ${city.name} mit seiner Wetterlage ist das besonders wichtig. Viele Schäden sind von außen nicht sichtbar, werden aber mit der Zeit teuer.` },
       { q: `Lohnen sich Dachfenster in älteren Häusern in ${city.name}?`, a: `In vielen ${city.name}er Altbauten bringen Dachfenster enormen Mehrwert — mehr Licht, bessere Belüftung, mehr Wohnqualität. Wir beraten Sie gerne, ob Ihre Dachkonstruktion dafür geeignet ist.` },
+      { q: `Kann ich in ${city.name} Solarmodule auf mein Dach montieren lassen?`, a: `In den meisten Fällen ja! Wir prüfen die Statik Ihrer Dachkonstruktion und ob die Ausrichtung für Solar geeignet ist. In ${city.name} gibt es oft zusätzliche Förderprogramm auf Landesebene, die sich mit dem Bundessolarpaket kombinieren lassen. Den Antrag übernehmen wir für Sie.` },
+      { q: `Mein Dach in ${city.name} ist undicht — was sollte ich sofort tun?`, a: `Erstens: Sicherheit — Wasser und Strom vertragen sich nicht. Zweitens: Leckage mit Eimer auffangen und Möbel wegräumen. Drittens: uns anrufen! In ${city.name} erreichen Sie unseren Notdienst auch am Wochenende. Wir machen die Erstabsicherung und dokumentieren alles für Ihre Versicherung.` },
     ],
   },
   elek: {
@@ -374,6 +376,8 @@ const TRADE_DATA = {
     faq: (city) => [
       { q: `Ist meine alte Elektroinstallation in ${city.name} noch sicher?`, a: `Elektroinstallationen, die älter als 30 Jahre sind, sollten überprüft werden — besonders in den älteren Wohngebieten von ${city.name}. Ein E-Check gibt Ihnen Klarheit über den Zustand und eventuelle Mängel.` },
       { q: `Kann ich eine Wallbox an einem Reihenhaus in ${city.name} installieren lassen?`, a: `In den meisten Fällen ja! Die Nachkriegs-Reihenhäuser in ${city.name} lassen sich oft gut mit Wallboxen ausstatten. Wir prüfen Ihre Zuleitung und klären die Anmeldung beim Netzbetreiber für Sie.` },
+      { q: `Was kostet ein E-Check für mein Haus in ${city.name}?`, a: `Ein E-Check für ein Einfamilienhaus in ${city.name} beginnt bei etwa 120 € — je nach Anzahl der Stromkreise und dem Alter der Anlage. Bei Befund bekommen Sie ein zertifiziertes Prüfprotokoll, das auch für Ihre Versicherung wertvoll ist.` },
+      { q: `Bieten Sie Smart-Home-Installationen in ${city.name} an?`, a: `Ja! Von intelligenter Beleuchtung über Heizungssteuerung bis zur Einbruchmeldeanlage — wir rüsten Bestandsgebäude in ${city.name} nach und achten darauf, dass alles über eine App zentral steuerbar bleibt. KNX oder offene Standards, ganz wie Sie wollen.` },
     ],
   },
   klempner: {
@@ -387,6 +391,8 @@ const TRADE_DATA = {
     faq: (city) => [
       { q: `Mein Haus in ${city.name} hat noch das Original-Bad — lohnt sich eine Sanierung?`, a: `Ein Badezimmer, das älter als 25 Jahre ist, lohnt fast immer eine Sanierung — nicht nur optisch, sondern auch energetisch und hygienisch. Gerade in den älteren Häusern in ${city.name} sind oft noch Bleirohre oder veraltete Abwassersysteme verbaut.` },
       { q: `Gibt es in ${city.name} Förderungen für eine neue Heizung?`, a: `Ja! Die Heizungsförderung 2026 deckt je nach Effizienzklasse bis zu 70% der Kosten ab. Wir beraten Sie gerne, welche Förderprogramme für Ihr Haus in ${city.name} geeignet sind und erstellen einen förderkonformen Kostenvoranschlag.` },
+      { q: `Wie schnell ist der Sanitär-Notdienst in ${city.name} vor Ort?`, a: `In ${city.name} sind wir im Schnitt innerhalb von 60 bis 90 Minuten bei Ihnen — rund um die Uhr, auch an Wochenenden und Feiertagen. Unsere Fahrzeuge sind komplett ausgestattet, sodass die meisten Notfälle direkt vor Ort behoben werden können.` },
+      { q: `Was kostet eine Badsanierung in ${city.name} im Durchschnitt?`, a: `Eine Komplettsanierung eines Bades in ${city.name} beginnt bei etwa 8.000 € — je nach Größe, Ausstattung und ob Rohrleitungen erneuert werden müssen. Wir erstellen Ihnen ein detailliertes Angebot mit Festpreis, ohne versteckte Kosten.` },
     ],
   },
   zimm: {
@@ -400,6 +406,8 @@ const TRADE_DATA = {
     faq: (city) => [
       { q: `Wie lange hält ein Dachstuhl in ${city.name}?`, a: `Ein gut gebauter Dachstuhl kann 80 bis 100 Jahre halten — wenn er gepflegt wird. In ${city.name} mit seiner Wetterlage empfehlen wir alle 10 Jahre eine fachkundige Kontrolle, besonders nach Sturmschäden.` },
       { q: `Bauen Sie auch Carports in ${city.name}?`, a: `Ja! Ein Holz-Carport passt wunderbar zu den Einfamilienhäusern und Reihenhäusern in ${city.name}. Wir planen individuell — vom einfachen Doppelcarport bis zur Überdachung mit Solarpotenzial.` },
+      { q: `Was kostet eine Terrassenüberdachung in ${city.name}?`, a: `Eine maßgefertigte Terrassenüberdachung aus Holz in ${city.name} beginnt bei etwa 6.000 € — je nach Größe, Dachart und ob Sie eine Verglasung oder ein Solargdach wünschen. Die Statik und Statiknachweise übernehmen wir komplett.` },
+      { q: `Ist Holzbau in ${city.name} nachhaltig und langlebig?`, a: `Absolut! Holz ist der einzige Baustoff, der CO₂ speichert statt zu verbrauchen. Mit der richtigen Holzart und Konstruktion halten unsere Bauwerke in ${city.name} Jahrzehnte — und sehen dabei noch großartig aus.` },
     ],
   },
   maler: {
@@ -413,6 +421,8 @@ const TRADE_DATA = {
     faq: (city) => [
       { q: `Wie oft muss eine Fassade in ${city.name} gestrichen werden?`, a: `Je nach Material und Witterung alle 10 bis 15 Jahre. In ${city.name} mit seiner Wetterlage kann es auch früher nötig werden — besonders bei Süd- und Westfassaden. Wir überprüfen Ihre Fassade gerne kostenlos vor Ort.` },
       { q: `Welche Farben passen zu einem Altbau in ${city.name}?`, a: `Das hängt vom Baustil ab! Gründerzeit-Häuser in ${city.name} tragen oft kräftigere Töne, während Nachkriegsarchitektur mit helleren, sachlichen Farben harmoniert. Wir bringen Musterkarten mit und beraten Sie vor Ort.` },
+      { q: `Was kostet der Innenanstrich eines Zimmers in ${city.name}?`, a: `Je nach Größe, Untergrund und Farbqualität beginnen die Kosten für ein Wohnzimmer in ${city.name} bei etwa 400 €. Inklusive Abkleben, Grundierung und zwei Schichten hochwertiger Wandfarbe. Transparentes Angebot ohne versteckte Positionen.` },
+      { q: `Gibt es Vorschriften für Fassadenfarben in ${city.name}?`, a: `In Denkmalschutzbereichen von ${city.name} gibt es tatsächlich Farbvorgaben — wir kennen die örtlichen Richtlinien und stimmen uns bei Bedarf mit dem Denkmalamt ab. Für alle anderen Gebäude in ${city.name} haben Sie freie Farbwahl.` },
     ],
   },
   garten: {
@@ -1287,6 +1297,18 @@ const GARDEN_FAQS = {
   froendenberg: [
     { q: 'Wie kann ich meinen Garten in Fröndenberg regenaktiv gestalten?', a: 'Mit Versickerungsbeeten, Regenrückhaltebecken und durchlässigen Wegen. Fröndenberg an der Ruhr profitiert von fachgerechter Regenwasser-Bewirtschaftung.' },
     { q: 'Welche Pflanzen eignen sich für Fröndenbergs Flussnähe?', a: 'Iris, Astilbe, Schilf, Steppenkerze und Sumpfblutauge. Diese Arten vertragen nasse Füße und trockene Phasen gleichermaßen — ideal für Fröndenbers Ruhr-Lage.' },
+  ],
+  ennepetal: [
+    { q: 'Welche Pflanzen gedeihen in Ennepetals Hanglagen?', a: 'Staudensonnenröschen, Bergenie, Fetthenne und Zwergmispel. Diese robusten Arten wurzeln tief und befestigen Ennepetals oft steile Böden — wir ergänzen mit Gehölzen wie Feldahorn und Wildbirne für natürliche Befestigung.' },
+    { q: 'Wie gestalte ich einen pflegeleichten Garten in Ennepetal?', a: 'Mit Staudenbeeten, Kiesbeeten und robusten Gräsern wie Lampenputzergras und Blauschwingel. Ennepetals Lage im Ennepe-Ruhr-Kreis bietet gute Bedingungen für einheimische Arten, die wenig Wasser und Pflege brauchen.' },
+    { q: 'Was kostet eine Gartengestaltung in Ennepetal?', a: 'Ein kleiner Reihenhausgarten beginnt bei ca. 3.500 € — je nach Hanglage, Terrassenbau und Bewässerung. Ennepetals Hanggrundstücke erfordern oft mehr Erdarbeit, was wir im Festpreis transparent ausweisen.' },
+    { q: 'Bauen Sie auch Zäune und Sichtschutz in Ennepetal?', a: 'Ja! Ob Holzzaun an der Hangbefestigung, Sichtschutzzaun am Terrassenrand oder Gabionen-Elemente — wir passen die Lösung an Ennepetals Topografie an und kümmern uns um Statik und Genehmigungen.' },
+  ],
+  muenchen: [
+    { q: 'Was kostet eine Gartengestaltung in München?', a: 'München liegt preislich über dem Bundesdurchschnitt: kleine Stadtgärten ab ca. 8.000 €, mittlere Grundstücke ab 15.000 €. Faktoren sind die hohe Nachfrage, begrenzte Flächen und die Anforderung des Münchner Stadtklimas.' },
+    { q: 'Welche Pflanzen wachsen in Münchens kleinen Stadtgärten?', a: 'Kompakte Stauden wie Salbei, Katzenminze und Storchschnabel sowie formschöne Kübelgehölze wie Zwerg-Ziergehölze und Kugelahorn. Wir nutzen jeden Quadratmeter optimal — vertikal mit Kletterpflanzen und Grünwänden.' },
+    { q: 'Wie plane ich einen Garten in Münchens Alpenklima?', a: 'Mit winterharten Arten wie Koniferen, Rhododendren und robusten Gräsern. Münchens Höhenlage und Föhn-Einfluss verlangen Pflanzen, die Temperaturwechsel und gelegentlichen Schneereichtum problemlos aushalten.' },
+    { q: 'Bieten Sie auch Dachbegrünung in München an?', a: 'Ja! Bei Münchens begrenztem Wohnraum und vielen Mehrfamilienhäusern ist die Dachbegrünung eine ideale Erweiterung des Grünraums. Wir prüfen die Statik und kümmern uns um das Münchner Baurecht und Genehmigungen.' },
   ],
 };
 
