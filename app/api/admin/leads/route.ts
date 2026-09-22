@@ -14,7 +14,7 @@ export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
       .from('leads')
-      .select('id, name, phone, email, message, status, created_at, landing_page:landing_pages(slug, title), tenant:tenants(name, email)')
+      .select('id, name, phone, email, message, status, created_at, landing_page:landing_pages(slug, title), tenant:tenants(company_name, email, phone)')
       .order('created_at', { ascending: false })
       .limit(300)
 
