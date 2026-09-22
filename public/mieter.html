@@ -65,10 +65,6 @@ tailwind.config = {
 <script>document.body.style.overflow='hidden';</script>
 
 
-<!-- ═══════════ DEMO-HINWEIS ═══════════ -->
-<div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
-  ⚠️ DEMO – Beispiel eines Mieter-Dashboards. Alle Daten sind fiktiv, Änderungen werden nicht gespeichert.
-</div>
 
 <!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->
 <div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
@@ -100,7 +96,7 @@ tailwind.config = {
       </span>
       <div class="leading-tight">
         <p id="mFirmenname" class="font-extrabold text-ink-900">Bergmann Bedachungen</p>
-        <p id="mSub" class="text-xs text-ink-500">dachdecker-schwerte-muster.de · Tarif <span class="font-bold text-brand-600">Basis</span></p>
+        <p id="mSub" class="text-xs text-ink-500">fachschmiede.de/dachdecker/schwerte/ · Tarif <span class="font-bold text-brand-600">Basis</span></p>
       </div>
     </div>
     <div class="flex items-center gap-2.5">
@@ -172,7 +168,7 @@ tailwind.config = {
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail</label>
-              <input id="fMail" type="text" value="info@dachdecker-schwerte-muster.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fMail" type="text" value="info@ihr-betrieb.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
@@ -576,7 +572,7 @@ function logout(){
   if(!m){ try{ m = JSON.parse(localStorage.getItem('mw_miete') || 'null'); }catch(e){} }
   if(!m) return;
   if(m.firma) document.getElementById('mFirmenname').textContent = m.firma;
-  document.getElementById('mSub').innerHTML = (m.domain || 'miet-website-muster.de') + ' · Tarif <span class="font-bold text-brand-600">' + (m.tarif || 'Basis') + '</span>';
+  document.getElementById('mSub').innerHTML = (m.domain || 'fachschmiede.de/ihre-stadt/') + ' · Tarif <span class="font-bold text-brand-600">' + (m.tarif || 'Basis') + '</span>';
   var t = document.getElementById('mTarif');
   t.textContent = '189 €/Monat';
   var b = document.getElementById('mUpgradeBtn');

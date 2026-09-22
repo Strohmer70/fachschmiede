@@ -96,10 +96,6 @@ tailwind.config = {
 </head>
 <body class="bg-white text-ink-800 antialiased">
 
-<!-- ═══════════ DEMO-HINWEIS ═══════════ -->
-<div class="bg-amber-400 text-ink-900 text-center text-xs sm:text-sm font-semibold py-2 px-4">
-  ⚠️ MUSTERSEITE – Beispiel einer Miet-Website für Handwerksbetriebe. Alle Inhalte, Namen, Bilder und Bewertungen sind fiktiv.
-</div>
 <!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->
 <div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
   <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
@@ -116,30 +112,6 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- ═══════════ DEMO-NAVIGATION ═══════════ -->
-<div class="bg-ink-900 text-ink-300 text-xs sm:text-sm py-2.5 px-4">
-  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
-    <span class="font-bold text-white uppercase tracking-widest text-[10px] sm:text-xs">Demo-Portal:</span>
-    <a href="/fuer-dienstleister/" class="hover:text-white transition">💼 Salespage</a>
-    <span class="text-white font-semibold">🌳 Gewerk Garten</span>
-    <a href="/sales-elektriker.html" class="hover:text-white transition">⚡ Gewerk Elektriker</a>
-    <a href="/sales-klempner.html" class="hover:text-white transition">🔥 Gewerk SHK (Klempner)</a>
-    <a href="/sales-zimmerer.html" class="hover:text-white transition">🔨 Gewerk Zimmerer</a>
-    <a href="/sales-maler.html" class="hover:text-white transition">🖌️ Gewerk Maler</a>
-    <a href="/gartenbau/unna/" class="hover:text-white transition">🏠 Musterseite Garten</a>
-    <a href="/elektriker.html" class="hover:text-white transition">⚡ Musterseite Elektriker</a>
-    <a href="/klempner.html" class="hover:text-white transition">🔥 Musterseite SHK</a>
-    <a href="/zimmerer.html" class="hover:text-white transition">🔨 Musterseite Zimmerer</a>
-    <a href="/maler.html" class="hover:text-white transition">🖌️ Musterseite Maler</a>
-    
-    <a href="/mieter.html" class="hover:text-white transition">👤 Mieter-Dashboard</a>
-    <a href="/garten-und-landschaftsbau/unna/blog/" class="hover:text-white transition">📖 Blog Garten</a>
-    <a href="/garten-und-landschaftsbau/unna/blog/" class="hover:text-white transition">📖 Blog Garten</a>
-    <a href="/garten-und-landschaftsbau/unna/blog/" class="hover:text-white transition">📖 Blog Garten</a>
-    <a href="/garten-und-landschaftsbau/unna/blog/" class="hover:text-white transition">📖 Blog Garten</a>
-    <a href="/garten-und-landschaftsbau/unna/blog/" class="hover:text-white transition">📖 Blog Garten</a>
-  </div>
-</div>
 
 <!-- ═══════════ HEADER ═══════════ -->
 <header class="bg-white/95 backdrop-blur border-b border-ink-100 sticky top-0 z-40">
@@ -525,7 +497,7 @@ tailwind.config = {
       </div>
     </div>
     <div class="lg:col-span-3 reveal">
-      <form id="kontaktForm" class="bg-white rounded-2xl shadow-lg border border-ink-100 p-7 sm:p-10" onsubmit="event.preventDefault(); document.getElementById('formSuccess').classList.remove('hidden');">
+      <form id="kontaktForm" class="bg-white rounded-2xl shadow-lg border border-ink-100 p-7 sm:p-10" onsubmit="event.preventDefault(); submitLead(this);">
         <div class="grid sm:grid-cols-2 gap-5">
           <div>
             <label for="name" class="block text-sm font-bold text-ink-800 mb-1.5">Ihr Name *</label>
@@ -556,9 +528,9 @@ tailwind.config = {
           Besichtigung anfragen
         </button>
         <p id="formSuccess" class="hidden mt-4 text-center text-green-700 font-bold bg-green-50 border border-green-200 rounded-lg py-3 px-4">
-          ✓ Vielen Dank! (Demo-Hinweis: Diese Anfrage wird nicht wirklich versendet.)
+          ✓ Vielen Dank für Ihre Anfrage! Wir melden uns innerhalb von 24 Stunden bei Ihnen.
         </p>
-        <p class="mt-4 text-xs text-ink-400 text-center">Demo-Formular – es werden keine Daten übertragen oder gespeichert.</p>
+        <p class="mt-4 text-xs text-ink-400 text-center">Ihre Anfrage wird sicher übertragen und ausschließlich zur Bearbeitung Ihres Anliegens verwendet.</p>
       </form>
     </div>
   </div>
@@ -572,8 +544,7 @@ tailwind.config = {
         </p>
         <a href="https://www.google.com/maps/search/?api=1&query=Herne" target="_blank" rel="noopener" class="text-sm font-bold text-brand-600 hover:underline">In Google Maps öffnen →</a>
       </div>
-      <iframe title="Karte Herne (Demo)" src="https://www.google.com/maps?q=Unna&z=12&output=embed" class="w-full h-80 border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      <p class="px-6 py-3 text-xs text-ink-400 italic">Demo-Karte. Nach der Anmietung wird hier der echte Firmenstandort des Mieters (Google Maps Place ID) eingebunden.</p>
+      <iframe title="Karte Herne" src="https://www.google.com/maps?q=Unna&z=12&output=embed" class="w-full h-80 border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </div>
 </section>
@@ -648,7 +619,7 @@ tailwind.config = {
     </div>
   </div>
   <div class="border-t border-ink-800 py-5 text-center text-xs text-ink-500">
-    <p>© <span id="jahr"></span> garten-unna-muster.de – MUSTERSEITE. Alle Inhalte, Personen und Bewertungen sind fiktiv.</p>
+    <p>© <span id="jahr"></span> fachschmiede.de – Ihr Portal für lokale Handwerks-Profis.</p>
   </div>
 </footer>
 
@@ -704,5 +675,59 @@ document.getElementById('jahr').textContent = new Date().getFullYear();
   document.querySelectorAll('a[href^="sales-"]').forEach(function(a){ a.style.display = 'none'; });
 })();
 </script>
+
+<script>
+// ── ECHTES Lead-Capture → /api/leads/ ──
+async function submitLead(form){
+  var btn = form.querySelector('button[type="submit"]');
+  var success = document.getElementById('formSuccess');
+  var errBox = document.getElementById('formError');
+  var origBtn = btn ? btn.textContent : '';
+  var nameEl = document.getElementById('name');
+  var telEl = document.getElementById('tel');
+  var themaEl = document.getElementById('thema');
+  var msgEl = document.getElementById('nachricht');
+  var parts = location.pathname.split('/').filter(Boolean);
+  var trade = parts[0] || '';
+  var city = parts[1] || '';
+  var payload = {
+    trade: trade,
+    city: city,
+    name: nameEl ? nameEl.value.trim() : '',
+    phone: telEl ? telEl.value.trim() : '',
+    message: 'Thema: ' + (themaEl ? themaEl.value : '') + '\n\n' + (msgEl ? msgEl.value.trim() : '')
+  };
+  if(btn){ btn.disabled = true; btn.textContent = 'Wird gesendet…'; }
+  try{
+    var res = await fetch('/api/leads/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json().catch(function(){ return {}; });
+    if(!res.ok) throw new Error(data.error || 'Senden fehlgeschlagen');
+    if(success){
+      success.textContent = '✓ Vielen Dank für Ihre Anfrage! Wir melden uns innerhalb von 24 Stunden bei Ihnen.';
+      success.classList.remove('hidden');
+    }
+    if(errBox) errBox.classList.add('hidden');
+    form.reset();
+    if(success) success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }catch(e){
+    if(!errBox && success && success.parentNode){
+      errBox = document.createElement('p');
+      errBox.id = 'formError';
+      errBox.className = 'mt-4 text-center text-red-700 font-bold bg-red-50 border border-red-200 rounded-lg py-3 px-4';
+      success.parentNode.insertBefore(errBox, success.nextSibling);
+    }
+    if(errBox){
+      errBox.textContent = '✗ ' + (e.message || 'Fehler') + ' – bitte versuchen Sie es erneut oder kontaktieren Sie uns telefonisch.';
+      errBox.classList.remove('hidden');
+    }
+  }
+  if(btn){ btn.disabled = false; btn.textContent = origBtn; }
+}
+</script>
+
 </body>
 </html>
