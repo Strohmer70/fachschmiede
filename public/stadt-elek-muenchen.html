@@ -615,5 +615,56 @@ async function submitLead(form){
 }
 </script>
 
+
+<!-- ═══════════ MIET-STATUS (echte Vermietung) ═══════════ -->
+<script>
+(function(){var PAGE_SLUG='elektriker-muenchen';
+async function applyRental(){
+ try{
+  var r=await fetch('/api/pages/'+PAGE_SLUG+'/');if(!r.ok)return;
+  var d=await r.json();if(!d.rented)return;
+  var company=d.company||'Ihr Betrieb', phone=d.phone||'', wa=(d.whatsapp||'').replace(/[^0-9]/g,'');
+  // 1) Miet-CTAs ausblenden
+  document.querySelectorAll('a').forEach(function(a){
+    var t=(a.textContent||'').trim();
+    if(/Diese Seite (mieten|anmieten)/.test(t)) a.style.display='none';
+  });
+  // 2) Free-Box ausblenden (p mit ⚡ → Container mit bg-brand-50 hochgehen)
+  var ps=document.querySelectorAll('p');
+  for(var i=0;i<ps.length;i++){
+    if((ps[i].textContent||'').indexOf('\u26a1 Diese Seite ist noch frei')===0){
+      var box=ps[i],up=0;
+      while(up<4&&box.parentElement){box=box.parentElement;up++;if(box.classList&&box.classList.contains('bg-brand-50'))break;}
+      box.style.display='none';break;
+    }
+  }
+  // 3) "noch frei"-Spans → Firmenname
+  document.querySelectorAll('span').forEach(function(s){
+    if((s.textContent||'').trim()==='noch frei'){
+      s.textContent=company;s.classList.remove('text-brand-600');s.style.color='#0f172a';
+    }
+  });
+  // Footer-Zeile "Miet-Website · noch frei" → "Geführt von …"
+  document.querySelectorAll('span,div').forEach(function(el){
+    if(el.childNodes.length&&el.childNodes[0].nodeType===3&&(el.textContent||'').trim()==='Miet-Website \u00b7 noch frei'){
+      el.textContent='Gef\u00fchrt von '+company;
+    }
+  });
+  // 4) Telefon auf Mieter umschreiben
+  if(phone){
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      a.href='tel:'+phone.replace(/[^0-9+]/g,'');a.textContent=phone;
+    });
+  }
+  // 5) WhatsApp auf Mieter umschreiben
+  if(wa){
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){
+      a.href=a.href.replace(/wa\.me\/[0-9]+/,'wa.me/'+wa);
+    });
+  }
+ }catch(e){console.error('applyRental',e);}
+}
+applyRental();})();
+</script>
 </body>
 </html>

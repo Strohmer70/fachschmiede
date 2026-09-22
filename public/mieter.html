@@ -42,23 +42,21 @@ tailwind.config = {
   <div class="w-full max-w-md">
     <div class="text-center mb-6">
       <span class="inline-flex w-14 h-14 rounded-2xl bg-brand-600 items-center justify-center text-white font-black text-2xl shadow-lg shadow-brand-600/40">M</span>
-      <p class="mt-3 font-extrabold text-white text-xl">MietWebsites <span class="text-ink-400 font-semibold text-sm">· Mieter-Dashboard</span></p>
+      <p class="mt-3 font-extrabold text-white text-xl">fachschmiede.de <span class="text-ink-400 font-semibold text-sm">· Mieter-Dashboard</span></p>
     </div>
     <form onsubmit="event.preventDefault(); doLogin();" class="bg-white rounded-2xl p-8 shadow-2xl">
       <h1 class="text-xl font-black text-ink-900 flex items-center gap-2">🔒 Mieter-Login</h1>
       <p class="mt-1.5 text-sm text-ink-500 leading-relaxed">Dein Dashboard ist passwortgeschützt – nur mit deinen Zugangsdaten aus dem Check-in erreichbar.</p>
       <div class="mt-5 space-y-3.5">
-        <input type="email" required placeholder="E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-        <input type="password" required minlength="4" placeholder="Passwort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <input id="loginMail" type="email" required placeholder="E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <input id="loginPw" type="password" required minlength="8" placeholder="Passwort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
       </div>
       <button type="submit" class="mt-5 w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Anmelden</button>
       <div class="mt-4 flex items-center justify-between text-xs">
         <button type="button" onclick="showToast('Demo: Hier würde ein Passwort-Reset-Link per E-Mail versendet.')" class="font-bold text-brand-600 hover:underline">Passwort vergessen?</button>
         <span class="text-ink-400">🔐 Session via sicherem Cookie</span>
       </div>
-      <div class="mt-5 bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-500 leading-relaxed">
-        <strong>Demo-Login:</strong> beliebige E-Mail &amp; Passwort eingeben – die Prüfung ist simuliert. Live würden Passwörter gehasht (bcrypt) gespeichert, Sessions serverseitig validiert und nach 5 Fehlversuchen temporär gesperrt.
-      </div>
+      <div class="mt-5 bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-500 leading-relaxed">Zugangsdaten stehen in deiner Willkommens-E-Mail. Bei Problemen: <a href="mailto:hello@fachschmiede.de" class="text-brand-600 font-bold">hello@fachschmiede.de</a></div>
     </form>
   </div>
 </div>
@@ -102,7 +100,7 @@ tailwind.config = {
     <div class="flex items-center gap-2.5">
       <a href="index.html" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">👁 Website ansehen</a>
       <button onclick="logout()" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">🔒 Abmelden</button>
-      <button onclick="showToast('Demo: Änderungen würden jetzt als Entwurf gespeichert.')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">Änderungen speichern</button>
+      <button onclick="saveDashboard()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">Änderungen speichern</button>
     </div>
   </div>
 </header>
@@ -173,7 +171,7 @@ tailwind.config = {
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Adresse</label>
-            <input type="text" value="Musterstraße 12, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fAdresse" type="text" value="Musterstraße 12, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Öffnungszeiten</label>
@@ -181,7 +179,7 @@ tailwind.config = {
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">„Über uns"-Text</label>
-            <textarea rows="4" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Bergmann Bedachungen ist ein Dachdeckerbetrieb aus Schwerte. Bei uns sprechen Sie direkt mit den Entscheidern – persönlich, unkompliziert und ohne lange Wege.</textarea>
+            <textarea id="fWillkommen" rows="4" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Bergmann Bedachungen ist ein Dachdeckerbetrieb aus Schwerte. Bei uns sprechen Sie direkt mit den Entscheidern – persönlich, unkompliziert und ohne lange Wege.</textarea>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Einsatzgebiete <span class="font-normal text-ink-400">(Komma-getrennt)</span></label>
@@ -549,17 +547,67 @@ tailwind.config = {
 <script>
 // Tabs
 // ── Login-Gate ──
-function doLogin(){
-  const g = document.getElementById('loginGate');
+async function doLogin(){
+  var email=(document.getElementById('loginMail').value||'').trim();
+  var pw=document.getElementById('loginPw').value;
+  var btn=document.querySelector('#loginGate button[type="submit"]');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Prüfe…';}
+  try{
+    var res=await fetch('/api/tenant-login/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})});
+    var data=await res.json();
+    if(!res.ok){showToast(data.error||'Login fehlgeschlagen.');if(btn){btn.disabled=false;btn.textContent='Anmelden';}return;}
+    localStorage.setItem('fs_token',data.token);
+    hideLoginGate();
+    showToast('Willkommen zurück, '+((data.tenant&&data.tenant.company_name)||'!'));
+    loadDashboard();
+  }catch(e){
+    showToast('Netzwerkfehler – bitte erneut versuchen.');
+    if(btn){btn.disabled=false;btn.textContent='Anmelden';}
+  }
+}
+function hideLoginGate(){
+  var g=document.getElementById('loginGate');
   g.classList.add('opacity-0');
-  setTimeout(() => { g.classList.add('hidden'); document.body.style.overflow = ''; }, 450);
-  showToast('Willkommen zurück! (Demo-Login)');
+  setTimeout(function(){g.classList.add('hidden');document.body.style.overflow='';},450);
+}
+async function loadDashboard(){
+  try{
+    var res=await fetch('/api/tenant/customization/',{headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
+    if(!res.ok){if(res.status===401){localStorage.removeItem('fs_token');return;}return;}
+    var data=await res.json();
+    var t=data.tenant||{}, c=data.customization||{};
+    var lp=(c.landing_page||{});
+    if(t.company_name)document.getElementById('mFirmenname').textContent=t.company_name;
+    if(lp.slug)document.getElementById('mSub').innerHTML='<a href="/' + lp.slug.replace('-', '/') + '/" class="text-brand-600 font-bold hover:underline">fachschmiede.de/' + lp.slug.replace('-', '/') + '/</a> · Mietseite';
+    if(c.custom_company_name)document.getElementById('fFirmenname').value=c.custom_company_name;
+    if(c.custom_phone)document.getElementById('fTel').value=c.custom_phone;
+    if(c.custom_email)document.getElementById('fMail').value=c.custom_email;
+    if(c.custom_address)document.getElementById('fAdresse').value=c.custom_address;
+    if(c.custom_welcome_text)document.getElementById('fWillkommen').value=c.custom_welcome_text;
+    var statusEl=document.getElementById('mStatus');
+    if(t.subscription_status&&statusEl){
+      var map={'active':['Aktiv','bg-green-100 text-green-700'],'trialing':['Testphase','bg-amber-100 text-amber-700'],'past_due':['Zahlung offen','bg-red-100 text-red-700'],'canceled':['Gekündigt','bg-ink-100 text-ink-500']};
+      var m=map[t.subscription_status]||['Aktiv','bg-green-100 text-green-700'];
+      statusEl.textContent=m[0];statusEl.className=m[1]+' text-xs font-bold px-2 py-0.5 rounded-full';
+    }
+  }catch(e){console.error('loadDashboard',e);}
+}
+async function saveDashboard(){
+  var payload={firma:document.getElementById('fFirmenname').value,phone:document.getElementById('fTel').value,email:document.getElementById('fMail').value,address:document.getElementById('fAdresse').value,welcome:document.getElementById('fWillkommen').value};
+  var btn=event.target;btn.disabled=true;btn.textContent='⏳ Speichere…';
+  try{
+    var res=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('fs_token')},body:JSON.stringify(payload)});
+    var data=await res.json();
+    showToast(res.ok?'✓ Gespeichert! Deine Seite zeigt die neuen Daten.':(data.error||'Speichern fehlgeschlagen.'));
+  }catch(e){showToast('Netzwerkfehler – bitte erneut versuchen.');}
+  btn.disabled=false;btn.textContent='Änderungen speichern';
 }
 function logout(){
-  const g = document.getElementById('loginGate');
-  g.classList.remove('hidden', 'opacity-0');
-  document.body.style.overflow = 'hidden';
-  showToast('Abgemeldet – der Bereich ist jetzt gesperrt. (Demo)');
+  localStorage.removeItem('fs_token');
+  var g=document.getElementById('loginGate');
+  g.classList.remove('hidden','opacity-0');
+  document.body.style.overflow='hidden';
+  showToast('Abgemeldet – der Bereich ist jetzt gesperrt.');
 }
 
 // ── Demo-Miete übernehmen (aus dem Self-Check-in) ──
@@ -656,5 +704,15 @@ function showToast(msg){
   toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
 }
 </script>
-</body>
+<script>
+(function(){
+  var tok=localStorage.getItem('fs_token');
+  if(tok){
+    fetch('/api/tenant/customization/',{headers:{'Authorization':'Bearer '+tok}}).then(function(r){
+      if(r.ok){hideLoginGate();loadDashboard();}
+      else localStorage.removeItem('fs_token');
+    }).catch(function(){});
+  }
+})();
+</script></body>
 </html>

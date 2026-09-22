@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { sendMail, leadMailToTenant } from '@/lib/mailer'
 
 // API-Routen dürfen NIEMALS statisch generiert werden
 export const dynamic = 'force-dynamic'
@@ -104,7 +105,34 @@ export async function POST(req: NextRequest) {
       throw new Error('Speicherfehler: ' + insertError.message)
     }
 
-    // TODO: E-Mail an Mieter senden, sobald SMTP (Resend/SendGrid) konfiguriert ist
+    // Mieter per E-Mail benachrichtigen (wenn Seite vermietet + SMTP konfiguriert)
+    if (page.rented_by) {
+      try {
+        const [{ data: tenant }, { data: cityRow }, { data: tradeRow }] = await Promise.all([
+          supabaseAdmin.from('tenants').select('email, company_name, contact_name, subscription_status').eq('id', page.rented_by).maybeSingle(),
+          supabaseAdmin.from('cities').select('name').eq('slug', city).maybeSingle(),
+          supabaseAdmin.from('trades').select('label, name').eq('slug', trade).maybeSingle(),
+        ])
+        if (tenant?.email && tenant.subscription_status === 'active') {
+          await sendMail({
+            to: tenant.email,
+            ...leadMailToTenant({
+              tenantName: tenant.contact_name || tenant.company_name || 'Handwerksbetrieb',
+              company: tenant.company_name || '',
+              city: cityRow?.name || city,
+              trade: tradeRow?.label || tradeRow?.name || trade,
+              leadName: name.trim(),
+              leadPhone: phone.trim(),
+              leadMessage: message || '(keine Nachricht)',
+              pageUrl: 'https://www.fachschmiede.de/' + trade + '/' + city + '/',
+            }),
+          })
+        }
+      } catch (mailErr) {
+        console.error('[leads] mail notification failed:', mailErr)
+        // Lead ist gespeichert – Mail-Fehler soll den Lead nicht killen
+      }
+    }
 
     return NextResponse.json({ ok: true, id: lead.id })
   } catch (err: any) {

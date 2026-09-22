@@ -495,8 +495,8 @@ tailwind.config = {
             </ul>
           </div>
           <div class="grid sm:grid-cols-2 gap-4">
-            <input type="text" required placeholder="Vor- und Nachname" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <input type="email" required placeholder="E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="onbName" type="text" required placeholder="Vor- und Nachname" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="onbLoginMail" type="email" required placeholder="E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="bg-ink-50 border border-ink-200 rounded-xl p-4 space-y-3">
             <p class="text-sm font-bold text-ink-800">🔒 Dein Dashboard-Zugang</p>
@@ -729,9 +729,7 @@ tailwind.config = {
 <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-ink-900 text-white text-sm font-semibold px-6 py-4 rounded-xl shadow-2xl transition-all duration-300 z-[60]"></div>
 
 <script>
-// Reveal
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-}, { threshold: 0.1 });
+// Reveal-Animation deaktiviert (CSS zeigt alles direkt)
 
 // Stadtsuche
 const search = document.getElementById('citySearch');
@@ -752,6 +750,7 @@ const onb = document.getElementById('onboarding');
 let onbCity = '';
 const CITY_SLUGS = {'Schwerte':'schwerte','Dortmund':'dortmund','Hagen':'hagen','Iserlohn':'iserlohn','Unna':'unna','Bochum':'bochum','Witten':'witten','Lünen':'luenen','Herne':'herne','Castrop-Rauxel':'castrop-rauxel','Kamen':'kamen','Bergkamen':'bergkamen','Fröndenberg':'froendenberg','Holzwickede':'holzwickede','Schwelm':'schwelm','Gevelsberg':'gevelsberg','Ennepetal':'ennepetal','Sprockhövel':'sprockhoevel','Hattingen':'hattingen','Wetter (Ruhr)':'wetter-ruhr'};
 const GEWERK_KEY = 'dach';
+const GEWERK_SLUG = 'dachdecker';
 const GEWERK_LABEL = 'Dachdecker';
 const DOMAIN_PREFIX = 'dachdecker';
 function startOnboarding(city){
@@ -778,34 +777,45 @@ function gotoStep(n){
   document.getElementById('bar1').style.width = n >= 2 ? '100%' : '0%';
   document.getElementById('bar2').style.width = n >= 3 ? '100%' : '0%';
 }
-function publish(){
+async function publish(){
+  const pw1 = (document.getElementById('pw1')||{}).value || '';
+  const pw2 = (document.getElementById('pw2')||{}).value || '';
+  if(pw1.length < 8){ alert('Bitte ein Passwort mit mindestens 8 Zeichen in Schritt 1 wählen.'); gotoStep(1); return; }
+  if(pw1 !== pw2){ alert('Die Passwörter stimmen nicht überein.'); gotoStep(1); return; }
   const firmaEl = document.getElementById('onbFirma');
-  const slug = CITY_SLUGS[onbCity] || '';
-  const miete = {gkey: GEWERK_KEY, gewerk: GEWERK_LABEL, stadt: onbCity, slug: slug,
-                 farbe: selColor,
-                 firma: firmaEl ? firmaEl.value.trim() : '',
-                 tel: (document.getElementById('onbTel') || {}).value || '',
-                 mail: (document.getElementById('onbMail') || {}).value || '',
-                 modus: onbMode, testEnde: onbMode === 'test' ? new Date(Date.now() + 14*86400000).toISOString() : null,
-                 domain: 'fachschmiede.de/dachdecker/' + slug + '/'};
-  try{ localStorage.setItem('mw_miete', JSON.stringify(miete)); }catch(e){}
-  const doneMsg = document.getElementById('doneMsg');
-  if(doneMsg){
-    const ende = new Date(Date.now() + 14*86400000).toLocaleDateString('de-DE');
-    doneMsg.innerHTML = onbMode === 'test'
-      ? '\u201e' + GEWERK_LABEL + ' ' + onbCity + '\u201c ist ab sofort unter deinem Namen online – <strong>14 Tage kostenlos, ohne Zahlungsdaten</strong>. Dein Dashboard-Login ist aktiviert (Bestätigung per E-Mail). Die Testphase endet am <strong>' + ende + '</strong> – erst wenn du danach aktiv mietest, läuft die Seite weiter.'
-      : '\u201e' + GEWERK_LABEL + ' ' + onbCity + '\u201c ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (Stripe/PayPal).';
+  const slug = GEWERK_SLUG + '-' + (CITY_SLUGS[onbCity] || '');
+  const payload = {
+    slug: slug, trade: GEWERK_SLUG, city: onbCity,
+    firma: firmaEl ? firmaEl.value.trim() : '',
+    name: ((document.getElementById('onbName')||{}).value || '').trim(),
+    email: ((document.getElementById('onbLoginMail')||{}).value || '').trim(),
+    tel: (document.getElementById('onbTel') || {}).value || '',
+    password: pw1, modus: onbMode
+  };
+  if(!payload.firma){ alert('Bitte Firmennamen in Schritt 2 ausfüllen.'); gotoStep(2); return; }
+  if(!payload.email){ alert('Bitte E-Mail in Schritt 1 ausfüllen.'); gotoStep(1); return; }
+  const btn = document.querySelector('#step3 button[onclick="publish()"]') || document.querySelector('#stepDone button');
+  const oldLabel = btn ? btn.innerHTML : '';
+  if(btn){ btn.disabled = true; btn.innerHTML = '⏳ Wird eingerichtet…'; }
+  try{
+    const res = await fetch('/api/rent/', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    const data = await res.json();
+    if(!res.ok){
+      if(btn){ btn.disabled = false; btn.innerHTML = oldLabel; }
+      alert(data.error || 'Einrichtung fehlgeschlagen. Bitte versuche es erneut.');
+      return;
+    }
+    if(data.checkout_url){ window.location.href = data.checkout_url; return; }
+    // Stripe noch nicht konfiguriert → trotzdem Bestätigung anzeigen
+    gotoStep('Done');
+    const doneMsg = document.getElementById('doneMsg');
+    if(doneMsg) doneMsg.innerHTML = 'Dein Konto ist angelegt! Wir aktivieren deine Seite <strong>' + GEWERK_LABEL + ' ' + onbCity + '</strong> in Kürze – du erhältst eine Bestätigungs-E-Mail mit deinen Zugangsdaten.';
+    const siteLink = document.getElementById('doneSiteLink');
+    if(siteLink) siteLink.href = '/stadt-' + GEWERK_KEY + '-' + (CITY_SLUGS[onbCity]||'') + '.html';
+  }catch(e){
+    if(btn){ btn.disabled = false; btn.innerHTML = oldLabel; }
+    alert('Netzwerkfehler – bitte prüfe deine Verbindung und versuche es erneut.');
   }
-  const mieteParam = '?miete=' + encodeURIComponent(JSON.stringify(miete));
-  const siteLink = document.getElementById('doneSiteLink');
-  if(siteLink && slug) siteLink.href = 'stadt-' + GEWERK_KEY + '-' + slug + '.html' + mieteParam;
-  const dashLink = document.getElementById('doneDashLink');
-  if(dashLink) dashLink.href = 'mieter.html' + mieteParam;
-  ['step1','step2','step3','stepDone'].forEach(id => document.getElementById(id).classList.remove('active'));
-  document.getElementById('stepDone').classList.add('active');
-  document.getElementById('stepLabel').textContent = 'Fertig · Website veröffentlicht';
-  document.getElementById('dot3').className = 'prog-dot done';
-  document.getElementById('dot3').textContent = '✓';
 }
 onb.addEventListener('click', e => { if(e.target === onb) closeOnboarding(); });
 
