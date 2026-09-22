@@ -12,14 +12,16 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       return NextResponse.json({ error: 'Ungültiger Slug' }, { status: 400 })
     }
 
-    const { data: page } = await supabaseAdmin
+    const { data: pages, error: pageErr } = await supabaseAdmin
       .from('landing_pages')
       .select('id, status, rented_by')
       .eq('slug', slug)
-      .maybeSingle()
-
-    if (!page || page.status !== 'rented' || !page.rented_by) {
-      return NextResponse.json({ rented: false })
+    if (pageErr) return NextResponse.json({ rented: false, diag: 'select: ' + pageErr.message })
+    if (!pages || pages.length === 0) return NextResponse.json({ rented: false, diag: 'kein Row für slug=' + slug })
+    if (pages.length > 1) return NextResponse.json({ rented: false, diag: 'DUPLIKAT: ' + pages.length + ' Rows', ids: pages.map(p => ({ id: p.id.slice(0, 8), status: p.status })) })
+    const page = pages[0]
+    if (page.status !== 'rented' || !page.rented_by) {
+      return NextResponse.json({ rented: false, diag: 'page status=' + (page?.status || 'null') + ' rented_by=' + (page?.rented_by ? 'ja' : 'nein') })
     }
 
     const [{ data: tenant }, { data: cust }] = await Promise.all([
