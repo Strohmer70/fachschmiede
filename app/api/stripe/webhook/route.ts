@@ -75,6 +75,22 @@ export async function POST(request: Request) {
         if (tenant_id) {
           await supabaseAdmin.from('tenants').update({ subscription_status: newStatus, stripe_subscription_id: sub.id }).eq('id', tenant_id)
         }
+        // AKTIVIEREN: active/trialing → Seite vermietet (robust per meta.landing_page_id → meta.slug → tenant-customization)
+        if (newStatus === 'active') {
+          let pid = landing_page_id || ''
+          if (!pid && meta.slug) {
+            const { data: lp } = await supabaseAdmin.from('landing_pages').select('id').eq('slug', meta.slug).maybeSingle()
+            pid = lp?.id || ''
+          }
+          if (!pid && tenant_id) {
+            const { data: cust } = await supabaseAdmin.from('page_customizations').select('landing_page_id').eq('tenant_id', tenant_id).limit(1).maybeSingle()
+            pid = cust?.landing_page_id || ''
+          }
+          if (pid) {
+            await supabaseAdmin.from('landing_pages').update({ status: 'rented', rented_by: tenant_id || null, rented_at: new Date().toISOString() }).eq('id', pid)
+            await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', pid)
+          }
+        }
         // past_due/cancelled → Seite ggf. wieder freigeben
         if ((newStatus === 'cancelled' || newStatus === 'inactive') && landing_page_id) {
           await supabaseAdmin
