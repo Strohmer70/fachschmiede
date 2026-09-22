@@ -87,9 +87,9 @@ export async function POST(request: Request) {
             pid = cust?.landing_page_id || ''
           }
           if (pid) {
-            const { error: lpErr } = await supabaseAdmin.from('landing_pages').update({ status: 'rented', rented_by: tenant_id || null, rented_at: new Date().toISOString() }).eq('id', pid)
-            const { error: cErr } = await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', pid)
-            return NextResponse.json({ received: true, diag: { pid: pid.slice(0, 8), lpErr: lpErr?.message || null, cErr: cErr?.message || null } })
+            const { data: updRows, error: lpErr } = await supabaseAdmin.from('landing_pages').update({ status: 'rented', rented_by: tenant_id || null, rented_at: new Date().toISOString() }).eq('id', pid).select('id, status')
+            const { error: cErr } = await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', pid).select('id')
+            return NextResponse.json({ received: true, diag: { pid: pid.slice(0, 8), updated: updRows || [], lpErr: lpErr?.message || null, cErr: cErr?.message || null } })
           }
           return NextResponse.json({ received: true, warning: 'pid nicht auflösbar (slug=' + (meta.slug || '-') + ')' })
         }

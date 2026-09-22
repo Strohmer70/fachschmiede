@@ -21,7 +21,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     if (pages.length > 1) return NextResponse.json({ rented: false, diag: 'DUPLIKAT: ' + pages.length + ' Rows', ids: pages.map(p => ({ id: p.id.slice(0, 8), status: p.status })) })
     const page = pages[0]
     if (page.status !== 'rented' || !page.rented_by) {
-      return NextResponse.json({ rented: false, diag: 'page status=' + (page?.status || 'null') + ' rented_by=' + (page?.rented_by ? 'ja' : 'nein') })
+      return NextResponse.json({ rented: false, diag: 'page id=' + page.id.slice(0, 8) + ' status=' + page.status + ' rented_by=' + (page.rented_by ? 'ja' : 'nein') })
     }
 
     const [{ data: tenant }, { data: cust }] = await Promise.all([
