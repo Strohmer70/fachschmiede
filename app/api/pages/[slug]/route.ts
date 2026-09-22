@@ -1,5 +1,5 @@
 // app/api/pages/[slug]/route.ts — Öffentlicher Miet-Status einer Stadtseite
-// GET /api/pages/dachdecker-herne/ → { rented:false } | { rented:true, company, phone, email, whatsapp, welcome, color }
+// GET /api/pages/dachdecker-herne/ → { rented:false } | { rented:true, company, phone, email, whatsapp, welcome }
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
@@ -12,16 +12,14 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       return NextResponse.json({ error: 'Ungültiger Slug' }, { status: 400 })
     }
 
-    const { data: pages, error: pageErr } = await supabaseAdmin
+    const { data: rows } = await supabaseAdmin
       .from('landing_pages')
-      .select('id, status, rented_by')
+      .select('id, slug, status, rented_by, created_at, updated_at')
       .eq('slug', slug)
-    if (pageErr) return NextResponse.json({ rented: false, diag: 'select: ' + pageErr.message })
-    if (!pages || pages.length === 0) return NextResponse.json({ rented: false, diag: 'kein Row für slug=' + slug })
-    if (pages.length > 1) return NextResponse.json({ rented: false, diag: 'DUPLIKAT: ' + pages.length + ' Rows', ids: pages.map(p => ({ id: p.id.slice(0, 8), status: p.status })) })
-    const page = pages[0]
-    if (page.status !== 'rented' || !page.rented_by) {
-      return NextResponse.json({ rented: false, diag: 'page id=' + page.id.slice(0, 8) + ' status=' + page.status + ' rented_by=' + (page.rented_by ? 'ja' : 'nein') })
+
+    const page = rows && rows.length > 0 ? rows[0] : null
+    if (!page || page.status !== 'rented' || !page.rented_by) {
+      return NextResponse.json({ rented: false, page })
     }
 
     const [{ data: tenant }, { data: cust }] = await Promise.all([
@@ -39,10 +37,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     ])
 
     if (!tenant || tenant.subscription_status !== 'active' || !cust || !cust.is_active) {
-      return NextResponse.json({ rented: false })
+      return NextResponse.json({ rented: false, reason: 'tenant/cust' })
     }
 
-    // Nur öffentliche Daten zurückgeben (kein Passwort-Hash o.ä.!)
     return NextResponse.json({
       rented: true,
       company: cust.custom_company_name || tenant.company_name,
@@ -53,7 +50,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       welcome: cust.custom_welcome_text || null,
     })
   } catch (err: any) {
-    console.error('[pages/slug]', err)
     return NextResponse.json({ error: err?.message }, { status: 500 })
   }
 }
