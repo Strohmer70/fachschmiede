@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
   // ── 2) Städte upserten ──
   const cityList = Object.values((SYSTEM_CONFIG as any).cities || {}) as any[]
   for (const c of cityList) {
-    const payload = pick(cityCols, { slug: c.slug, name: c.name, region: c.region })
+    const payload = pick(cityCols, { slug: c.slug, name: c.name, state: c.region, region: c.region })
     const { error } = await supabaseAdmin.from('cities').upsert(payload, { onConflict: 'slug' })
     if (error) stats.cities.errors.push({ slug: c.slug, msg: error.message })
     else stats.cities.upserted++
@@ -109,6 +109,8 @@ export async function GET(req: NextRequest) {
   // ── 6) Optional: Test-Tenants aufräumen ──
   if (req.nextUrl.searchParams.get('cleanup') === '1') {
     const testEmails = ['probe-a@fachschmiede.de', 'probe-b@fachschmiede.de', 'e2e-test@fachschmiede.de', 'e2e-test2@fachschmiede.de']
+    const { data: tenantsAll } = await supabaseAdmin.from('tenants').select('id, email, subscription_status').limit(30)
+    stats.tenants_sample = tenantsAll || []
     const { data: tenants } = await supabaseAdmin.from('tenants').select('id, email').in('email', testEmails)
     const ids = (tenants || []).map((t: any) => t.id)
     let deletedCust = 0
