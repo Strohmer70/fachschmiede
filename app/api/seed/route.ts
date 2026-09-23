@@ -108,7 +108,7 @@ export async function GET(req: NextRequest) {
 
   // ── 6) Optional: Test-Tenants aufräumen ──
   if (req.nextUrl.searchParams.get('cleanup') === '1') {
-    const testEmails = ['probe-a@fachschmiede.de', 'probe-b@fachschmiede.de', 'e2e-test@fachschmiede.de', 'e2e-test2@fachschmiede.de']
+    const testEmails = ['probe-a@fachschmiede.de', 'probe-b@fachschmiede.de', 'e2e-test@fachschmiede.de', 'e2e-test2@fachschmiede.de', 'probe-final@fachschmiede.de', 'probe-check@fachschmiede.de']
     const { data: tenantsAll } = await supabaseAdmin.from('tenants').select('id, email, subscription_status').limit(30)
     stats.tenants_sample = tenantsAll || []
     const { data: tenants } = await supabaseAdmin.from('tenants').select('id, email').in('email', testEmails)
@@ -120,6 +120,30 @@ export async function GET(req: NextRequest) {
       await supabaseAdmin.from('tenants').delete().in('id', ids)
     }
     stats.cleanup = { tenants_deleted: ids.length, customizations_deleted: deletedCust }
+  }
+
+  // ── 7) Reconcile: Bezahlung manuell einlösen (z.B. wenn Webhook-Secret mismatch war) ──
+  const reconcileSlug = req.nextUrl.searchParams.get('reconcile')
+  if (reconcileSlug) {
+    const email = (req.nextUrl.searchParams.get('tenant_email') || '').toLowerCase().trim()
+    const { data: page } = await supabaseAdmin.from('landing_pages').select('id, slug, status, rented_by').eq('slug', reconcileSlug).maybeSingle()
+    const { data: tenant } = await supabaseAdmin.from('tenants').select('id, email').eq('email', email).maybeSingle()
+    let subId = ''
+    try {
+      const Stripe = require('stripe')
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2024-06-20' })
+      const sess = await stripe.checkout.sessions.list({ customer_email: email, limit: 5 })
+      const done = (sess.data || []).find((s: any) => s.payment_status === 'paid' && s.status === 'complete')
+      subId = done?.subscription || ''
+    } catch (e: any) { console.error('[reconcile] stripe lookup:', e?.message) }
+    if (page && tenant) {
+      await supabaseAdmin.from('landing_pages').update({ status: 'rented', rented_by: tenant.id, rented_at: new Date().toISOString() }).eq('id', page.id)
+      await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', page.id).eq('tenant_id', tenant.id)
+      await supabaseAdmin.from('tenants').update({ subscription_status: 'active', ...(subId ? { stripe_subscription_id: subId } : {}) }).eq('id', tenant.id)
+      stats.reconcile = { slug: reconcileSlug, email, ok: true, subscription: subId, page_was: page.status }
+    } else {
+      stats.reconcile = { slug: reconcileSlug, email, ok: false, page_found: Boolean(page), tenant_found: Boolean(tenant) }
+    }
   }
 
   return NextResponse.json({
