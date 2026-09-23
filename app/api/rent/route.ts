@@ -36,11 +36,17 @@ export async function POST(request: Request) {
     }
 
     // ── Landing Page finden (Slug = z.B. "dachdecker-herne") ──
-    let { data: page } = await supabaseAdmin
+    let { data: page, error: pageLookupErr } = await supabaseAdmin
       .from('landing_pages')
       .select('id, slug, title, monthly_price, status, rented_by')
       .eq('slug', slug)
       .maybeSingle()
+
+    // Supabase-Fehler EXPLIZIT behandeln (sonst tarnen sich DB-Ausfälle als "Seite existiert nicht")
+    if (pageLookupErr) {
+      console.error('[rent] DB-Fehler beim Seiten-Lookup:', pageLookupErr.message)
+      return NextResponse.json({ error: 'Datenbank vorübergehend nicht erreichbar. Bitte in 1 Minute erneut versuchen.' }, { status: 503 })
+    }
 
     if (!page) {
       // Fallback: über cities+trades auflösen und Slug-Zeile anlegen
