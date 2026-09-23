@@ -35,8 +35,8 @@ export async function GET(req: NextRequest) {
     tableColumns('trades'), tableColumns('cities'), tableColumns('landing_pages'),
   ])
   stats.schema = {
-    trades: [...tradeCols], cities: [...cityCols],
-    landing_pages_sample: [...pageCols].slice(0, 12),
+    trades: Array.from(tradeCols), cities: Array.from(cityCols),
+    landing_pages_sample: Array.from(pageCols).slice(0, 12),
   }
 
   const pick = (cols: Set<string>, obj: Record<string, any>) => {
