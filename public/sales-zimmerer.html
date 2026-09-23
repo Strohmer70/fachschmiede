@@ -715,6 +715,9 @@ const GEWERK_LABEL = 'Zimmerer';
 const DOMAIN_PREFIX = 'zimmerei';
 function startOnboarding(city){
   onbCity = city;
+  // URL immer mit gewählter Stadt synchronisieren (Bookmark/Reload/Teilen = korrekt)
+  var _cs = (typeof CITY_SLUGS !== 'undefined') ? CITY_SLUGS[city] : '';
+  if (_cs) { try { history.replaceState(null, '', '?stadt=' + _cs); } catch(e){} }
   document.querySelectorAll('.onbCity').forEach(el => el.textContent = city);
   gotoStep(1);
   onb.classList.remove('hidden');
@@ -723,6 +726,8 @@ function startOnboarding(city){
 function closeOnboarding(){
   onb.classList.add('hidden');
   document.body.style.overflow = '';
+  // ?stadt-Param entfernen, sonst poppt beim Reload das alte Modal wieder auf
+  try { history.replaceState(null, '', location.pathname); } catch(e){}
 }
 function gotoStep(n){
   ['step1','step2','step3','stepDone'].forEach(id => document.getElementById(id).classList.remove('active'));
@@ -952,7 +957,7 @@ if (citySearch) {
     const CITY_NAMES = {'schwerte':'Schwerte','dortmund':'Dortmund','hagen':'Hagen','iserlohn':'Iserlohn','unna':'Unna','bochum':'Bochum','witten':'Witten','luenen':'Lünen','herne':'Herne','castrop-rauxel':'Castrop-Rauxel','kamen':'Kamen','bergkamen':'Bergkamen','froendenberg':'Fröndenberg','holzwickede':'Holzwickede','schwelm':'Schwelm','gevelsberg':'Gevelsberg','ennepetal':'Ennepetal','sprockhoevel':'Sprockhövel','hattingen':'Hattingen','wetter-ruhr':'Wetter (Ruhr)','muenchen':'München'};
     const cityName = CITY_NAMES[stadtSlug];
     if(cityName && typeof startOnboarding === 'function'){
-      setTimeout(() => startOnboarding(cityName), 500);
+      setTimeout(() => { if (onb.classList.contains('hidden')) startOnboarding(cityName); }, 500); // Race-Fix: manuelle Auswahl nie überschreiben
     }
   }
 })();
