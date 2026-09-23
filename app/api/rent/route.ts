@@ -81,31 +81,44 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Diese Seite ist bereits vergeben.' }, { status: 409 })
     }
 
-    // ── Tenant anlegen (oder 409 wenn E-Mail schon registriert) ──
+    // ── Tenant: E-Mail WIEDERVERWENDEN! (Ein Kunde = ein Account = viele Seiten) ──
     const { data: existingTenant } = await supabaseAdmin
       .from('tenants')
       .select('id')
       .eq('email', emailNorm)
       .maybeSingle()
-    if (existingTenant) {
-      return NextResponse.json({ error: 'Diese E-Mail ist bereits registriert – bitte im Dashboard einloggen.', code: 'EMAIL_EXISTS' }, { status: 409 })
+    let tenant = existingTenant
+    let tenantReused = Boolean(tenant)
+    if (tenant) {
+      // Mietet dieser Tenant DIESE Seite bereits? → DANN erst blocken
+      const { data: ownPage } = await supabaseAdmin
+        .from('landing_pages')
+        .select('id')
+        .eq('rented_by', tenant.id)
+        .eq('id', page.id)
+        .maybeSingle()
+      if (ownPage) {
+        return NextResponse.json({ error: 'Du mietest diese Seite bereits – bitte im Dashboard einloggen.', code: 'ALREADY_RENTED' }, { status: 409 })
+      }
     }
-
-    const passwordHash = hashPassword(String(password))
-    const { data: tenant, error: tenantErr } = await supabaseAdmin
-      .from('tenants')
-      .insert({
-        email: emailNorm,
-        password_hash: passwordHash,
-        company_name: (firma || name || 'Handwerksbetrieb').trim(),
-        contact_name: (name || '').trim() || null,
-        phone: (tel || '').trim() || null,
-        subscription_status: 'inactive',
-      })
-      .select('id')
-      .single()
-    if (tenantErr || !tenant) {
-      return NextResponse.json({ error: 'Konto konnte nicht angelegt werden: ' + tenantErr?.message }, { status: 500 })
+    if (!tenant) {
+      const passwordHash = hashPassword(String(password))
+      const { data: newTenant, error: tenantErr } = await supabaseAdmin
+        .from('tenants')
+        .insert({
+          email: emailNorm,
+          password_hash: passwordHash,
+          company_name: (firma || name || 'Handwerksbetrieb').trim(),
+          contact_name: (name || '').trim() || null,
+          phone: (tel || '').trim() || null,
+          subscription_status: 'inactive',
+        })
+        .select('id')
+        .single()
+      if (tenantErr || !newTenant) {
+        return NextResponse.json({ error: 'Konto konnte nicht angelegt werden: ' + tenantErr?.message }, { status: 500 })
+      }
+      tenant = newTenant
     }
 
     // ── Customization (inaktiv bis Zahlung/Ende Testphase) ──
@@ -132,7 +145,7 @@ export async function POST(request: Request) {
       ...welcomeMailTenant({
         name: (name || firma || '').trim(),
         email: emailNorm,
-        password: String(password),
+        password: tenantReused ? '(dein bestehendes Passwort)' : String(password),
         pageUrl: publicUrl,
         trade: String(trade || '').replace(/^./, c => c.toUpperCase()),
         city: String(city || ''),
@@ -149,11 +162,21 @@ export async function POST(request: Request) {
       }, { status: 503 })
     }
 
+    // ── Stripe-Kunde wiederverwenden (Multi-Page: 1 Kunde = viele Seiten) ──
+    let stripeCustomerId: string | undefined
+    try {
+      const found = await stripe.customers.list({ email: emailNorm, limit: 1 })
+      stripeCustomerId = found.data[0]?.id
+    } catch (e) {
+      console.error('[rent] stripe customer lookup:', e)
+    }
+
     const session = await stripe.checkout.sessions.create({
       // payment_method_types weglassen → Stripe zeigt automatisch alle im Dashboard aktivierten Methoden
       // (card immer aktiv; SEPA erscheint automatisch sobald Dieter es aktiviert — kein Code-Change nötig)
       billing_address_collection: 'required',
-      customer_email: emailNorm,
+      // Bestehenden Stripe-Kunden per E-Mail wiederverwenden (kein Kunden-Duplikat pro Seite)
+      ...(stripeCustomerId ? { customer: stripeCustomerId } : { customer_email: emailNorm }),
       line_items: [{
         price_data: {
           currency: 'eur',
