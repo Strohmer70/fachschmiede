@@ -1,5 +1,6 @@
 // app/api/stripe/webhook/route.ts — Stripe-Events → Mieter aktivieren/deaktivieren
 // In Stripe-Dashboard: Webhook → https://www.fachschmiede.de/api/stripe/webhook/
+// Registriert: we_1UIohKRtRWcgWLNljoXNYdS1 (LIVE, 2026-09-23, API 2024-06-20)
 // Events: checkout.session.completed, customer.subscription.updated, customer.subscription.deleted, invoice.payment_failed
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
