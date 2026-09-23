@@ -36,7 +36,8 @@ export async function POST(request: Request) {
 
     // Create Stripe Checkout Session
     const session = await stripeClient.checkout.sessions.create({
-      payment_method_types: ['card', 'sepa_debit'],
+      // payment_method_types weglassen → Stripe zeigt automatisch alle aktivierten Methoden
+      // (card immer aktiv; SEPA erscheint automatisch sobald aktiviert — kein Code-Change nötig)
       billing_address_collection: 'required',
       line_items: [
         {
