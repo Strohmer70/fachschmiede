@@ -1,6 +1,7 @@
-// app/api/seed/route.ts — DB-Backfill aus system-config.js (SSOT)
-// GET/POST ?key=<SEED_SECRET>          → trades + cities + fehlende landing_pages anlegen
-// GET/POST ?key=<SEED_SECRET>&cleanup=1 → Test-Tenants (probe-*/e2e-*) löschen
+// app/api/seed/route.ts — DB-Backfill aus system-config.js (SSOT), SCHEMA-ADAPTIV
+// Liest die echten Spalten aus Bestandszeilen und baut Payloads nur mit vorhandenen Spalten.
+// GET/POST ?key=<SEED_SECRET>            → trades + cities + fehlende landing_pages anlegen
+// GET/POST ?key=<SEED_SECRET>&cleanup=1  → Test-Tenants (probe-*/e2e-*) löschen
 // Idempotent: existierende Slugs werden NICHT überschrieben (rented Seiten sicher!)
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
@@ -16,29 +17,55 @@ function authorized(req: NextRequest): boolean {
   return Boolean(secret) && key === secret
 }
 
+async function tableColumns(table: string): Promise<Set<string>> {
+  const { data } = await supabaseAdmin.from(table).select('*').limit(1)
+  const row = (data || [])[0] || {}
+  return new Set(Object.keys(row))
+}
+
 export async function GET(req: NextRequest) {
   if (!authorized(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const stats: any = { trades: { upserted: 0, errors: [] }, cities: { upserted: 0, errors: [] }, landing_pages: { inserted: 0, skipped_existing: 0, errors: [] }, cleanup: null }
+  const stats: any = { schema: {}, trades: { upserted: 0, errors: [] }, cities: { upserted: 0, errors: [] }, landing_pages: { inserted: 0, skipped_existing: 0, errors: [] }, cleanup: null }
 
-  // ── 1) Gewerke upserten ──
+  // ── 0) Echte Spalten erfassen ──
+  const [tradeCols, cityCols, pageCols] = await Promise.all([
+    tableColumns('trades'), tableColumns('cities'), tableColumns('landing_pages'),
+  ])
+  stats.schema = {
+    trades: [...tradeCols], cities: [...cityCols],
+    landing_pages_sample: [...pageCols].slice(0, 12),
+  }
+
+  const pick = (cols: Set<string>, obj: Record<string, any>) => {
+    const out: Record<string, any> = {}
+    for (const [k, v] of Object.entries(obj)) if (cols.has(k)) out[k] = v
+    return out
+  }
+
+  // ── 1) Gewerke upserten (t.slug — NICHT t.id: garten id='gartenbau', slug='garten-und-landschaftsbau') ──
   const tradeList = Object.values((SYSTEM_CONFIG as any).trades || {}) as any[]
   for (const t of tradeList) {
-    const { error } = await supabaseAdmin
-      .from('trades')
-      .upsert({ slug: t.id || t.slug, name: t.name }, { onConflict: 'slug' })
-    if (error) stats.trades.errors.push({ slug: t.id || t.slug, msg: error.message })
+    const payload = pick(tradeCols, {
+      slug: t.slug || t.id,
+      name: t.name,
+      plural_name: t.plural || t.name,
+      emoji: t.emoji || t.icon,
+      color: t.color ? JSON.stringify(t.color) : undefined,
+    })
+    if (!('slug' in payload)) { stats.trades.errors.push({ slug: t.slug, msg: 'trades hat keine slug-Spalte?!' }); continue }
+    const { error } = await supabaseAdmin.from('trades').upsert(payload, { onConflict: 'slug' })
+    if (error) stats.trades.errors.push({ slug: t.slug, msg: error.message })
     else stats.trades.upserted++
   }
 
   // ── 2) Städte upserten ──
   const cityList = Object.values((SYSTEM_CONFIG as any).cities || {}) as any[]
   for (const c of cityList) {
-    const { error } = await supabaseAdmin
-      .from('cities')
-      .upsert({ slug: c.slug, name: c.name, region: c.region || 'Nordrhein-Westfalen' }, { onConflict: 'slug' })
+    const payload = pick(cityCols, { slug: c.slug, name: c.name, region: c.region })
+    const { error } = await supabaseAdmin.from('cities').upsert(payload, { onConflict: 'slug' })
     if (error) stats.cities.errors.push({ slug: c.slug, msg: error.message })
     else stats.cities.upserted++
   }
@@ -56,15 +83,15 @@ export async function GET(req: NextRequest) {
 
   // ── 5) Fehlende Kombos anlegen ──
   for (const t of tradeList) {
-    const tSlug = t.id || t.slug
+    const tSlug = t.slug || t.id
     const tradeId = tradeIdBySlug[tSlug]
-    if (!tradeId) { stats.landing_pages.errors.push({ slug: tSlug, msg: 'trade-id fehlt' }); continue }
+    if (!tradeId) { stats.landing_pages.errors.push({ slug: tSlug, msg: 'trade-id fehlt (upsert fehlgeschlagen?)' }); continue }
     for (const c of cityList) {
       const cityId = cityIdBySlug[c.slug]
       if (!cityId) { stats.landing_pages.errors.push({ slug: c.slug, msg: 'city-id fehlt' }); continue }
       const slug = `${tSlug}-${c.slug}`
       if (existingSlugs.has(slug)) continue
-      const { error } = await supabaseAdmin.from('landing_pages').insert({
+      const payload = pick(pageCols, {
         city_id: cityId,
         trade_id: tradeId,
         slug,
@@ -73,6 +100,7 @@ export async function GET(req: NextRequest) {
         monthly_price: PRICE_DEFAULT,
         status: 'available',
       })
+      const { error } = await supabaseAdmin.from('landing_pages').insert(payload)
       if (error) stats.landing_pages.errors.push({ slug, msg: error.message })
       else { stats.landing_pages.inserted++; existingSlugs.add(slug) }
     }
@@ -92,7 +120,10 @@ export async function GET(req: NextRequest) {
     stats.cleanup = { tenants_deleted: ids.length, customizations_deleted: deletedCust }
   }
 
-  return NextResponse.json({ ok: stats.trades.errors.length === 0 && stats.cities.errors.length === 0, ...stats })
+  return NextResponse.json({
+    ok: stats.trades.errors.length === 0 && stats.cities.errors.length === 0 && stats.landing_pages.errors.length === 0,
+    ...stats,
+  })
 }
 
 export const POST = GET
