@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mieter-Dashboard | Bergmann Bedachungen – DEMO</title>
+<title>Mieter-Dashboard | fachschmiede.de</title>
 <meta name="robots" content="noindex, nofollow">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -53,7 +53,7 @@ tailwind.config = {
       </div>
       <button type="submit" class="mt-5 w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Anmelden</button>
       <div class="mt-4 flex items-center justify-between text-xs">
-        <button type="button" onclick="showToast('Demo: Hier würde ein Passwort-Reset-Link per E-Mail versendet.')" class="font-bold text-brand-600 hover:underline">Passwort vergessen?</button>
+        <button type="button" onclick="showToast('Noch nicht aktiv – bei Login-Problemen: hello@fachschmiede.de')" class="font-bold text-brand-600 hover:underline">Passwort vergessen?</button>
         <span class="text-ink-400">🔐 Session via sicherem Cookie</span>
       </div>
       <div class="mt-5 bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-500 leading-relaxed">Zugangsdaten stehen in deiner Willkommens-E-Mail. Bei Problemen: <a href="mailto:hello@fachschmiede.de" class="text-brand-600 font-bold">hello@fachschmiede.de</a></div>
@@ -79,11 +79,6 @@ tailwind.config = {
     <span class="text-white font-semibold">👤 Mieter</span>
   </div>
 </div>
-    <a href="ratgeber-klempner.html" class="hover:text-white transition">📖 Blog SHK</a>
-    <a href="ratgeber-zimmerer.html" class="hover:text-white transition">📖 Blog Zimmerer</a>
-    <a href="ratgeber-maler.html" class="hover:text-white transition">📖 Blog Maler</a>
-  </div>
-</div>
 
 <!-- ═══════════ TOPBAR ═══════════ -->
 <header class="bg-white border-b border-ink-200 sticky top-0 z-40">
@@ -93,12 +88,12 @@ tailwind.config = {
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>
       </span>
       <div class="leading-tight">
-        <p id="mFirmenname" class="font-extrabold text-ink-900">Bergmann Bedachungen</p>
+        <p id="mFirmenname" class="font-extrabold text-ink-900">Dein Betrieb</p>
         <p id="mSub" class="text-xs text-ink-500">fachschmiede.de/dachdecker/schwerte/ · Tarif <span class="font-bold text-brand-600">Basis</span></p>
       </div>
     </div>
     <div class="flex items-center gap-2.5">
-      <a href="index.html" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">👁 Website ansehen</a>
+      <a id="viewSiteBtn" href="/" target="_blank" rel="noopener" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">👁 Website ansehen ↗</a>
       <button onclick="logout()" class="bg-white border border-ink-200 hover:bg-ink-50 text-ink-700 text-sm font-bold px-4 py-2.5 rounded-lg transition">🔒 Abmelden</button>
       <button onclick="saveDashboard()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">Änderungen speichern</button>
     </div>
@@ -110,29 +105,30 @@ tailwind.config = {
   <!-- Begrüßung + Status -->
   <div class="grid lg:grid-cols-3 gap-4 mb-8">
     <div class="lg:col-span-2 bg-white rounded-2xl border border-ink-200 p-6">
-      <h1 class="text-2xl font-black text-ink-900">Willkommen zurück! 👋</h1>
+      <h1 id="mGreeting" class="text-2xl font-black text-ink-900">Willkommen zurück! 👋</h1>
       <p class="mt-1 text-ink-500 text-sm">Hier verwalten Sie Ihre Miet-Website komplett selbst – ganz ohne Technik-Kenntnisse. Änderungen sind sofort online. Unser Support hilft bei Problemen und freut sich über Ihre Verbesserungsvorschläge.</p>
       <div id="mTestBanner" class="hidden mt-5 bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
         <p class="text-sm text-amber-800 leading-relaxed max-w-xl">🎁 <strong>Testphase aktiv.</strong> <span id="mTestBannerText"></span></p>
         <button onclick="activateMiete()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shrink-0">Jetzt mieten &amp; behalten</button>
       </div>
       <div class="mt-5 grid grid-cols-3 gap-3 text-center">
-        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">21</p><p class="text-xs font-semibold text-ink-500 mt-1">Anfragen (30 Tage)</p></div>
-        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">3.412</p><p class="text-xs font-semibold text-ink-500 mt-1">Besucher (30 Tage)</p></div>
-        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-green-600">Pos. 3</p><p id="mKeyword" class="text-xs font-semibold text-ink-500 mt-1">Google: „dachdecker schwerte"</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">–</p><p class="text-xs font-semibold text-ink-500 mt-1">Anfragen (30 Tage)</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">–</p><p class="text-xs font-semibold text-ink-500 mt-1">Besucher (30 Tage)</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-green-600">–</p><p id="mKeyword" class="text-xs font-semibold text-ink-500 mt-1">Google-Position (Keyword)</p></div>
       </div>
+      <p class="mt-3 text-[11px] text-ink-400">Statistik startet, sobald deine Seite live ist und erste Anfragen eingehen.</p>
     </div>
     <div class="bg-white rounded-2xl border border-ink-200 p-6">
       <h2 class="font-bold text-ink-900">Vertrag &amp; Abrechnung</h2>
       <ul class="mt-4 space-y-2.5 text-sm text-ink-600">
         <li class="flex justify-between"><span>Tarif</span><strong id="mTarif" class="text-ink-900">Basis · 189 €/Monat</strong></li>
-        <li class="flex justify-between"><span>Nächste Abbuchung</span><strong id="mNextPay" class="text-ink-900">01.08.2026</strong></li>
-        <li class="flex justify-between"><span>Zahlungsmethode</span><strong class="text-ink-900">🏦 SEPA · via Stripe</strong></li>
+        <li class="flex justify-between"><span>Nächste Abbuchung</span><strong id="mNextPay" class="text-ink-900">–</strong></li>
+        <li class="flex justify-between"><span>Zahlungsmethode</span><strong class="text-ink-900">🔒 via Stripe</strong></li>
         <li class="flex justify-between"><span>Laufzeit</span><strong class="text-ink-900">monatlich kündbar</strong></li>
         <li class="flex justify-between"><span>Status</span><span id="mStatus" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Aktiv</span></li>
       </ul>
-      <button id="mUpgradeBtn" onclick="showToast('Demo: Hier würde der Tarif-Vergleich (Basis → Pro) geöffnet.')" class="mt-5 w-full bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold py-2.5 rounded-lg transition">Auf Pro upgraden</button>
-      <button onclick="showToast('Demo: Hier würde die Zahlungsmethode (Kreditkarte / SEPA / PayPal) geändert.')" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">Zahlungsmethode ändern</button>
+      <button id="mUpgradeBtn" onclick="showToast('Upgrade folgt in Kürze – wir informieren dich per E-Mail.')" class="mt-5 w-full bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold py-2.5 rounded-lg transition">Auf Pro upgraden</button>
+      <button onclick="showToast('Zahlungsmethode änderst du über das Stripe-Kundenportal – den Link schicken wir dir per E-Mail.')" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">Zahlungsmethode ändern</button>
       <button id="mResetBtn" onclick="resetDemoMiete()" class="hidden mt-2.5 w-full bg-white border border-dashed border-ink-300 hover:bg-ink-50 text-ink-400 text-xs font-bold py-2 rounded-lg transition">Demo-Miete zurücksetzen (Standardansicht)</button>
     </div>
   </div>
@@ -157,33 +153,33 @@ tailwind.config = {
         <div class="space-y-5">
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname</label>
-            <input id="fFirmenname" type="text" value="Bergmann Bedachungen" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fFirmenname" type="text" value="" placeholder="Dein Firmenname" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon</label>
-              <input id="fTel" type="text" value="02304 / 123 456 78" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fTel" type="text" value="" placeholder="z. B. 02304 / 123 456" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail</label>
-              <input id="fMail" type="text" value="info@ihr-betrieb.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fMail" type="text" value="" placeholder="info@…" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Adresse</label>
-            <input id="fAdresse" type="text" value="Musterstraße 12, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fAdresse" type="text" value="" placeholder="Straße, PLZ, Ort" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Öffnungszeiten</label>
-            <textarea rows="2" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Mo–Fr: 7:00 – 17:00 Uhr, Sa: nach Vereinbarung</textarea>
+            <textarea rows="2" placeholder="Mo–Fr: 7:00 – 17:00 Uhr, Sa: nach Vereinbarung" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">„Über uns"-Text</label>
-            <textarea id="fWillkommen" rows="4" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Bergmann Bedachungen ist ein Dachdeckerbetrieb aus Schwerte. Bei uns sprechen Sie direkt mit den Entscheidern – persönlich, unkompliziert und ohne lange Wege.</textarea>
+            <textarea id="fWillkommen" rows="4" placeholder="Stell dich vor: Wer seid ihr, seit wann, was zeichnet euch aus?" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Einsatzgebiete <span class="font-normal text-ink-400">(Komma-getrennt)</span></label>
-            <textarea rows="2" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">Schwerte, Villigst, Wandhofen, Ergste, Geisecke, Westhofen, Lichtendorf, Dortmund, Hagen, Iserlohn, Unna, Fröndenberg, Holzwickede</textarea>
+            <textarea rows="2" placeholder="Stadt 1, Stadt 2, Stadt 3 …" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
 
           <!-- Kontakt-Integrationen -->
@@ -200,7 +196,7 @@ tailwind.config = {
                 </div>
                 <span class="toggle on" onclick="toggleSwitch(this)"></span>
               </div>
-              <input type="text" value="+49 151 23456789" placeholder="+49 …" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input type="text" value="" placeholder="+49 …" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               <p class="mt-2 text-[11px] text-ink-400">Handynummer mit Ländervorwahl. Daraus wird automatisch der Chat-Link <span class="font-mono">wa.me/49151…</span> erzeugt – mehr müssen Sie nicht tun.</p>
             </div>
             <div class="bg-white rounded-xl border border-ink-200 p-4">
@@ -211,8 +207,8 @@ tailwind.config = {
                 </div>
                 <span class="toggle on" onclick="toggleSwitch(this)"></span>
               </div>
-              <input type="text" value="ChIJd8zQk7G7uEcR-mK3sDemo1" placeholder="ChIJ…" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-              <p class="mt-2 text-[11px] text-ink-400">Zu finden über den <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-600 hover:underline">Google Place ID Finder</a> (Eintrag suchen, ID kopieren). Lassen Sie das Feld leer, nutzt die Karte einfach Ihre Adresse. <span class="italic">(Demo-Wert)</span></p>
+              <input type="text" value="" placeholder="ChIJ…" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <p class="mt-2 text-[11px] text-ink-400">Zu finden über den <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-600 hover:underline">Google Place ID Finder</a> (Eintrag suchen, ID kopieren). Lassen Sie das Feld leer, nutzt die Karte einfach Ihre Adresse.</p>
             </div>
             <div class="flex items-center justify-between bg-brand-50 border border-brand-200 rounded-xl px-4 py-3">
               <p class="text-xs text-brand-700 font-semibold">ℹ️ Sichtbar auf der Website: Kontaktbereich + schwebender Button (WhatsApp) bzw. Karte unter dem Kontaktformular (Maps).</p>
@@ -249,7 +245,7 @@ tailwind.config = {
               </div>
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Zertifikate / Weiterbildungen</p><p class="text-xs text-ink-500">Logos &amp; Texte im „Über uns"-Bereich</p></div>
-                <button onclick="showToast('Demo: Hier würden Zertifikate hochgeladen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
+                <button onclick="showToast('Zertifikat-Upload folgt in Kürze.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
               </div>
             </div>
             <p class="mt-5 text-xs text-ink-400 italic bg-amber-50 border border-amber-200 rounded-lg p-3">💡 Hinweis: Angaben wie Meistertitel oder Innungsmitgliedschaft werden von uns vor Veröffentlichung kurz geprüft – so bleiben alle Websites rechtssicher.</p>
@@ -274,7 +270,7 @@ tailwind.config = {
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">☀️ Solar &amp; Photovoltaik</span><span class="toggle" onclick="toggleSwitch(this)"></span></div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">⚠️ Sturm- &amp; Notdienst</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
           </div>
-          <button onclick="showToast('Demo: Hier würden Sie eine eigene Leistungskarte mit Text & Icon anlegen.')" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
+          <button onclick="showToast('Eigene Leistungen folgen in Kürze.')" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
         </div>
         <div>
           <h3 class="font-bold text-ink-900 mb-4">Seiten-Module</h3>
@@ -328,10 +324,10 @@ tailwind.config = {
             <span class="swatch" style="background:#7c3aed" title="Violett" onclick="pickColor(this)"></span>
             <span class="swatch" style="background:#0f172a" title="Anthrazit" onclick="pickColor(this)"></span>
           </div>
-          <p class="mt-3 text-xs text-ink-500">Wirkt auf Buttons, Überschriften-Akzente und Hervorhebungen. <span class="font-semibold">Live-Vorschau in der Demo nicht aktiv.</span></p>
+          <p class="mt-3 text-xs text-ink-500">Wirkt auf Buttons, Überschriften-Akzente und Hervorhebungen.</p>
 
           <h3 class="font-bold text-ink-900 mt-8 mb-4">Logo</h3>
-          <div class="border-2 border-dashed border-ink-300 rounded-xl p-8 text-center hover:border-brand-400 transition cursor-pointer" onclick="showToast('Demo: Hier würden Sie Ihr Logo hochladen (PNG/SVG).')">
+          <div class="border-2 border-dashed border-ink-300 rounded-xl p-8 text-center hover:border-brand-400 transition cursor-pointer" onclick="showToast('Logo-Upload folgt in Kürze – bis dahin zeigt die Seite deinen Firmennamen.')">
             <p class="text-3xl">⬆️</p>
             <p class="mt-2 font-bold text-ink-700 text-sm">Logo hochladen</p>
             <p class="text-xs text-ink-400 mt-1">PNG oder SVG · wird im Header &amp; Footer angezeigt</p>
@@ -344,17 +340,17 @@ tailwind.config = {
             <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
               <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🖼</div>
               <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Hero-Bild (Startseite oben)</p><p class="text-xs text-ink-500">Aktuell: Standard-Bibliothek „Dachdecker"</p></div>
-              <button onclick="showToast('Demo: Hier würden Sie ein eigenes Foto hochladen oder eines aus der Bibliothek wählen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+              <button onclick="showToast('Bild-Auswahl folgt in Kürze – bis dahin nutzt die Seite die Standard-Bibliothek.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
             </div>
             <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
               <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">👥</div>
               <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Team- / Inhaberfoto</p><p class="text-xs text-ink-500">Aktuell: Standard-Bibliothek</p></div>
-              <button onclick="showToast('Demo: Hier würden Sie ein eigenes Foto hochladen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+              <button onclick="showToast('Foto-Upload folgt in Kürze.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
             </div>
             <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
               <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🏗</div>
               <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Referenzfotos (bis zu 6)</p><p class="text-xs text-ink-500">Eigene Baustellen-Fotos wirken am stärksten</p></div>
-              <button onclick="showToast('Demo: Hier würden Sie Referenzfotos hochladen.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
+              <button onclick="showToast('Referenzfotos folgen in Kürze.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
             </div>
           </div>
           <div class="mt-5 bg-ink-50 border border-ink-200 rounded-xl p-4 text-sm text-ink-600">
@@ -376,7 +372,7 @@ tailwind.config = {
             <input type="text" placeholder="Name des Kunden (z. B. Familie Krüger, Schwerte)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             <input type="text" placeholder="Projekt (z. B. Dachsanierung)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             <textarea rows="3" placeholder="Zitat des Kunden …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
-            <button onclick="showToast('Demo: Bewertung würde zur Prüfung eingereicht.')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-lg transition">Zur Prüfung einreichen</button>
+            <button onclick="showToast('Danke! Das Bewertungs-Modul aktivieren wir in Kürze.')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-lg transition">Zur Prüfung einreichen</button>
           </div>
           <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-sm text-ink-700">
             <p class="font-bold text-ink-900">💡 Tipp: Google-Bewertungen einbinden</p>
@@ -386,9 +382,7 @@ tailwind.config = {
         <div>
           <h3 class="font-bold text-ink-900 mb-4">Ihre Bewertungen</h3>
           <ul class="space-y-3 text-sm">
-            <li class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Familie Krüger · Sturmreparatur</p><p class="text-xs text-ink-500">★★★★★ · online seit 12.03.2026</p></div><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Online</span></li>
-            <li class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Sabine &amp; Thomas R. · Dachsanierung</p><p class="text-xs text-ink-500">★★★★★ · online seit 28.04.2026</p></div><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Online</span></li>
-            <li class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3"><div><p class="font-bold text-ink-900">Hausverwaltung Meiser · Wartungsvertrag</p><p class="text-xs text-ink-500">★★★★★ · eingereicht am 15.07.2026</p></div><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">In Prüfung</span></li>
+            <li class="bg-white rounded-xl border border-ink-200 p-6 text-center text-sm text-ink-500">Noch keine Bewertungen – reiche die erste Kundenstimme ein! ⭐</li>
           </ul>
         </div>
       </div>
@@ -410,14 +404,11 @@ tailwind.config = {
             </tr>
           </thead>
           <tbody class="divide-y divide-ink-100">
-            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">Heute, 09:14</td><td class="px-5 py-4 font-bold text-ink-900">Familie Krüger</td><td class="px-5 py-4 text-ink-600">Sturmschaden / Notdienst</td><td class="px-5 py-4 text-ink-600">02304 / 55 66 77</td><td class="px-5 py-4"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Neu</span></td></tr>
-            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">Gestern</td><td class="px-5 py-4 font-bold text-ink-900">Herr Albrecht</td><td class="px-5 py-4 text-ink-600">Dachdämmung</td><td class="px-5 py-4 text-ink-600">E-Mail</td><td class="px-5 py-4"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">In Bearbeitung</span></td></tr>
-            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">17.07.2026</td><td class="px-5 py-4 font-bold text-ink-900">Hausverwaltung Meiser</td><td class="px-5 py-4 text-ink-600">Wartungsvertrag</td><td class="px-5 py-4 text-ink-600">E-Mail</td><td class="px-5 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Beantwortet</span></td></tr>
-            <tr class="hover:bg-ink-50"><td class="px-5 py-4 text-ink-500">14.07.2026</td><td class="px-5 py-4 font-bold text-ink-900">Frau Neumann</td><td class="px-5 py-4 text-ink-600">Dachsanierung</td><td class="px-5 py-4 text-ink-600">02304 / 88 99 00</td><td class="px-5 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Beantwortet</span></td></tr>
+            <tr><td colspan="5" class="px-5 py-10 text-center text-sm text-ink-500">Noch keine Anfragen – sobald Besucher dein Formular nutzen, erscheinen sie hier <em>und</em> kommen per E-Mail bei dir an. 🎯</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="mt-4 text-xs text-ink-400 italic">Demo-Hinweis: In der echten Version sehen Sie hier nur Ihre eigenen Anfragen – DSGVO-konform, mit automatischer Löschfrist.</p>
+      <p class="mt-4 text-xs text-ink-400 italic">Hinweis: Deine Anfragen – DSGVO-konform, mit automatischer Löschfrist. Jede Anfrage kommt zusätzlich per E-Mail bei dir an.</p>
     </div>
 
     <!-- Tab: Rechtliches -->
@@ -427,15 +418,11 @@ tailwind.config = {
           <h2 class="text-lg font-black text-ink-900">Rechtliches: Impressum &amp; Datenschutz</h2>
           <p class="text-sm text-ink-500 mt-1">Diese Pflichtangaben füllen automatisch Ihr Impressum (§ 5 DDG) und Ihre Datenschutzerklärung (DSGVO). <strong>Ohne vollständige Angaben geht die Website nicht online.</strong></p>
         </div>
-        <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full">✓ Vollständig – Impressum &amp; Datenschutz online</span>
+        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full">⚠ Wird vor Veröffentlichung geprüft</span>
       </div>
 
       <div class="bg-brand-50 border border-brand-200 rounded-xl px-4 py-3 mb-6 flex flex-wrap items-center justify-between gap-3">
-        <p class="text-xs text-brand-700 font-semibold">ℹ️ So sieht das Ergebnis aus: Ihre Angaben erscheinen automatisch auf den Unterseiten „Impressum“ und „Datenschutzerklärung“ – verlinkt im Footer Ihrer Website (gesetzlich vorgeschrieben).</p>
-        <div class="flex gap-2 shrink-0">
-          <a href="impressum.html" class="text-xs font-bold text-brand-600 border border-brand-200 bg-white rounded-lg px-3 py-2 hover:bg-brand-50 transition">Impressum ansehen</a>
-          <a href="datenschutz.html" class="text-xs font-bold text-brand-600 border border-brand-200 bg-white rounded-lg px-3 py-2 hover:bg-brand-50 transition">Datenschutz ansehen</a>
-        </div>
+        <p class="text-xs text-brand-700 font-semibold">ℹ️ Deine Angaben erscheinen automatisch auf den Unterseiten „Impressum“ und „Datenschutzerklärung“ deiner Website – verlinkt im Footer (gesetzlich vorgeschrieben).</p>
       </div>
 
       <div class="grid lg:grid-cols-2 gap-6">
@@ -444,56 +431,56 @@ tailwind.config = {
           <h3 class="font-black text-ink-900 flex items-center gap-2">📄 Impressum <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">§ 5 DDG</span></h3>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname (vollständig) *</label>
-            <input type="text" value="Bergmann Bedachungen" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" value="" placeholder="Vollständiger Firmenname" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Rechtsform *</label>
               <select class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                <option>Einzelunternehmen</option><option>GbR</option><option>OHG</option><option>KG</option><option>GmbH</option><option>UG (haftungsbeschränkt)</option><option>AG</option>
+                <option value="" disabled selected>Bitte wählen…</option><option>Einzelunternehmen</option><option>GbR</option><option>OHG</option><option>KG</option><option>GmbH</option><option>UG (haftungsbeschränkt)</option><option>AG</option>
               </select>
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Vertretungsberechtigt *</label>
-              <input type="text" value="Max Bergmann (Inhaber)" placeholder="z. B. Inhaber / Geschäftsführer" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input type="text" value="" placeholder="z. B. Inhaber / Geschäftsführer" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Anschrift (ladungsfähig) *</label>
-            <input type="text" value="Musterstraße 12, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" value="" placeholder="Straße Nr., PLZ Ort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             <p class="mt-1 text-[11px] text-ink-400">Kein Postfach – das Gesetz verlangt eine ladungsfähige Anschrift.</p>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon *</label>
-              <input type="text" value="02304 / 123 456 78" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input type="text" value="" placeholder="z. B. 02304 / 123 456" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail *</label>
-              <input type="email" value="info@bergmann-bedachungen-demo.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input type="email" value="" placeholder="info@…" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Umsatzsteuer-ID <span class="font-normal text-ink-400">(§ 27a UStG – falls vorhanden)</span></label>
-            <input type="text" value="DE 123 456 789" placeholder="DE …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" value="" placeholder="DE …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Handwerkskammer *</label>
-              <input type="text" value="Handwerkskammer Musterstadt" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input type="text" value="" placeholder="z. B. Handwerkskammer Dortmund" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Handwerksrolle-Nr. *</label>
-              <input type="text" value="12345" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input type="text" value="" placeholder="z. B. 12345" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Berufsbezeichnung &amp; Verleihungsstaat *</label>
-            <input type="text" value="Dachdeckermeister (verliehen in Deutschland)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" value="" placeholder="z. B. Dachdeckermeister (verliehen in Deutschland)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlich i. S. d. § 18 Abs. 2 MStV *</label>
-            <input type="text" value="Max Bergmann, Anschrift wie oben" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" value="" placeholder="Name, Anschrift wie oben" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="flex items-center justify-between bg-white border border-ink-200 rounded-xl p-4">
             <div><p class="font-bold text-sm text-ink-900">EU-Streitschlichtung-Hinweis anzeigen</p><p class="text-xs text-ink-500">OS-Plattform-Link im Impressum (empfohlen)</p></div>
@@ -506,7 +493,7 @@ tailwind.config = {
           <h3 class="font-black text-ink-900 flex items-center gap-2">🔒 Datenschutzerklärung <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">DSGVO</span></h3>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlicher (Art. 13 DSGVO) *</label>
-            <textarea rows="2" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">Bergmann Bedachungen, Max Bergmann, Musterstraße 12, 58239 Schwerte, info@bergmann-bedachungen-demo.de</textarea>
+            <textarea rows="2" placeholder="Wird automatisch aus deinen Impressums-Angaben vorgeschlagen." class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
             <p class="mt-1 text-[11px] text-ink-400">Wird automatisch aus Ihren Impressums-Angaben vorgeschlagen – hier bei Bedarf anpassen.</p>
           </div>
           <div>
@@ -534,8 +521,8 @@ tailwind.config = {
       </div>
 
       <div class="mt-8 flex flex-wrap items-center gap-4">
-        <button onclick="showToast('Rechtliche Angaben gespeichert – Impressum &amp; Datenschutzerklärung sind aktualisiert (Demo).')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Angaben speichern &amp; veröffentlichen</button>
-        <p class="text-xs text-ink-500 max-w-md">Letzte Prüfung: vollständig ✓ · Impressum und Datenschutzerklärung werden im Footer jeder Seite Ihrer Website verlinkt und für Google indexierbar ausgespielt.</p>
+        <button onclick="showToast('Diese Angaben fragen wir vor Veröffentlichung final ab – dein Impressum wird automatisch aus deinen Firmendaten erstellt.')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Angaben speichern</button>
+        <p class="text-xs text-ink-500 max-w-md">Dein Impressum wird automatisch aus deinen Firmendaten erstellt, im Footer deiner Website verlinkt und für Google indexierbar ausgespielt.</p>
       </div>
     </div>
 
@@ -570,6 +557,8 @@ function hideLoginGate(){
   g.classList.add('opacity-0');
   setTimeout(function(){g.classList.add('hidden');document.body.style.overflow='';},450);
 }
+var TRADE_SLUGS=['dachdecker','elektriker','klempner','zimmerer','maler','garten-und-landschaftsbau'];
+function slugToUrl(slug){for(var i=0;i<TRADE_SLUGS.length;i++){var t=TRADE_SLUGS[i];if(slug.indexOf(t+'-')===0)return '/'+t+'/'+slug.slice(t.length+1)+'/';}return '/'+slug+'/';}
 async function loadDashboard(){
   try{
     var res=await fetch('/api/tenant/customization/',{headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
@@ -578,7 +567,9 @@ async function loadDashboard(){
     var t=data.tenant||{}, c=data.customization||{};
     var lp=(c.landing_page||{});
     if(t.company_name)document.getElementById('mFirmenname').textContent=t.company_name;
-    if(lp.slug)document.getElementById('mSub').innerHTML='<a href="/' + lp.slug.replace('-', '/') + '/" class="text-brand-600 font-bold hover:underline">fachschmiede.de/' + lp.slug.replace('-', '/') + '/</a> · Mietseite';
+    if(lp.slug){var _u=slugToUrl(lp.slug);document.getElementById('mSub').innerHTML='<a href="'+_u+'" target="_blank" rel="noopener" class="text-brand-600 font-bold hover:underline">fachschmiede.de'+_u+'</a> · Mietseite';var _vs=document.getElementById('viewSiteBtn');if(_vs)_vs.href=_u;}
+    if(t.company_name)document.title=t.company_name+' – Mieter-Dashboard | fachschmiede.de';
+    if(t.contact_name){var _g=document.getElementById('mGreeting');if(_g)_g.textContent='Willkommen zurück, '+t.contact_name.split(' ')[0]+'! 👋';}
     if(c.custom_company_name)document.getElementById('fFirmenname').value=c.custom_company_name;
     if(c.custom_phone)document.getElementById('fTel').value=c.custom_phone;
     if(c.custom_email)document.getElementById('fMail').value=c.custom_email;
@@ -621,6 +612,7 @@ function logout(){
   if(!m) return;
   if(m.firma) document.getElementById('mFirmenname').textContent = m.firma;
   document.getElementById('mSub').innerHTML = (m.domain || 'fachschmiede.de/ihre-stadt/') + ' · Tarif <span class="font-bold text-brand-600">' + (m.tarif || 'Basis') + '</span>';
+  if(m.domain){var _vs0=document.getElementById('viewSiteBtn');if(_vs0){var _mm=m.domain.match(/fachschmiede\.de(\/[^\s]*)/);if(_mm)_vs0.href=_mm[1];}}
   var t = document.getElementById('mTarif');
   t.textContent = '189 €/Monat';
   var b = document.getElementById('mUpgradeBtn');
