@@ -119,7 +119,7 @@ tailwind.config = {
       <div class="reveal bg-ink-50 rounded-2xl p-7 border border-ink-200">
         <p class="text-4xl font-black text-brand-500">03</p>
         <h3 class="mt-3 font-bold text-ink-900">Veröffentlichen</h3>
-        <p class="mt-2 text-sm text-ink-600 leading-relaxed">Vorschau prüfen, auf „Veröffentlichen" klicken – deine Website ist sofort unter deinem Namen online. Anfragen laufen ab der ersten Minute zu dir.</p>
+        <p class="mt-2 text-sm text-ink-600 leading-relaxed">Zusammenfassung prüfen, auf „Veröffentlichen" klicken – deine Website ist sofort unter deinem Namen online. Anfragen laufen ab der ersten Minute zu dir.</p>
       </div>
     </div>
     <div class="reveal mt-8 bg-ink-900 text-white rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-5">
@@ -571,7 +571,7 @@ tailwind.config = {
           </div>
           <div class="flex gap-3">
             <button type="button" onclick="gotoStep(1)" class="px-6 py-3.5 rounded-xl border border-ink-300 font-bold text-ink-600 hover:bg-ink-50 transition">← Zurück</button>
-            <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Vorschau erzeugen →</button>
+            <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Weiter zur Prüfung →</button>
           </div>
         </form>
       </div>
@@ -579,8 +579,8 @@ tailwind.config = {
       <!-- SCHRITT 3 -->
       <div class="onb-step p-8 text-center" id="step3">
         <span class="inline-flex w-16 h-16 rounded-full bg-green-100 text-green-600 items-center justify-center text-3xl">🎉</span>
-        <h3 class="mt-4 text-2xl font-black text-ink-900">Deine Vorschau ist fertig!</h3>
-        <p class="mt-3 text-sm text-ink-600 leading-relaxed max-w-md mx-auto">So sieht deine Website „Klempner <span class="onbCity font-bold text-ink-900">…</span>" aus. Prüfe alles in Ruhe – danach geht sie mit einem Klick unter deinem Namen online.</p>
+        <h3 class="mt-4 text-2xl font-black text-ink-900">Deine Seite ist fertig!</h3>
+        <p class="mt-3 text-sm text-ink-600 leading-relaxed max-w-md mx-auto">Du kannst sie jederzeit in deinem Dashboard ändern und updaten. Füge dein Logo und deine individuellen Daten hinzu. Viel Erfolg!</p>
         <div class="mt-6 bg-ink-50 border border-ink-200 rounded-xl p-5 text-left text-sm space-y-2.5">
           <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Startseite mit deinem Firmennamen &amp; Stadt</p>
           <p class="flex gap-3"><span class="text-green-600 font-bold">✓</span> Deine 3–6 Leistungen in eigener Textfassung</p>
@@ -616,7 +616,7 @@ tailwind.config = {
               <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Direkt über dein<br><strong>PayPal</strong>-Konto</span>
             </label>
           </div>
-          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über Stripe bzw. PayPal – jederzeit im Dashboard änderbar, keine Zahlungsdaten auf unseren Servern. <strong>Demo: keine echte Zahlung.</strong></p>
+          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über Stripe bzw. PayPal – jederzeit im Dashboard änderbar, keine Zahlungsdaten auf unseren Servern.</p>
         </div>
         <button id="pubBtn" onclick="publish()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-black text-lg py-4 rounded-xl transition shadow-lg">🚀 Jetzt veröffentlichen &amp; Miete starten</button>
         <p class="mt-3 text-xs text-ink-400">Du kannst alles später im Dashboard ändern – Veröffentlichen ist kein Point of no Return.</p>
@@ -790,7 +790,7 @@ function pickMode(mode){
   if(trialInfoStep1) trialInfoStep1.classList.toggle('hidden', mode !== 'test');
   if(pubBtn) pubBtn.textContent = mode === 'test' ? '🎁 Testphase starten & veröffentlichen' : '🚀 Jetzt veröffentlichen & Miete starten';
   if(submitBtn) submitBtn.textContent = mode === 'test' ? '14 Tage kostenlos testen & weiter →' : 'Miete starten & weiter →';
-  document.getElementById('trialEndLabel').textContent = new Date(Date.now() + 14*86400000).toLocaleDateString('de-DE');
+  { const _d = new Date(Date.now() + 14*86400000).toLocaleDateString('de-DE'); const _t1 = document.getElementById('trialEndStep1'); if(_t1) _t1.textContent = _d; const _t3 = document.getElementById('trialEndLabel'); if(_t3) _t3.textContent = _d; }
 }
 
 // ── Passwort & Zahlung (Self-Check-in) ──
