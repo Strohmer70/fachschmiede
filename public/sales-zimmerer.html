@@ -487,52 +487,51 @@ tailwind.config = {
             <p class="text-[11px] text-ink-400 leading-relaxed">Mit deiner E-Mail und diesem Passwort loggst du dich später in dein Dashboard ein. Es wird ausschließlich verschlüsselt (gehasht) gespeichert – ohne Passwort ist dein Dashboard nicht erreichbar.</p>
           </div>
           <div>
-            <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 mb-4"><div class="flex items-center justify-between"><span class="font-bold text-ink-900">Dein Preis</span><span class="font-black text-2xl text-brand-600">189 €<span class="text-sm font-semibold text-ink-500">/Monat</span></span></div><p class="text-xs text-ink-500 mt-1">Inklusive: Website, Blog, E-Mail-Leads, Hosting, SSL, Updates</p></div>
-            <div class="grid grid-cols-2 gap-3">
-                <span class="mt-1.5 block text-xs text-ink-600 leading-snug">Website + Blog + E-Mail-Leads</span>
-              </label>
-                <span class="mt-1.5 block text-xs text-ink-600 leading-snug">+ SMS, Terminbuchung, Google-Bewertungen</span>
-              </label>
-            </div>
-          </div>
-          <div class="mt-4">
             <label class="block text-sm font-bold text-ink-800 mb-2">Wie möchtest du starten? *</label>
-            <div class="grid sm:grid-cols-2 gap-3">
-              <label class="mode-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" onclick="pickMode('miete')">
-                <input type="radio" name="mode" checked class="sr-only">
+            <div class="grid grid-cols-2 gap-3">
+              <label class="mode-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" id="modeMiete" onclick="pickMode('miete')">
+                <input type="radio" name="mode" value="miete" checked class="sr-only" onchange="pickMode('miete')">
                 <span class="font-bold text-ink-900 text-sm">🚀 Sofort mieten</span>
-                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Website sofort online · monatlich kündbar</span>
+                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Website sofort online · Zahlung via Stripe/PayPal · monatlich kündbar</span>
               </label>
-              <label class="mode-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickMode('test')">
-                <input type="radio" name="mode" class="sr-only">
+              <label class="mode-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" id="modeTest" onclick="pickMode('test')">
+                <input type="radio" name="mode" value="test" class="sr-only" onchange="pickMode('test')">
                 <span class="font-bold text-ink-900 text-sm">🎁 14 Tage kostenlos testen</span>
-                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Voller Funktionsumfang · keine Zahlungsdaten · endet automatisch</span>
+                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Voller Funktionsumfang · keine Zahlungsdaten nötig · endet automatisch</span>
               </label>
             </div>
           </div>
-          <div id="trialInfoStep1" class="hidden mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
+          <div id="trialInfoStep1" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4">
             <p class="text-sm font-bold text-amber-800">🎁 So läuft deine Testphase</p>
             <ul class="mt-2 text-xs text-amber-800 space-y-1.5 leading-relaxed">
               <li>✓ 14 Tage voller Funktionsumfang – Website live, Dashboard, alles inklusive</li>
               <li>✓ Keine Zahlungsdaten nötig, keine automatische Abbuchung</li>
-              <li>✓ Endet automatisch – danach entscheidest du: mieten oder die Stadt geht zurück in den Pool</li>
+              <li>✓ Endet am <strong id="trialEndStep1"></strong> – danach entscheidest du: mieten oder die Stadt geht zurück in den freien Pool</li>
             </ul>
           </div>
-            <p class="mt-2 text-xs text-ink-400">Monatlich kündbar · 0 € Einrichtung · Demo: keine echte Zahlung.</p>
+          <div id="tarifBlock">
+            <div class="bg-brand-50 border border-brand-200 rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-ink-900">Dein Preis</span>
+                <span class="font-black text-2xl text-brand-600">189 €<span class="text-sm font-semibold text-ink-500">/Monat</span></span>
+              </div>
+              <p class="text-xs text-ink-500 mt-1">Inklusive: Website, Blog, E-Mail-Leads, Hosting, SSL, Updates</p>
+            </div>
           </div>
           <label class="flex items-start gap-3 text-xs text-ink-600">
             <input type="checkbox" required class="mt-0.5 w-4 h-4 rounded border-ink-300 text-brand-600">
-            <span>Ich akzeptiere die Mietbedingungen und die <a href="datenschutz.html" class="underline font-semibold">Datenschutzerklärung</a>. (Demo-Platzhalter)</span>
+            <span>Ich akzeptiere die Mietbedingungen und die <a href="datenschutz.html" class="underline font-semibold">Datenschutzerklärung</a>.</span>
           </label>
-          <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Miete starten &amp; weiter →</button>
+          <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Weiter zur Individualisierung →</button>
         </form>
       </div>
 
       <!-- SCHRITT 2 -->
       <div class="onb-step p-8" id="step2">
         <h3 class="text-2xl font-black text-ink-900">Deine Seite individualisieren</h3>
-        <p class="mt-2 text-sm text-ink-600">Diese Angaben erscheinen sofort auf deiner Website – und machen sie für Google einzigartig. Alles lässt sich später im Dashboard jederzeit ändern.</p>
-        <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); gotoStep(3);">
+        <p class="mt-2 text-sm text-ink-600">Diese Angaben erscheinen sofort auf deiner Website – und machen sie für Google einzigartig. <strong class="text-ink-700">Design, Farben &amp; Layout</strong> stellst du bequem in deinem Dashboard ein. Alles lässt sich jederzeit ändern.</p>
+        <form class="mt-6 space-y-5" onsubmit="event.preventDefault(); gotoStep(3);">
+          <p class="flex items-center gap-2 text-xs font-black text-ink-900 uppercase tracking-widest"><span class="w-5 h-5 rounded-full bg-brand-600 text-white text-[11px] flex items-center justify-center shrink-0">1</span> Deine Firmendaten</p>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname *</label>
             <input id="onbFirma" type="text" required placeholder="z. B. Falk Holzbau" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
@@ -554,6 +553,7 @@ tailwind.config = {
           <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-700 leading-relaxed">
             <strong>⚖️ Impressum &amp; Datenschutz:</strong> Deine Angaben aus diesem Formular (Firmenname, Adresse, Kontakt) fließen automatisch in <a href="impressum.html" class="underline font-semibold">Impressum</a> (§ 5 DDG) und <a href="datenschutz.html" class="underline font-semibold">Datenschutzerklärung</a>. Handwerksrolle, USt-IdNr. &amp; Co. ergänzt du im Dashboard unter „Rechtliches“ – die Seite geht erst online, wenn alles vollständig ist.
           </div>
+          <p class="flex items-center gap-2 text-xs font-black text-ink-900 uppercase tracking-widest"><span class="w-5 h-5 rounded-full bg-ink-200 text-ink-700 text-[11px] flex items-center justify-center shrink-0">2</span> Erweiterungen <span class="normal-case font-bold text-ink-400 tracking-normal">· optional, auch später im Dashboard</span></p>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">WhatsApp-Nummer <span class="font-normal text-ink-400">(optional)</span></label>
@@ -566,20 +566,8 @@ tailwind.config = {
               <p class="mt-1 text-[11px] text-ink-400">Für die Karte mit deinem Firmeneintrag. Leer = Karte nutzt deine Adresse.</p>
             </div>
           </div>
-          <div>
-            <label class="block text-sm font-bold text-ink-800 mb-1.5">Akzentfarbe</label>
-            <div class="flex gap-3" id="colorRow">
-              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-ink-900 flex items-center justify-center transition hover:scale-105" data-color="#d97706" onclick="pickColor(this)" style="background:#d97706"><svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#2563eb" onclick="pickColor(this)" style="background:#2563eb"></span>
-              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#059669" onclick="pickColor(this)" style="background:#059669"></span>
-              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#dc2626" onclick="pickColor(this)" style="background:#dc2626"></span>
-              <span class="color-swatch w-10 h-10 rounded-lg cursor-pointer border-2 border-transparent hover:border-ink-400 flex items-center justify-center transition hover:scale-105" data-color="#0f172a" onclick="pickColor(this)" style="background:#0f172a"></span>
-            </div>
-            <p class="mt-2 text-xs text-ink-500">Ausgewählt: <strong id="colorValue" class="font-mono">#d97706</strong> – Buttons, Links &amp; Akzente deiner Website erscheinen in dieser Farbe.</p>
-            <span id="colorPreviewBtn" class="mt-2 inline-block text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors" style="background:#d97706">Vorschau: So sieht dein Button aus</span>
-          </div>
           <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-700 leading-relaxed">
-            <strong>💡 Einzigartig ab Minute eins:</strong> Aus Firmenname und Stadt-Daten erzeugt das System deine individuelle Textfassung (FAQ, Über-uns, Bewertungen). Deine Leistungen pflegst du jederzeit im Dashboard unter „Leistungen & Module". Keine zwei Miet-Websites sind wortgleich.
+            <strong>💡 Einzigartig ab Minute eins:</strong> Aus Firmenname und Stadt-Daten erzeugt das System deine individuelle Textfassung (FAQ, Über-uns, Bewertungen). Deine Leistungen pflegst du jederzeit im Dashboard unter „Leistungen &amp; Module". Keine zwei Miet-Websites sind wortgleich.
           </div>
           <div class="flex gap-3">
             <button type="button" onclick="gotoStep(1)" class="px-6 py-3.5 rounded-xl border border-ink-300 font-bold text-ink-600 hover:bg-ink-50 transition">← Zurück</button>
@@ -831,22 +819,6 @@ function pickPay(el){
   el.classList.add('border-brand-600','bg-brand-50'); el.classList.remove('border-ink-200');
 }
 
-// ── Akzentfarbe ──
-let selColor = (document.querySelector('#colorRow .color-swatch.border-ink-900') || {dataset:{}}).dataset.color || '';
-function pickColor(el){
-  document.querySelectorAll('#colorRow .color-swatch').forEach(s => {
-    s.classList.remove('border-ink-900');
-    s.classList.add('border-transparent');
-    s.innerHTML = '';
-  });
-  el.classList.remove('border-transparent');
-  el.classList.add('border-ink-900');
-  el.innerHTML = `<svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
-  const c = el.dataset.color;
-  selColor = c;
-  document.getElementById('colorValue').textContent = c;
-  document.getElementById('colorPreviewBtn').style.background = c;
-}
 
 // ── Support (nur Probleme/Vorschläge) ──
 const sm = document.getElementById('supportModal');
