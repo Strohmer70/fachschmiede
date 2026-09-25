@@ -109,6 +109,9 @@ const nextConfig = {
         // Blog-Artikel (statische HTML) - HÖCHSTE PRIORITÄT
         ...blogRewrites,
         
+        // Legacy-Alias: alte /gartenbau/…-URLs → Garten-Seiten (früher verlinkt, sonst 404)
+        { source: '/gartenbau/:city/', destination: '/stadt-garten-:city.html' },
+        
         // Portal-Startseite (NEU: React-Portal unter app/page.tsx)
         { source: '/fuer-dienstleister/', destination: '/fuer-dienstleister.html' },
         
@@ -145,19 +148,20 @@ const nextConfig = {
         { source: '/artikel-sturmschaden-sofortmassnahmen/', destination: '/artikel-sturmschaden-sofortmassnahmen.html' },
         { source: '/artikel-wallbox-zuhause/', destination: '/artikel-wallbox-zuhause.html' },
         
-        // Musterseiten (Gewerk-Beispiele)
-        { source: '/muster/dachdecker/', destination: '/index.html' },
-        { source: '/muster/elektriker/', destination: '/elektriker.html' },
-        { source: '/muster/klempner/', destination: '/klempner.html' },
-        { source: '/muster/maler/', destination: '/maler.html' },
-        { source: '/muster/zimmerer/', destination: '/zimmerer.html' },
+        // Musterseiten → echte Demoseiten (Bochum). Früher: tote Ziele (/elektriker.html etc. existierten nicht)
+        { source: '/muster/dachdecker/', destination: '/stadt-dach-bochum.html' },
+        { source: '/muster/elektriker/', destination: '/stadt-elek-bochum.html' },
+        { source: '/muster/klempner/', destination: '/stadt-klempner-bochum.html' },
+        { source: '/muster/maler/', destination: '/stadt-maler-bochum.html' },
+        { source: '/muster/zimmerer/', destination: '/stadt-zimm-bochum.html' },
+        { source: '/muster/garten-und-landschaftsbau/', destination: '/stadt-garten-bochum.html' },
         
-        // Alte Musterseiten (Fallback)
-        { source: '/muster-dachdecker/', destination: '/index.html' },
-        { source: '/muster-elektriker/', destination: '/elektriker.html' },
-        { source: '/muster-shk/', destination: '/klempner.html' },
-        { source: '/muster-zimmerer/', destination: '/zimmerer.html' },
-        { source: '/muster-maler/', destination: '/maler.html' },
+        // Alte Musterseiten (Fallback) → ebenfalls Demoseiten
+        { source: '/muster-dachdecker/', destination: '/stadt-dach-bochum.html' },
+        { source: '/muster-elektriker/', destination: '/stadt-elek-bochum.html' },
+        { source: '/muster-shk/', destination: '/stadt-klempner-bochum.html' },
+        { source: '/muster-zimmerer/', destination: '/stadt-zimm-bochum.html' },
+        { source: '/muster-maler/', destination: '/stadt-maler-bochum.html' },
         
         // City pages (dynamisch generiert)
         ...cityRewrites,

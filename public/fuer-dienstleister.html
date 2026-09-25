@@ -635,7 +635,13 @@ tailwind.config = {
   </div>
 </footer>
 
-<div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-ink-900 text-white text-sm font-semibold px-6 py-4 rounded-xl shadow-2xl transition-all duration-300 z-50">Demo: Hier würde der Verfügbarkeits-Check bzw. das Buchungsformular starten.</div>
+<div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 transition-all duration-300 z-[100] max-w-md w-[calc(100%-2rem)]">
+  <div class="bg-ink-900 text-white rounded-2xl shadow-2xl px-6 py-5 border border-ink-700">
+    <p class="font-bold">🧩 Dein Gewerk fehlt?</p>
+    <p class="text-sm text-ink-300 mt-1">Schreib uns kurz, welches Gewerk du dir wünschst – wir priorisieren nach Nachfrage und melden uns per E-Mail.</p>
+    <a href="mailto:hello@fachschmiede.de?subject=Gewerk-Wunsch%3A%20%5BGewerk%20eintragen%5D&amp;body=Hallo%20fachschmiede-Team%2C%0A%0Aich%20interessiere%20mich%20f%C3%BCr%20eine%20Mietseite%20f%C3%BCr%20das%20Gewerk%3A%20%0AStadt%2FRegion%3A%20%0A%0AViele%20Gr%C3%BC%C3%9Fe" class="inline-block mt-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">✉️ hello@fachschmiede.de</a>
+  </div>
+</div>
 
 <script>
 const menuBtn = document.getElementById('menuBtn');
@@ -741,7 +747,6 @@ document.getElementById('jahr').textContent = new Date().getFullYear();
     });
   }
 })();
-</script>
-</body>
+</script></body>
 </html>
 <!-- Build: Fri Aug 28 06:49:34 PM CST 2026 -->

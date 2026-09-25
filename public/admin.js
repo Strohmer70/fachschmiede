@@ -1816,7 +1816,7 @@ async function generateArticle() {
     return;
   }
 
-  const btn = document.getElementById('genBtn');
+  const btn = document.getElementById('artGenBtn');
   if (btn) {
     btn.disabled = true;
     btn.textContent = '⏳ Generiere...';
