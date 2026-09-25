@@ -7,7 +7,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
-const BOT_UA = /bot|crawler|spider|slurp|bingpreview|facebookexternalhit|whatsapp|twitterbot|linkedinbot|discordbot|preview|lighthouse|pagespeed|gtmetrix|curl|wget|python-requests|go-http-client|headless|uptime|pingdom|statuscake|checkly|synthetics/gi
+const BOT_UA = /bot|crawler|spider|slurp|bingpreview|facebookexternalhit|whatsapp|twitterbot|linkedinbot|discordbot|preview|lighthouse|pagespeed|gtmetrix|curl|wget|python-requests|go-http-client|headless|uptime|pingdom|statuscake|checkly|synthetics/i
 
 function trackingSalt(): string {
   return process.env.TRACKING_SALT || process.env.SESSION_SECRET || process.env.STRIPE_SECRET_KEY || 'dev-salt-nur-lokal'
@@ -17,8 +17,11 @@ function dayString(offsetMs = 0): string {
   return new Date(Date.now() + offsetMs).toISOString().slice(0, 10)
 }
 
-function noStore204(): NextResponse {
-  return new NextResponse(null, { status: 204, headers: { 'Cache-Control': 'no-store, max-age=0' } })
+function noStore204(debug = ''): NextResponse {
+  return new NextResponse(null, {
+    status: 204,
+    headers: { 'Cache-Control': 'no-store, max-age=0', 'X-Track-Debug': debug.slice(0, 180) },
+  })
 }
 
 // PFAD → landing_pages.slug (best-effort, gleiche Auflösung wie /api/leads)
@@ -60,16 +63,16 @@ export async function GET(req: NextRequest) {
     const ua = (req.headers.get('user-agent') || '').slice(0, 200)
 
     // Bots & Preview-Crawler nicht zählen
-    if (!ua || BOT_UA.test(ua)) return noStore204()
+    if (!ua || BOT_UA.test(ua)) return noStore204('bot-or-no-ua')
 
     // /dachdecker/castrop-rauxel/ → trade=dachdecker, city=castrop-rauxel
     const seg = p.split('/').filter(Boolean)
-    if (seg.length < 2) return noStore204()
+    if (seg.length < 2) return noStore204('bad-path')
     const trade = seg[0].toLowerCase()
     const city = seg.slice(1).join('-').toLowerCase()
 
     const slug = await resolveSlug(trade, city)
-    if (!slug) return noStore204()
+    if (!slug) return noStore204(`no-slug:${trade}/${city}`)
 
     // IP NUR als Tages-Hash — wird nirgendwo roh gespeichert
     const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim() || req.ip || '0.0.0.0'
@@ -80,7 +83,10 @@ export async function GET(req: NextRequest) {
       .slice(0, 32)
 
     const { error } = await supabaseAdmin.from('page_views').insert({ slug, d, vh })
-    if (error) console.error('[track] insert failed:', error.message)
+    if (error) {
+      console.error('[track] insert failed:', error.message)
+      return noStore204('insert:' + error.message)
+    }
 
     // Selbstreinigung: ~0,3 % der Hits löschen Einträge älter 90 Tage
     if (Math.random() < 0.003) {
@@ -90,9 +96,9 @@ export async function GET(req: NextRequest) {
       })
     }
 
-    return noStore204()
+    return noStore204('ok:' + slug)
   } catch (e) {
     console.error('[track] error:', e)
-    return noStore204()
+    return noStore204('catch:' + (e as Error)?.message)
   }
 }
