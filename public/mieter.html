@@ -112,11 +112,11 @@ tailwind.config = {
         <button onclick="activateMiete()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shrink-0">Jetzt mieten &amp; behalten</button>
       </div>
       <div class="mt-5 grid grid-cols-3 gap-3 text-center">
-        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">–</p><p class="text-xs font-semibold text-ink-500 mt-1">Anfragen (30 Tage)</p></div>
-        <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-ink-900">–</p><p class="text-xs font-semibold text-ink-500 mt-1">Besucher (30 Tage)</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p id="statLeads" class="text-2xl font-black text-ink-900">–</p><p class="text-xs font-semibold text-ink-500 mt-1">Anfragen (30 Tage)</p></div>
+        <div class="bg-ink-50 rounded-xl p-4"><p id="statVisitors" class="text-2xl font-black text-ink-900">–</p><p class="text-xs font-semibold text-ink-500 mt-1">Besucher (30 Tage)</p></div>
         <div class="bg-ink-50 rounded-xl p-4"><p class="text-2xl font-black text-green-600">–</p><p id="mKeyword" class="text-xs font-semibold text-ink-500 mt-1">Google-Position (Keyword)</p></div>
       </div>
-      <p class="mt-3 text-[11px] text-ink-400">Statistik startet, sobald deine Seite live ist und erste Anfragen eingehen.</p>
+      <p id="statCaption" class="mt-3 text-[11px] text-ink-400">Anfragen &amp; Besucher werden live gezählt. Google-Position folgt mit der Search-Console-Anbindung.</p>
     </div>
     <div class="bg-white rounded-2xl border border-ink-200 p-6">
       <h2 class="font-bold text-ink-900">Vertrag &amp; Abrechnung</h2>
@@ -403,7 +403,7 @@ tailwind.config = {
               <th class="px-5 py-3 font-bold">Status</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-ink-100">
+          <tbody id="leadsTbody" class="divide-y divide-ink-100">
             <tr><td colspan="5" class="px-5 py-10 text-center text-sm text-ink-500">Noch keine Anfragen – sobald Besucher dein Formular nutzen, erscheinen sie hier <em>und</em> kommen per E-Mail bei dir an. 🎯</td></tr>
           </tbody>
         </table>
@@ -581,7 +581,31 @@ async function loadDashboard(){
       var m=map[t.subscription_status]||['Aktiv','bg-green-100 text-green-700'];
       statusEl.textContent=m[0];statusEl.className=m[1]+' text-xs font-bold px-2 py-0.5 rounded-full';
     }
+    loadStats();
   }catch(e){console.error('loadDashboard',e);}
+}
+function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+async function loadStats(){
+  try{
+    var res=await fetch('/api/tenant/stats/',{headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
+    if(!res.ok)return;
+    var s=await res.json();
+    function fmt(n){return (n==null)?'–':Number(n).toLocaleString('de-DE');}
+    var el=document.getElementById('statLeads');if(el)el.textContent=fmt(s.leads_30d);
+    var ev=document.getElementById('statVisitors');if(ev)ev.textContent=fmt(s.visitors_30d);
+    var tb=document.getElementById('leadsTbody');if(!tb)return;
+    var leads=s.recent_leads||[];
+    if(!leads.length)return;
+    var stMap={'new':['Neu','bg-amber-100 text-amber-800'],'contacted':['Kontaktiert','bg-blue-100 text-blue-700'],'won':['Gewonnen','bg-green-100 text-green-700'],'lost':['Verloren','bg-ink-100 text-ink-500']};
+    tb.innerHTML=leads.map(function(l){
+      var dt=l.created_at?new Date(l.created_at):null;
+      var dstr=dt?dt.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+dt.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}):'–';
+      var st=stMap[l.status]||['Neu','bg-amber-100 text-amber-800'];
+      var msg=escHtml((l.message||'').slice(0,90));
+      var ph=escHtml(l.phone||'');
+      return '<tr class="hover:bg-ink-50/60 transition"><td class="px-5 py-4 text-ink-500 whitespace-nowrap">'+dstr+'</td><td class="px-5 py-4 font-bold text-ink-900">'+escHtml(l.name)+'</td><td class="px-5 py-4 text-ink-600 max-w-[220px] truncate" title="'+escHtml(l.message||'')+'">'+msg+'</td><td class="px-5 py-4"><a class="text-brand-600 font-bold hover:underline whitespace-nowrap" href="tel:'+encodeURIComponent(l.phone||'')+'">'+ph+'</a></td><td class="px-5 py-4"><span class="'+st[1]+' text-xs font-bold px-2.5 py-1 rounded-full">'+st[0]+'</span></td></tr>';
+    }).join('');
+  }catch(e){console.error('loadStats',e);}
 }
 async function saveDashboard(){
   var payload={firma:document.getElementById('fFirmenname').value,phone:document.getElementById('fTel').value,email:document.getElementById('fMail').value,address:document.getElementById('fAdresse').value,welcome:document.getElementById('fWillkommen').value};
