@@ -21,6 +21,9 @@ const STEPS: Record<string, string[]> = {
     `CREATE INDEX IF NOT EXISTS idx_page_views_slug_d ON public.page_views (slug, d)`,
     `ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY`,
     `COMMENT ON TABLE public.page_views IS 'DSGVO-schlanke Besucherzählung: Tages-Hash, keine IPs, keine Cookies'`,
+    // ⚠️ Falle: Bei Erstellung via pg-Pooler greifen NICHT die supabase_admin-Default-ACLs!
+    // service_role braucht explizite Grants, sonst 'permission denied for table' (BYPASSRLS ≠ GRANT).
+    `GRANT SELECT, INSERT, UPDATE, DELETE ON public.page_views TO service_role`,
   ],
 }
 
@@ -48,11 +51,19 @@ async function run(req: NextRequest) {
     return NextResponse.json({ error: 'Supabase-Ref nicht ermittelbar' }, { status: 500 })
   }
 
+  // WICHTIG: db.<ref>.supabase.co ist IPv6-only → Vercel-DNS kann ihn nicht auflösen.
+  // Der Pooler (Port 6543, User postgres.<ref>) ist IPv4-tauglich und funktioniert überall.
+  const region = process.env.SUPABASE_POOLER_HOST || 'aws-0-eu-central-1.pooler.supabase.com'
+
   let client: any = null
   try {
     const { Client } = await import('pg')
     client = new Client({
-      connectionString: `postgresql://postgres:${encodeURIComponent(dbPassword)}@db.${ref}.supabase.co:5432/postgres`,
+      host: region,
+      port: 6543,
+      user: `postgres.${ref}`,
+      password: dbPassword,
+      database: 'postgres',
       ssl: { rejectUnauthorized: false },
       connectionTimeoutMillis: 10000,
     })
