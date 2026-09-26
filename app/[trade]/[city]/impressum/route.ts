@@ -13,6 +13,11 @@ function row(label: string, value: string): string {
   return `<tr><td class="py-2 pr-4 text-ink-500 font-semibold align-top whitespace-nowrap">${esc(label)}</td><td class="py-2 text-ink-900">${esc(value)}</td></tr>`
 }
 
+function rowHtml(label: string, valueHtml: string): string {
+  if (!valueHtml) return ''
+  return `<tr><td class="py-2 pr-4 text-ink-500 font-semibold align-top whitespace-nowrap">${esc(label)}</td><td class="py-2 text-ink-900">${valueHtml}</td></tr>`
+}
+
 function tenantImpressum(d: Awaited<ReturnType<typeof getRentalLegal>>): string {
   return `
   <div class="bg-white rounded-2xl border border-ink-200 p-7 shadow-sm space-y-8">
@@ -23,7 +28,7 @@ function tenantImpressum(d: Awaited<ReturnType<typeof getRentalLegal>>): string 
         ${row('Vertretungsberechtigt', d.contactName)}
         ${row('Anschrift', d.address)}
         ${row('Telefon', d.phone)}
-        ${row('E-Mail', `<a href="mailto:${esc(d.email)}" class="text-brand-600 font-bold hover:underline">${esc(d.email)}</a>`)}
+        ${rowHtml('E-Mail', d.email ? `<a href="mailto:${esc(d.email)}" class="text-brand-600 font-bold hover:underline">${esc(d.email)}</a>` : '')}
       </table>
       ${!d.address ? '<p class="mt-3 text-xs text-ink-400">Vollständige Ladungsfähige Anschrift auf Anfrage: <a class="text-brand-600 font-bold" href="mailto:' + esc(d.email) + '">' + esc(d.email) + '</a></p>' : ''}
     </div>
