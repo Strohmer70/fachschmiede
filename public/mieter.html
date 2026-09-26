@@ -53,8 +53,14 @@ tailwind.config = {
       </div>
       <button type="submit" class="mt-5 w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Anmelden</button>
       <div class="mt-4 flex items-center justify-between text-xs">
-        <button type="button" onclick="showToast('Noch nicht aktiv – bei Login-Problemen: hello@fachschmiede.de')" class="font-bold text-brand-600 hover:underline">Passwort vergessen?</button>
+        <button type="button" onclick="toggleResetForm()" class="font-bold text-brand-600 hover:underline">Passwort vergessen?</button>
         <span class="text-ink-400">🔐 Session via sicherem Cookie</span>
+      </div>
+      <div id="resetForm" class="hidden mt-5 pt-5 border-t border-ink-100">
+        <p class="text-xs font-bold text-ink-600 mb-2.5">🔑 Reset-Link anfordern</p>
+        <input id="resetMail" type="email" placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <button type="button" onclick="doResetRequest()" id="resetBtn" class="mt-3 w-full bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold py-2.5 rounded-lg transition">Link anfordern</button>
+        <p id="resetMsg" class="hidden mt-2.5 text-xs font-bold text-green-600"></p>
       </div>
       <div class="mt-5 bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-500 leading-relaxed">Zugangsdaten stehen in deiner Willkommens-E-Mail. Bei Problemen: <a href="mailto:hello@fachschmiede.de" class="text-brand-600 font-bold">hello@fachschmiede.de</a></div>
     </form>
@@ -551,6 +557,22 @@ async function doLogin(){
     showToast('Netzwerkfehler – bitte erneut versuchen.');
     if(btn){btn.disabled=false;btn.textContent='Anmelden';}
   }
+}
+function toggleResetForm(){
+  var f=document.getElementById('resetForm');
+  if(f)f.classList.toggle('hidden');
+}
+async function doResetRequest(){
+  var mail=(document.getElementById('resetMail')||{}).value||'';
+  if(!mail||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){showToast('Bitte gültige E-Mail eingeben.');return;}
+  var btn=document.getElementById('resetBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Sende…';}
+  try{
+    await fetch('/api/tenant/reset-request/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:mail})});
+    var m=document.getElementById('resetMsg');
+    if(m){m.textContent='✅ Falls ein Konto existiert, ist der Link jetzt unterwegs (gültig 1h).';m.classList.remove('hidden');}
+  }catch(e){showToast('Netzwerkfehler – bitte erneut versuchen.');}
+  if(btn){btn.disabled=false;btn.textContent='Link anfordern';}
 }
 function hideLoginGate(){
   var g=document.getElementById('loginGate');

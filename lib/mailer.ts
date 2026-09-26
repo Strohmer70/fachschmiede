@@ -66,6 +66,31 @@ export function leadMailToTenant(data: { tenantName: string; company: string; ci
   }
 }
 
+export function resetMailTenant(data: { name: string; link: string }): { subject: string; html: string } {
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return {
+    subject: '🔑 Passwort zurücksetzen – fachschmiede.de Mieter-Dashboard',
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto">
+        <div style="background:#1a2b3c;color:#fff;padding:20px 24px;border-radius:12px 12px 0 0">
+          <strong style="font-size:18px">Passwort zurücksetzen 🔑</strong><br>
+          <span style="font-size:13px;opacity:.8">fachschmiede.de Mieter-Dashboard</span>
+        </div>
+        <div style="border:1px solid #e5e7eb;border-top:0;padding:24px;border-radius:0 0 12px 12px">
+          <p>Hallo ${esc(data.name)},</p>
+          <p>du hast angefordert, dein Passwort zurückzusetzen. Der Link ist <strong>1 Stunde</strong> gültig:</p>
+          <p style="margin:24px 0">
+            <a href="${esc(data.link)}" style="background:#16a34a;color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:bold;display:inline-block">Neues Passwort setzen</a>
+          </p>
+          <p style="font-size:13px;color:#6b7280">Falls der Button nicht funktioniert, diesen Link kopieren:<br><a href="${esc(data.link)}" style="word-break:break-all">${esc(data.link)}</a></p>
+          <p style="font-size:13px;color:#6b7280">Hast du das nicht angefordert? Dann ignoriere diese E-Mail – dein Passwort bleibt unverändert.</p>
+          <hr style="border:0;border-top:1px solid #e5e7eb;margin:20px 0">
+          <p style="font-size:12px;color:#9ca3af">fachschmiede.de · hallo@fachschmiede.de</p>
+        </div>
+      </div>`,
+  }
+}
+
 export function welcomeMailTenant(data: { name: string; email: string; password: string; pageUrl: string; trade: string; city: string; trialEnds?: string }): { subject: string; html: string } {
   const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   return {

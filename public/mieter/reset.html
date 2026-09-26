@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passwort zurücksetzen | fachschmiede.de</title>
+<meta name="robots" content="noindex, nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: {50:'#fff7ed',100:'#ffedd5',200:'#fed7aa',300:'#fdba74',400:'#fb923c',500:'#f97316',600:'#ea580c',700:'#c2410c',800:'#9a3412',900:'#7c2d12'},
+      ink: {50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a'}
+    },
+    fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+  } }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',system-ui,sans-serif}</style>
+</head>
+<body class="bg-ink-50 min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-6">
+      <a href="https://www.fachschmiede.de/" class="inline-flex items-center gap-2 text-ink-900 font-black text-xl">
+        <span class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center text-lg">⚒</span>
+        fachschmiede<span class="text-brand-600">.de</span>
+      </a>
+    </div>
+
+    <!-- Formular -->
+    <div id="cardForm" class="bg-white rounded-2xl border border-ink-200 p-8 shadow-sm">
+      <h1 class="text-xl font-black text-ink-900">Neues Passwort setzen 🔑</h1>
+      <p class="text-sm text-ink-500 mt-1.5">Wähle ein sicheres Passwort für dein Mieter-Dashboard.</p>
+      <form onsubmit="doReset(event)" class="mt-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-ink-600 mb-1.5" for="pw1">Neues Passwort</label>
+          <input id="pw1" type="password" required minlength="8" autocomplete="new-password" class="w-full border border-ink-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" placeholder="Mind. 8 Zeichen">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-ink-600 mb-1.5" for="pw2">Passwort wiederholen</label>
+          <input id="pw2" type="password" required minlength="8" autocomplete="new-password" class="w-full border border-ink-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500" placeholder="Nochmal eingeben">
+        </div>
+        <p id="errMsg" class="hidden text-sm font-bold text-red-600"></p>
+        <button id="submitBtn" type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-lg transition">Passwort speichern</button>
+      </form>
+    </div>
+
+    <!-- Erfolg -->
+    <div id="cardSuccess" class="hidden bg-white rounded-2xl border border-ink-200 p-8 shadow-sm text-center">
+      <div class="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-3xl mx-auto">✅</div>
+      <h1 class="text-xl font-black text-ink-900 mt-4">Passwort gesetzt!</h1>
+      <p class="text-sm text-ink-500 mt-1.5">Du kannst dich jetzt mit deinem neuen Passwort einloggen.</p>
+      <a href="/mieter/" class="mt-6 inline-block w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-lg transition text-center">Zum Login</a>
+    </div>
+
+    <!-- Fehler (Token kaputt) -->
+    <div id="cardInvalid" class="hidden bg-white rounded-2xl border border-ink-200 p-8 shadow-sm text-center">
+      <div class="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-3xl mx-auto">⚠️</div>
+      <h1 class="text-xl font-black text-ink-900 mt-4">Link ungültig oder abgelaufen</h1>
+      <p class="text-sm text-ink-500 mt-1.5">Reset-Links sind 1 Stunde gültig. Bitte fordere einen neuen Link an.</p>
+      <a href="/mieter/" class="mt-6 inline-block w-full bg-ink-900 hover:bg-ink-800 text-white font-bold py-3 rounded-lg transition text-center">Zum Login</a>
+    </div>
+
+    <p class="text-center text-xs text-ink-400 mt-5">fachschmiede.de · hallo@fachschmiede.de</p>
+  </div>
+
+<script>
+var TOKEN = new URLSearchParams(location.search).get('token') || '';
+
+function showErr(msg){
+  var e = document.getElementById('errMsg');
+  if(!msg){ e.classList.add('hidden'); return; }
+  e.textContent = msg; e.classList.remove('hidden');
+}
+
+async function doReset(ev){
+  ev.preventDefault();
+  showErr('');
+  var pw1 = document.getElementById('pw1').value;
+  var pw2 = document.getElementById('pw2').value;
+  if(pw1.length < 8){ showErr('Passwort braucht mindestens 8 Zeichen.'); return; }
+  if(pw1 !== pw2){ showErr('Passwörter stimmen nicht überein.'); return; }
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = '⏳ Speichere…';
+  try{
+    var res = await fetch('/api/tenant/reset-confirm/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: TOKEN, password: pw1 })
+    });
+    var data = await res.json().catch(function(){ return {}; });
+    if(res.ok && data.ok){
+      document.getElementById('cardForm').classList.add('hidden');
+      document.getElementById('cardSuccess').classList.remove('hidden');
+      return;
+    }
+    showErr(data.error || 'Reset fehlgeschlagen – bitte erneut versuchen.');
+  }catch(e){
+    showErr('Netzwerkfehler – bitte erneut versuchen.');
+  }
+  btn.disabled = false; btn.textContent = 'Passwort speichern';
+}
+
+// Kein Token → direkt Fehlerkarte
+if(!TOKEN){
+  document.getElementById('cardForm').classList.add('hidden');
+  document.getElementById('cardInvalid').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
