@@ -128,7 +128,7 @@ tailwind.config = {
         <li class="flex justify-between"><span>Status</span><span id="mStatus" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Aktiv</span></li>
       </ul>
       <button id="mUpgradeBtn" onclick="showToast('Upgrade folgt in Kürze – wir informieren dich per E-Mail.')" class="mt-5 w-full bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold py-2.5 rounded-lg transition">Auf Pro upgraden</button>
-      <button onclick="showToast('Zahlungsmethode änderst du über das Stripe-Kundenportal – den Link schicken wir dir per E-Mail.')" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">Zahlungsmethode ändern</button>
+      <button id="portalBtn" onclick="openBillingPortal()" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">💳 Zahlung &amp; Abo verwalten</button>
       <button id="mResetBtn" onclick="resetDemoMiete()" class="hidden mt-2.5 w-full bg-white border border-dashed border-ink-300 hover:bg-ink-50 text-ink-400 text-xs font-bold py-2 rounded-lg transition">Demo-Miete zurücksetzen (Standardansicht)</button>
     </div>
   </div>
@@ -585,6 +585,18 @@ async function loadDashboard(){
   }catch(e){console.error('loadDashboard',e);}
 }
 function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+async function openBillingPortal(){
+  var btn=document.getElementById('portalBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Portal wird geöffnet…';}
+  try{
+    var res=await fetch('/api/tenant/portal/',{method:'POST',headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
+    var data=await res.json().catch(function(){return{};});
+    if(!res.ok||!data.url){showToast(data.error||'Portal momentan nicht verfügbar – bitte später erneut.');if(btn){btn.disabled=false;btn.textContent='💳 Zahlung & Abo verwalten';}return;}
+    window.open(data.url,'_blank');
+    showToast('Stripe-Abrechnungsportal geöffnet ✅');
+  }catch(e){showToast('Netzwerkfehler – bitte erneut versuchen.');}
+  if(btn){btn.disabled=false;btn.textContent='💳 Zahlung & Abo verwalten';}
+}
 async function loadStats(){
   try{
     var res=await fetch('/api/tenant/stats/',{headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
