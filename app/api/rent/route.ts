@@ -7,6 +7,20 @@ import { sendMail, welcomeMailTenant } from '@/lib/mailer'
 
 export const dynamic = 'force-dynamic'
 
+// Stadt-Slug ROBUST aus LP-Slug extrahieren — Doppel-Städte wie castrop-rauxel,
+// wetter-ruhr würden mit split('-').pop() zu 'rauxel'/'ruhr' zerbrechen!
+async function resolveCitySlug(lpSlug: string): Promise<string | null> {
+  const { data: cities } = await supabaseAdmin.from('cities').select('slug')
+  if (!cities?.length) return null
+  return (
+    cities
+      .map((c: any) => c.slug as string)
+      .filter((cs) => lpSlug === cs || lpSlug.endsWith('-' + cs))
+      // längster Treffer gewinnt → castrop-rauxel schlägt rauxel
+      .sort((a, b) => b.length - a.length)[0] || null
+  )
+}
+
 const STRIPE_KEY = () => process.env.STRIPE_SECRET_KEY || ''
 const PRICE_DEFAULT = 18900 // €189/Monat in Cent (Fallback)
 const TRIAL_DAYS = 14
@@ -38,7 +52,7 @@ export async function POST(request: Request) {
     // ── Landing Page finden (Slug = z.B. "dachdecker-herne") ──
     let { data: page, error: pageLookupErr } = await supabaseAdmin
       .from('landing_pages')
-      .select('id, slug, title, monthly_price, status, rented_by')
+      .select('id, slug, title, monthly_price, status, rented_by, city_id')
       .eq('slug', slug)
       .maybeSingle()
 
@@ -50,7 +64,11 @@ export async function POST(request: Request) {
 
     if (!page) {
       // Fallback: über cities+trades auflösen und Slug-Zeile anlegen
-      const citySlug = slug.split('-').pop() || ''
+      // (robust: längster Suffix-Match, Doppel-Städte wie castrop-rauxel!)
+      const citySlug = await resolveCitySlug(slug)
+      if (!citySlug) {
+        return NextResponse.json({ error: 'Diese Seite existiert nicht (Stadt/Gewerk unbekannt).' }, { status: 404 })
+      }
       const [{ data: cityRow }, { data: tradeRow }] = await Promise.all([
         supabaseAdmin.from('cities').select('id').eq('slug', citySlug).maybeSingle(),
         supabaseAdmin.from('trades').select('id').eq('slug', trade).maybeSingle(),
@@ -69,7 +87,7 @@ export async function POST(request: Request) {
           monthly_price: PRICE_DEFAULT,
           status: 'available',
         })
-        .select('id, slug, title, monthly_price, status, rented_by')
+        .select('id, slug, title, monthly_price, status, rented_by, city_id')
         .single()
       if (insErr || !created) {
         return NextResponse.json({ error: 'Seite konnte nicht angelegt werden: ' + insErr?.message }, { status: 500 })
@@ -135,7 +153,14 @@ export async function POST(request: Request) {
     if (custErr) console.error('[rent] customizations:', custErr.message)
 
     const priceCents = page.monthly_price || PRICE_DEFAULT
-    const publicUrl = `https://www.fachschmiede.de/${tradePath(trade)}/${slug.split('-').pop()}/`
+    // Öffentliche URL: echte Stadt aus DB (city_id) — NIE String-Bastelei am Slug!
+    const { data: pageCity } = await supabaseAdmin
+      .from('cities')
+      .select('slug')
+      .eq('id', (page as any).city_id)
+      .maybeSingle()
+    const citySlugPublic = pageCity?.slug || (await resolveCitySlug(slug)) || slug
+    const publicUrl = `https://www.fachschmiede.de/${tradePath(trade)}/${citySlugPublic}/`
 
     // ── Willkommens-E-Mail (auch ohne Stripe schon senden) ──
     const isTrial = modus === 'test'
