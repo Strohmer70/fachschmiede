@@ -695,9 +695,9 @@ async function submitLead(form){
 <!-- ═══════════ MIET-STATUS (echte Vermietung) ═══════════ -->
 <script>
 (function(){var PAGE_SLUG='maler-sprockhoevel';
-async function applyRental(){
+async function applyRental(retry){
  try{
-  var r=await fetch('/api/pages/'+PAGE_SLUG+'/');if(!r.ok)return;
+  var r=await fetch('/api/pages/'+PAGE_SLUG+'/');if(!r.ok){if(!retry)setTimeout(function(){applyRental(true)},2000);return;}
   var d=await r.json();if(!d.rented)return;
   var company=d.company||'Ihr Betrieb', phone=d.phone||'', wa=(d.whatsapp||'').replace(/[^0-9]/g,'');
   // 1) Miet-CTAs ausblenden
@@ -740,7 +740,7 @@ async function applyRental(){
   }
  }catch(e){console.error('applyRental',e);}
 }
-applyRental();})();
+applyRental(false);})();
 </script>
 <script>/* fachschmiede.de · Besucherzählung DSGVO-sauber: keine Cookies, keine IP-Speicherung */(function(){try{var i=new Image(1,1);i.src='/api/track/?p='+encodeURIComponent(location.pathname)+'&_='+Date.now();}catch(e){}})();</script>
 </body>
