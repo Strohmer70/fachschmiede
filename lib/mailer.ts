@@ -1,36 +1,35 @@
-// lib/mailer.ts — E-Mail-Versand via SMTP (nodemailer) oder Console-Fallback
-// Env: SMTP_HOST, SMTP_PORT (default 465), SMTP_USER, SMTP_PASS, MAIL_FROM (default hello@fachschmiede.de)
-import nodemailer from 'nodemailer'
+// lib/mailer.ts — E-Mail-Versand via Brevo Transactional API (HTTP) mit Console-Fallback
+// Env: BREVO_API_KEY (Brevo → SMTP & API → API Keys), MAIL_FROM (default hello@fachschmiede.de)
+// WICHTIG: SMTP/nodemailer funktioniert NICHT auf Vercel Serverless (SMTP-Ports blockiert) → daher HTTP-API.
+const BREVO_URL = 'https://api.brevo.com/v3/smtp/email'
 
-let transporter: any = null
-
-function getTransporter() {
-  if (transporter) return transporter
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null
-  transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: parseInt(SMTP_PORT || '465', 10),
-    secure: (parseInt(SMTP_PORT || '465', 10) === 465),
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  })
-  return transporter
+function htmlToText(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 export async function sendMail(opts: { to: string; subject: string; html: string; text?: string }): Promise<boolean> {
-  const t = getTransporter()
-  if (!t) {
-    console.log('[mailer] SMTP nicht konfiguriert – Mail nicht versendet:', opts.to, '|', opts.subject)
+  const key = process.env.BREVO_API_KEY
+  const from = process.env.MAIL_FROM || 'hello@fachschmiede.de'
+  if (!key) {
+    console.log('[mailer] BREVO_API_KEY nicht gesetzt – Mail nicht versendet:', opts.to, '|', opts.subject)
     return false
   }
   try {
-    await t.sendMail({
-      from: `fachschmiede.de <${process.env.MAIL_FROM || 'hello@fachschmiede.de'}>`,
-      to: opts.to,
-      subject: opts.subject,
-      html: opts.html,
-      text: opts.text || opts.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(),
+    const res = await fetch(BREVO_URL, {
+      method: 'POST',
+      headers: { accept: 'application/json', 'api-key': key, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        sender: { name: 'fachschmiede.de', email: from },
+        to: [{ email: opts.to }],
+        subject: opts.subject,
+        htmlContent: opts.html,
+        textContent: opts.text || htmlToText(opts.html),
+      }),
     })
+    if (!res.ok) {
+      console.error('[mailer] Brevo API Fehler:', res.status, await res.text())
+      return false
+    }
     return true
   } catch (err) {
     console.error('[mailer] Fehler:', err)
