@@ -7,6 +7,17 @@ import { verifyToken } from '@/lib/auth'
 import defaultsJson from '../../_lib/default-content.json'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+// 2026-09-30: no-store — sonst cached Vercel/Next GET-Responses (eingefrorene Daten).
+const json = (data: any, status = 200) =>
+  NextResponse.json(data, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'X-Canary': new Date().toISOString(),
+    },
+  })
 
 // Typ-Hilfe für das generierte JSON (120 Slugs)
 const DEFAULTS: Record<string, { about?: string; aboutP2?: string }> = defaultsJson as any
@@ -39,14 +50,14 @@ const CUST_SELECT = '*'
 
 export async function GET(request: Request) {
   const auth = await authTenant(request)
-  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+  if ('error' in auth) return json({ error: auth.error }, auth.status)
 
   const { data: tenant } = await supabaseAdmin
     .from('tenants')
     .select('id, email, company_name, contact_name, phone, subscription_status, created_at')
     .eq('id', auth.tenantId)
     .maybeSingle()
-  if (!tenant) return NextResponse.json({ error: 'Konto nicht gefunden.' }, { status: 404 })
+  if (!tenant) return json({ error: 'Konto nicht gefunden.' }, 404)
 
   // ALLE Mietseiten des Tenants
   const { data: custs } = await supabaseAdmin
@@ -62,7 +73,7 @@ export async function GET(request: Request) {
     if (key) defaultAbout = [DEFAULTS[key]?.about, DEFAULTS[key]?.aboutP2].filter(Boolean).join('\n\n')
   }
 
-  return NextResponse.json({
+  return json({
     ok: true,
     tenant,
     customization: first,
@@ -101,7 +112,7 @@ const BOOL_FIELDS: Record<string, string> = {
 
 export async function PATCH(request: Request) {
   const auth = await authTenant(request)
-  if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
+  if ('error' in auth) return json({ error: auth.error }, auth.status)
 
   const body = await request.json().catch(() => ({}))
   const update: Record<string, unknown> = {}
@@ -118,7 +129,7 @@ export async function PATCH(request: Request) {
       : String(body.service_areas || '').split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
   }
   if (Object.keys(update).length === 0) {
-    return NextResponse.json({ error: 'Nichts zu ändern.' }, { status: 400 })
+    return json({ error: 'Nichts zu ändern.' }, 400)
   }
   update.updated_at = new Date().toISOString()
 
@@ -127,12 +138,12 @@ export async function PATCH(request: Request) {
     .from('page_customizations')
     .select('id')
     .eq('tenant_id', auth.tenantId)
-  if (findErr) return NextResponse.json({ error: 'DB-Fehler: ' + findErr.message }, { status: 500 })
-  if (!custs || custs.length === 0) return NextResponse.json({ error: 'Keine Mietseite gefunden.' }, { status: 404 })
+  if (findErr) return json({ error: 'DB-Fehler: ' + findErr.message }, 500)
+  if (!custs || custs.length === 0) return json({ error: 'Keine Mietseite gefunden.' }, 404)
 
   const ids = custs.map((c: { id: string }) => c.id)
   const { error } = await supabaseAdmin.from('page_customizations').update(update).in('id', ids)
-  if (error) return NextResponse.json({ error: 'Speichern fehlgeschlagen: ' + error.message }, { status: 500 })
+  if (error) return json({ error: 'Speichern fehlgeschlagen: ' + error.message }, 500)
 
-  return NextResponse.json({ ok: true, updated: ids.length })
+  return json({ ok: true, updated: ids.length })
 }

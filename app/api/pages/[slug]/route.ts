@@ -6,12 +6,25 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+// 2026-09-30: KRITISCH — Next/Vercel cached GET-Responses trotz force-dynamic
+// (max-age=0 wurde ignoriert → eingefrorene Miet-Daten pro URL!).
+// no-store erzwingt frische Daten. X-Canary beweist Frische.
+const json = (data: any, status = 200) =>
+  NextResponse.json(data, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'X-Canary': new Date().toISOString(),
+    },
+  })
 
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params
     if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
-      return NextResponse.json({ error: 'Ungültiger Slug' }, { status: 400 })
+      return json({ error: 'Ungültiger Slug' }, 400)
     }
 
     const { data: rows } = await supabaseAdmin
@@ -21,7 +34,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
 
     const page = rows && rows.length > 0 ? rows[0] : null
     if (!page || page.status !== 'rented' || !page.rented_by) {
-      return NextResponse.json({ rented: false, page })
+      return json({ rented: false, page })
     }
 
     const [{ data: tenant }, { data: cust }] = await Promise.all([
@@ -39,10 +52,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     ])
 
     if (!tenant || tenant.subscription_status !== 'active' || !cust || !cust.is_active) {
-      return NextResponse.json({ rented: false, reason: 'tenant/cust' })
+      return json({ rented: false, reason: 'tenant/cust' })
     }
 
-    return NextResponse.json({
+    return json({
       rented: true,
       company: cust.custom_company_name || tenant.company_name,
       contactName: tenant.contact_name || null,
@@ -71,6 +84,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       accent_color: cust.accent_color || null,
     })
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message }, { status: 500 })
+    return json({ error: err?.message }, 500)
   }
 }
