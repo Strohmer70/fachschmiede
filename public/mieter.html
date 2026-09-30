@@ -177,15 +177,16 @@ tailwind.config = {
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Öffnungszeiten</label>
-            <textarea rows="2" placeholder="Mo–Fr: 7:00 – 17:00 Uhr, Sa: nach Vereinbarung" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            <textarea id="fOeffnung" rows="2" placeholder="Mo–Fr: 7:00 – 17:00 Uhr, Sa: nach Vereinbarung" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">„Über uns"-Text</label>
             <textarea id="fWillkommen" rows="4" placeholder="Stell dich vor: Wer seid ihr, seit wann, was zeichnet euch aus?" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            <p id="aboutHint" class="hidden mt-1.5 text-[11px] font-semibold text-brand-700">✏️ Das ist der aktuelle Text deiner Website als Ausgangspunkt – einfach anpassen und speichern.</p>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Einsatzgebiete <span class="font-normal text-ink-400">(Komma-getrennt)</span></label>
-            <textarea rows="2" placeholder="Stadt 1, Stadt 2, Stadt 3 …" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            <textarea id="fGebiete" rows="2" placeholder="Stadt 1, Stadt 2, Stadt 3 …" class="w-full rounded-lg border border-ink-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
 
           <!-- Kontakt-Integrationen -->
@@ -200,9 +201,9 @@ tailwind.config = {
                   <p class="font-bold text-sm text-ink-900">💬 WhatsApp-Nummer</p>
                   <p class="text-xs text-ink-500 mt-0.5">Erscheint als grüner WhatsApp-Button im Kontaktbereich <em>und</em> als schwebender Button unten rechts – Besucher schreiben Ihnen direkt per Chat.</p>
                 </div>
-                <span class="toggle on" onclick="toggleSwitch(this)"></span>
+                <span id="tglWa" class="toggle on" onclick="toggleSwitch(this)"></span>
               </div>
-              <input type="text" value="" placeholder="+49 …" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fWaNum" type="text" value="" placeholder="+49 …" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               <p class="mt-2 text-[11px] text-ink-400">Handynummer mit Ländervorwahl. Daraus wird automatisch der Chat-Link <span class="font-mono">wa.me/49151…</span> erzeugt – mehr müssen Sie nicht tun.</p>
             </div>
             <div class="bg-white rounded-xl border border-ink-200 p-4">
@@ -211,9 +212,9 @@ tailwind.config = {
                   <p class="font-bold text-sm text-ink-900">📍 Google Maps Place ID</p>
                   <p class="text-xs text-ink-500 mt-0.5">Bindet Ihren Google-Unternehmenseintrag als Karte im Kontaktbereich ein – inkl. Routenplaner und Standort-Pin.</p>
                 </div>
-                <span class="toggle on" onclick="toggleSwitch(this)"></span>
+                <span id="tglMaps" class="toggle on" onclick="toggleSwitch(this)"></span>
               </div>
-              <input type="text" value="" placeholder="ChIJ…" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fPlaceId" type="text" value="" placeholder="ChIJ…" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
               <p class="mt-2 text-[11px] text-ink-400">Zu finden über den <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-600 hover:underline">Google Place ID Finder</a> (Eintrag suchen, ID kopieren). Lassen Sie das Feld leer, nutzt die Karte einfach Ihre Adresse.</p>
             </div>
             <div class="flex items-center justify-between bg-brand-50 border border-brand-200 rounded-xl px-4 py-3">
@@ -231,23 +232,23 @@ tailwind.config = {
             <div class="space-y-4">
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Gründungsjahr anzeigen</p><p class="text-xs text-ink-500">z. B. „Seit 2015 für Sie da"</p></div>
-                <div class="flex items-center gap-3"><input type="text" placeholder="2015" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+                <div class="flex items-center gap-3"><input id="fJahr" type="text" placeholder="2015" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span id="tglJahr" class="toggle" onclick="toggleSwitch(this)"></span></div>
               </div>
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Anzahl abgeschlossener Projekte</p><p class="text-xs text-ink-500">z. B. „Über 300 Projekte"</p></div>
-                <div class="flex items-center gap-3"><input type="text" placeholder="300+" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+                <div class="flex items-center gap-3"><input id="fProjekte" type="text" placeholder="300+" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span id="tglProjekte" class="toggle" onclick="toggleSwitch(this)"></span></div>
               </div>
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Teamgröße anzeigen</p><p class="text-xs text-ink-500">z. B. „5 Mitarbeiter"</p></div>
-                <div class="flex items-center gap-3"><input type="text" placeholder="5" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+                <div class="flex items-center gap-3"><input id="fTeam" type="text" placeholder="5" class="w-20 text-sm rounded-lg border border-ink-200 px-3 py-2 text-center"><span id="tglTeam" class="toggle" onclick="toggleSwitch(this)"></span></div>
               </div>
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Meisterbetrieb</p><p class="text-xs text-ink-500">Badge „Meisterbetrieb" im Header &amp; Hero</p></div>
-                <span class="toggle" onclick="toggleSwitch(this)"></span>
+                <span id="tglMeister" class="toggle" onclick="toggleSwitch(this)"></span>
               </div>
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Innungsmitgliedschaft</p><p class="text-xs text-ink-500">z. B. „Mitglied der Dachdecker-Innung Dortmund"</p></div>
-                <div class="flex items-center gap-3"><input type="text" placeholder="Innung …" class="w-32 text-sm rounded-lg border border-ink-200 px-3 py-2"><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+                <div class="flex items-center gap-3"><input id="fInnung" type="text" placeholder="Innung …" class="w-32 text-sm rounded-lg border border-ink-200 px-3 py-2"><span id="tglInnung" class="toggle" onclick="toggleSwitch(this)"></span></div>
               </div>
               <div class="flex items-center justify-between gap-4 bg-white rounded-xl border border-ink-200 p-4">
                 <div><p class="font-bold text-sm text-ink-900">Zertifikate / Weiterbildungen</p><p class="text-xs text-ink-500">Logos &amp; Texte im „Über uns"-Bereich</p></div>
@@ -437,60 +438,60 @@ tailwind.config = {
           <h3 class="font-black text-ink-900 flex items-center gap-2">📄 Impressum <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">§ 5 DDG</span></h3>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Firmenname (vollständig) *</label>
-            <input type="text" value="" placeholder="Vollständiger Firmenname" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fRechtName" type="text" value="" placeholder="Vollständiger Firmenname" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Rechtsform *</label>
-              <select class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <select id="fRechtsform" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option value="" disabled selected>Bitte wählen…</option><option>Einzelunternehmen</option><option>GbR</option><option>OHG</option><option>KG</option><option>GmbH</option><option>UG (haftungsbeschränkt)</option><option>AG</option>
               </select>
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Vertretungsberechtigt *</label>
-              <input type="text" value="" placeholder="z. B. Inhaber / Geschäftsführer" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fVertretung" type="text" value="" placeholder="z. B. Inhaber / Geschäftsführer" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Anschrift (ladungsfähig) *</label>
-            <input type="text" value="" placeholder="Straße Nr., PLZ Ort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fRechtAdr" type="text" value="" placeholder="Straße Nr., PLZ Ort" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             <p class="mt-1 text-[11px] text-ink-400">Kein Postfach – das Gesetz verlangt eine ladungsfähige Anschrift.</p>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon *</label>
-              <input type="text" value="" placeholder="z. B. 02304 / 123 456" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fRechtTel" type="text" value="" placeholder="z. B. 02304 / 123 456" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail *</label>
-              <input type="email" value="" placeholder="info@…" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fRechtMail" type="email" value="" placeholder="info@…" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Umsatzsteuer-ID <span class="font-normal text-ink-400">(§ 27a UStG – falls vorhanden)</span></label>
-            <input type="text" value="" placeholder="DE …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fUst" type="text" value="" placeholder="DE …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Handwerkskammer *</label>
-              <input type="text" value="" placeholder="z. B. Handwerkskammer Dortmund" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fHwkName" type="text" value="" placeholder="z. B. Handwerkskammer Dortmund" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Handwerksrolle-Nr. *</label>
-              <input type="text" value="" placeholder="z. B. 12345" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fHwkNr" type="text" value="" placeholder="z. B. 12345" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Berufsbezeichnung &amp; Verleihungsstaat *</label>
-            <input type="text" value="" placeholder="z. B. Dachdeckermeister (verliehen in Deutschland)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fBeruf" type="text" value="" placeholder="z. B. Dachdeckermeister (verliehen in Deutschland)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlich i. S. d. § 18 Abs. 2 MStV *</label>
-            <input type="text" value="" placeholder="Name, Anschrift wie oben" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fVerantw" type="text" value="" placeholder="Name, Anschrift wie oben" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="flex items-center justify-between bg-white border border-ink-200 rounded-xl p-4">
             <div><p class="font-bold text-sm text-ink-900">EU-Streitschlichtung-Hinweis anzeigen</p><p class="text-xs text-ink-500">OS-Plattform-Link im Impressum (empfohlen)</p></div>
-            <span class="toggle on" onclick="toggleSwitch(this)"></span>
+            <span id="tglEu" class="toggle on" onclick="toggleSwitch(this)"></span>
           </div>
         </div>
 
@@ -504,7 +505,7 @@ tailwind.config = {
           </div>
           <div>
             <label class="block text-sm font-bold text-ink-800 mb-1.5">Datenschutzbeauftragter <span class="font-normal text-ink-400">(nur falls bestellt)</span></label>
-            <input type="text" placeholder="Name &amp; E-Mail – leer lassen, wenn nicht erforderlich" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="fDsbe" type="text" placeholder="Name &amp; E-Mail – leer lassen, wenn nicht erforderlich" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="bg-white border border-ink-200 rounded-xl p-4 space-y-3">
             <p class="font-bold text-sm text-ink-900">Auf Ihrer Website aktive Dienste <span class="text-xs font-normal text-ink-400">(steuern die Abschnitte der Erklärung)</span></p>
@@ -527,7 +528,7 @@ tailwind.config = {
       </div>
 
       <div class="mt-8 flex flex-wrap items-center gap-4">
-        <button onclick="showToast('Diese Angaben fragen wir vor Veröffentlichung final ab – dein Impressum wird automatisch aus deinen Firmendaten erstellt.')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Angaben speichern</button>
+        <button onclick="saveDashboard()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Angaben speichern</button>
         <p class="text-xs text-ink-500 max-w-md">Dein Impressum wird automatisch aus deinen Firmendaten erstellt, im Footer deiner Website verlinkt und für Google indexierbar ausgespielt.</p>
       </div>
     </div>
@@ -592,11 +593,40 @@ async function loadDashboard(){
     if(lp.slug){var _u=slugToUrl(lp.slug);document.getElementById('mSub').innerHTML='<a href="'+_u+'" target="_blank" rel="noopener" class="text-brand-600 font-bold hover:underline">fachschmiede.de'+_u+'</a> · Mietseite';var _vs=document.getElementById('viewSiteBtn');if(_vs)_vs.href=_u;}
     if(t.company_name)document.title=t.company_name+' – Mieter-Dashboard | fachschmiede.de';
     if(t.contact_name){var _g=document.getElementById('mGreeting');if(_g)_g.textContent='Willkommen zurück, '+t.contact_name.split(' ')[0]+'! 👋';}
-    if(c.custom_company_name)document.getElementById('fFirmenname').value=c.custom_company_name;
+    if(c.custom_company_name){document.getElementById('fFirmenname').value=c.custom_company_name;var _rn=document.getElementById('fRechtName');if(_rn)_rn.value=c.custom_company_name;}
     if(c.custom_phone)document.getElementById('fTel').value=c.custom_phone;
     if(c.custom_email)document.getElementById('fMail').value=c.custom_email;
-    if(c.custom_address)document.getElementById('fAdresse').value=c.custom_address;
-    if(c.custom_welcome_text)document.getElementById('fWillkommen').value=c.custom_welcome_text;
+    if(c.custom_address){document.getElementById('fAdresse').value=c.custom_address;var _ra=document.getElementById('fRechtAdr');if(_ra)_ra.value=c.custom_address;}
+    /* ── Über-uns: Kunden-Text, sonst aktuellen Website-Text als Basis ── */
+    var aboutVal=c.about_text||data.default_about||'';
+    if(aboutVal){document.getElementById('fWillkommen').value=aboutVal;var _ah=document.getElementById('aboutHint');if(_ah)_ah.classList.remove('hidden');}
+    /* ── Alle weiteren Firmenprofil-Felder ── */
+    function _v(id,val){if(val==null||val==='')return;var el=document.getElementById(id);if(el)el.value=val;}
+    function _t(id,val){var el=document.getElementById(id);if(el)el.classList.toggle('on',val===true);}
+    _v('fOeffnung',c.opening_hours);
+    _v('fGebiete',Array.isArray(c.service_areas)?c.service_areas.join(', '):c.service_areas);
+    _v('fWaNum',c.whatsapp_number);_t('tglWa',c.whatsapp_enabled!==false);
+    _v('fPlaceId',c.google_maps_place_id);_t('tglMaps',c.google_maps_enabled!==false);
+    _v('fJahr',c.founding_year);_t('tglJahr',c.show_founding_year===true);
+    _v('fProjekte',c.project_count);_t('tglProjekte',c.show_project_count===true);
+    _v('fTeam',c.team_size);_t('tglTeam',c.show_team_size===true);
+    _t('tglMeister',c.is_master_company===true);
+    _v('fInnung',c.guild_name);_t('tglInnung',c.is_guild_member===true);
+    /* Akzentfarbe */
+    if(c.accent_color){
+      window._accent=c.accent_color;
+      document.querySelectorAll('.swatch').forEach(function(s){s.classList.remove('active');});
+      document.querySelectorAll('.swatch').forEach(function(s){
+        var m=(s.getAttribute('style')||'').match(/#[0-9a-fA-F]{6}/);
+        if(m&&m[0].toLowerCase()===String(c.accent_color).toLowerCase())s.classList.add('active');
+      });
+    }
+    /* ── Rechtliches ── */
+    _v('fVertretung',c.vertretung);
+    if(c.rechtsform){var _rf=document.getElementById('fRechtsform');if(_rf)_rf.value=c.rechtsform;}
+    _v('fUst',c.ust_id);_v('fHwkName',c.hwk_name);_v('fHwkNr',c.hwk_number);
+    _v('fBeruf',c.berufsbezeichnung);_v('fVerantw',c.verantwortlicher);
+    _t('tglEu',c.eu_streitschlichtung===true);_v('fDsbe',c.datenschutz_beauftragter);
     var statusEl=document.getElementById('mStatus');
     if(t.subscription_status&&statusEl){
       var map={'active':['Aktiv','bg-green-100 text-green-700'],'trialing':['Testphase','bg-amber-100 text-amber-700'],'past_due':['Zahlung offen','bg-red-100 text-red-700'],'canceled':['Gekündigt','bg-ink-100 text-ink-500']};
@@ -642,14 +672,35 @@ async function loadStats(){
   }catch(e){console.error('loadStats',e);}
 }
 async function saveDashboard(){
-  var payload={firma:document.getElementById('fFirmenname').value,phone:document.getElementById('fTel').value,email:document.getElementById('fMail').value,address:document.getElementById('fAdresse').value,welcome:document.getElementById('fWillkommen').value};
-  var btn=event.target;btn.disabled=true;btn.textContent='⏳ Speichere…';
+  function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
+  function on(id){var el=document.getElementById(id);return el?el.classList.contains('on'):false;}
+  var accent=window._accent||'';
+  if(!accent){var act=document.querySelector('.swatch.active');if(act){var mm=(act.getAttribute('style')||'').match(/#[0-9a-fA-F]{6}/);accent=mm?mm[0]:'';}}
+  var payload={
+    firma:v('fRechtName')||v('fFirmenname'), phone:v('fTel'), email:v('fMail'),
+    address:v('fRechtAdr')||v('fAdresse'),
+    opening_hours:v('fOeffnung'), about_text:v('fWillkommen'),
+    service_areas:v('fGebiete'),
+    whatsapp_number:v('fWaNum'), whatsapp_enabled:on('tglWa'),
+    google_maps_place_id:v('fPlaceId'), google_maps_enabled:on('tglMaps'),
+    founding_year:v('fJahr'), show_founding_year:on('tglJahr'),
+    project_count:v('fProjekte'), show_project_count:on('tglProjekte'),
+    team_size:v('fTeam'), show_team_size:on('tglTeam'),
+    is_master_company:on('tglMeister'), is_guild_member:on('tglInnung'), guild_name:v('fInnung'),
+    accent_color:accent,
+    rechtsform:v('fRechtsform'), vertretung:v('fVertretung'), ust_id:v('fUst'),
+    hwk_name:v('fHwkName'), hwk_number:v('fHwkNr'),
+    berufsbezeichnung:v('fBeruf'), verantwortlicher:v('fVerantw'),
+    eu_streitschlichtung:on('tglEu'), datenschutz_beauftragter:v('fDsbe')
+  };
+  var btn=(window.event&&window.event.target)?window.event.target:null;
+  if(btn){btn.disabled=true;btn.textContent='⏳ Speichere…';}
   try{
     var res=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('fs_token')},body:JSON.stringify(payload)});
     var data=await res.json();
     showToast(res.ok?'✓ Gespeichert! Deine Seite zeigt die neuen Daten.':(data.error||'Speichern fehlgeschlagen.'));
   }catch(e){showToast('Netzwerkfehler – bitte erneut versuchen.');}
-  btn.disabled=false;btn.textContent='Änderungen speichern';
+  if(btn){btn.disabled=false;btn.textContent='Änderungen speichern';}
 }
 function logout(){
   localStorage.removeItem('fs_token');
@@ -743,6 +794,8 @@ function toggleSwitch(el){ el.classList.toggle('on'); }
 function pickColor(el){
   document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
+  var m=(el.getAttribute('style')||'').match(/#[0-9a-fA-F]{6}/);
+  window._accent=m?m[0]:'';
 }
 // Toast
 let toastTimer;

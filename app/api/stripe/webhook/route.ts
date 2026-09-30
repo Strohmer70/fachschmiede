@@ -113,12 +113,20 @@ export async function POST(request: Request) {
             .from('landing_pages')
             .update({ status: 'available', rented_by: null, rented_at: null })
             .eq('id', landing_page_id)
+          // 2026-09-30: VOLLSTÄNDIGER Reset — alle individuellen Mieterdaten werden gelöscht.
+          // (Vorher: nur is_active=false → Daten blieben in der DB. Dieters Anforderung:
+          // "wenn der Mieter seine Miete beendet müssen alle infos zurückgesetzt werden
+          //  und seine individuellen daten gehen weg")
           await supabaseAdmin
             .from('page_customizations')
-            .update({ is_active: false })
+            .delete()
+            .eq('landing_page_id', landing_page_id)
+          await supabaseAdmin
+            .from('leads')
+            .delete()
             .eq('landing_page_id', landing_page_id)
         }
-        console.log('[webhook] Kündigung verarbeitet:', { landing_page_id, tenant_id })
+        console.log('[webhook] Kündigung verarbeitet — Seite zurückgesetzt, Mieterdaten gelöscht:', { landing_page_id, tenant_id })
         break
       }
 

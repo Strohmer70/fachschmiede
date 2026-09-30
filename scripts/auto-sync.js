@@ -330,6 +330,15 @@ async function main() {
     log('Unique Content Upgrade fehlgeschlagen (nicht kritisch)', 'warning');
   }
 
+  // 7b. Default-Content für Dashboard-Prefill neu extrahieren (Über-uns-Texte)
+  try {
+    log('Extrahiere Default-Content für Dashboard...', 'action');
+    execSync('node ' + path.join(__dirname, 'extract-default-content.js'), { cwd: process.cwd() });
+    log('Default-Content aktualisiert', 'success');
+  } catch (err) {
+    log('Default-Content-Extraktion fehlgeschlagen (nicht kritisch)', 'warning');
+  }
+
   // 8. Git Commit
   if (!DRY_RUN) {
     log('Erstelle Git Commit...', 'action');

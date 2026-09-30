@@ -611,51 +611,98 @@ function hideSel(sel){var el=document.querySelector(sel);if(el)el.style.display=
 async function applyRental(retry){
  try{
   var r=await fetch('/api/pages/'+PAGE_SLUG+'/');
-  if(!r.ok){
-    if(!retry){setTimeout(function(){applyRental(true)},2000);return;}
-    reveal();return; /* API streikt auch nach Retry -> Banner zeigen (Verkauf geht vor) */
-  }
+  if(!r.ok){ if(!retry){setTimeout(function(){applyRental(true)},2000);return;} reveal();return; }
   var d=await r.json();
   if(!d.rented){reveal();return;}
-  var company=d.company||'Ihr Betrieb', phone=d.phone||'', wa=(d.whatsapp||'').replace(/[^0-9]/g,'');
-  /* 1) Miet-CTAs (Header Desktop+Mobile, Footer) */
-  document.querySelectorAll('a').forEach(function(a){
-    var t=(a.textContent||'').trim();
-    if(/Diese Seite (mieten|anmieten)/.test(t)) a.style.display='none';
-  });
-  /* 2) Banner + Freebox per ID (kein fragiles Text-Matching) */
+  function esc(s){var dv=document.createElement('div');dv.textContent=(s==null?'':String(s));return dv.innerHTML;}
+  var company=d.company||'Ihr Betrieb', phone=d.phone||'', email=d.email||'';
+  var addr=d.address||'', hours=d.opening_hours||'';
+  var areas=Array.isArray(d.service_areas)?d.service_areas:[];
+  var about=d.about_text||'';
+  var waNum=String(d.whatsapp_number||d.whatsapp||'').replace(/[^0-9]/g,'');
+  var waOn=d.whatsapp_enabled!==false;
+  var placeId=d.google_maps_place_id||'', mapsOn=d.google_maps_enabled!==false;
+  var fy=(d.show_founding_year&&d.founding_year)?String(d.founding_year):'';
+  var pc=(d.show_project_count&&d.project_count)?String(d.project_count):'';
+  var ts=(d.show_team_size&&d.team_size)?String(d.team_size):'';
+  var master=d.is_master_company===true, guild=(d.is_guild_member&&d.guild_name)?String(d.guild_name):'';
+  var ac=d.accent_color||'';
+  /* Miet-CTAs ausblenden (Header/Footer Links) */
+  document.querySelectorAll('a').forEach(function(a){ if(/Diese Seite (mieten|anmieten)/.test((a.textContent||'').trim())) a.style.display='none'; });
   hideSel('#miet-banner');
-  hideSel('#miet-freebox');
+  /* 1) Kontakt-Freebox -> Firmenkarte (Adresse, Öffnungszeiten, Badges, Einsatzgebiete) */
+  var fb=document.querySelector('#miet-freebox');
+  if(fb){
+    if(!addr&&!hours&&!areas.length&&!fy&&!pc&&!ts&&!master&&!guild&&!email){ fb.style.display='none'; }
+    else{
+      var stats=[]; if(fy)stats.push('Seit '+fy); if(pc)stats.push(pc+' Projekte'); if(ts)stats.push(ts+' Mitarbeiter');
+      var chips=''; areas.forEach(function(a){ if(a) chips+='<span class="inline-block bg-ink-100 text-ink-700 text-xs font-bold px-2.5 py-1 rounded-full mr-1 mb-1">'+esc(a)+'</span>'; });
+      fb.className='mt-8 bg-white border border-ink-200 rounded-2xl p-6 shadow-sm';
+      fb.innerHTML='<p class="font-black text-ink-900 text-lg">'+esc(company)+'</p>'
+        +(master?'<p class="mt-1.5"><span class="inline-block bg-brand-600 text-white text-xs font-black px-2.5 py-1 rounded-full">Meisterbetrieb</span></p>':'')
+        +(guild?'<p class="mt-1.5 text-xs font-bold text-brand-700">'+esc(guild)+'</p>':'')
+        +(addr?'<p class="mt-3 text-sm text-ink-700"><span class="mr-1.5">📍</span>'+esc(addr)+'</p>':'')
+        +(hours?'<p class="mt-2 text-sm text-ink-700"><span class="mr-1.5">🕒</span>'+esc(hours).replace(/\n/g,'<br>')+'</p>':'')
+        +(phone?'<p class="mt-2 text-sm"><a class="font-bold text-brand-600" href="tel:'+phone.replace(/[^0-9+]/g,'')+'">'+esc(phone)+'</a></p>':'')
+        +(email?'<p class="mt-1 text-sm"><a class="font-bold text-brand-600" href="mailto:'+esc(email)+'">'+esc(email)+'</a></p>':'')
+        +(waNum&&waOn?'<p class="mt-3"><a href="https://wa.me/'+waNum+'" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition">💬 WhatsApp schreiben</a></p>':'')
+        +(stats.length?'<p class="mt-4 pt-3 border-t border-ink-100 text-xs font-bold text-ink-500 uppercase tracking-wider">'+esc(stats.join(' · '))+'</p>':'')
+        +(chips?'<div class="mt-3">'+chips+'</div>':'');
+    }
+  }
   /* Fallback alte Freebox-Texte */
   var ps=document.querySelectorAll('p');
   for(var i=0;i<ps.length;i++){
-    if((ps[i].textContent||'').indexOf('\u26a1 Diese Seite ist noch frei')===0){
+    if((ps[i].textContent||'').indexOf('⚡ Diese Seite ist noch frei')===0){
       var box=ps[i],up=0;
       while(up<4&&box.parentElement){box=box.parentElement;up++;if(box.classList&&box.classList.contains('bg-brand-50'))break;}
-      box.style.display='none';break;
+      if(box.style.display!=='none') box.style.display='none';
+      break;
     }
   }
-  /* 3) "noch frei" -> Firmenname */
+  /* 2) "noch frei" -> Firmenname */
   document.querySelectorAll('span').forEach(function(s){
-    if((s.textContent||'').trim()==='noch frei'){
-      s.textContent=company;s.classList.remove('text-brand-600');s.style.color='#0f172a';
-    }
+    if((s.textContent||'').trim()==='noch frei'){ s.textContent=company;s.classList.remove('text-brand-600');s.style.color='#0f172a'; }
   });
   document.querySelectorAll('span,div').forEach(function(el){
-    if(el.childNodes.length&&el.childNodes[0].nodeType===3&&(el.textContent||'').trim()==='Miet-Website \u00b7 noch frei'){
-      el.textContent='Gef\u00fchrt von '+company;
-    }
+    if(el.childNodes.length&&el.childNodes[0].nodeType===3&&(el.textContent||'').trim()==='Miet-Website · noch frei'){ el.textContent='Geführt von '+company; }
   });
-  /* 4) Telefon/WhatsApp auf Mieter umschreiben */
-  if(phone){
-    document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
-      a.href='tel:'+phone.replace(/[^0-9+]/g,'');a.textContent=phone;
-    });
+  /* 3) Telefon global umschreiben */
+  if(phone){ document.querySelectorAll('a[href^="tel:"]').forEach(function(a){ a.href='tel:'+phone.replace(/[^0-9+]/g,'');a.textContent=phone; }); }
+  /* 4) WhatsApp: Nummer setzen + Sichtbarkeit */
+  if(waNum){ document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.href=a.href.replace(/wa\.me\/[0-9]+/,'wa.me/'+waNum); }); }
+  if(!waOn||!waNum){ document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.style.display='none'; }); }
+  /* 5) Google-Maps: Adresse oder Place ID */
+  if(mapsOn&&(addr||placeId)){
+    var mq=placeId?('place_id:'+encodeURIComponent(placeId)):encodeURIComponent(addr);
+    document.querySelectorAll('iframe[src*="google.com/maps"]').forEach(function(f){ f.src='https://www.google.com/maps?q='+mq+'&z=14&output=embed'; });
+    document.querySelectorAll('a[href*="google.com/maps/search"]').forEach(function(a){ a.href='https://www.google.com/maps/search/?api=1&query='+mq; });
   }
-  if(wa){
-    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){
-      a.href=a.href.replace(/wa\.me\/[0-9]+/,'wa.me/'+wa);
-    });
+  /* 6) Über-uns Text ersetzen */
+  if(about){
+    var ue=document.querySelector('#ueber-uns');
+    if(ue){
+      var big=ue.querySelector('p.text-lg');
+      if(big){
+        big.innerHTML=esc(about).replace(/\n/g,'<br>');
+        var sib=big.nextElementSibling;
+        while(sib){ if(sib.tagName==='P'&&/text-ink-600/.test(String(sib.className))) sib.style.display='none'; sib=sib.nextElementSibling; }
+      }
+    }
+  }
+  /* 7) Akzentfarbe (Tailwind brand-Utility-Overrides) */
+  if(ac&&/^#[0-9a-fA-F]{6}$/.test(ac)){
+    var st=document.createElement('style');
+    st.textContent='.bg-brand-600{background-color:'+ac+'!important}'
+      +'.text-brand-600{color:'+ac+'!important}'
+      +'.text-brand-400{color:'+ac+'!important}'
+      +'.text-brand-700{color:'+ac+'!important}'
+      +'.border-brand-200{border-color:'+ac+'55!important}'
+      +'.bg-brand-50{background-color:'+ac+'14!important}'
+      +'.focus\\:ring-brand-500:focus{--tw-ring-color:'+ac+'!important}'
+      +'.from-brand-600{--tw-gradient-from:'+ac+' var(--tw-gradient-from-position)!important;--tw-gradient-to:'+ac+' var(--tw-gradient-to-position)!important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)!important}'
+      +'.to-orange-700{--tw-gradient-to:'+ac+' var(--tw-gradient-to-position)!important}';
+    document.head.appendChild(st);
   }
   reveal(); /* erst verstecken, dann reveal -> null Flackern */
  }catch(e){console.error('applyRental',e);reveal();}
