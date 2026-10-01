@@ -5,10 +5,12 @@ export const dynamic = 'force-dynamic'
 
 // 2026-10-01: Zwei gültige Passwörter — historisch gab es 2024 (API/Code)
 // und 2026 (Frontend-Fallback). Dieter kannte nur eins davon → Login schlug fehl.
-// Env ADMIN_PASSWORD überschreibt weiterhin komplett (Vercel).
-const ADMIN_PASSWORDS = ['fachschmiede2024', 'fachschmiede2026']
-const ENV_PASSWORD = process.env.ADMIN_PASSWORD
-const VALID_PASSWORDS = ENV_PASSWORD ? [ENV_PASSWORD] : ADMIN_PASSWORDS
+// Env ADMIN_PASSWORD wird MIT akzeptiert (nicht exklusiv) — falls in Vercel gesetzt.
+const VALID_PASSWORDS = [
+  process.env.ADMIN_PASSWORD,
+  'fachschmiede2024',
+  'fachschmiede2026',
+].filter(Boolean) as string[]
 
 export async function POST(request: Request) {
   try {
