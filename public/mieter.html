@@ -329,35 +329,47 @@ tailwind.config = {
           <p class="mt-3 text-xs text-ink-500">Wirkt auf Buttons, Überschriften-Akzente und Hervorhebungen.</p>
 
           <h3 class="font-bold text-ink-900 mt-8 mb-4">Logo</h3>
-          <div class="border-2 border-dashed border-ink-300 rounded-xl p-8 text-center hover:border-brand-400 transition cursor-pointer" onclick="showToast('Logo-Upload folgt in Kürze – bis dahin zeigt die Seite deinen Firmennamen.')">
+          <div id="logoDrop" class="border-2 border-dashed border-ink-300 rounded-xl p-8 text-center hover:border-brand-400 transition cursor-pointer" onclick="document.getElementById('fileLogo').click()">
+            <div id="logoPrevWrap" class="hidden mb-3"><img id="logoPrev" class="h-16 mx-auto object-contain" alt="Logo-Vorschau"></div>
             <p class="text-3xl">⬆️</p>
             <p class="mt-2 font-bold text-ink-700 text-sm">Logo hochladen</p>
-            <p class="text-xs text-ink-400 mt-1">PNG oder SVG · wird im Header &amp; Footer angezeigt</p>
+            <p class="text-xs text-ink-400 mt-1">JPG, PNG oder WEBP · max 5 MB · wird im Header angezeigt</p>
+            <input type="file" id="fileLogo" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleAssetUpload(this,'logo')">
           </div>
-          <p class="mt-2 text-xs text-ink-500">Kein Logo vorhanden? Dann zeigt die Seite automatisch Ihren Firmennamen mit Icon an – wie jetzt.</p>
+          <p class="mt-2 text-xs text-ink-500">Kein Logo? Dann zeigt die Seite deinen Firmennamen mit Icon an – wie jetzt.</p>
         </div>
         <div>
           <h3 class="font-bold text-ink-900 mb-4">Bildmaterial</h3>
           <div class="space-y-3">
-            <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
-              <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🖼</div>
-              <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Hero-Bild (Startseite oben)</p><p class="text-xs text-ink-500">Aktuell: Standard-Bibliothek „Dachdecker"</p></div>
-              <button onclick="showToast('Bild-Auswahl folgt in Kürze – bis dahin nutzt die Seite die Standard-Bibliothek.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+            <div class="bg-white rounded-xl border border-ink-200 p-4">
+              <div class="flex items-center gap-4">
+                <div class="w-20 h-14 rounded-lg bg-ink-200 overflow-hidden flex items-center justify-center text-xl shrink-0"><img id="heroPrev" class="hidden w-full h-full object-cover" alt="Hero"><span id="heroPrevIcon">🖼</span></div>
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Hero-Bild (Startseite oben)</p><p class="text-xs text-ink-500">Empfohlen: quer, mind. 1600×900 px</p></div>
+                <button onclick="document.getElementById('fileHero').click()" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+                <input type="file" id="fileHero" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleAssetUpload(this,'hero')">
+              </div>
             </div>
-            <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
-              <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">👥</div>
-              <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Team- / Inhaberfoto</p><p class="text-xs text-ink-500">Aktuell: Standard-Bibliothek</p></div>
-              <button onclick="showToast('Foto-Upload folgt in Kürze.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+            <div class="bg-white rounded-xl border border-ink-200 p-4">
+              <div class="flex items-center gap-4">
+                <div class="w-20 h-14 rounded-lg bg-ink-200 overflow-hidden flex items-center justify-center text-xl shrink-0"><img id="teamPrev" class="hidden w-full h-full object-cover" alt="Team"><span id="teamPrevIcon">👥</span></div>
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Team- / Inhaberfoto</p><p class="text-xs text-ink-500">Wird im Bereich „Über uns" gezeigt</p></div>
+                <button onclick="document.getElementById('fileTeam').click()" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+                <input type="file" id="fileTeam" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleAssetUpload(this,'team')">
+              </div>
             </div>
-            <div class="flex items-center gap-4 bg-white rounded-xl border border-ink-200 p-4">
-              <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🏗</div>
-              <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Referenzfotos (bis zu 6)</p><p class="text-xs text-ink-500">Eigene Baustellen-Fotos wirken am stärksten</p></div>
-              <button onclick="showToast('Referenzfotos folgen in Kürze.')" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
+            <div class="bg-white rounded-xl border border-ink-200 p-4">
+              <div class="flex items-center gap-4">
+                <div class="w-20 h-14 rounded-lg bg-ink-200 flex items-center justify-center text-xl shrink-0">🏗</div>
+                <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Referenzfotos (bis zu 6)</p><p class="text-xs text-ink-500">Eigene Baustellen-Fotos wirken am stärksten</p></div>
+                <button onclick="document.getElementById('fileRefs').click()" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Hochladen</button>
+                <input type="file" id="fileRefs" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="handleAssetUpload(this,'ref')">
+              </div>
+              <div id="refGrid" class="hidden grid grid-cols-3 gap-2 mt-3"></div>
             </div>
           </div>
           <div class="mt-5 bg-ink-50 border border-ink-200 rounded-xl p-4 text-sm text-ink-600">
             <p class="font-bold text-ink-900">📚 Standard-Bibliothek</p>
-            <p class="mt-1 text-xs leading-relaxed">Falls Sie (noch) keine eigenen Fotos haben: Für jedes Gewerk gibt es eine kuratierte Bildbibliothek. Eigenes Material können Sie jederzeit nachreichen – ein Foto vom Handy reicht völlig.</p>
+            <p class="mt-1 text-xs leading-relaxed">Felder, die du leer lässt, nutzen weiterhin die kuratierte Bildbibliothek für dein Gewerk. Eigenes Material kannst du jederzeit hochladen – ein Foto vom Handy reicht völlig.</p>
           </div>
         </div>
       </div>
@@ -590,6 +602,7 @@ async function loadDashboard(){
     if(lp.slug){var _u=slugToUrl(lp.slug);document.getElementById('mSub').innerHTML='<a href="'+_u+'" target="_blank" rel="noopener" class="text-brand-600 font-bold hover:underline">fachschmiede.de'+_u+'</a> · Mietseite';var _vs=document.getElementById('viewSiteBtn');if(_vs)_vs.href=_u;
       var _rl=document.getElementById('reviewLinkInput');if(_rl)_rl.value='https://www.fachschmiede.de'+_u+'#bewerten';
       loadReviews();}
+    prefillAssets(c);
     if(t.company_name)document.title=t.company_name+' – Mieter-Dashboard | fachschmiede.de';
     if(t.contact_name){var _g=document.getElementById('mGreeting');if(_g)_g.textContent='Willkommen zurück, '+t.contact_name.split(' ')[0]+'! 👋';}
     if(c.custom_company_name){document.getElementById('fFirmenname').value=c.custom_company_name;var _rn=document.getElementById('fRechtName');if(_rn)_rn.value=c.custom_company_name;}

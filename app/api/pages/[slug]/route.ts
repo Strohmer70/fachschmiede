@@ -94,6 +94,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       // ── 2026-10-01: Modul-/Leistungs-Toggles (Mieter-Dashboard) ──
       modules_enabled: cust.modules_enabled || null,
       services_active: cust.services_active || null,
+      // ── 2026-10-01: Mieter-Bilder (Uploads) ──
+      logo_url: cust.custom_logo_url || null,
+      hero_url: cust.custom_hero_url || null,
+      team_url: cust.custom_team_url || null,
+      gallery_urls: cust.custom_gallery_urls || [],
       reviews: reviews || [],
     })
   } catch (err: any) {

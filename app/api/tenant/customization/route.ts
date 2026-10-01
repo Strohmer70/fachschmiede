@@ -98,6 +98,8 @@ const STRING_FIELDS: Record<string, string> = {
   whatsapp_number: 'whatsapp_number', google_maps_place_id: 'google_maps_place_id',
   project_count: 'project_count', team_size: 'team_size', guild_name: 'guild_name',
   accent_color: 'accent_color',
+  // 2026-10-01: Mieter-Bilder (Upload liefert URL, hier persistiert)
+  logo_url: 'custom_logo_url', hero_url: 'custom_hero_url', team_url: 'custom_team_url',
   // Rechtliches
   rechtsform: 'rechtsform', vertretung: 'vertretung', ust_id: 'ust_id',
   hwk_name: 'hwk_name', hwk_number: 'hwk_number',
@@ -133,6 +135,12 @@ export async function PATCH(request: Request) {
     update.service_areas = Array.isArray(body.service_areas)
       ? body.service_areas.map(String).filter(Boolean).slice(0, 30)
       : String(body.service_areas || '').split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
+  }
+  // 2026-10-01: Referenzfotos (max 6 URLs — Uploads einzeln, Dashboard sendet gesamtes Array)
+  if (body.gallery_urls !== undefined) {
+    update.custom_gallery_urls = Array.isArray(body.gallery_urls)
+      ? body.gallery_urls.map((u: string) => String(u)).filter((u: string) => /^https:\/\//.test(u)).slice(0, 6)
+      : null
   }
   // 2026-10-01: Modul-Toggles — {key:bool}, nur bekannte Keys, max 20 Einträge
   if (body.modules_enabled !== undefined && body.modules_enabled !== null && typeof body.modules_enabled === 'object' && !Array.isArray(body.modules_enabled)) {

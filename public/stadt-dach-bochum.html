@@ -952,6 +952,37 @@ async function applyRental(retry){
       .catch(function(){err.textContent='Netzwerkfehler.';err.style.display='block';btn.disabled=false;btn.textContent='Absenden'});
     };
   })();
+  /* 11) Mieter-Bilder (2026-10-01): Logo, Hero, Team, Referenzen */
+  (function(){
+    if(d.logo_url){
+      var hs=document.querySelector('header span.bg-brand-600');
+      if(hs){var lg=document.createElement('img');lg.src=d.logo_url;lg.alt='Logo '+ (d.company||'');lg.style.cssText='height:2.25rem;width:auto;max-width:10rem;object-fit:contain';hs.replaceWith(lg);}
+    }
+    if(d.hero_url){
+      var hi=document.querySelector('img[src$="/images/hero.jpg"]');
+      if(hi)hi.src=d.hero_url;
+    }
+    if(d.team_url){
+      var ti=document.querySelector('#ueber-uns img[src$="/images/team.jpg"]');
+      if(ti)ti.src=d.team_url;
+    }
+    if(d.gallery_urls&&d.gallery_urls.length){
+      var gs=d.gallery_urls.filter(function(u){return /^https:\/\//.test(u)}).slice(0,6);
+      if(gs.length){
+        var sec=document.createElement('section');
+        sec.className='py-16 sm:py-20 bg-ink-50';
+        sec.id='referenzen';
+        sec.innerHTML='<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">'
+          +'<h2 class="text-2xl sm:text-3xl font-bold text-ink-900 mb-2">Referenzen &amp; Projekte</h2>'
+          +'<div class="w-12 h-1 bg-brand-500 mb-10 rounded-full"></div>'
+          +'<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">'
+          +gs.map(function(u){return '<img src="'+u+'" alt="Referenz" class="rounded-2xl object-cover w-full aspect-[4/3] shadow-sm" loading="lazy">'}).join('')
+          +'</div></div>';
+        var anchor=document.getElementById('ueber-uns');
+        if(anchor&&anchor.nextElementSibling)anchor.parentNode.insertBefore(sec,anchor.nextElementSibling);
+      }
+    }
+  })();
 reveal(); /* erst verstecken, dann reveal -> null Flackern */
  }catch(e){console.error('applyRental',e);reveal();}
 }
