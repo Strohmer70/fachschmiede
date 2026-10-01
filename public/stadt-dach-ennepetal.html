@@ -771,7 +771,7 @@ async function applyRental(retry){
     var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
     var stars=function(n){var s='';n=+n||0;for(var i=1;i<=5;i++)s+=i<=n?'\u2605':'\u2606';return s};
     var city='';
-    try{var pp=location.pathname.split('/').filter(Boolean);if(pp.length>=2)city=pp[pp.length-1].replace(/-/g,' ')}catch(e){}
+    try{var pp=location.pathname.split('/').filter(Boolean);if(pp.length>=2)city=pp[pp.length-1].split('-').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1)}).join('-').replace(/-/g,' ')}catch(e){}
     var html='<h2 class="text-2xl sm:text-3xl font-bold text-ink-900 mb-2">Das sagen Kunden'+(city?' aus '+esc(city):'')+'</h2>';
     html+='<div class="w-12 h-1 bg-brand-500 mx-auto mb-8 rounded-full"></div>';
     if(revs.length){
