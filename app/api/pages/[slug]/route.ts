@@ -82,6 +82,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       is_guild_member: cust.is_guild_member === true,
       guild_name: cust.guild_name || null,
       accent_color: cust.accent_color || null,
+      // ── 2026-10-01: Modul-/Leistungs-Toggles (Mieter-Dashboard) ──
+      modules_enabled: cust.modules_enabled || null,
+      services_active: cust.services_active || null,
     })
   } catch (err: any) {
     return json({ error: err?.message }, 500)

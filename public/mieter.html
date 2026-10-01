@@ -269,13 +269,8 @@ tailwind.config = {
       <div class="grid lg:grid-cols-2 gap-8">
         <div>
           <h3 class="font-bold text-ink-900 mb-4">Leistungskarten <span class="text-ink-400 font-normal text-sm">(6 Plätze auf der Startseite)</span></h3>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">🏠 Dachsanierung</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">🔧 Dachreparatur</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">🌡 Dachdämmung</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">▭ Flachdach</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">☀️ Solar &amp; Photovoltaik</span><span class="toggle" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4"><span class="font-semibold text-sm text-ink-800">⚠️ Sturm- &amp; Notdienst</span><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
+          <div id="serviceToggles" class="space-y-3">
+            <div class="bg-white rounded-xl border border-ink-200 p-4 text-sm text-ink-500">Lade Leistungen …</div>
           </div>
           <button onclick="showToast('Eigene Leistungen folgen in Kürze.')" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
         </div>
@@ -284,23 +279,23 @@ tailwind.config = {
           <div class="space-y-3">
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
               <div><p class="font-semibold text-sm text-ink-800">⚡ Notdienst-Modul</p><p class="text-xs text-ink-500">Banner „Sturmschaden? Wir helfen schnell." + 24h-Hinweis</p></div>
-              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+              <span id="tglModNotdienst" class="toggle on" onclick="toggleSwitch(this)"></span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
               <div><p class="font-semibold text-sm text-ink-800">⭐ Bewertungen anzeigen</p><p class="text-xs text-ink-500">Kundenstimmen-Sektion (freigegebene Bewertungen)</p></div>
-              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+              <span id="tglModBewertungen" class="toggle on" onclick="toggleSwitch(this)"></span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
               <div><p class="font-semibold text-sm text-ink-800">📝 Blog / Ratgeber</p><p class="text-xs text-ink-500">Artikel aus der Redaktion, automatisch gepflegt</p></div>
-              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+              <span id="tglModBlog" class="toggle on" onclick="toggleSwitch(this)"></span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
               <div><p class="font-semibold text-sm text-ink-800">❓ FAQ-Bereich</p><p class="text-xs text-ink-500">Häufige Fragen – gut für Google (Rich Snippets)</p></div>
-              <span class="toggle on" onclick="toggleSwitch(this)"></span>
+              <span id="tglModFaq" class="toggle on" onclick="toggleSwitch(this)"></span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
               <div><p class="font-semibold text-sm text-ink-800">📊 Kennzahlen-Leiste</p><p class="text-xs text-ink-500">Nur sinnvoll, wenn „Erfahrung &amp; Qualifikationen" aktiv sind</p></div>
-              <span class="toggle" onclick="toggleSwitch(this)"></span>
+              <span id="tglModKennzahlen" class="toggle on" onclick="toggleSwitch(this)"></span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
               <div><p class="font-semibold text-sm text-ink-800">📅 Online-Terminbuchung</p><p class="text-xs text-ink-500"><span class="font-bold text-brand-600">Pro-Tarif</span> – Kunden buchen Besichtigungstermine direkt</p></div>
@@ -627,6 +622,14 @@ async function loadDashboard(){
     _v('fUst',c.ust_id);_v('fHwkName',c.hwk_name);_v('fHwkNr',c.hwk_number);
     _v('fBeruf',c.berufsbezeichnung);_v('fVerantw',c.verantwortlicher);
     _t('tglEu',c.eu_streitschlichtung===true);_v('fDsbe',c.datenschutz_beauftragter);
+    /* ── 2026-10-01: Leistungskarten + Seiten-Module ── */
+    renderServiceToggles(data.available_services||[], (c.services_active)||{});
+    var mods=c.modules_enabled||{};
+    _t('tglModNotdienst',mods.notdienst_banner!==false);
+    _t('tglModBewertungen',mods.bewertungen!==false);
+    _t('tglModBlog',mods.blog!==false);
+    _t('tglModFaq',mods.faq!==false);
+    _t('tglModKennzahlen',mods.kennzahlen!==false);
     var statusEl=document.getElementById('mStatus');
     if(t.subscription_status&&statusEl){
       var map={'active':['Aktiv','bg-green-100 text-green-700'],'trialing':['Testphase','bg-amber-100 text-amber-700'],'past_due':['Zahlung offen','bg-red-100 text-red-700'],'canceled':['Gekündigt','bg-ink-100 text-ink-500']};
@@ -691,7 +694,15 @@ async function saveDashboard(){
     rechtsform:v('fRechtsform'), vertretung:v('fVertretung'), ust_id:v('fUst'),
     hwk_name:v('fHwkName'), hwk_number:v('fHwkNr'),
     berufsbezeichnung:v('fBeruf'), verantwortlicher:v('fVerantw'),
-    eu_streitschlichtung:on('tglEu'), datenschutz_beauftragter:v('fDsbe')
+    eu_streitschlichtung:on('tglEu'), datenschutz_beauftragter:v('fDsbe'),
+    modules_enabled:{
+      notdienst_banner:on('tglModNotdienst'),
+      bewertungen:on('tglModBewertungen'),
+      blog:on('tglModBlog'),
+      faq:on('tglModFaq'),
+      kennzahlen:on('tglModKennzahlen')
+    },
+    services_active:(function(){var o={};document.querySelectorAll('#serviceToggles .toggle[data-svc]').forEach(function(t){o[t.getAttribute('data-svc')]=t.classList.contains('on');});return o;})()
   };
   var btn=(window.event&&window.event.target)?window.event.target:null;
   if(btn){btn.disabled=true;btn.textContent='⏳ Speichere…';}
@@ -790,6 +801,18 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 // Toggles
 function toggleSwitch(el){ el.classList.toggle('on'); }
+// 2026-10-01: Leistungskarten-Liste dynamisch aus available_services (SSOT) bauen
+function renderServiceToggles(list, active){
+  var box=document.getElementById('serviceToggles');
+  if(!box)return;
+  if(!list.length){box.innerHTML='<div class="bg-white rounded-xl border border-ink-200 p-4 text-sm text-ink-500">Keine Leistungskarten verfügbar.</div>';return;}
+  box.innerHTML=list.map(function(s){
+    var isOn=active[s.label]!==false;
+    return '<div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">'
+      +'<span class="font-semibold text-sm text-ink-800">'+escHtml((s.emoji?s.emoji+' ':'')+s.label)+'</span>'
+      +'<span class="toggle'+(isOn?' on':'')+'" data-svc="'+escHtml(s.label)+'" onclick="toggleSwitch(this)"></span></div>';
+  }).join('');
+}
 // Farbwahl
 function pickColor(el){
   document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));

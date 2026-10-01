@@ -290,11 +290,93 @@ function getArticleTopics(tradeSlug) {
 }
 
 // ═══════════════════════════════════════════
+// SEITEN-MODULE & LEISTUNGSKARTEN (Mieter-Dashboard → Mietseite)
+// 2026-10-01: Module-Toggles verdrahtet. SSOT für available_services
+// je Gewerk. Label = exakter h3-Text der Leistungskarte auf den
+// stadt-*.html Seiten (applyRental matcht darüber). Nicht ändern ohne
+// Seiten-Regeneration oder Batch-Patch!
+// ═══════════════════════════════════════════
+const PAGE_MODULES = [
+  { key: 'notdienst_banner', label: 'Notdienst-Modul', desc: 'Banner „Sturmschaden? Wir helfen schnell." + 24h-Hinweis' },
+  { key: 'bewertungen',    label: 'Bewertungen anzeigen', desc: 'Kundenstimmen-Sektion (freigegebene Bewertungen)' },
+  { key: 'blog',           label: 'Blog / Ratgeber', desc: 'Artikel aus der Redaktion, automatisch gepflegt' },
+  { key: 'faq',            label: 'FAQ-Bereich', desc: 'Häufige Fragen – gut für Google (Rich Snippets)' },
+  { key: 'kennzahlen',     label: 'Kennzahlen-Leiste', desc: 'Nur sinnvoll, wenn „Erfahrung & Qualifikationen" aktiv sind' },
+];
+
+const PAGE_SERVICES = {
+  dachdecker: [
+    { emoji: '🏠', label: 'Dachsanierung' },
+    { emoji: '🔧', label: 'Dachreparatur' },
+    { emoji: '🌡️', label: 'Dachdämmung' },
+    { emoji: '▭', label: 'Flachdach' },
+    { emoji: '☀️', label: 'Solar-Vorbereitung' },
+    { emoji: '⚠️', label: 'Sturm- & Notdienst' },
+  ],
+  elektriker: [
+    { emoji: '⚡', label: 'Elektroinstallation' },
+    { emoji: '✅', label: 'E-Check & Prüfung' },
+    { emoji: '🚗', label: 'Wallbox & E-Mobilität' },
+    { emoji: '🏠', label: 'Smart Home' },
+    { emoji: '☀️', label: 'Photovoltaik' },
+    { emoji: '🛠️', label: 'Störung & Reparatur' },
+  ],
+  klempner: [
+    { emoji: '🚿', label: 'Badsanierung & Sanitär' },
+    { emoji: '🔥', label: 'Heizung & Wärmepumpe' },
+    { emoji: '💧', label: 'Rohr & Leitung' },
+    { emoji: '🧰', label: 'Wartung & Service' },
+    { emoji: '🌡️', label: 'Klima & Lüftung' },
+    { emoji: '⚠️', label: 'Klempner-Notdienst' },
+  ],
+  maler: [
+    { emoji: '🖌️', label: 'Innenanstrich & Wände' },
+    { emoji: '🏢', label: 'Fassade & Außenanstrich' },
+    { emoji: '🧻', label: 'Tapezieren & Wandgestaltung' },
+    { emoji: '🚪', label: 'Lackieren & Holzschutz' },
+    { emoji: '💧', label: 'Schimmel & Sanierung' },
+    { emoji: '🏗️', label: 'Boden & Beschichtung' },
+  ],
+  zimmerer: [
+    { emoji: '🏠', label: 'Dachstuhl & Holzbau' },
+    { emoji: '🚗', label: 'Carport & Überdachung' },
+    { emoji: '🌿', label: 'Terrasse & Balkon' },
+    { emoji: '🧱', label: 'Innenausbau & Trockenbau' },
+    { emoji: '🏛️', label: 'Sanierung & Denkmal' },
+    { emoji: '🛡️', label: 'Holzschutz & Wartung' },
+  ],
+  'garten-und-landschaftsbau': [
+    { emoji: '🌳', label: 'Gartengestaltung' },
+    { emoji: '✂️', label: 'Baumfällung & Pflege' },
+    { emoji: '🌱', label: 'Rasen & Bepflanzung' },
+    { emoji: '💧', label: 'Teichbau & Bewässerung' },
+    { emoji: '🏡', label: 'Gartenpflege & Unterhalt' },
+    { emoji: '🍂', label: 'Herbst- & Winterdienst' },
+  ],
+};
+
+// DB-Slug (landing_pages.slug) → Gewerk-Key für PAGE_SERVICES
+function getTradeKeyFromPageSlug(pageSlug) {
+  if (!pageSlug) return null;
+  const first = String(pageSlug).split('-')[0];
+  if (first === 'garten') return 'garten-und-landschaftsbau';
+  if (PAGE_SERVICES[first]) return first;
+  return null;
+}
+
+function getPageServices(pageSlug) {
+  const key = getTradeKeyFromPageSlug(pageSlug);
+  return key ? PAGE_SERVICES[key] : [];
+}
+
+// ═══════════════════════════════════════════
 // EXPORT
 // ═══════════════════════════════════════════
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     SYSTEM_CONFIG,
+    PAGE_MODULES,
+    PAGE_SERVICES,
     getTrade,
     getAllTrades,
     getTradeSlugs,
@@ -307,5 +389,7 @@ if (typeof module !== 'undefined' && module.exports) {
     getTradeName,
     getCityName,
     getArticleTopics,
+    getPageServices,
+    getTradeKeyFromPageSlug,
   };
 }

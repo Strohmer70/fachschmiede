@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { verifyToken } from '@/lib/auth'
+import { getPageServices } from '@/config/system-config.js'
 import defaultsJson from '../../_lib/default-content.json'
 
 export const dynamic = 'force-dynamic'
@@ -73,12 +74,17 @@ export async function GET(request: Request) {
     if (key) defaultAbout = [DEFAULTS[key]?.about, DEFAULTS[key]?.aboutP2].filter(Boolean).join('\n\n')
   }
 
+  // 2026-10-01: Leistungskarten-Labels für den Module-Tab (SSOT, pro Gewerk)
+  const firstSlug = first?.landing_page?.slug || null
+  const availableServices = firstSlug ? getPageServices(String(firstSlug)) : []
+
   return json({
     ok: true,
     tenant,
     customization: first,
     customizations: custs || [],
     default_about: defaultAbout,
+    available_services: availableServices,
   })
 }
 
@@ -127,6 +133,23 @@ export async function PATCH(request: Request) {
     update.service_areas = Array.isArray(body.service_areas)
       ? body.service_areas.map(String).filter(Boolean).slice(0, 30)
       : String(body.service_areas || '').split(',').map(s => s.trim()).filter(Boolean).slice(0, 30)
+  }
+  // 2026-10-01: Modul-Toggles — {key:bool}, nur bekannte Keys, max 20 Einträge
+  if (body.modules_enabled !== undefined && body.modules_enabled !== null && typeof body.modules_enabled === 'object' && !Array.isArray(body.modules_enabled)) {
+    const clean: Record<string, boolean> = {}
+    for (const [k, v] of Object.entries(body.modules_enabled).slice(0, 20)) {
+      if (/^[a-z_][a-z0-9_]{0,29}$/.test(k)) clean[k] = v === true
+    }
+    update.modules_enabled = clean
+  }
+  // Leistungskarten-Toggles — {label:bool}, Label = exakter Karten-Text
+  if (body.services_active !== undefined && body.services_active !== null && typeof body.services_active === 'object' && !Array.isArray(body.services_active)) {
+    const clean: Record<string, boolean> = {}
+    for (const [k, v] of Object.entries(body.services_active).slice(0, 30)) {
+      const label = String(k).slice(0, 60)
+      if (label) clean[label] = v === true
+    }
+    update.services_active = clean
   }
   if (Object.keys(update).length === 0) {
     return json({ error: 'Nichts zu ändern.' }, 400)

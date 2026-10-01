@@ -448,7 +448,7 @@ tailwind.config = {
   </div>
 </section>
 
-<section class="bg-brand-600">
+<section class="bg-brand-600" id="notdienst-banner">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
     <div class="flex items-center gap-4 text-white">
       <span class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
@@ -544,7 +544,7 @@ tailwind.config = {
 </section>
 
 <!-- ═══════════ KUNDENSTIMME HAGEN (Unique) ═══════════ -->
-<section class="py-12 bg-ink-50">
+<section class="py-12 bg-ink-50" id="kundenstimme">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <div class="text-brand-500 text-lg mb-4">★★★★★</div>
     <blockquote class="text-xl text-ink-700 italic leading-relaxed mb-4">"Unser Bad in Wehringhausen ist jetzt ein Traum. Bodengleiche Dusche, Fußbodenheizung — alles in drei Wochen fertig."</blockquote>
@@ -817,7 +817,25 @@ async function applyRental(retry){
       +'.to-orange-700{--tw-gradient-to:'+ac+' var(--tw-gradient-to-position)!important}';
     document.head.appendChild(st);
   }
-  reveal(); /* erst verstecken, dann reveal -> null Flackern */
+    /* 8) Modul-Toggles (2026-10-01, Mieter-Dashboard Module-Tab) */
+  var mods=d.modules_enabled||{};
+  if(mods.notdienst_banner===false)hideSel('#notdienst-banner');
+  if(mods.bewertungen===false)hideSel('#kundenstimme');
+  if(mods.blog===false)hideSel('#ratgeber');
+  if(mods.faq===false)hideSel('#faq');
+  if(mods.kennzahlen===false){var ksEl=document.getElementById('miet-stats');if(ksEl)ksEl.style.display='none';}
+  /* 9) Leistungskarten ein/aus — Label = exakter h3-Text (SSOT PAGE_SERVICES) */
+  var svcs=d.services_active||{};
+  if(Object.keys(svcs).length){
+    document.querySelectorAll('#leistungen h3').forEach(function(h3){
+      var label=h3.textContent.replace(/\s+/g,' ').trim();
+      if(svcs[label]===false){
+        var card=h3.closest('div.reveal')||h3.parentElement;
+        if(card)card.style.display='none';
+      }
+    });
+  }
+reveal(); /* erst verstecken, dann reveal -> null Flackern */
  }catch(e){console.error('applyRental',e);reveal();}
 }
 /* Hard-Fallback: haengt die API, nach 5s trotzdem einblenden */
