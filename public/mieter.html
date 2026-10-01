@@ -32,8 +32,8 @@ tailwind.config = {
   .swatch{width:44px;height:44px;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:transform .15s}
   .swatch:hover{transform:scale(1.08)}
   .swatch.active{border-color:#0f172a}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:all .35s ease;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);pointer-events:none;background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:all .35s ease;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
 </style>
 </head>
 <body class="bg-ink-100 text-ink-800 antialiased">

@@ -647,7 +647,7 @@ tailwind.config = {
   </script>
 </footer>
 
-<div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 transition-all duration-300 z-[100] max-w-md w-[calc(100%-2rem)]">
+<div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 pointer-events-none transition-all duration-300 z-[100] max-w-md w-[calc(100%-2rem)]">
   <div class="bg-ink-900 text-white rounded-2xl shadow-2xl px-6 py-5 border border-ink-700">
     <p class="font-bold">🧩 Dein Gewerk fehlt?</p>
     <p class="text-sm text-ink-300 mt-1">Schreib uns kurz, welches Gewerk du dir wünschst – wir priorisieren nach Nachfrage und melden uns per E-Mail.</p>
@@ -679,9 +679,9 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 let tTimer;
 function showToastDemo(){
   const t = document.getElementById('toastDemo');
-  t.classList.remove('translate-y-24','opacity-0');
+  t.classList.remove('translate-y-24','opacity-0','pointer-events-none');
   clearTimeout(tTimer);
-  tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0'), 3500);
+  tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0','pointer-events-none'), 3500);
 }
 
 document.getElementById('jahr').textContent = new Date().getFullYear();

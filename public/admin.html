@@ -31,8 +31,8 @@ tailwind.config = {
   .side-link.active{background:#7c3aed;color:#fff}
   .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:70;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:2rem 1rem}
   .modal-bg.open{display:flex}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:all .35s ease;z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw}
-  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);pointer-events:none;background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:all .35s ease;z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
   .toggle{width:44px;height:24px;border-radius:9999px;background:#cbd5e1;position:relative;transition:background .2s;cursor:pointer;flex-shrink:0}
   .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
   .toggle.on{background:#7c3aed}
