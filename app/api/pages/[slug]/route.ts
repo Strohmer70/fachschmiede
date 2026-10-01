@@ -55,6 +55,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       return json({ rented: false, reason: 'tenant/cust' })
     }
 
+    // 2026-10-01: Freigegebene Kundenbewertungen (max 6, neueste zuerst)
+    const { data: reviews } = await supabaseAdmin
+      .from('reviews')
+      .select('author_name, rating, title, text, created_at')
+      .eq('landing_page_id', page.id)
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false })
+      .limit(6)
+
     return json({
       rented: true,
       company: cust.custom_company_name || tenant.company_name,
@@ -85,6 +94,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       // ── 2026-10-01: Modul-/Leistungs-Toggles (Mieter-Dashboard) ──
       modules_enabled: cust.modules_enabled || null,
       services_active: cust.services_active || null,
+      reviews: reviews || [],
     })
   } catch (err: any) {
     return json({ error: err?.message }, 500)

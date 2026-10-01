@@ -366,15 +366,17 @@ tailwind.config = {
     <!-- ───────── TAB 4: BEWERTUNGEN ───────── -->
     <div class="tab-panel p-6 sm:p-8" id="tab-bewertungen">
       <h2 class="text-lg font-black text-ink-900">Bewertungen</h2>
-      <p class="text-sm text-ink-500 mt-1 mb-6">Reichen Sie echte Kundenstimmen ein – wir prüfen sie kurz und stellen sie dann auf Ihrer Website online. Echte Bewertungen sind das stärkste Verkaufsargument.</p>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Kunden bewerten direkt auf Ihrer Website. Sie geben jede Bewertung hier frei – erst dann ist sie öffentlich sichtbar.</p>
       <div class="grid lg:grid-cols-2 gap-6">
         <div class="space-y-4">
-          <h3 class="font-bold text-ink-900">Neue Bewertung einreichen</h3>
-          <div class="bg-white rounded-xl border border-ink-200 p-5 space-y-4">
-            <input type="text" placeholder="Name des Kunden (z. B. Familie Krüger, Schwerte)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <input type="text" placeholder="Projekt (z. B. Dachsanierung)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <textarea rows="3" placeholder="Zitat des Kunden …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
-            <button onclick="showToast('Danke! Das Bewertungs-Modul aktivieren wir in Kürze.')" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-lg transition">Zur Prüfung einreichen</button>
+          <h3 class="font-bold text-ink-900">Bewertungslink für Kunden</h3>
+          <div class="bg-white rounded-xl border border-ink-200 p-5 space-y-3">
+            <p class="text-sm text-ink-500 leading-relaxed">Teilen Sie diesen Link per WhatsApp, SMS oder Rechnungs-Newsletter mit zufriedenen Kunden. Die Bewertung landet rechts zur Freigabe und erscheint danach auf Ihrer Mietseite.</p>
+            <div class="flex gap-2">
+              <input id="reviewLinkInput" readonly class="flex-1 rounded-lg border border-ink-200 bg-ink-50 px-3 py-2 text-xs text-ink-600" value="">
+              <button id="copyReviewLinkBtn" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 rounded-lg transition">Kopieren</button>
+            </div>
+            <div id="copyReviewLinkOk" class="hidden text-xs text-green-700 font-semibold">✓ Link kopiert!</div>
           </div>
           <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-sm text-ink-700">
             <p class="font-bold text-ink-900">💡 Tipp: Google-Bewertungen einbinden</p>
@@ -382,10 +384,10 @@ tailwind.config = {
           </div>
         </div>
         <div>
-          <h3 class="font-bold text-ink-900 mb-4">Ihre Bewertungen</h3>
-          <ul class="space-y-3 text-sm">
-            <li class="bg-white rounded-xl border border-ink-200 p-6 text-center text-sm text-ink-500">Noch keine Bewertungen – reiche die erste Kundenstimme ein! ⭐</li>
-          </ul>
+          <h3 class="font-bold text-ink-900 mb-4">Eingegangene Bewertungen <span id="reviewCounts" class="text-sm font-normal text-ink-500"></span></h3>
+          <div id="reviewList" class="space-y-3 text-sm">
+            <div class="bg-white rounded-xl border border-ink-200 p-6 text-center text-sm text-ink-500">Lade Bewertungen …</div>
+          </div>
         </div>
       </div>
     </div>
@@ -585,7 +587,9 @@ async function loadDashboard(){
     var t=data.tenant||{}, c=data.customization||{};
     var lp=(c.landing_page||{});
     if(t.company_name)document.getElementById('mFirmenname').textContent=t.company_name;
-    if(lp.slug){var _u=slugToUrl(lp.slug);document.getElementById('mSub').innerHTML='<a href="'+_u+'" target="_blank" rel="noopener" class="text-brand-600 font-bold hover:underline">fachschmiede.de'+_u+'</a> · Mietseite';var _vs=document.getElementById('viewSiteBtn');if(_vs)_vs.href=_u;}
+    if(lp.slug){var _u=slugToUrl(lp.slug);document.getElementById('mSub').innerHTML='<a href="'+_u+'" target="_blank" rel="noopener" class="text-brand-600 font-bold hover:underline">fachschmiede.de'+_u+'</a> · Mietseite';var _vs=document.getElementById('viewSiteBtn');if(_vs)_vs.href=_u;
+      var _rl=document.getElementById('reviewLinkInput');if(_rl)_rl.value='https://www.fachschmiede.de'+_u+'#bewerten';
+      loadReviews();}
     if(t.company_name)document.title=t.company_name+' – Mieter-Dashboard | fachschmiede.de';
     if(t.contact_name){var _g=document.getElementById('mGreeting');if(_g)_g.textContent='Willkommen zurück, '+t.contact_name.split(' ')[0]+'! 👋';}
     if(c.custom_company_name){document.getElementById('fFirmenname').value=c.custom_company_name;var _rn=document.getElementById('fRechtName');if(_rn)_rn.value=c.custom_company_name;}
@@ -674,6 +678,58 @@ async function loadStats(){
     }).join('');
   }catch(e){console.error('loadStats',e);}
 }
+// ═══ BEWERTUNGEN (2026-10-01 live): Moderation eigener Kundenbewertungen ═══
+var REVIEW_STATUS={pending:{label:'Wartet auf Freigabe',cls:'bg-amber-100 text-amber-800'},approved:{label:'Online',cls:'bg-green-100 text-green-800'},rejected:{label:'Abgelehnt',cls:'bg-red-100 text-red-700'}};
+function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+async function loadReviews(){
+  try{
+    var res=await fetch('/api/tenant/reviews/',{headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
+    if(!res.ok)return;
+    var data=await res.json();
+    renderReviewList(data.reviews||[],data.counts||{});
+  }catch(e){var l=document.getElementById('reviewList');if(l)l.innerHTML='<div class="bg-white rounded-xl border border-ink-200 p-6 text-center text-sm text-ink-500">Laden fehlgeschlagen.</div>';}
+}
+function renderReviewList(reviews,counts){
+  var list=document.getElementById('reviewList');if(!list)return;
+  var cc=document.getElementById('reviewCounts');
+  if(cc)cc.textContent=(counts.pending?'· '+counts.pending+' wartet ':'')+(counts.approved?'· '+counts.approved+' online ':'')+(counts.rejected?'· '+counts.rejected+' abgelehnt':'');
+  if(!reviews.length){list.innerHTML='<div class="bg-white rounded-xl border border-ink-200 p-6 text-center text-sm text-ink-500">Noch keine Bewertungen eingegangen. Teile den Link links mit deinen Kunden! ⭐</div>';return;}
+  list.innerHTML=reviews.map(function(r){
+    var st=REVIEW_STATUS[r.status]||{label:r.status,cls:'bg-ink-100 text-ink-600'};
+    var stars='';for(var i=1;i<=5;i++)stars+=i<=r.rating?'\u2605':'\u2606';
+    var dt='';try{dt=new Date(r.created_at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}catch(e){}
+    var actions='';
+    if(r.status==='pending')actions='<button onclick="reviewAction(\''+r.id+'\',\'approve\')" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">✓ Freigeben</button><button onclick="reviewAction(\''+r.id+'\',\'reject\')" class="border border-ink-200 text-ink-600 text-xs font-bold px-3 py-1.5 rounded-lg transition hover:bg-ink-50">Ablehnen</button>';
+    if(r.status==='approved')actions='<button onclick="reviewAction(\''+r.id+'\',\'reject\')" class="border border-ink-200 text-ink-600 text-xs font-bold px-3 py-1.5 rounded-lg transition hover:bg-ink-50">Offline nehmen</button>';
+    if(r.status==='rejected')actions='<button onclick="reviewAction(\''+r.id+'\',\'approve\')" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Doch freigeben</button>';
+    actions+='<button onclick="reviewAction(\''+r.id+'\',\'delete\')" class="text-red-600 text-xs font-bold px-2 py-1.5 hover:underline">Löschen</button>';
+    return '<div class="bg-white rounded-xl border border-ink-200 p-4 space-y-2">'
+      +'<div class="flex items-center justify-between flex-wrap gap-2"><span class="text-amber-500" style="color:#f59e0b">'+stars+'</span><span class="text-xs px-2 py-0.5 rounded-full font-semibold '+st.cls+'">'+st.label+'</span></div>'
+      +(r.title?'<div class="font-bold text-ink-900 text-sm">'+escHtml(r.title)+'</div>':'')
+      +'<blockquote class="text-ink-700 text-sm leading-relaxed">\u201E'+escHtml(r.text)+'\u201C</blockquote>'
+      +'<div class="text-xs text-ink-500">'+escHtml(r.author_name)+' · '+dt+'</div>'
+      +'<div class="flex gap-2 pt-1">'+actions+'</div>'
+      +'</div>';
+  }).join('');
+}
+async function reviewAction(id,action){
+  if(action==='delete'&&!confirm('Bewertung endgültig löschen?'))return;
+  try{
+    var res=await fetch('/api/tenant/reviews/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('fs_token')},body:JSON.stringify({id:id,action:action})});
+    if(!res.ok){var j=await res.json().catch(function(){return{}});showToast('Fehler: '+(j.error||res.status));return;}
+    showToast(action==='approve'?'Bewertung freigegeben! 🎉':action==='reject'?'Bewertung abgelehnt.':'Bewertung gelöscht.');
+    loadReviews();
+  }catch(e){showToast('Netzwerkfehler.');}
+}
+
+document.addEventListener('click',function(e){
+  if(e.target&&e.target.id==='copyReviewLinkBtn'){
+    var inp=document.getElementById('reviewLinkInput');
+    if(inp&&inp.value){inp.select();try{navigator.clipboard.writeText(inp.value).catch(function(){document.execCommand('copy')});}catch(err){document.execCommand('copy');}
+      var ok=document.getElementById('copyReviewLinkOk');if(ok){ok.classList.remove('hidden');setTimeout(function(){ok.classList.add('hidden')},2000);}}
+  }
+});
+
 async function saveDashboard(){
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   function on(id){var el=document.getElementById(id);return el?el.classList.contains('on'):false;}
