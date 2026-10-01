@@ -982,31 +982,35 @@ async function loadBillingData() {
           </tr>
         `;
       } else {
-        const renderRow = (t, isTest) => {
-          const page = t.landing_page || {};
-          const trade = page.trade || {};
-          const city = page.city || {};
-          const price = (page.monthly_price || 0) / 100;
-          const since = t.created_at ? new Date(t.created_at).toLocaleDateString('de-DE') : '-';
-          const pageCount = (t.rented_pages || []).length;
-          const ort = pageCount > 1 ? (trade.name || '-') + ' / ' + pageCount + ' Seiten' : (trade.name || '-') + ' / ' + (city.name || '-');
-          const badge = isTest
-            ? '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">🧪 Test</span>'
-            : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">● Live</span>';
-          const btn = isTest && page.slug
-            ? '<button onclick="event.stopPropagation(); testReset(\'' + page.slug + '\')" class="ml-2 text-xs font-bold text-red-600 border border-red-200 rounded-lg px-2.5 py-1 hover:bg-red-50 transition">Test beenden</button>'
-            : '';
-          return `
-            <tr class="hover:bg-ink-50">
-              <td class="px-6 py-4 font-bold text-ink-900">${t.company_name || t.contact_name || t.email || 'Unbekannt'}</td>
-              <td class="px-6 py-4 text-ink-600">${ort}</td>
-              <td class="px-6 py-4 text-ink-900 font-bold">${price.toLocaleString('de-DE')} €${pageCount > 1 ? ' / Seite' : ''}</td>
-              <td class="px-6 py-4 text-ink-600">${since}</td>
-              <td class="px-6 py-4">${badge}${btn}</td>
-            </tr>
-          `;
+        // Eine Zeile PRO SEITE (2026-10-01) — Testmieter mit mehreren Seiten = mehrere Zeilen
+        const rowsHtml = [];
+        const renderRowsForTenant = (t, isTest) => {
+          const pages = (t.rented_pages && t.rented_pages.length ? t.rented_pages : [t.landing_page]).filter(Boolean);
+          pages.forEach(page => {
+            const trade = page.trade || {};
+            const city = page.city || {};
+            const price = (page.monthly_price || 0) / 100;
+            const since = page.rented_at || t.created_at ? new Date(page.rented_at || t.created_at).toLocaleDateString('de-DE') : '-';
+            const badge = isTest
+              ? '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">🧪 Test</span>'
+              : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">● Live</span>';
+            const btn = isTest && page.slug
+              ? '<button onclick="event.stopPropagation(); testReset(\'' + page.slug + '\')" class="ml-2 text-xs font-bold text-red-600 border border-red-200 rounded-lg px-2.5 py-1 hover:bg-red-50 transition">Test beenden</button>'
+              : '';
+            rowsHtml.push(`
+              <tr class="hover:bg-ink-50">
+                <td class="px-6 py-4 font-bold text-ink-900">${t.company_name || t.contact_name || t.email || 'Unbekannt'}</td>
+                <td class="px-6 py-4 text-ink-600">${trade.name || '-'} / ${city.name || '-'}<br><span class="text-xs text-ink-400">${page.slug || ''}</span></td>
+                <td class="px-6 py-4 text-ink-900 font-bold">${price.toLocaleString('de-DE')} €</td>
+                <td class="px-6 py-4 text-ink-600">${since}</td>
+                <td class="px-6 py-4">${badge}${btn}</td>
+              </tr>
+            `);
+          });
         };
-        tbody.innerHTML = testTenants.map(t => renderRow(t, true)).join('') + liveTenants.map(t => renderRow(t, false)).join('');
+        testTenants.forEach(t => renderRowsForTenant(t, true));
+        liveTenants.forEach(t => renderRowsForTenant(t, false));
+        tbody.innerHTML = rowsHtml.join('') || `<tr><td colspan="5" class="px-6 py-12 text-center text-ink-400 italic">Keine Einträge</td></tr>`;
       }
     }
 
