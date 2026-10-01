@@ -61,7 +61,7 @@ tailwind.config = {
           
           // Echte Authentifizierung gegen API
           try {
-            const res = await fetch('/api/admin/login', {
+            const res = await fetch('/api/admin/login/', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ password })
@@ -95,7 +95,7 @@ tailwind.config = {
             console.log('API-Login fehlgeschlagen, Fallback wird versucht:', e);
           }
           
-          // Fallback: Lokales Passwort für den Fall dass API nicht erreichbar
+          // Fallback: Gleiches Passwort wie API (2026-10-01 vereinheitlicht)
           if (password === 'fachschmiede2026') {
             localStorage.setItem('adminToken', 'local-' + Date.now());
             loginGate.classList.add('opacity-0');

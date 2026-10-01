@@ -633,6 +633,18 @@ tailwind.config = {
   <div class="border-t border-ink-800 py-6 text-center text-xs">
     <p>© <span id="jahr"></span> MietWebsites – Demo-Portal. Alle Inhalte, Preise und Verfügbarkeiten sind fiktiv.</p>
   </div>
+  <!-- Operator-Hotspot (2026-10-01): unsichtbar für Besucher.
+       Klick aufs ©-Jahr ODER Strg+Shift+A auf dieser Seite → Admin-Konsole. -->
+  <script>
+    (function(){
+      function openAdmin(){ window.location.href = '/admin.html'; }
+      var j = document.getElementById('jahr');
+      if (j) { j.style.cursor = 'default'; j.title = ''; j.addEventListener('click', openAdmin); }
+      document.addEventListener('keydown', function(e){
+        if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) { e.preventDefault(); openAdmin(); }
+      });
+    })();
+  </script>
 </footer>
 
 <div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 transition-all duration-300 z-[100] max-w-md w-[calc(100%-2rem)]">
