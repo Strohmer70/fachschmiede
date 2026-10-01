@@ -45,6 +45,24 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    // ── Tenant-Modus anhängen (2026-10-01): test = Mieter ohne Stripe-Subscription ──
+    const rentedByRaw: string[] = []
+    ;(pages || []).forEach((p: any) => { if (p.rented_by && rentedByRaw.indexOf(p.rented_by) < 0) rentedByRaw.push(p.rented_by) })
+    const rentedByIds = rentedByRaw
+    if (rentedByIds.length > 0) {
+      const { data: tenantRows } = await supabaseAdmin
+        .from('tenants')
+        .select('id, stripe_subscription_id, company_name, email')
+        .in('id', rentedByIds)
+      const tMap: Record<string, any> = {}
+      ;(tenantRows || []).forEach((t: any) => { tMap[t.id] = t })
+      ;(pages || []).forEach((p: any) => {
+        const t = p.rented_by ? tMap[p.rented_by] : null
+        p.tenant_mode = t ? (t.stripe_subscription_id ? 'live' : 'test') : null
+        p.tenant_info = t ? { company_name: t.company_name, email: t.email } : null
+      })
+    }
+
     return NextResponse.json({
       pages: pages || [],
       pagination: {

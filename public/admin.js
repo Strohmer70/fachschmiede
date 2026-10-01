@@ -442,9 +442,19 @@ function renderWebsitesView(pages, pagination) {
 
   grid.innerHTML = pages.map(p => {
     const isRented = p.status === 'rented';
-    const statusBadge = isRented
-      ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">vermietet</span>'
-      : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">frei</span>';
+    const isTest = isRented && p.tenant_mode === 'test';
+    const statusKey = isRented ? (isTest ? 'test' : 'vermietet') : 'frei';
+    const statusBadge = isTest
+      ? '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">🧪 Testmiete</span>'
+      : (isRented
+        ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">🔒 vermietet</span>'
+        : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">✅ frei</span>');
+    const tenantLine = isRented && p.tenant_info
+      ? '<p class="text-xs mt-1 ' + (isTest ? 'text-amber-600' : 'text-ink-500') + '">Mieter: ' + (p.tenant_info.company_name || p.tenant_info.email || '-') + '</p>'
+      : '';
+    const resetBtn = isTest
+      ? '<button onclick="event.preventDefault(); event.stopPropagation(); testReset(\'' + p.slug + '\')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-2 hover:bg-red-50 transition">Test beenden</button>'
+      : '';
 
     const tradeEmoji = window.systemConfig?.trades?.reduce?.((map, t) => { map[t.name] = t.emoji; return map; }, {}) || {
       'Dachdecker': '🏠',
@@ -457,15 +467,17 @@ function renderWebsitesView(pages, pagination) {
     const emoji = tradeEmoji[p.trade?.name] || '🏗️';
 
     return `
-      <div class="stadt-card bg-white rounded-2xl border-2 ${isRented ? 'border-ink-200' : 'border-green-200'} p-5" data-gewerk="${p.trade?.name || ''}" data-status="${isRented ? 'vermietet' : 'frei'}">
+      <div class="stadt-card bg-white rounded-2xl border-2 ${isRented ? (isTest ? 'border-amber-200' : 'border-ink-200') : 'border-green-200'} p-5" data-gewerk="${p.trade?.name || ''}" data-status="${statusKey}">
         <div class="flex items-center justify-between">
           <p class="font-black text-ink-900">${p.city?.name || 'Unbekannt'}</p>
           ${statusBadge}
         </div>
         <p class="text-xs text-ink-500 mt-1">${emoji} ${p.trade?.name || '-'} · fachschmiede.de${getStaticFileUrl(p.trade?.slug, p.city?.slug)}</p>
+        ${tenantLine}
         <p class="text-xs text-ink-500 mt-2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</p>
         <div class="mt-4 flex gap-2">
-          <a href="${getStaticFileUrl(p.trade?.slug, p.city?.slug)}" target="_blank" class="w-full text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
+          <a href="${getStaticFileUrl(p.trade?.slug, p.city?.slug)}" target="_blank" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
+          ${resetBtn}
         </div>
       </div>
     `;
@@ -473,6 +485,8 @@ function renderWebsitesView(pages, pagination) {
 
   // Filter-Buttons dynamisch erstellen
   renderWebsitesFilter(pages);
+  // Aktive Filter nach Re-Render erneut anwenden (2026-10-01)
+  if (typeof applyWebsiteFilters === 'function') applyWebsiteFilters();
 }
 
 // Pagination Controls
@@ -564,8 +578,45 @@ function renderWebsitesFilter(pages) {
 }
 
 // Globale Filter-Funktion für Websites & Städte
+// ───────── Testmiete beenden + Seite zurücksetzen (2026-10-01) ─────────
+window.testReset = async function(slug) {
+  if (!slug) return;
+  if (!confirm('Testmiete für "' + slug + '" wirklich beenden?\n\nDie Seite wird auf „frei" zurückgesetzt. Mieter-Daten dieser Seite (Customizations, Bewertungen) werden gelöscht.\n\nLive-Mieten (mit Stripe) sind hier geschützt und werden NICHT zurückgesetzt.')) return;
+  try {
+    const res = await fetch(API_BASE + '/admin/test-reset/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+      body: JSON.stringify({ slug })
+    });
+    const j = await res.json();
+    if (j.success) {
+      showToast('✅ ' + (j.message || 'Testmiete beendet — Seite ist wieder frei.'));
+      loadBillingData();
+      loadPages(1, 500);
+      if (typeof loadDashboard === 'function') loadDashboard();
+    } else {
+      showToast('❌ ' + (j.error || 'Reset fehlgeschlagen'));
+    }
+  } catch (e) {
+    console.error('testReset error:', e);
+    showToast('❌ Netzwerkfehler beim Zurücksetzen');
+  }
+};
+
+// Kombinierter Gewerk+Status-Filter (2026-10-01)
+let currentGewerkFilter = '';
+let currentStatusFilter = '';
+
+function applyWebsiteFilters() {
+  document.querySelectorAll('.stadt-card').forEach(card => {
+    const gOk = !currentGewerkFilter || card.dataset.gewerk === currentGewerkFilter;
+    const sOk = !currentStatusFilter || card.dataset.status === currentStatusFilter;
+    card.style.display = (gOk && sOk) ? '' : 'none';
+  });
+}
+
 window.filterStaedte = function(gewerk, btn) {
-  // Buttons aktualisieren
+  currentGewerkFilter = gewerk;
   document.querySelectorAll('.stadt-f').forEach(b => {
     b.classList.remove('bg-ink-900', 'text-white');
     b.classList.add('bg-ink-100', 'text-ink-600');
@@ -574,15 +625,20 @@ window.filterStaedte = function(gewerk, btn) {
     btn.classList.remove('bg-ink-100', 'text-ink-600');
     btn.classList.add('bg-ink-900', 'text-white');
   }
+  applyWebsiteFilters();
+};
 
-  // Cards filtern
-  document.querySelectorAll('.stadt-card').forEach(card => {
-    if (!gewerk || card.dataset.gewerk === gewerk) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
+window.filterStatus = function(status, btn) {
+  currentStatusFilter = status;
+  document.querySelectorAll('.status-f').forEach(b => {
+    b.classList.remove('bg-ink-900', 'text-white');
+    b.classList.add('bg-ink-100', 'text-ink-600');
   });
+  if (btn) {
+    btn.classList.remove('bg-ink-100', 'text-ink-600');
+    btn.classList.add('bg-ink-900', 'text-white');
+  }
+  applyWebsiteFilters();
 };
 
 // ═══════════ HILFSFUNKTIONEN ═══════════
@@ -893,16 +949,20 @@ async function loadBillingData() {
 
     // KPI Cards
     const mrrEl = document.getElementById('billMrr');
-    if (mrrEl) mrrEl.textContent = stats.mrr.toLocaleString('de-DE') + ' €';
+    if (mrrEl) mrrEl.textContent = (stats.mrr ?? 0).toLocaleString('de-DE') + ' €';
 
     const openEl = document.getElementById('billOpen');
-    if (openEl) openEl.textContent = stats.openInvoicesTotal.toLocaleString('de-DE') + ' €';
+    if (openEl) openEl.textContent = (stats.openInvoicesTotal ?? 0).toLocaleString('de-DE') + ' €';
 
     const openCountEl = document.getElementById('billOpenCount');
-    if (openCountEl) openCountEl.textContent = stats.openInvoicesCount + ' überfällig';
+    if (openCountEl) openCountEl.textContent = (stats.openInvoicesCount ?? 0) + ' überfällig';
 
+    // Aktive Mieten = LIVE (zahlede Mieter) · Testmieten separat (2026-10-01)
     const basisEl = document.getElementById('billBasis');
-    if (basisEl) basisEl.textContent = stats.basisCount + ' × ' + stats.basisPrice + ' €';
+    if (basisEl) basisEl.textContent = (stats.liveCount ?? 0) + ' × ' + (stats.standardPrice ?? 189) + ' €';
+
+    const testEl = document.getElementById('billTest');
+    if (testEl) testEl.textContent = (stats.testCount ?? 0) + ' × ' + (stats.standardPrice ?? 189) + ' €';
 
     const proEl = document.getElementById('billPro');
     if (proEl) proEl.textContent = stats.proCount + ' × ' + stats.proPrice + ' €';
@@ -910,33 +970,43 @@ async function loadBillingData() {
     // Tenant table
     const tbody = document.getElementById('billTenantTbody');
     if (tbody) {
-      if (!data.tenants || data.tenants.length === 0) {
+      const testTenants = (data.tenants || []).filter(t => t.is_test);
+      const liveTenants = (data.tenants || []).filter(t => !t.is_test);
+      if (data.tenants.length === 0) {
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="px-6 py-12 text-center">
-              <p class="font-bold text-ink-600 text-lg">Noch keine aktiven Mieter</p>
+              <p class="font-bold text-ink-600 text-lg">Noch keine Mieter</p>
               <p class="text-sm text-ink-400 mt-1">Sobald eine Website vermietet wird, erscheint der Mieter hier.</p>
             </td>
           </tr>
         `;
       } else {
-        tbody.innerHTML = data.tenants.map((t) => {
+        const renderRow = (t, isTest) => {
           const page = t.landing_page || {};
           const trade = page.trade || {};
           const city = page.city || {};
           const price = (page.monthly_price || 0) / 100;
           const since = t.created_at ? new Date(t.created_at).toLocaleDateString('de-DE') : '-';
-
+          const pageCount = (t.rented_pages || []).length;
+          const ort = pageCount > 1 ? (trade.name || '-') + ' / ' + pageCount + ' Seiten' : (trade.name || '-') + ' / ' + (city.name || '-');
+          const badge = isTest
+            ? '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">🧪 Test</span>'
+            : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">● Live</span>';
+          const btn = isTest && page.slug
+            ? '<button onclick="event.stopPropagation(); testReset(\'' + page.slug + '\')" class="ml-2 text-xs font-bold text-red-600 border border-red-200 rounded-lg px-2.5 py-1 hover:bg-red-50 transition">Test beenden</button>'
+            : '';
           return `
             <tr class="hover:bg-ink-50">
-              <td class="px-6 py-4 font-bold text-ink-900">${t.company_name || t.contact_name || 'Unbekannt'}</td>
-              <td class="px-6 py-4 text-ink-600">${trade.name || '-'} / ${city.name || '-'}</td>
-              <td class="px-6 py-4 text-ink-900 font-bold">${price.toLocaleString('de-DE')} €</td>
+              <td class="px-6 py-4 font-bold text-ink-900">${t.company_name || t.contact_name || t.email || 'Unbekannt'}</td>
+              <td class="px-6 py-4 text-ink-600">${ort}</td>
+              <td class="px-6 py-4 text-ink-900 font-bold">${price.toLocaleString('de-DE')} €${pageCount > 1 ? ' / Seite' : ''}</td>
               <td class="px-6 py-4 text-ink-600">${since}</td>
-              <td class="px-6 py-4"><span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Aktiv</span></td>
+              <td class="px-6 py-4">${badge}${btn}</td>
             </tr>
           `;
-        }).join('');
+        };
+        tbody.innerHTML = testTenants.map(t => renderRow(t, true)).join('') + liveTenants.map(t => renderRow(t, false)).join('');
       }
     }
 

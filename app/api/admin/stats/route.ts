@@ -33,13 +33,29 @@ export async function GET() {
       .from('tenants')
       .select('*', { count: 'exact', head: true })
 
-    // Get MRR from active rentals
+    // Get MRR from active rentals — NUR Live (Stripe-Sub), Testmieten zählen nicht (2026-10-01)
     const { data: rentals } = await supabaseAdmin
       .from('landing_pages')
-      .select('monthly_price')
+      .select('monthly_price, rented_by')
       .eq('status', 'rented')
 
-    const mrr = rentals?.reduce((sum, r) => sum + (r.monthly_price || 0), 0) || 0
+    let liveMrr = 0
+    const rentedByRaw: string[] = []
+    ;(rentals || []).forEach((r: any) => { if (r.rented_by && rentedByRaw.indexOf(r.rented_by) < 0) rentedByRaw.push(r.rented_by) })
+    const rentedByIds = rentedByRaw
+    if (rentedByIds.length > 0) {
+      const { data: tenantRows } = await supabaseAdmin
+        .from('tenants')
+        .select('id, stripe_subscription_id')
+        .in('id', rentedByIds)
+      const liveIdMap: Record<string, boolean> = {}
+      ;(tenantRows || []).forEach((t: any) => { if (t.stripe_subscription_id) liveIdMap[t.id] = true })
+      liveMrr = (rentals || [])
+        .filter(r => r.rented_by && liveIdMap[r.rented_by])
+        .reduce((sum, r) => sum + (r.monthly_price || 0), 0)
+    }
+
+    const mrr = liveMrr
     const arr = mrr * 12
 
     // Get recent leads (last 30 days) — immer nur 50, unabhängig von Gesamtzahl

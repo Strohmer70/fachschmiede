@@ -389,10 +389,17 @@ tailwind.config = {
             <button onclick="openModal('modalWebsite')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition shrink-0">+ Neue Stadt-Website listen</button>
           </div>
           <div class="mt-5 flex flex-wrap items-center gap-3">
-            <span class="text-sm font-bold text-ink-700">Filter:</span>
+            <span class="text-sm font-bold text-ink-700">Gewerk:</span>
             <div class="flex flex-wrap gap-2" id="stadtFilter">
               <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
               <!-- WIRD DYNAMISCH GEFÜLLT -->
+            </div>
+            <span class="text-sm font-bold text-ink-700 ml-2">Status:</span>
+            <div class="flex flex-wrap gap-2" id="statusFilter">
+              <button onclick="filterStatus('', this)" class="status-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
+              <button onclick="filterStatus('frei', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">✅ Frei</button>
+              <button onclick="filterStatus('vermietet', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔒 Vermietet</button>
+              <button onclick="filterStatus('test', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🧪 Testmodus</button>
             </div>
             <script>
               (function() {
@@ -513,7 +520,7 @@ tailwind.config = {
           <div class="bg-white rounded-2xl border border-ink-200 p-5">
             <p class="text-sm font-semibold text-ink-500">MRR (monatl. Umsatz)</p>
             <p class="mt-2 text-3xl font-black text-ink-900" id="billMrr">0 €</p>
-            <p class="mt-1 text-xs font-bold text-ink-400">Aktive Mietverträge</p>
+            <p class="mt-1 text-xs font-bold text-ink-400">Aktive Mietverträge (Live)</p>
           </div>
           <div class="bg-white rounded-2xl border border-ink-200 p-5">
             <p class="text-sm font-semibold text-ink-500">Offene Forderungen</p>
@@ -521,8 +528,14 @@ tailwind.config = {
             <p class="mt-1 text-xs font-bold text-ink-400" id="billOpenCount">0 überfällig</p>
           </div>
           <div class="bg-white rounded-2xl border border-ink-200 p-5">
-            <p class="text-sm font-semibold text-ink-500">Aktive Mieten</p>
+            <p class="text-sm font-semibold text-ink-500">Aktive Mieten (Live)</p>
             <p class="mt-2 text-3xl font-black text-ink-900" id="billBasis">0 × 189 €</p>
+            <p class="mt-1 text-xs font-bold text-ink-400">chte zahlende Mieter</p>
+          </div>
+          <div class="bg-amber-50 rounded-2xl border border-amber-200 p-5">
+            <p class="text-sm font-semibold text-amber-700">Testmieten</p>
+            <p class="mt-2 text-3xl font-black text-amber-700" id="billTest">0 × 189 €</p>
+            <p class="mt-1 text-xs font-bold text-amber-600">zählen NICHT zum Umsatz</p>
           </div>
         </div>
 

@@ -3,21 +3,65 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
+// 2026-10-01: Komplett-Rewrite.
+// - Vorher: MRR zählte ALLE 'rented' Seiten (Testmieten ohne Stripe = Phantom-Umsatz)
+// - Vorher: tenants-Join über nicht-existente FK → Tabelle IMMER leer
+// - Jetzt: Zwei-Query-Ansatz via rented_by, Split live (Stripe-Sub vorhanden) / test
 export async function GET() {
   try {
-    // ── MRR & ARR ──
-    const { data: rentals, error: rentalsError } = await supabaseAdmin
-      .from('landing_pages')
-      .select('monthly_price, trade:trades(name, slug)')
-      .eq('status', 'rented')
+    // ── 1) Alle Mieter ──
+    const { data: tenants, error: tenantsError } = await supabaseAdmin
+      .from('tenants')
+      .select('id, email, company_name, contact_name, phone, stripe_customer_id, stripe_subscription_id, subscription_status, created_at')
+      .order('created_at', { ascending: false })
 
-    const mrrCents = rentals?.reduce((sum, r) => sum + (r.monthly_price || 0), 0) || 0
+    if (tenantsError) throw new Error('Tenants: ' + tenantsError.message)
+
+    // ── 2) Vermietete Seiten mit den Mieter-IDs ──
+    const tenantIds = (tenants || []).map(t => t.id)
+    let pages: any[] = []
+    if (tenantIds.length > 0) {
+      const { data: p, error: pagesError } = await supabaseAdmin
+        .from('landing_pages')
+        .select('id, slug, title, monthly_price, status, rented_by, trade:trades(name, slug), city:cities(name, slug)')
+        .in('rented_by', tenantIds)
+      if (pagesError) throw new Error('Pages: ' + pagesError.message)
+      pages = p || []
+    }
+
+    // ── 3) Seiten → Mieter zuordnen, live/test markieren ──
+    const pagesByTenant: Record<string, any[]> = {}
+    pages.forEach(p => {
+      if (!p.rented_by) return
+      if (!pagesByTenant[p.rented_by]) pagesByTenant[p.rented_by] = []
+      pagesByTenant[p.rented_by].push(p)
+    })
+
+    const tenantsWithPages = (tenants || []).map(t => ({
+      ...t,
+      is_test: !t.stripe_subscription_id,
+      landing_page: (pagesByTenant[t.id] || [])[0] || null,
+      rented_pages: pagesByTenant[t.id] || [],
+    }))
+
+    // ── 4) MRR: NUR Live-Mieten (Stripe-Subscription vorhanden) ──
+    const livePages = pages.filter(p => {
+      const t = (tenants || []).find(x => x.id === p.rented_by)
+      return t?.stripe_subscription_id
+    })
+    const testPages = pages.filter(p => {
+      const t = (tenants || []).find(x => x.id === p.rented_by)
+      return t && !t.stripe_subscription_id
+    })
+
+    const mrrCents = livePages.reduce((sum, r) => sum + (r.monthly_price || 0), 0)
     const mrr = Math.round(mrrCents / 100)
-    const arr = Math.round(mrr * 12)
+    const arr = mrr * 12
+    const testMrr = Math.round(testPages.reduce((sum, r) => sum + (r.monthly_price || 0), 0) / 100)
 
-    // ── Revenue by trade ──
+    // ── 5) Umsatz nach Gewerk (nur LIVE — Test nicht als Umsatz zählen) ──
     const revenueByTrade: Record<string, { name: string, slug: string, revenue: number, count: number }> = {}
-    rentals?.forEach((r: any) => {
+    livePages.forEach((r: any) => {
       const tradeSlug = r.trade?.slug || 'unknown'
       const tradeName = r.trade?.name || 'Unbekannt'
       if (!revenueByTrade[tradeSlug]) {
@@ -27,64 +71,43 @@ export async function GET() {
       revenueByTrade[tradeSlug].count += 1
     })
 
-    // ── Active tenants with page info ──
-    const { data: tenants, error: tenantsError } = await supabaseAdmin
-      .from('tenants')
-      .select(`
-        *,
-        landing_page:landing_pages!inner(id, slug, title, monthly_price, status, trade:trades(name, slug), city:cities(name, slug))
-      `)
-      .eq('subscription_status', 'active')
-      .order('created_at', { ascending: false })
-
-    // ── Overdue / past_due ──
-    const { data: overdueTenants } = await supabaseAdmin
-      .from('tenants')
-      .select(`
-        *,
-        landing_page:landing_pages!inner(id, slug, title, monthly_price, trade:trades(name, slug), city:cities(name, slug))
-      `)
-      .eq('subscription_status', 'past_due')
-      .order('created_at', { ascending: false })
-
-    // ── Tarif breakdown (vereinfacht: nur ein Preis) ──
-    const { data: allRentedPages } = await supabaseAdmin
-      .from('landing_pages')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'rented')
-
-    const openInvoicesTotal = overdueTenants?.reduce((sum, t) => {
-      const price = t.landing_page?.monthly_price || 0
-      return sum + price / 100
-    }, 0) || 0
+    // ── 6) Überfällige (past_due) ──
+    const overdueTenants = tenantsWithPages.filter(t => t.subscription_status === 'past_due')
+    const openInvoicesTotal = overdueTenants.reduce((sum, t) => {
+      return sum + (t.rented_pages || []).reduce((s: number, p: any) => s + (p.monthly_price || 0) / 100, 0)
+    }, 0)
 
     return NextResponse.json({
       success: true,
       stats: {
         mrr,
         arr,
+        testMrr,
+        liveCount: livePages.length,
+        testCount: testPages.length,
+        liveMrr: mrr,
         openInvoicesTotal: Math.round(openInvoicesTotal * 100) / 100,
-        openInvoicesCount: overdueTenants?.length || 0,
-        totalCount: allRentedPages?.length || 0,
+        openInvoicesCount: overdueTenants.length,
+        totalCount: pages.length,
         standardPrice: 189,
       },
       revenueByTrade: Object.values(revenueByTrade).map((t: any) => ({
         ...t,
         revenue: Math.round(t.revenue * 100) / 100
       })),
-      tenants: tenants || [],
-      overdue: overdueTenants || [],
-    })
+      tenants: tenantsWithPages,
+      overdue: overdueTenants,
+    }, { headers: { 'Cache-Control': 'no-store' } })
 
   } catch (error: any) {
     console.error('Billing API error:', error)
     return NextResponse.json({
       error: 'Failed to load billing data',
       message: error.message,
-      stats: { mrr: 0, arr: 0, openInvoicesTotal: 0, openInvoicesCount: 0, basisCount: 0, proCount: 0 },
+      stats: { mrr: 0, arr: 0, testMrr: 0, liveCount: 0, testCount: 0, openInvoicesTotal: 0, openInvoicesCount: 0 },
       revenueByTrade: [],
       tenants: [],
       overdue: [],
-    }, { status: 500 })
+    }, { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }
