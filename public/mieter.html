@@ -127,13 +127,13 @@ tailwind.config = {
     <div class="bg-white rounded-2xl border border-ink-200 p-6">
       <h2 class="font-bold text-ink-900">Vertrag &amp; Abrechnung</h2>
       <ul class="mt-4 space-y-2.5 text-sm text-ink-600">
-        <li class="flex justify-between"><span>Tarif</span><strong id="mTarif" class="text-ink-900">Basis · 189 €/Monat</strong></li>
+        <li class="flex justify-between"><span>Tarif</span><strong id="mTarif" class="text-ink-900">189 €/Monat</strong></li>
         <li class="flex justify-between"><span>Nächste Abbuchung</span><strong id="mNextPay" class="text-ink-900">–</strong></li>
         <li class="flex justify-between"><span>Zahlungsmethode</span><strong class="text-ink-900">🔒 via Stripe</strong></li>
         <li class="flex justify-between"><span>Laufzeit</span><strong class="text-ink-900">monatlich kündbar</strong></li>
         <li class="flex justify-between"><span>Status</span><span id="mStatus" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Aktiv</span></li>
       </ul>
-      <button id="mUpgradeBtn" onclick="showToast('Upgrade folgt in Kürze – wir informieren dich per E-Mail.')" class="mt-5 w-full bg-ink-900 hover:bg-ink-800 text-white text-sm font-bold py-2.5 rounded-lg transition">Auf Pro upgraden</button>
+      <button id="mActivateBtn" onclick="activateMiete()" class="hidden mt-5 w-full bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2.5 rounded-lg transition">Jetzt mieten &amp; aktivieren</button>
       <button id="portalBtn" onclick="openBillingPortal()" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">💳 Zahlung &amp; Abo verwalten</button>
       <button id="mResetBtn" onclick="resetDemoMiete()" class="hidden mt-2.5 w-full bg-white border border-dashed border-ink-300 hover:bg-ink-50 text-ink-400 text-xs font-bold py-2 rounded-lg transition">Demo-Miete zurücksetzen (Standardansicht)</button>
     </div>
@@ -298,12 +298,11 @@ tailwind.config = {
               <span id="tglModKennzahlen" class="toggle on" onclick="toggleSwitch(this)"></span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
-              <div><p class="font-semibold text-sm text-ink-800">📅 Online-Terminbuchung</p><p class="text-xs text-ink-500"><span class="font-bold text-brand-600">Pro-Tarif</span> – Kunden buchen Besichtigungstermine direkt</p></div>
-              <span class="text-xs font-bold text-ink-400 bg-ink-100 px-2.5 py-1 rounded-full">Pro</span>
+              <div><p class="font-semibold text-sm text-ink-800">📅 Online-Terminbuchung</p><p class="text-xs text-ink-500">Folgt demnächst – Kunden buchen Besichtigungstermine direkt</p></div>
+              <span class="text-xs font-bold text-ink-400 bg-ink-100 px-2.5 py-1 rounded-full">bald</span>
             </div>
             <div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">
-              <div><p class="font-semibold text-sm text-ink-800">💬 WhatsApp-Button</p><p class="text-xs text-ink-500"><span class="font-bold text-brand-600">Pro-Tarif</span> – Direkter Chat-Kontakt vom Handy</p></div>
-              <span class="text-xs font-bold text-ink-400 bg-ink-100 px-2.5 py-1 rounded-full">Pro</span>
+              <div><p class="font-semibold text-sm text-ink-800">💬 WhatsApp-Button</p><p class="text-xs text-ink-500">Direkter Chat-Kontakt vom Handy – Konfiguration im Firmenprofil</p></div>
             </div>
           </div>
         </div>
@@ -392,7 +391,7 @@ tailwind.config = {
           </div>
           <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-sm text-ink-700">
             <p class="font-bold text-ink-900">💡 Tipp: Google-Bewertungen einbinden</p>
-            <p class="mt-1 text-xs leading-relaxed">Im <strong>Pro-Tarif</strong> ziehen wir Ihre Google-Bewertungen automatisch auf die Website – immer aktuell, ohne Pflegeaufwand.</p>
+            <p class="mt-1 text-xs leading-relaxed">Bald verfügbar: Wir ziehen Ihre Google-Bewertungen automatisch auf die Website – immer aktuell, ohne Pflegeaufwand. Wir informieren Sie per E-Mail, sobald es live ist.</p>
           </div>
         </div>
         <div>
@@ -407,7 +406,7 @@ tailwind.config = {
     <!-- ───────── TAB 5: LEADS ───────── -->
     <div class="tab-panel p-6 sm:p-8" id="tab-leads">
       <h2 class="text-lg font-black text-ink-900">Anfragen (Leads)</h2>
-      <p class="text-sm text-ink-500 mt-1 mb-6">Alle Kontaktformular-Anfragen Ihrer Website – zusätzlich bekommen Sie jede Anfrage sofort per E-Mail und (Pro) per SMS.</p>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Alle Kontaktformular-Anfragen Ihrer Website – jede Anfrage kommt sofort zusätzlich per E-Mail bei Ihnen an.</p>
       <div class="overflow-x-auto bg-white rounded-xl border border-ink-200">
         <table class="w-full text-sm">
           <thead>
@@ -521,8 +520,8 @@ tailwind.config = {
             <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Kontaktformular</p><p class="text-xs text-ink-500">Abschnitt „Kontaktformular &amp; E-Mail“ in der Erklärung</p></div><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
             <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">WhatsApp-Button</p><p class="text-xs text-ink-500">Abschnitt „WhatsApp“ in der Erklärung</p></div><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
             <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Google-Maps-Karte</p><p class="text-xs text-ink-500">Abschnitt „Google Maps“ inkl. Drittland-Hinweis</p></div><span class="toggle on" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Terminbuchung <span class="text-brand-600">(Pro)</span></p><p class="text-xs text-ink-500">Eigener Abschnitt mit Anbieter &amp; Rechtsgrundlage</p></div><span class="toggle" onclick="toggleSwitch(this)"></span></div>
-            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Google-Bewertungen <span class="text-brand-600">(Pro)</span></p><p class="text-xs text-ink-500">Abschnitt „Bewertungs-Einbindung“</p></div><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Terminbuchung <span class="text-ink-400">(bald verfügbar)</span></p><p class="text-xs text-ink-500">Eigener Abschnitt mit Anbieter &amp; Rechtsgrundlage</p></div><span class="toggle" onclick="toggleSwitch(this)"></span></div>
+            <div class="flex items-center justify-between"><div><p class="font-semibold text-sm text-ink-900">Google-Bewertungen <span class="text-ink-400">(bald verfügbar)</span></p><p class="text-xs text-ink-500">Abschnitt „Bewertungs-Einbindung“</p></div><span class="toggle" onclick="toggleSwitch(this)"></span></div>
           </div>
           <div class="bg-green-50 border border-green-200 rounded-xl p-4">
             <p class="font-bold text-sm text-ink-900">✓ Immer enthalten – Sie müssen nichts tun</p>
@@ -800,16 +799,9 @@ function logout(){
   if(!m){ try{ m = JSON.parse(localStorage.getItem('mw_miete') || 'null'); }catch(e){} }
   if(!m) return;
   if(m.firma) document.getElementById('mFirmenname').textContent = m.firma;
-  document.getElementById('mSub').innerHTML = (m.domain || 'fachschmiede.de/ihre-stadt/') + ' · Tarif <span class="font-bold text-brand-600">' + (m.tarif || 'Basis') + '</span>';
+  document.getElementById('mSub').innerHTML = (m.domain || 'fachschmiede.de/ihre-stadt/');
   if(m.domain){var _vs0=document.getElementById('viewSiteBtn');if(_vs0){var _mm=m.domain.match(/fachschmiede\.de(\/[^\s]*)/);if(_mm)_vs0.href=_mm[1];}}
-  var t = document.getElementById('mTarif');
-  t.textContent = '189 €/Monat';
-  var b = document.getElementById('mUpgradeBtn');
-  if(b) {
-    b.textContent = '✓ Website aktiv – alle Funktionen freigeschaltet';
-    b.className = 'mt-5 w-full bg-green-50 border border-green-300 text-green-700 text-sm font-bold py-2.5 rounded-lg cursor-default';
-    b.onclick = function(){ showToast('Website ist aktiv. (Demo)'); };
-  }
+  document.getElementById('mTarif').textContent = '189 €/Monat';
   if(m.farbe){
     var st = document.createElement('style');
     st.textContent = '.bg-brand-600{background:' + m.farbe + ' !important}'
@@ -834,10 +826,8 @@ function logout(){
     if(np) np.textContent = 'erst nach Testphase (' + endeStr + ')';
     var stEl = document.getElementById('mStatus');
     if(stEl){ stEl.className = 'bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full'; stEl.textContent = 'Testphase · noch ' + days + ' Tage'; }
-    var b2 = document.getElementById('mUpgradeBtn');
-    b2.textContent = 'Testphase läuft (noch ' + days + ' Tage) – jetzt mieten & aktivieren';
-    b2.className = 'mt-5 w-full bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2.5 rounded-lg transition';
-    b2.onclick = activateMiete;
+    var b2 = document.getElementById('mActivateBtn');
+    if(b2){ b2.classList.remove('hidden'); b2.textContent = 'Testphase läuft (noch ' + days + ' Tage) – jetzt mieten & aktivieren'; }
     var tb = document.getElementById('mTestBanner');
     if(tb){
       tb.classList.remove('hidden');
