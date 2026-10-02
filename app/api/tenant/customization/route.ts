@@ -121,6 +121,7 @@ const STRING_FIELDS: Record<string, string> = {
 }
 const BOOL_FIELDS: Record<string, string> = {
   whatsapp_enabled: 'whatsapp_enabled', google_maps_enabled: 'google_maps_enabled',
+  website_enabled: 'website_enabled', google_business_enabled: 'google_business_enabled',
   show_founding_year: 'show_founding_year', show_project_count: 'show_project_count',
   show_team_size: 'show_team_size',
   is_master_company: 'is_master_company', is_guild_member: 'is_guild_member',
@@ -138,6 +139,25 @@ export async function PATCH(request: Request) {
   }
   for (const [key, col] of Object.entries(BOOL_FIELDS)) {
     if (body[key] !== undefined) update[col] = body[key] === true || body[key] === 'true' || body[key] === 1
+  }
+  // 2026-10-03: Eigene Website + Google Business Profil (Link-Freischaltung,
+  // Basis-Paket). Nur valide https://-URLs werden akzeptiert.
+  const URL_FIELDS: Record<string, string> = {
+    website_url: 'website_url', google_business_url: 'google_business_url',
+  }
+  for (const [key, col] of Object.entries(URL_FIELDS)) {
+    if (body[key] === undefined) continue
+    const u = String(body[key] || '').trim().slice(0, 500)
+    if (!u) { update[col] = null; continue }
+    let valid = /^https:\/\//i.test(u) && !/[\s<>"']/.test(u)
+    if (valid) {
+      try {
+        const p = new URL(u)
+        valid = !!p.hostname && p.hostname.includes('.')
+      } catch { valid = false }
+    }
+    if (!valid) return json({ error: 'Ungültige URL für ' + key + ' (bitte mit https:// beginnen, z. B. https://meinefirma.de).' }, 400)
+    update[col] = u
   }
   if (body.founding_year !== undefined) update.founding_year = parseInt(String(body.founding_year), 10) || null
   if (body.service_areas !== undefined) {

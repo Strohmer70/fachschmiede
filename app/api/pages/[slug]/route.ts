@@ -79,6 +79,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       service_areas: cust.service_areas || [],
       whatsapp_number: cust.whatsapp_number || null,
       whatsapp_enabled: cust.whatsapp_enabled !== false,
+      // ── 2026-10-03: Eigene Website + Google Business Profil (Basis) ──
+      website_url: cust.website_url || null,
+      website_enabled: cust.website_enabled === true,
+      google_business_url: cust.google_business_url || null,
+      google_business_enabled: cust.google_business_enabled === true,
       google_maps_place_id: cust.google_maps_place_id || null,
       google_maps_enabled: cust.google_maps_enabled !== false,
       founding_year: cust.founding_year || null,
