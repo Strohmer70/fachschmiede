@@ -336,6 +336,7 @@ tailwind.config = {
             <input type="file" id="fileLogo" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleAssetUpload(this,'logo')">
           </div>
           <p class="mt-2 text-xs text-ink-500">Kein Logo? Dann zeigt die Seite deinen Firmennamen mit Icon an – wie jetzt.</p>
+          <button type="button" id="logoReset" onclick="resetAsset('logo')" class="hidden mt-2 text-xs font-bold text-ink-500 hover:text-red-600 transition">↺ Zurück zum Vorlagen-Icon</button>
         </div>
         <div>
           <h3 class="font-bold text-ink-900 mb-4">Bildmaterial</h3>
@@ -345,6 +346,7 @@ tailwind.config = {
                 <div class="w-20 h-14 rounded-lg bg-ink-200 overflow-hidden flex items-center justify-center text-xl shrink-0"><img id="heroPrev" class="hidden w-full h-full object-cover" alt="Hero"><span id="heroPrevIcon">🖼</span></div>
                 <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Hero-Bild (Startseite oben)</p><p class="text-xs text-ink-500">Empfohlen: quer, mind. 1600×900 px</p></div>
                 <button onclick="document.getElementById('fileHero').click()" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+                <button type="button" id="heroReset" onclick="resetAsset('hero')" class="hidden text-xs font-bold text-ink-400 hover:text-red-600 transition shrink-0">↺ Vorlage</button>
                 <input type="file" id="fileHero" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleAssetUpload(this,'hero')">
               </div>
             </div>
@@ -353,6 +355,7 @@ tailwind.config = {
                 <div class="w-20 h-14 rounded-lg bg-ink-200 overflow-hidden flex items-center justify-center text-xl shrink-0"><img id="teamPrev" class="hidden w-full h-full object-cover" alt="Team"><span id="teamPrevIcon">👥</span></div>
                 <div class="flex-1 min-w-0"><p class="font-bold text-sm text-ink-900">Team- / Inhaberfoto</p><p class="text-xs text-ink-500">Wird im Bereich „Über uns" gezeigt</p></div>
                 <button onclick="document.getElementById('fileTeam').click()" class="text-sm font-bold text-brand-600 hover:underline shrink-0">Ändern</button>
+                <button type="button" id="teamReset" onclick="resetAsset('team')" class="hidden text-xs font-bold text-ink-400 hover:text-red-600 transition shrink-0">↺ Vorlage</button>
                 <input type="file" id="fileTeam" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleAssetUpload(this,'team')">
               </div>
             </div>
@@ -364,11 +367,12 @@ tailwind.config = {
                 <input type="file" id="fileRefs" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="handleAssetUpload(this,'ref')">
               </div>
               <div id="refGrid" class="hidden grid grid-cols-3 gap-2 mt-3"></div>
+              <button type="button" id="refReset" onclick="resetAsset('ref')" class="hidden mt-2 text-xs font-bold text-ink-500 hover:text-red-600 transition">↺ Alle Referenzfotos entfernen (Vorlagen-Galerie)</button>
             </div>
           </div>
           <div class="mt-5 bg-ink-50 border border-ink-200 rounded-xl p-4 text-sm text-ink-600">
             <p class="font-bold text-ink-900">📚 Standard-Bibliothek</p>
-            <p class="mt-1 text-xs leading-relaxed">Felder, die du leer lässt, nutzen weiterhin die kuratierte Bildbibliothek für dein Gewerk. Eigenes Material kannst du jederzeit hochladen – ein Foto vom Handy reicht völlig.</p>
+            <p class="mt-1 text-xs leading-relaxed">Felder, die du leer lässt, nutzen weiterhin die kuratierte Bildbibliothek für dein Gewerk. Eigenes Material kannst du jederzeit hochladen – ein Foto vom Handy reicht völlig. Mit „↺ Vorlage" stellst du jederzeit das ursprüngliche Bild wieder her.</p>
           </div>
         </div>
       </div>
@@ -887,6 +891,113 @@ function showToast(msg){
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   2026-10-02: Bild-Assets — Vorschau, Upload, Vorlagen-Reset.
+   (handleAssetUpload/prefillAssets waren im Pro-Upgrade-Commit
+   e8044c1b versehentlich rausgeflogen → Upload komplett tot.)
+   REGEL: Das System setzt NIEMALS selbst Bilder — Vorlagen-Bilder
+   bleiben, bis der Mieter aktiv hochlädt oder zurücksetzt.
+   ═══════════════════════════════════════════════════════════════ */
+var _assetState={logo:'',hero:'',team:'',gallery:[]};
+
+function prefillAssets(c){
+  c=c||{};
+  _assetState.logo=c.custom_logo_url||'';
+  _assetState.hero=c.custom_hero_url||'';
+  _assetState.team=c.custom_team_url||'';
+  _assetState.gallery=Array.isArray(c.custom_gallery_urls)?c.custom_gallery_urls:[];
+  renderAssetPreviews();
+}
+
+function renderAssetPreviews(){
+  var lw=document.getElementById('logoPrevWrap'),li=document.getElementById('logoPrev');
+  if(li&&lw){if(_assetState.logo){li.src=_assetState.logo;lw.classList.remove('hidden');}else{li.removeAttribute('src');lw.classList.add('hidden');}}
+  var lr=document.getElementById('logoReset');if(lr)lr.classList.toggle('hidden',!_assetState.logo);
+  var hi=document.getElementById('heroPrev'),hic=document.getElementById('heroPrevIcon');
+  if(hi){if(_assetState.hero){hi.src=_assetState.hero;hi.classList.remove('hidden');if(hic)hic.classList.add('hidden');}else{hi.removeAttribute('src');hi.classList.add('hidden');if(hic)hic.classList.remove('hidden');}}
+  var hr=document.getElementById('heroReset');if(hr)hr.classList.toggle('hidden',!_assetState.hero);
+  var ti=document.getElementById('teamPrev'),tic=document.getElementById('teamPrevIcon');
+  if(ti){if(_assetState.team){ti.src=_assetState.team;ti.classList.remove('hidden');if(tic)tic.classList.add('hidden');}else{ti.removeAttribute('src');ti.classList.add('hidden');if(tic)tic.classList.remove('hidden');}}
+  var tr=document.getElementById('teamReset');if(tr)tr.classList.toggle('hidden',!_assetState.team);
+  var grid=document.getElementById('refGrid');
+  if(grid){
+    if(_assetState.gallery.length){
+      grid.classList.remove('hidden');
+      grid.innerHTML=_assetState.gallery.map(function(u,i){
+        return '<div class="relative">'
+          +'<img src="'+escHtml(u)+'" class="w-full h-20 object-cover rounded-lg" alt="Referenz '+(i+1)+'">'
+          +'<button type="button" onclick="removeRef('+i+')" title="Foto entfernen" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs leading-5 opacity-90 hover:opacity-100">✕</button>'
+          +'</div>';
+      }).join('');
+    }else{grid.classList.add('hidden');grid.innerHTML='';}
+  }
+  var rr=document.getElementById('refReset');if(rr)rr.classList.toggle('hidden',!_assetState.gallery.length);
+}
+
+async function handleAssetUpload(input,kind){
+  var files=input.files;
+  if(!files||!files.length)return;
+  var tok=localStorage.getItem('fs_token');
+  if(!tok){showToast('Bitte erneut einloggen.');input.value='';return;}
+  showToast('⏳ Upload läuft…');
+  try{
+    if(kind==='ref'){
+      var urls=_assetState.gallery.slice();
+      for(var i=0;i<files.length;i++){
+        var fd=new FormData();fd.append('field','ref');fd.append('file',files[i]);
+        var r=await fetch('/api/tenant/upload/',{method:'POST',headers:{'Authorization':'Bearer '+tok},body:fd});
+        var j=await r.json().catch(function(){return{};});
+        if(!r.ok||!j.url){showToast('❌ '+((j&&j.error)||('Upload fehlgeschlagen (Datei '+(i+1)+')')));continue;}
+        urls.push(j.url);
+      }
+      urls=urls.slice(0,6);
+      var pr=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({gallery_urls:urls})});
+      var pj=await pr.json().catch(function(){return{};});
+      if(!pr.ok){showToast('❌ '+((pj&&pj.error)||'Speichern fehlgeschlagen'));input.value='';return;}
+      _assetState.gallery=urls;renderAssetPreviews();showToast('✅ Referenzfotos gespeichert!');
+    }else{
+      var fd2=new FormData();fd2.append('field',kind);fd2.append('file',files[0]);
+      var r2=await fetch('/api/tenant/upload/',{method:'POST',headers:{'Authorization':'Bearer '+tok},body:fd2});
+      var j2=await r2.json().catch(function(){return{};});
+      if(!r2.ok||!j2.url){showToast('❌ '+((j2&&j2.error)||'Upload fehlgeschlagen'));input.value='';return;}
+      var payload={};payload[kind+'_url']=j2.url;
+      var pr2=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify(payload)});
+      var pj2=await pr2.json().catch(function(){return{};});
+      if(!pr2.ok){showToast('❌ '+((pj2&&pj2.error)||'Speichern fehlgeschlagen'));input.value='';return;}
+      _assetState[kind]=j2.url;renderAssetPreviews();showToast('✅ Bild gespeichert!');
+    }
+  }catch(e){console.error('upload',e);showToast('❌ Upload-Fehler');}
+  input.value='';
+}
+
+async function resetAsset(kind){
+  var tok=localStorage.getItem('fs_token');
+  if(!tok){showToast('Bitte erneut einloggen.');return;}
+  var label=(kind==='logo')?'das Logo':(kind==='hero')?'das Hero-Bild':(kind==='team')?'das Team-Foto':'die Referenzfotos';
+  if(!confirm('Zurück zur Vorlage? '+label[0].toUpperCase()+label.slice(1)+' wird entfernt und das ursprüngliche Vorlagenbild wieder aktiv.'))return;
+  var payload={};
+  if(kind==='ref')payload.gallery_urls=[];else payload[kind+'_url']='';
+  try{
+    var r=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify(payload)});
+    var j=await r.json().catch(function(){return{};});
+    if(!r.ok){showToast('❌ '+((j&&j.error)||'Zurücksetzen fehlgeschlagen'));return;}
+    if(kind==='ref')_assetState.gallery=[];else _assetState[kind]='';
+    renderAssetPreviews();
+    showToast('✅ Vorlagenbild wieder aktiv');
+  }catch(e){console.error('reset',e);showToast('❌ Fehler beim Zurücksetzen');}
+}
+
+async function removeRef(idx){
+  var urls=_assetState.gallery.filter(function(_,i){return i!==idx;});
+  var tok=localStorage.getItem('fs_token');
+  if(!tok)return;
+  try{
+    var r=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({gallery_urls:urls})});
+    if(!r.ok){showToast('❌ Entfernen fehlgeschlagen');return;}
+    _assetState.gallery=urls;renderAssetPreviews();
+  }catch(e){showToast('❌ Fehler');}
 }
 </script>
 <script>

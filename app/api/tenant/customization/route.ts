@@ -60,14 +60,23 @@ export async function GET(request: Request) {
     .maybeSingle()
   if (!tenant) return json({ error: 'Konto nicht gefunden.' }, 404)
 
-  // ALLE Mietseiten des Tenants
+  // ALLE Customization-Zeilen des Tenants
   const { data: custs } = await supabaseAdmin
     .from('page_customizations')
-    .select(`*, landing_page:landing_pages(slug, title, status)`)
+    .select(`*, landing_page:landing_pages(slug, title, status, rented_by)`)
     .eq('tenant_id', auth.tenantId)
     .order('updated_at', { ascending: false })
 
-  const first: any = custs?.[0] || null
+  // 2026-10-02: KONTEXT = aktuell VERMIETETE Seite. Früher = custs[0] → bei mehreren
+  // Zeilen (z.B. Testhinterlassenschaften) zeigte das Dashboard die falsche Seite
+  // (Bug-Report: Miete dachdecker-castrop-rauxel, Dashboard zeigte elektriker-bochum).
+  const list = custs || []
+  const first: any =
+    list.find((c: any) => c.landing_page?.status === 'rented' && c.landing_page?.rented_by === auth.tenantId)
+    || list.find((c: any) => c.landing_page?.status === 'rented')
+    || list.find((c: any) => c.is_active === true)
+    || list[0]
+    || null
   let defaultAbout = ''
   if (first?.landing_page?.slug) {
     const key = findDefaultsKey(String(first.landing_page.slug))
@@ -138,9 +147,11 @@ export async function PATCH(request: Request) {
   }
   // 2026-10-01: Referenzfotos (max 6 URLs — Uploads einzeln, Dashboard sendet gesamtes Array)
   if (body.gallery_urls !== undefined) {
-    update.custom_gallery_urls = Array.isArray(body.gallery_urls)
+    // 2026-10-02: Leeres Array = „Zurück zur Vorlage" → NULL (Template-Bild greift wieder)
+    const urls = Array.isArray(body.gallery_urls)
       ? body.gallery_urls.map((u: string) => String(u)).filter((u: string) => /^https:\/\//.test(u)).slice(0, 6)
-      : null
+      : []
+    update.custom_gallery_urls = urls.length ? urls : null
   }
   // 2026-10-01: Modul-Toggles — {key:bool}, nur bekannte Keys, max 20 Einträge
   if (body.modules_enabled !== undefined && body.modules_enabled !== null && typeof body.modules_enabled === 'object' && !Array.isArray(body.modules_enabled)) {
@@ -164,17 +175,39 @@ export async function PATCH(request: Request) {
   }
   update.updated_at = new Date().toISOString()
 
-  // ALLE Customization-Zeilen des Tenants aktualisieren (gleiche Firmendaten auf jeder Mietseite)
+  // 2026-10-02: NUR Zeilen auf aktuell VERMIETETEN Seiten. Früher: ALLE Zeilen des
+  // Tenants → gespeicherte Werte kaskadierten auch auf frühere Testseiten.
+  const { data: rentedPages } = await supabaseAdmin
+    .from('landing_pages')
+    .select('id')
+    .eq('rented_by', auth.tenantId)
+    .eq('status', 'rented')
+  if (!rentedPages || rentedPages.length === 0) return json({ error: 'Keine Mietseite gefunden.' }, 404)
+
+  const pageIds = (rentedPages as { id: string }[]).map((p) => p.id)
   const { data: custs, error: findErr } = await supabaseAdmin
     .from('page_customizations')
-    .select('id')
+    .select('id, landing_page_id')
     .eq('tenant_id', auth.tenantId)
+    .in('landing_page_id', pageIds)
   if (findErr) return json({ error: 'DB-Fehler: ' + findErr.message }, 500)
-  if (!custs || custs.length === 0) return json({ error: 'Keine Mietseite gefunden.' }, 404)
 
-  const ids = custs.map((c: { id: string }) => c.id)
-  const { error } = await supabaseAdmin.from('page_customizations').update(update).in('id', ids)
-  if (error) return json({ error: 'Speichern fehlgeschlagen: ' + error.message }, 500)
+  const ids = ((custs || []) as { id: string; landing_page_id: string }[]).map((c) => c.id)
+  const existing = new Set(((custs || []) as { landing_page_id: string }[]).map((c) => c.landing_page_id))
+  const missing = pageIds.filter((pid) => !existing.has(pid))
 
-  return json({ ok: true, updated: ids.length })
+  // Fehlende Zeilen anlegen (Mieter hat auf dieser Seite noch nie gespeichert)
+  let created = 0
+  if (missing.length > 0) {
+    const rows = missing.map((pid) => ({ landing_page_id: pid, tenant_id: auth.tenantId, is_active: true, ...update }))
+    const { error: insErr } = await supabaseAdmin.from('page_customizations').insert(rows)
+    if (insErr) return json({ error: 'Anlegen fehlgeschlagen: ' + insErr.message }, 500)
+    created = rows.length
+  }
+  if (ids.length > 0) {
+    const { error } = await supabaseAdmin.from('page_customizations').update(update).in('id', ids)
+    if (error) return json({ error: 'Speichern fehlgeschlagen: ' + error.message }, 500)
+  }
+
+  return json({ ok: true, updated: ids.length + created })
 }
