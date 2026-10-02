@@ -934,7 +934,9 @@ async function applyRental(retry){
       if(ti)ti.src=d.team_url;
     }
     if(d.gallery_urls&&d.gallery_urls.length){
-      var gs=d.gallery_urls.filter(function(u){return /^https:\/\//.test(u)}).slice(0,6);
+      /* 2026-10-02: Items = {url, text?} — Kurztext des Mieters wird unter dem Bild angezeigt.
+         Legacy-Strings (nur URL) werden zu {url, text:''} normalisiert. */
+      var gs=(d.gallery_urls||[]).map(function(g){return typeof g==='string'?{url:g,text:''}:g;}).filter(function(g){return g&&/^https:\/\//.test(g.url);}).slice(0,6);
       if(gs.length){
         var sec=document.createElement('section');
         sec.className='py-16 sm:py-20 bg-ink-50';
@@ -943,7 +945,7 @@ async function applyRental(retry){
           +'<h2 class="text-2xl sm:text-3xl font-bold text-ink-900 mb-2">Referenzen &amp; Projekte</h2>'
           +'<div class="w-12 h-1 bg-brand-500 mb-10 rounded-full"></div>'
           +'<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">'
-          +gs.map(function(u){return '<img src="'+u+'" alt="Referenz" class="rounded-2xl object-cover w-full aspect-[4/3] shadow-sm" loading="lazy">'}).join('')
+          +gs.map(function(g){var cap=(g.text||'').trim();return '<figure class="rounded-2xl overflow-hidden bg-white shadow-sm"><img src="'+g.url+'" alt="'+(cap?esc(cap):'Referenz')+'" class="object-cover w-full aspect-[4/3]" loading="lazy">'+(cap?'<figcaption class="px-4 py-3 text-sm text-ink-600">'+esc(cap)+'</figcaption>':'')+'</figure>';}).join('')
           +'</div></div>';
         var anchor=document.getElementById('ueber-uns');
         if(anchor&&anchor.nextElementSibling)anchor.parentNode.insertBefore(sec,anchor.nextElementSibling);

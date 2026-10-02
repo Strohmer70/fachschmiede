@@ -147,11 +147,21 @@ export async function PATCH(request: Request) {
   }
   // 2026-10-01: Referenzfotos (max 6 URLs — Uploads einzeln, Dashboard sendet gesamtes Array)
   if (body.gallery_urls !== undefined) {
-    // 2026-10-02: Leeres Array = „Zurück zur Vorlage" → NULL (Template-Bild greift wieder)
-    const urls = Array.isArray(body.gallery_urls)
-      ? body.gallery_urls.map((u: string) => String(u)).filter((u: string) => /^https:\/\//.test(u)).slice(0, 6)
-      : []
-    update.custom_gallery_urls = urls.length ? urls : null
+    // 2026-10-02: Items = {url, text?} — der Kurztext wird unter dem Bild auf der
+    // Mietseite angezeigt. Legacy-Strings werden zu {url, text:''} normalisiert.
+    // Leeres Ergebnis = „Zurück zur Vorlage" → NULL (Vorlagen-Galerie greift wieder).
+    const raw = Array.isArray(body.gallery_urls) ? body.gallery_urls : []
+    const items = raw
+      .map((g: any) => {
+        if (typeof g === 'string') return /^https:\/\//.test(g) ? { url: String(g).slice(0, 500), text: '' } : null
+        if (g && typeof g === 'object' && /^https:\/\//.test(String(g.url || ''))) {
+          return { url: String(g.url).slice(0, 500), text: String(g.text || '').trim().slice(0, 140) }
+        }
+        return null
+      })
+      .filter(Boolean)
+      .slice(0, 6)
+    update.custom_gallery_urls = items.length ? items : null
   }
   // 2026-10-01: Modul-Toggles — {key:bool}, nur bekannte Keys, max 20 Einträge
   if (body.modules_enabled !== undefined && body.modules_enabled !== null && typeof body.modules_enabled === 'object' && !Array.isArray(body.modules_enabled)) {

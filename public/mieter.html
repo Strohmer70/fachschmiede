@@ -326,6 +326,15 @@ tailwind.config = {
             <span class="swatch" style="background:#0f172a" title="Anthrazit" onclick="pickColor(this)"></span>
           </div>
           <p class="mt-3 text-xs text-ink-500">Wirkt auf Buttons, Überschriften-Akzente und Hervorhebungen.</p>
+          <div class="mt-4">
+            <p class="text-xs font-bold text-ink-700 mb-1.5">Eigene Farbe <span class="font-normal text-ink-400">(optional — Hex-Code oder RAL, z. B. deine Markenfarbe)</span></p>
+            <div class="flex items-center gap-2">
+              <span id="customColorPrev" class="hidden w-9 h-9 rounded-lg border-2 border-ink-200 shrink-0"></span>
+              <input id="fFarbeCustom" type="text" maxlength="20" class="flex-1 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900" placeholder="#c2410c oder RAL 3000">
+              <button type="button" onclick="applyCustomColor()" class="bg-ink-900 hover:bg-ink-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shrink-0">Übernehmen</button>
+            </div>
+            <p id="customColorHint" class="hidden mt-1.5 text-xs font-semibold text-red-600"></p>
+          </div>
 
           <h3 class="font-bold text-ink-900 mt-8 mb-4">Logo</h3>
           <div id="logoDrop" class="border-2 border-dashed border-ink-300 rounded-xl p-8 text-center hover:border-brand-400 transition cursor-pointer" onclick="document.getElementById('fileLogo').click()">
@@ -630,11 +639,18 @@ async function loadDashboard(){
     /* Akzentfarbe */
     if(c.accent_color){
       window._accent=c.accent_color;
+      var _matched=false;
       document.querySelectorAll('.swatch').forEach(function(s){s.classList.remove('active');});
       document.querySelectorAll('.swatch').forEach(function(s){
         var m=(s.getAttribute('style')||'').match(/#[0-9a-fA-F]{6}/);
-        if(m&&m[0].toLowerCase()===String(c.accent_color).toLowerCase())s.classList.add('active');
+        if(m&&m[0].toLowerCase()===String(c.accent_color).toLowerCase()){s.classList.add('active');_matched=true;}
       });
+      if(!_matched){
+        /* Eigene/Markenfarbe → Freitext-Feld + Vorschau füllen */
+        window._customColor=c.accent_color;
+        var _ci=document.getElementById('fFarbeCustom');if(_ci)_ci.value=c.accent_color;
+        var _cp=document.getElementById('customColorPrev');if(_cp){_cp.style.background=c.accent_color;_cp.classList.remove('hidden');}
+      }
     }
     /* ── Rechtliches ── */
     _v('fVertretung',c.vertretung);
@@ -749,7 +765,7 @@ document.addEventListener('click',function(e){
 async function saveDashboard(){
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   function on(id){var el=document.getElementById(id);return el?el.classList.contains('on'):false;}
-  var accent=window._accent||'';
+  var accent=window._customColor||window._accent||'';
   if(!accent){var act=document.querySelector('.swatch.active');if(act){var mm=(act.getAttribute('style')||'').match(/#[0-9a-fA-F]{6}/);accent=mm?mm[0]:'';}}
   var payload={
     firma:v('fRechtName')||v('fFirmenname'), phone:v('fTel'), email:v('fMail'),
@@ -882,6 +898,9 @@ function pickColor(el){
   el.classList.add('active');
   var m=(el.getAttribute('style')||'').match(/#[0-9a-fA-F]{6}/);
   window._accent=m?m[0]:'';
+  window._customColor='';
+  var _ci=document.getElementById('fFarbeCustom');if(_ci)_ci.value='';
+  var _cp=document.getElementById('customColorPrev');if(_cp)_cp.classList.add('hidden');
 }
 // Toast
 let toastTimer;
@@ -925,10 +944,14 @@ function renderAssetPreviews(){
   if(grid){
     if(_assetState.gallery.length){
       grid.classList.remove('hidden');
-      grid.innerHTML=_assetState.gallery.map(function(u,i){
-        return '<div class="relative">'
-          +'<img src="'+escHtml(u)+'" class="w-full h-20 object-cover rounded-lg" alt="Referenz '+(i+1)+'">'
+      grid.innerHTML=_assetState.gallery.map(function(g0,i){
+        var g=(typeof g0==='string')?{url:g0,text:''}:g0;
+        return '<div class="bg-white rounded-lg border border-ink-200 overflow-hidden">'
+          +'<div class="relative">'
+          +'<img src="'+escHtml(g.url)+'" class="w-full h-20 object-cover" alt="Referenz '+(i+1)+'">'
           +'<button type="button" onclick="removeRef('+i+')" title="Foto entfernen" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs leading-5 opacity-90 hover:opacity-100">✕</button>'
+          +'</div>'
+          +'<input type="text" value="'+escHtml(g.text||'')+'" placeholder="Kurztext (z. B. Projekt)" maxlength="140" onchange="updateCaption('+i+',this.value)" class="w-full text-xs px-2 py-1.5 border-t border-ink-100 bg-ink-50 text-ink-800 focus:outline-none focus:bg-white">'
           +'</div>';
       }).join('');
     }else{grid.classList.add('hidden');grid.innerHTML='';}
@@ -950,7 +973,7 @@ async function handleAssetUpload(input,kind){
         var r=await fetch('/api/tenant/upload/',{method:'POST',headers:{'Authorization':'Bearer '+tok},body:fd});
         var j=await r.json().catch(function(){return{};});
         if(!r.ok||!j.url){showToast('❌ '+((j&&j.error)||('Upload fehlgeschlagen (Datei '+(i+1)+')')));continue;}
-        urls.push(j.url);
+        urls.push({url:j.url,text:''});
       }
       urls=urls.slice(0,6);
       var pr=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({gallery_urls:urls})});
@@ -998,6 +1021,69 @@ async function removeRef(idx){
     if(!r.ok){showToast('❌ Entfernen fehlgeschlagen');return;}
     _assetState.gallery=urls;renderAssetPreviews();
   }catch(e){showToast('❌ Fehler');}
+}
+
+/* ── 2026-10-02: Kurztexte unter Referenzfotos (auf der Mietseite sichtbar) ── */
+var _captionTimer=null;
+function updateCaption(idx,val){
+  if(!_assetState.gallery[idx])return;
+  _assetState.gallery[idx].text=String(val||'').slice(0,140);
+  clearTimeout(_captionTimer);
+  _captionTimer=setTimeout(saveGallery,800);
+}
+async function saveGallery(){
+  var tok=localStorage.getItem('fs_token');
+  if(!tok)return;
+  try{
+    var r=await fetch('/api/tenant/customization/',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({gallery_urls:_assetState.gallery})});
+    if(r.ok)showToast('✅ Kurztext gespeichert');
+    else showToast('❌ Speichern fehlgeschlagen');
+  }catch(e){showToast('❌ Fehler');}
+}
+
+/* ── 2026-10-02: Eigene Farbe — Hex-Code oder RAL (Mieter-Markenfarbe) ── */
+var RAL_HEX={
+ '1003':'#F9A800','1016':'#EAE243','1018':'#FACA30','2004':'#E25303',
+ '3000':'#A72920','3003':'#901E1E','3020':'#C1121C','4005':'#76689A',
+ '5002':'#20214F','5005':'#154889','5010':'#0E518D','5012':'#3B83BD','5015':'#006BAF',
+ '6005':'#114232','6009':'#0E4438','6011':'#587246','6018':'#57A639','6024':'#008F39',
+ '7004':'#9B9B9B','7016':'#383E42','7024':'#45494E','7030':'#8A8D8F','7035':'#D7D7D7','7040':'#999DA3',
+ '8017':'#45322E','8019':'#403A3A','9003':'#F4F4F4','9004':'#282828','9005':'#0A0A0A','9010':'#FFFFFF','9016':'#F1F1EA'
+};
+function resolveColor(input){
+  var s=String(input||'').trim();
+  if(!s)return null;
+  var m6=s.match(/^#?([0-9a-fA-F]{6})$/);
+  if(m6)return '#'+m6[1].toLowerCase();
+  var m3=s.match(/^#([0-9a-fA-F]{3})$/);
+  if(m3)return '#'+m3[1].split('').map(function(c){return c+c;}).join('').toLowerCase();
+  var ral=s.toUpperCase().replace(/\s+/g,'').replace(/^RAL/,'').replace(/^[-:]/,'');
+  if(RAL_HEX[ral])return RAL_HEX[ral];
+  return undefined;
+}
+function applyCustomColor(){
+  var el=document.getElementById('fFarbeCustom');
+  var hint=document.getElementById('customColorHint');
+  var prev=document.getElementById('customColorPrev');
+  var raw=(el.value||'').trim();
+  if(!raw){
+    window._customColor='';
+    if(prev)prev.classList.add('hidden');
+    if(hint)hint.classList.add('hidden');
+    showToast('Eigene Farbe entfernt — gewählter Farbblock gilt.');
+    return;
+  }
+  var hex=resolveColor(raw);
+  if(!hex){
+    if(hint){hint.textContent='Nicht erkannt — Hex (#c2410c) oder RAL-Code (z. B. RAL 7016) eingeben.';hint.classList.remove('hidden');}
+    return;
+  }
+  window._customColor=hex;
+  window._accent=hex;
+  document.querySelectorAll('.swatch').forEach(function(s){s.classList.remove('active');});
+  if(prev){prev.style.background=hex;prev.classList.remove('hidden');}
+  if(hint)hint.classList.add('hidden');
+  showToast('Farbe übernommen: '+hex.toUpperCase());
 }
 </script>
 <script>
