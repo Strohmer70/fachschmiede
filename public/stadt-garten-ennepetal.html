@@ -711,10 +711,14 @@ async function applyRental(retry){
   /* 4) WhatsApp: Nummer setzen + Sichtbarkeit */
   if(waNum){ document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.href=a.href.replace(/wa\.me\/[0-9]+/,'wa.me/'+waNum); }); }
   if(!waOn||!waNum){ document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){ a.style.display='none'; }); }
-  /* 5) Google-Maps: Adresse oder Place ID */
+  /* 5) Google-Maps: Embed per ADRESSE (keyless!). q=place_id:... im Embed wird von Google
+     NICHT aufgeloest → Weltkarte. Place-ID steuert nur den "In Google Maps oeffnen"-Link
+     (oeffnet das echte Unternehmensprofil inkl. Bewertungen). */
   if(mapsOn&&(addr||placeId)){
+    if(addr){
+      document.querySelectorAll('iframe[src*="google.com/maps"]').forEach(function(f){ f.src='https://www.google.com/maps?q='+encodeURIComponent(addr)+'&z=15&hl=de&output=embed'; });
+    }
     var mq=placeId?('place_id:'+encodeURIComponent(placeId)):encodeURIComponent(addr);
-    document.querySelectorAll('iframe[src*="google.com/maps"]').forEach(function(f){ f.src='https://www.google.com/maps?q='+mq+'&z=14&output=embed'; });
     document.querySelectorAll('a[href*="google.com/maps/search"]').forEach(function(a){ a.href='https://www.google.com/maps/search/?api=1&query='+mq; });
   }
   /* 6) Über-uns Text ersetzen */
