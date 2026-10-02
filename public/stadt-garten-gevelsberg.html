@@ -867,19 +867,24 @@ async function applyRental(retry){
   if(mods.blog===false)hideSel('#ratgeber');
   if(mods.faq===false)hideSel('#faq');
   if(mods.kennzahlen===false){var ksEl=document.getElementById('miet-stats');if(ksEl)ksEl.style.display='none';}
-  /* 8b) Eigene Leistungen des Mieters (2026-10-02) — VOR Block 9 einfuegen,
-     damit services_active-Toggles (Label-Match) auch fuer eigene Karten greifen */
+  /* 8b) Eigene Leistungen des Mieters (2026-10-03) — Name + optionaler Kurztext.
+     VOR Block 9 einfuegen, damit services_active-Toggles auch fuer eigene Karten greifen.
+     Legacy: String-Eintraege werden als Name-only behandelt. */
   var cus=d.custom_services||[];
   if(cus.length){
     var lgrid=document.querySelector('#leistungen .grid');
     if(lgrid){cus.forEach(function(cn){
       if(!cn)return;
+      var nm=(typeof cn==='string')?cn:((cn&&(cn.name||cn.n))||'');
+      if(!nm)return;
+      var dc=(typeof cn==='string')?'':((cn&&(cn.desc||cn.d))||'');
       var cc=document.createElement('div');
       cc.className='reveal visible bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300';
-      cc.innerHTML='<span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">🏷️</span><h3 class="mt-4 text-lg font-bold text-ink-900">'+esc(cn)+'</h3>';
+      cc.innerHTML='<span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">🏷️</span><h3 class="mt-4 text-lg font-bold text-ink-900">'+esc(nm)+'</h3>'+(dc?'<p class="mt-2 text-ink-600 text-sm leading-relaxed">'+esc(dc)+'</p>':'');
       lgrid.appendChild(cc);
     });}
   }
+
   /* 9) Leistungskarten ein/aus — Label = exakter h3-Text (SSOT PAGE_SERVICES) */
   var svcs=d.services_active||{};
   if(Object.keys(svcs).length){

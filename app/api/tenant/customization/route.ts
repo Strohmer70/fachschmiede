@@ -180,10 +180,24 @@ export async function PATCH(request: Request) {
     }
     update.services_active = clean
   }
-  // 2026-10-02: Eigene Leistungen des Mieters (Array von Namen, max 6, je 60 Zeichen)
+  // 2026-10-03: Eigene Leistungen = [{name, desc}] — kurzer Beschreibungstext optional.
+  // Legacy-Strings werden automatisch zu {name, desc:''} normalisiert.
   if (body.custom_services !== undefined) {
     const raw = Array.isArray(body.custom_services) ? body.custom_services : []
-    const items = Array.from(new Set(raw.map((s: unknown) => String(s || '').trim().slice(0, 60)).filter(Boolean))).slice(0, 6)
+    const items = Array.from(new Set(raw.map((s: unknown) => {
+      if (typeof s === 'string') return JSON.stringify({ name: s.trim().slice(0, 60), desc: '' })
+      if (s && typeof s === 'object') {
+        const o = s as Record<string, unknown>
+        return JSON.stringify({
+          name: String(o.name || o.n || '').trim().slice(0, 60),
+          desc: String(o.desc || o.d || '').trim().slice(0, 140),
+        })
+      }
+      return ''
+    }).filter((x: string) => {
+      if (!x) return false
+      try { return !!JSON.parse(x).name } catch { return false }
+    }))).map((j: unknown) => JSON.parse(j as string) as { name: string; desc: string }).slice(0, 8)
     update.custom_services = items.length ? items : null
   }
   if (Object.keys(update).length === 0) {

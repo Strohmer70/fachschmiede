@@ -276,11 +276,13 @@ tailwind.config = {
           <div id="svcEditor" class="hidden mt-4 bg-white rounded-xl border border-brand-300 p-4 space-y-3">
             <label class="block text-sm font-bold text-ink-800">Name der eigenen Leistung</label>
             <input id="newSvcName" type="text" maxlength="60" placeholder="z. B. Dachrinnenreinigung" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label class="block text-sm font-bold text-ink-800">Kurztext <span class="font-normal text-ink-400">(optional, max. 140 Zeichen)</span></label>
+            <textarea id="newSvcDesc" rows="2" maxlength="140" placeholder="1–2 Sätze: Was steckt dahinter? Wie läuft es ab?" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
             <div class="flex gap-2">
-              <button onclick="confirmAddSvc()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-2.5 rounded-lg transition">Hinzufügen</button>
+              <button onclick="confirmAddSvc()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-2.5 rounded-lg transition">Speichern</button>
               <button onclick="toggleSvcEditor()" class="px-4 border border-ink-200 text-ink-600 font-bold text-sm rounded-lg hover:bg-ink-50 transition">Abbrechen</button>
             </div>
-            <p class="text-xs text-ink-400">Erscheint als zusätzliche Karte im Leistungs-Bereich deiner Seite. Maximal 6 eigene Leistungen.</p>
+            <p class="text-xs text-ink-400">Erscheint als zusätzliche Karte im Leistungs-Bereich deiner Seite – mit Kurztext unter der Überschrift, wie bei den Standard-Leistungen. Maximal 8 eigene Leistungen.</p>
           </div>
           <div id="customServices" class="mt-3 space-y-3"></div>
         </div>
@@ -657,7 +659,7 @@ async function loadDashboard(){
     _t('tglEu',c.eu_streitschlichtung===true);_v('fDsbe',c.datenschutz_beauftragter);
     /* ── 2026-10-01: Leistungskarten + Seiten-Module ── */
     renderServiceToggles(data.available_services||[], (c.services_active)||{});
-    window._customServices=c.custom_services||[];
+    window._customServices=(c.custom_services||[]).map(function(s){return (typeof s==='string')?{name:s,desc:''}:s;});
     renderCustomServices();
     var mods=c.modules_enabled||{};
     _t('tglModNotdienst',mods.notdienst_banner!==false);
@@ -790,7 +792,7 @@ async function saveDashboard(){
       kennzahlen:on('tglModKennzahlen')
     },
     services_active:(function(){var o={};document.querySelectorAll('#serviceToggles .toggle[data-svc], #customServices .toggle[data-svc]').forEach(function(t){o[t.getAttribute('data-svc')]=t.classList.contains('on');});return o;})(),
-    custom_services:(window._customServices&&window._customServices.length?window._customServices:null)
+    custom_services:(window._customServices&&window._customServices.length?window._customServices.map(function(s){return (typeof s==='string')?{name:s,desc:''}:s;}).slice(0,8):null)
   };
   var btn=(window.event&&window.event.target)?window.event.target:null;
   if(btn){btn.disabled=true;btn.textContent='⏳ Speichere...';}
@@ -892,25 +894,45 @@ function renderServiceToggles(list, active){
       +'<span class="toggle'+(isOn?' on':'')+'" data-svc="'+escHtml(s.label)+'" onclick="toggleSwitch(this)"></span></div>';
   }).join('');
 }
-// Eigene Leistungen (2026-10-02) — Mieter definieren eigene Karten-Namen
+// Eigene Leistungen (2026-10-03) — Name + optionaler Kurztext; Legacy-Strings werden normalisiert
 window._customServices = [];
+window._svcEditIdx = null;
+function svcName(s){return (typeof s==='string')?s:((s&&(s.name||s.n))||'');}
+function svcDesc(s){return (typeof s==='string')?'':((s&&(s.desc||s.d))||'');}
 function toggleSvcEditor(){
   var ed=document.getElementById('svcEditor'), btn=document.getElementById('btnAddSvc');
   if(!ed||!btn) return;
   ed.classList.toggle('hidden'); btn.classList.toggle('hidden');
   if(!ed.classList.contains('hidden')){ var i=document.getElementById('newSvcName'); if(i) i.focus(); }
+  else { window._svcEditIdx=null; var ta=document.getElementById('newSvcDesc'); if(ta) ta.value=''; }
+}
+function editCustomService(idx){
+  var s=(window._customServices||[])[idx]; if(!s) return;
+  var n=document.getElementById('newSvcName'), ta=document.getElementById('newSvcDesc');
+  var ed=document.getElementById('svcEditor'), btn=document.getElementById('btnAddSvc');
+  if(n) n.value=svcName(s); if(ta) ta.value=svcDesc(s);
+  window._svcEditIdx=idx;
+  if(ed&&btn){ed.classList.remove('hidden');btn.classList.add('hidden');}
+  if(n) n.focus();
 }
 function confirmAddSvc(){
   var i=document.getElementById('newSvcName');
   var name=((i&&i.value)||'').trim();
   if(!name){ showToast('Bitte einen Namen eingeben.'); return; }
-  if((window._customServices||[]).some(function(s){return s.toLowerCase()===name.toLowerCase();})){ showToast('Diese Leistung gibt es bereits.'); return; }
-  if((window._customServices||[]).length>=6){ showToast('Maximal 6 eigene Leistungen möglich.'); return; }
-  window._customServices.push(name);
-  if(i) i.value='';
+  var ta=document.getElementById('newSvcDesc');
+  var desc=(ta?((ta.value||'').trim()):'').slice(0,140);
+  var editIdx=(typeof window._svcEditIdx==='number')?window._svcEditIdx:null;
+  var list=window._customServices||[];
+  if(editIdx===null||editIdx<0||!list[editIdx]){
+    if(list.some(function(s){return svcName(s).toLowerCase()===name.toLowerCase();})){ showToast('Diese Leistung gibt es bereits.'); return; }
+    if(list.length>=8){ showToast('Maximal 8 eigene Leistungen möglich.'); return; }
+  }
+  var obj={name:name,desc:desc};
+  if(editIdx!==null&&editIdx>=0&&list[editIdx]){ window._customServices[editIdx]=obj; } else { window._customServices.push(obj); }
+  if(i) i.value=''; if(ta) ta.value=''; window._svcEditIdx=null;
   renderCustomServices();
   toggleSvcEditor();
-  showToast('✓ Eigene Leistung hinzugefügt – nicht vergessen: Änderungen speichern!');
+  showToast('✓ Eigene Leistung übernommen – nicht vergessen: Änderungen speichern!');
 }
 function removeCustomService(idx){
   window._customServices=(window._customServices||[]).filter(function(_,i){return i!==idx;});
@@ -923,12 +945,14 @@ function renderCustomServices(){
   var prev={};
   wrap.querySelectorAll('.toggle[data-svc]').forEach(function(t){prev[t.getAttribute('data-svc')]=t.classList.contains('on');});
   var list=window._customServices||[];
-  wrap.innerHTML=list.map(function(name,i){
+  wrap.innerHTML=list.map(function(s,i){
+    var nm=svcName(s), dc=svcDesc(s);
     return '<div class="flex items-center justify-between bg-white rounded-xl border-2 border-dashed border-brand-200 p-4">'
-      +'<div class="min-w-0"><p class="font-semibold text-sm text-ink-800 truncate">🏷️ '+escHtml(name)+'</p>'
-      +'<p class="text-xs text-brand-600 font-semibold">Eigene Leistung</p></div>'
+      +'<div class="min-w-0"><p class="font-semibold text-sm text-ink-800 truncate">🏷️ '+escHtml(nm)+'</p>'
+      +(dc?'<p class="text-xs text-ink-500 mt-0.5">'+escHtml(dc)+'</p>':'<p class="text-xs text-brand-600 font-semibold">Eigene Leistung</p>')+'</div>'
       +'<div class="flex items-center gap-3 shrink-0">'
-      +'<span class="toggle'+(prev[name]===false?'':' on')+'" data-svc="'+escHtml(name)+'" onclick="toggleSwitch(this)"></span>'
+      +'<span class="toggle'+(prev[nm]===false?'':' on')+'" data-svc="'+escHtml(nm)+'" onclick="toggleSwitch(this)"></span>'
+      +'<button onclick="editCustomService('+i+')" title="Bearbeiten" class="text-ink-300 hover:text-brand-600 transition text-lg leading-none px-1">✎</button>'
       +'<button onclick="removeCustomService('+i+')" title="Entfernen" class="text-ink-300 hover:text-red-500 transition text-lg leading-none px-1">✕</button></div></div>';
   }).join('');
 }
