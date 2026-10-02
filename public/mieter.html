@@ -272,7 +272,17 @@ tailwind.config = {
           <div id="serviceToggles" class="space-y-3">
             <div class="bg-white rounded-xl border border-ink-200 p-4 text-sm text-ink-500">Lade Leistungen ...</div>
           </div>
-          <button onclick="showToast('Eigene Leistungen folgen in Kürze.')" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
+          <button id="btnAddSvc" onclick="toggleSvcEditor()" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
+          <div id="svcEditor" class="hidden mt-4 bg-white rounded-xl border border-brand-300 p-4 space-y-3">
+            <label class="block text-sm font-bold text-ink-800">Name der eigenen Leistung</label>
+            <input id="newSvcName" type="text" maxlength="60" placeholder="z. B. Dachrinnenreinigung" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <div class="flex gap-2">
+              <button onclick="confirmAddSvc()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-2.5 rounded-lg transition">Hinzufügen</button>
+              <button onclick="toggleSvcEditor()" class="px-4 border border-ink-200 text-ink-600 font-bold text-sm rounded-lg hover:bg-ink-50 transition">Abbrechen</button>
+            </div>
+            <p class="text-xs text-ink-400">Erscheint als zusätzliche Karte im Leistungs-Bereich deiner Seite. Maximal 6 eigene Leistungen.</p>
+          </div>
+          <div id="customServices" class="mt-3 space-y-3"></div>
         </div>
         <div>
           <h3 class="font-bold text-ink-900 mb-4">Seiten-Module</h3>
@@ -647,6 +657,8 @@ async function loadDashboard(){
     _t('tglEu',c.eu_streitschlichtung===true);_v('fDsbe',c.datenschutz_beauftragter);
     /* ── 2026-10-01: Leistungskarten + Seiten-Module ── */
     renderServiceToggles(data.available_services||[], (c.services_active)||{});
+    window._customServices=c.custom_services||[];
+    renderCustomServices();
     var mods=c.modules_enabled||{};
     _t('tglModNotdienst',mods.notdienst_banner!==false);
     _t('tglModBewertungen',mods.bewertungen!==false);
@@ -777,7 +789,8 @@ async function saveDashboard(){
       faq:on('tglModFaq'),
       kennzahlen:on('tglModKennzahlen')
     },
-    services_active:(function(){var o={};document.querySelectorAll('#serviceToggles .toggle[data-svc]').forEach(function(t){o[t.getAttribute('data-svc')]=t.classList.contains('on');});return o;})()
+    services_active:(function(){var o={};document.querySelectorAll('#serviceToggles .toggle[data-svc], #customServices .toggle[data-svc]').forEach(function(t){o[t.getAttribute('data-svc')]=t.classList.contains('on');});return o;})(),
+    custom_services:(window._customServices&&window._customServices.length?window._customServices:null)
   };
   var btn=(window.event&&window.event.target)?window.event.target:null;
   if(btn){btn.disabled=true;btn.textContent='⏳ Speichere...';}
@@ -877,6 +890,46 @@ function renderServiceToggles(list, active){
     return '<div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">'
       +'<span class="font-semibold text-sm text-ink-800">'+escHtml((s.emoji?s.emoji+' ':'')+s.label)+'</span>'
       +'<span class="toggle'+(isOn?' on':'')+'" data-svc="'+escHtml(s.label)+'" onclick="toggleSwitch(this)"></span></div>';
+  }).join('');
+}
+// Eigene Leistungen (2026-10-02) — Mieter definieren eigene Karten-Namen
+window._customServices = [];
+function toggleSvcEditor(){
+  var ed=document.getElementById('svcEditor'), btn=document.getElementById('btnAddSvc');
+  if(!ed||!btn) return;
+  ed.classList.toggle('hidden'); btn.classList.toggle('hidden');
+  if(!ed.classList.contains('hidden')){ var i=document.getElementById('newSvcName'); if(i) i.focus(); }
+}
+function confirmAddSvc(){
+  var i=document.getElementById('newSvcName');
+  var name=((i&&i.value)||'').trim();
+  if(!name){ showToast('Bitte einen Namen eingeben.'); return; }
+  if((window._customServices||[]).some(function(s){return s.toLowerCase()===name.toLowerCase();})){ showToast('Diese Leistung gibt es bereits.'); return; }
+  if((window._customServices||[]).length>=6){ showToast('Maximal 6 eigene Leistungen möglich.'); return; }
+  window._customServices.push(name);
+  if(i) i.value='';
+  renderCustomServices();
+  toggleSvcEditor();
+  showToast('✓ Eigene Leistung hinzugefügt – nicht vergessen: Änderungen speichern!');
+}
+function removeCustomService(idx){
+  window._customServices=(window._customServices||[]).filter(function(_,i){return i!==idx;});
+  renderCustomServices();
+  showToast('Leistung entfernt – Änderungen speichern nicht vergessen.');
+}
+function renderCustomServices(){
+  var wrap=document.getElementById('customServices');
+  if(!wrap) return;
+  var prev={};
+  wrap.querySelectorAll('.toggle[data-svc]').forEach(function(t){prev[t.getAttribute('data-svc')]=t.classList.contains('on');});
+  var list=window._customServices||[];
+  wrap.innerHTML=list.map(function(name,i){
+    return '<div class="flex items-center justify-between bg-white rounded-xl border-2 border-dashed border-brand-200 p-4">'
+      +'<div class="min-w-0"><p class="font-semibold text-sm text-ink-800 truncate">🏷️ '+escHtml(name)+'</p>'
+      +'<p class="text-xs text-brand-600 font-semibold">Eigene Leistung</p></div>'
+      +'<div class="flex items-center gap-3 shrink-0">'
+      +'<span class="toggle'+(prev[name]===false?'':' on')+'" data-svc="'+escHtml(name)+'" onclick="toggleSwitch(this)"></span>'
+      +'<button onclick="removeCustomService('+i+')" title="Entfernen" class="text-ink-300 hover:text-red-500 transition text-lg leading-none px-1">✕</button></div></div>';
   }).join('');
 }
 // Farbwahl
