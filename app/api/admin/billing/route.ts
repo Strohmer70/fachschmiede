@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
+// Data-Cache aus (vgl. stats route — 2026-10-02)
+export const revalidate = 0
 
 // 2026-10-01: Komplett-Rewrite.
 // - Vorher: MRR zählte ALLE 'rented' Seiten (Testmieten ohne Stripe = Phantom-Umsatz)

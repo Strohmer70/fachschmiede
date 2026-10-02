@@ -965,7 +965,8 @@ async function loadBillingData() {
     if (testEl) testEl.textContent = (stats.testCount ?? 0) + ' × ' + (stats.standardPrice ?? 189) + ' €';
 
     const proEl = document.getElementById('billPro');
-    if (proEl) proEl.textContent = stats.proCount + ' × ' + stats.proPrice + ' €';
+    // Fallback ?? 0 — Backend liefert proCount/proPrice noch nicht (war 'undefined × undefined €')
+    if (proEl) proEl.textContent = (stats.proCount ?? 0) + ' × ' + (stats.proPrice ?? 0) + ' €';
 
     // Tenant table
     const tbody = document.getElementById('billTenantTbody');

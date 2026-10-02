@@ -3,6 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 // API-Routen dürfen NIEMALS statisch generiert werden
 export const dynamic = 'force-dynamic'
+// Data-Cache komplett aus — sonst zeigt die Übersicht wochenalte Daten (Bug 2026-10-02)
+export const revalidate = 0
 
 export async function GET() {
   try {
@@ -115,7 +117,7 @@ export async function GET() {
       tenants: tenants || [],
       // WICHTIG: Keine 'pages' mehr hier!
       // Pages werden über /api/admin/pages?page=1&limit=50 geladen
-    })
+    }, { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } })
 
   } catch (error: any) {
     console.error('Admin stats error:', error)
@@ -125,6 +127,6 @@ export async function GET() {
       stats: { total: 0, rented: 0, available: 0, leads: 0, tenants: 0, mrr: 0, arr: 0 },
       recentLeads: [],
       tenants: [],
-    }, { status: 500 })
+    }, { status: 500, headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } })
   }
 }
