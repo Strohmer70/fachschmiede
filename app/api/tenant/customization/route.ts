@@ -183,7 +183,7 @@ export async function PATCH(request: Request) {
   // 2026-10-02: Eigene Leistungen des Mieters (Array von Namen, max 6, je 60 Zeichen)
   if (body.custom_services !== undefined) {
     const raw = Array.isArray(body.custom_services) ? body.custom_services : []
-    const items = [...new Set(raw.map(s => String(s || '').trim().slice(0, 60)).filter(Boolean))].slice(0, 6)
+    const items = Array.from(new Set(raw.map((s: unknown) => String(s || '').trim().slice(0, 60)).filter(Boolean))).slice(0, 6)
     update.custom_services = items.length ? items : null
   }
   if (Object.keys(update).length === 0) {
