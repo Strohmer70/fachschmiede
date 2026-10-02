@@ -203,8 +203,23 @@ tailwind.config = {
                 </div>
                 <span id="tglWa" class="toggle on" onclick="toggleSwitch(this)"></span>
               </div>
-              <input id="fWaNum" type="text" value="" placeholder="+49 ..." class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-              <p class="mt-2 text-[11px] text-ink-400">Handynummer mit Ländervorwahl. Daraus wird automatisch der Chat-Link <span class="font-mono">wa.me/49151...</span> erzeugt - mehr müssen Sie nicht tun.</p>
+              <div class="mt-3 flex gap-2">
+                <select id="fWaLand" class="w-[7.5rem] shrink-0 rounded-lg border border-ink-200 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white">
+                  <option value="49" selected>🇩🇪 +49</option>
+                  <option value="43">🇦🇹 +43</option>
+                  <option value="41">🇨🇭 +41</option>
+                  <option value="31">🇳🇱 +31</option>
+                  <option value="32">🇧🇪 +32</option>
+                  <option value="352">🇱🇺 +352</option>
+                  <option value="39">🇮🇹 +39</option>
+                  <option value="34">🇪🇸 +34</option>
+                  <option value="33">🇫🇷 +33</option>
+                  <option value="48">🇵🇱 +48</option>
+                  <option value="">Andere …</option>
+                </select>
+                <input id="fWaNum" type="tel" value="" placeholder="15123456789" class="flex-1 min-w-0 rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              </div>
+              <p class="mt-2 text-[11px] text-ink-400">Vorwahl über das Land wählen, dann die Nummer <strong>ohne führende 0</strong> eingeben (z. B. 15123456789). Daraus wird automatisch der Chat-Link <span class="font-mono">wa.me/49151...</span> erzeugt - mehr müssen Sie nicht tun.</p>
             </div>
             <div class="bg-white rounded-xl border border-ink-200 p-4">
               <div class="flex items-center justify-between gap-4">
@@ -650,7 +665,8 @@ async function loadDashboard(){
     function _t(id,val){var el=document.getElementById(id);if(el)el.classList.toggle('on',val===true);}
     _v('fOeffnung',c.opening_hours);
     _v('fGebiete',Array.isArray(c.service_areas)?c.service_areas.join(', '):c.service_areas);
-    _v('fWaNum',c.whatsapp_number);_t('tglWa',c.whatsapp_enabled!==false);
+    (function(){var w=waSplit(c.whatsapp_number);var sel=document.getElementById('fWaLand');if(sel)sel.value=w.code;var inp=document.getElementById('fWaNum');if(inp)inp.value=w.num;})();
+    _t('tglWa',c.whatsapp_enabled!==false);
     _v('fWebUrl',c.website_url);_t('tglWeb',c.website_enabled===true);
     _v('fGbpUrl',c.google_business_url);_t('tglGbp',c.google_business_enabled===true);
     _v('fPlaceId',c.google_maps_place_id);_t('tglMaps',c.google_maps_enabled!==false);
@@ -797,7 +813,7 @@ async function saveDashboard(){
     address:v('fRechtAdr')||v('fAdresse'),
     opening_hours:v('fOeffnung'), about_text:v('fWillkommen'),
     service_areas:v('fGebiete'),
-    whatsapp_number:v('fWaNum'), whatsapp_enabled:on('tglWa'),
+    whatsapp_number:(function(){var sel=document.getElementById('fWaLand');var code=sel?sel.value:'';var raw=String((document.getElementById('fWaNum')||{}).value||'').replace(/[^0-9]/g,'').replace(/^0+/,'');if(!raw)return '';return code?('+'+code+raw):('+'+raw);})(), whatsapp_enabled:on('tglWa'),
     website_url:v('fWebUrl'), website_enabled:on('tglWeb'),
     google_business_url:v('fGbpUrl'), google_business_enabled:on('tglGbp'),
     google_maps_place_id:v('fPlaceId'), google_maps_enabled:on('tglMaps'),
@@ -925,6 +941,17 @@ window._customServices = [];
 window._svcEditIdx = null;
 function svcName(s){return (typeof s==='string')?s:((s&&(s.name||s.n))||'');}
 function svcDesc(s){return (typeof s==='string')?'':((s&&(s.desc||s.d))||'');}
+// WhatsApp-Ländervorwahl: gespeicherte Nummer in Land + Rest aufteilen
+function waSplit(v){
+  var s=String(v||'').replace(/[^0-9+]/g,'');
+  if(!s)return {code:'49',num:''};
+  if(s.indexOf('+')===0)s=s.slice(1);
+  if(s.indexOf('00')===0)s=s.slice(2);
+  if(s.charAt(0)==='0')return {code:'49',num:s.replace(/^0+/,'')};
+  var codes=['352','420','43','49','41','31','32','39','34','33','48'];
+  for(var i=0;i<codes.length;i++){if(s.indexOf(codes[i])===0)return {code:codes[i],num:s.slice(codes[i].length).replace(/^0+/,'')};}
+  return {code:'',num:s};
+}
 function toggleSvcEditor(){
   var ed=document.getElementById('svcEditor'), btn=document.getElementById('btnAddSvc');
   if(!ed||!btn) return;
