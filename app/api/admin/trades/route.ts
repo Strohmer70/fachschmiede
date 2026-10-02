@@ -6,6 +6,8 @@ import { createClient } from '@supabase/supabase-js'
 // ═══════════════════════════════════════════
 
 export const dynamic = 'force-dynamic'
+// Data-Cache aus (2026-10-02)
+export const revalidate = 0
 
 // Erstelle Admin-Client direkt in der Route (robuster)
 function getSupabaseAdmin() {
@@ -20,7 +22,9 @@ function getSupabaseAdmin() {
   }
   
   return createClient(supabaseUrl, supabaseServiceKey, {
-    auth: { autoRefreshToken: false, persistSession: false }
+    auth: { autoRefreshToken: false, persistSession: false },
+    // 2026-10-02: Data-Cache-Bug Fix — jeder Fetch no-store (vgl. lib/supabase.ts)
+    global: { fetch: ((url: any, init: any = {}) => fetch(url, { ...init, cache: 'no-store' as any })) as typeof fetch }
   })
 }
 
@@ -76,13 +80,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       trades: tradesWithCounts
-    })
+    }, { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } })
     
   } catch (err: any) {
     console.error('Trades GET error:', err)
     return NextResponse.json(
       { success: false, error: err.message },
-      { status: 500 }
+      { status: 500, headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
     )
   }
 }

@@ -21,7 +21,9 @@ function getSupabaseAdmin() {
   }
   
   return createClient(supabaseUrl, supabaseServiceKey, {
-    auth: { autoRefreshToken: false, persistSession: false }
+    auth: { autoRefreshToken: false, persistSession: false },
+    // 2026-10-02: Data-Cache-Bug Fix — jeder Fetch no-store (vgl. lib/supabase.ts)
+    global: { fetch: ((url: any, init: any = {}) => fetch(url, { ...init, cache: 'no-store' as any })) as typeof fetch }
   })
 }
 
