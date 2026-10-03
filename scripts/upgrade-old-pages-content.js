@@ -244,7 +244,7 @@ const CITY_DATA = {
     climate: 'Der Übergang zum bergischen Land bringt mehr Niederschlag — Dach- und Fassadenwartung sind hier besonders wichtig.',
     character: 'das Tor zum Bergischen Land, geprägt von klassizistischer Architektur und dem charmanten Haus Martfeld',
   },
-  enneetal: {
+  ennepetal: {
     name: 'Ennepetal',
     pop: '30.000',
     region: 'südliches Ruhrgebiet / Ennepe',
@@ -838,7 +838,7 @@ const GARDEN_LOCAL_SECTIONS = {
       { district: 'Brille', title: 'Schattengarten unter Eiche', desc: 'Pflanzung unter einer alten Eiche mit Maiglöckchen, Waldmeister und Schwertlilie — ein grüner Teppich im Schatten.' },
     ]
   },
-  enneetal: {
+  ennepetal: {
     projects: [
       { district: 'Voerde', title: 'Feuchtigkeitsgarten am Bach', desc: 'Bepflanzung eines feuchten Grundstücksteils mit Bachbunge, Wasserdost und Fieberklee — ein natürlicher Bachlauf als Blickfang.' },
       { district: 'Rüggeberg', title: 'Dränage + Rasenneuanlage', desc: 'Verbesserung der Drainage und Neuanlage eines Robustrasens, der auch im Schatten dicht bleibt.' },
@@ -1024,7 +1024,7 @@ const GARDEN_SERVICE_DESCRIPTIONS = {
     'Gartenpflege & Unterhalt': 'Gartenpflege für Schwelms kleine Gärten. Beete pflegen, Obstbäume schneiden, Miniteiche reinigen — effizient und zuverlässig.',
     'Herbst- & Winterdienst': 'Winterdienst für Schwelm. Kleine Gärten einwintern, Laub kompostieren, Hochbeete vorbereiten — bereit für den Frühling.',
   },
-  enneetal: {
+  ennepetal: {
     'Gartengestaltung': 'Gartengestaltung für das Ennepe-Tal. Bachlauf-Pflanzungen, Feuchtigkeitsbeete und naturnahe Konzepte für Voerde und Rüggeberg.',
     'Baumfällung & Pflege': 'Baumpflege im Ennepe-Tal. Bäume an Bachläufen in Voerde und Rüggeberg schneiden — wir arbeiten mit dem Wasser, nicht dagegen.',
     'Rasen & Bepflanzung': 'Feuchtigkeitsliebende Pflanzen für Ennepetal. Bachbunge, Wasserdost und Fieberklee für Gärten im Tal — in Altenvoerde und Haspe.',
@@ -1199,7 +1199,7 @@ const GARDEN_SEASON_CALENDAR = {
 <p><strong>Mai:</strong> Kräutergarten bepflanzen. Thymian, Salbei und Rosmarin in Hattingens historischen Innenhöfen.</p>
 <p><strong>September:</strong> Verwunschener Garten pflegen. Weidenbögen erneuern, Wildrosen schneiden.</p>`,
 
-  enneetal: `<p><strong>März:</strong> Bachlauf reinigen. Laub aus den Gräben in Voerde und Rüggeberg entfernen.</p>
+  ennepetal: `<p><strong>März:</strong> Bachlauf reinigen. Laub aus den Gräben in Voerde und Rüggeberg entfernen.</p>
 <p><strong>April:</strong> Feuchtigkeitsbeet anlegen. Bachbunge und Wasserdost an den Ufern einpflanzen.</p>
 <p><strong>Mai:</strong> Dränage verbessern. In Altenvoerde und Haspe drainagebedürftige Bereiche erneuern.</p>
 <p><strong>Oktober:</strong> Vier-Jahreszeiten-Beet pflegen. Herbstastern schneiden, Krokusse für den Frühling setzen.</p>`,
@@ -1273,10 +1273,6 @@ const GARDEN_FAQS = {
   schwelm: [
     { q: 'Wie nutze ich einen kleinen Garten in Schwelm optimal?', a: 'Mit hochstämmigen Obstbäumen (Vertikale), vertikalen Beeten an Mauern und einem Mini-Teich im Fass. Kleine Gärten brauchen klare Konzepte — wir planen jeden Quadratmeter.' },
     { q: 'Welche Schattenpflanzen wachsen in Schwelm?', a: 'Maiglöckchen, Waldmeister, Schwertlilie, Funkien und Bergenie. Schwelms bergische Lage mit vielen Bäumen macht Schattenpflanzen oft zur Notwendigkeit.' },
-  ],
-  enneetal: [
-    { q: 'Wie kann ich meinen feuchten Garten im Ennepe-Tal nutzen?', a: 'Mit Feuchtigkeitsbeeten, Bachlauf-Pflanzungen und robusten Stauden. Bachbunge, Wasserdost und Fieberklee fühlen sich im Ennepe-Tal pudelwohl.' },
-    { q: 'Muss ich meinen Garten im Ennepe-Tal drainieren?', a: 'Nicht immer. Oft reicht es, feuchtigkeitsliebende Pflanzen zu setzen und die Wege zu erhöhen. Eine professionelle Analyse hilft, die richtige Lösung zu finden.' },
   ],
   gevelsberg: [
     { q: 'Wie befestige ich einen Steingarten in Gevelsberg?', a: 'Mit Trockenmauern aus Bruchstein, Gabionen oder bepflanzten Böschungen. Gevelsbergs steile Hänge verlangen nach fester Hand — wir haben die Erfahrung.' },
@@ -1374,7 +1370,7 @@ const GARDEN_CITY_GUIDES = {
 <p>Hier zeigt sich Erfahrung: Kleine Gärten brauchen klare Konzepte. Wir nutzen jeden Quadratmeter — mit ein paar hochstämmigen Obstbäumen, einem vertikalen Gemüsebeet und einem Mini-Teich im Fass. Kleiner Raum, große Wirkung.</p>
 <p>Schwelmer Gärten sind oft sehr persönlich. Wir nehmen uns Zeit, die Wünsche der Eigentümer zu verstehen, bevor wir den ersten Spatenstich setzen.</p>`,
 
-  enneetal: `<p>Das Ennepe-Tal ist grün, feucht und von sanften Hügeln geprägt. In Ennepetal-Voerde und Rüggeberg finden sich viele Gärten mit natürlichen Bachläufen oder Sickergräben, die das Wasser ableiten.</p>
+  ennepetal: `<p>Das Ennepe-Tal ist grün, feucht und von sanften Hügeln geprägt. In Ennepetal-Voerde und Rüggeberg finden sich viele Gärten mit natürlichen Bachläufen oder Sickergräben, die das Wasser ableiten.</p>
 <p>Feuchtigkeit ist hier Segen und Fluch zugleich. Pflanzen, die Nässe lieben, gedeihen prächtig — doch wer das falsche Beet anlegt, steht schnell knöchelhoch im Wasser. Wir analysieren die Drainage und passen das Pflanzschema daran an.</p>
 <p>Typisch fürs Ennepe-Tal: Gärten mit naturnahen Bachläufen, die wir mit passenden Pflanzen wie Bachbunge und Wasserdost einrahmen. Ein Blickfang, der zugleich ökologisch wertvoll ist.</p>`,
 
