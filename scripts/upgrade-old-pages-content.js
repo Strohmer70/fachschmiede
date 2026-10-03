@@ -506,7 +506,7 @@ function generateLeistungenIntro(tradeKey, citySlug) {
   
   const intros = [
     `Ob Gründerzeit-Haus in ${d1.name} oder modernes Gebäude in ${d2.name} — wir kennen die Bauweise in ${city.name} und wissen, worauf es bei ${trade.services} hier ankommt.`,
-    `Von ${d1.name} bis ${d2.name}: Unsere ${trade.name.toLowerCase()}-Leistungen sind auf den lokalen Wohnungsbestand in ${city.name} abgestimmt. ${city.climate}`,
+    `Von ${d1.name} bis ${d2.name}: Unsere ${trade.name}-Leistungen sind auf den lokalen Wohnungsbestand in ${city.name} abgestimmt. ${city.climate}`,
     `Jeder Stadtteil in ${city.name} hat seine eigenen Herausforderungen — in ${d1.name} andere als in ${d2.name}. Wir bringen die Erfahrung mit, die Ihr Projekt braucht.`,
   ];
   
@@ -523,9 +523,9 @@ function generateUeberUnsText(tradeKey, citySlug) {
   const d1 = d[hash % d.length];
   
   const texts = [
-    `<p class="mt-4 text-ink-600 leading-relaxed">Als Team aus erfahrenen ${trade.name.toLowerCase()}-Fachkräften kennen wir ${city.name} in- und auswendig. Regelmäßig sind wir in ${d1.name} und den umliegenden Stadtteilen im Einsatz — von der ersten Besichtigung bis zur finalen Abnahme. Unser Anspruch: Arbeit, die hält, und ein Ergebnis, das überzeugt.</p>`,
+    `<p class="mt-4 text-ink-600 leading-relaxed">Als Team aus erfahrenen ${trade.name}-Fachkräften kennen wir ${city.name} in- und auswendig. Regelmäßig sind wir in ${d1.name} und den umliegenden Stadtteilen im Einsatz — von der ersten Besichtigung bis zur finalen Abnahme. Unser Anspruch: Arbeit, die hält, und ein Ergebnis, das überzeugt.</p>`,
     `<p class="mt-4 text-ink-600 leading-relaxed">Was uns in ${city.name} antreibt? Die Vielfalt der Projekte. Kein Haus in ${d1.name} gleicht dem anderen — und genau das macht unsere Arbeit spannend. Wir bringen jahrzehntelange Erfahrung mit und bleiben gleichzeitig am Puls der Zeit.</p>`,
-    `<p class="mt-4 text-ink-600 leading-relaxed">${city.name} ist unser Zuhause. Wir wohnen hier, arbeiten hier, kennen die Menschen und die Häuser. Ob in ${d1.name} oder einem der anderen Stadtteile — wenn Sie einen ${trade.name.toLowerCase()} suchen, der die Region wirklich kennt, sind Sie bei uns richtig.</p>`,
+    `<p class="mt-4 text-ink-600 leading-relaxed">${city.name} ist unser Zuhause. Wir wohnen hier, arbeiten hier, kennen die Menschen und die Häuser. Ob in ${d1.name} oder einem der anderen Stadtteile — wenn Sie einen ${trade.name} suchen, der die Region wirklich kennt, sind Sie bei uns richtig.</p>`,
   ];
   
   return texts[hash % texts.length];
@@ -563,7 +563,7 @@ function generateLocalSection(tradeKey, citySlug) {
   // Vary paragraph order based on hash
   const paragraphs = [
     `<p class="text-lg">${angle}</p>`,
-    `<p>${city.name} ist ${city.character}. Mit rund ${city.pop} Einwohnern gehört ${city.name} zu ${city.region} — einer Region, in der die Ansprüche an moderne ${trade.name.toLowerCase()}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken alle Stadtteile ab: <strong class="text-ink-900">${districtList}</strong>.</p>`,
+    `<p>${city.name} ist ${city.character}. Mit rund ${city.pop} Einwohnern gehört ${city.name} zu ${city.region} — einer Region, in der die Ansprüche an moderne ${trade.name}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken alle Stadtteile ab: <strong class="text-ink-900">${districtList}</strong>.</p>`,
     `<p>Unsere Kunden in ${city.name} schätzen vor allem drei Dinge: transparente Festpreise, verlässliche Termine und saubere Arbeit. Egal ob es um ein Einfamilienhaus in ${highlighted[0].name} geht oder um eine Wohnanlage im Zentrum — wir behandeln jedes Projekt so, als wäre es unser eigenes.</p>`,
   ];
   
@@ -660,20 +660,20 @@ function generateCityGuideSection(tradeKey, citySlug) {
   ];
   
   const districtPars = [
-    `In ${d1.name} ${d1.desc.toLowerCase()}. ${d2.name} ${d2.desc.toLowerCase()}. Und in ${d3.name} sieht es wieder anders aus. Für uns als ${trade.name.toLowerCase()} heißt das: kein Projekt gleicht dem anderen.`,
+    `In ${d1.name} ${d1.desc}. ${d2.name} ${d2.desc}. Und in ${d3.name} sieht es wieder anders aus. Für uns als ${trade.name} heißt das: kein Projekt gleicht dem anderen.`,
     `${d1.name}, ${d2.name}, ${d3.name} — drei Stadtteile, drei verschiedene Herausforderungen. ${d1.desc}. ${d2.desc}. Wir kennen die Unterschiede und passen unsere Arbeitsweise entsprechend an.`,
-    `Von ${d1.name} über ${d2.name} bis ${d3.name}: Jeder Stadtteil verlangt ein eigenes Konzept. ${d1.desc.charAt(0).toUpperCase() + d1.desc.slice(1)} — dagegen ${d3.desc.toLowerCase()}.`,
+    `Von ${d1.name} über ${d2.name} bis ${d3.name}: Jeder Stadtteil verlangt ein eigenes Konzept. ${d1.desc} — dagegen ${d3.desc}.`,
   ];
   
   const climatePars = [
     city.climate,
-    `Dazu kommt das Wetter: ${city.climate.charAt(0).toLowerCase() + city.climate.slice(1)}`,
-    `Und dann ist da noch die Wetterlage. ${city.climate.charAt(0).toLowerCase() + city.climate.slice(1)} Das sollte bei jeder Planung berücksichtigt werden.`,
+    `Dazu kommt das Wetter: ${city.climate}`,
+    `Und dann ist da noch die Wetterlage. ${city.climate} Das sollte bei jeder Planung berücksichtigt werden.`,
   ];
   
   const closingPars = [
     `Ob Sie in ${d1.name} wohnen oder in ${d3.name} — wir sind schnell vor Ort und kennen die örtlichen Gegebenheiten. Kontaktieren Sie uns für ein unverbindliches Beratungsgespräch.`,
-    `Egal ob ${d1.name}, ${d2.name} oder ${d3.name} — wenn Sie einen zuverlässigen ${trade.name.toLowerCase()} in ${city.name} suchen, sind Sie bei uns richtig.`,
+    `Egal ob ${d1.name}, ${d2.name} oder ${d3.name} — wenn Sie einen zuverlässigen ${trade.name} in ${city.name} suchen, sind Sie bei uns richtig.`,
     `Kurz gesagt: In ${d1.name} genauso wie in ${d3.name} — wir bringen die Erfahrung mit, die Ihr Projekt braucht.`,
   ];
   
