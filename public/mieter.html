@@ -148,6 +148,7 @@ tailwind.config = {
       <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="bewertungen">⭐ Bewertungen</button>
       <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="leads">📥 Anfragen</button>
       <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="rechtliches">⚖️ Rechtliches</button>
+      <button class="tab-btn px-5 py-4 whitespace-nowrap" data-tab="support">🆘 Support</button>
     </div>
 
     <!-- ───────── TAB 1: FIRMENPROFIL ───────── -->
@@ -587,6 +588,23 @@ tailwind.config = {
       </div>
     </div>
 
+    <div class="tab-panel p-6 sm:p-8" id="tab-support">
+      <h2 class="text-lg font-black text-ink-900">🆘 Support</h2>
+      <p class="text-sm text-ink-500 mt-1 mb-6">Problem mit deiner Mietseite? Idee für ein Feature? Schreib uns direkt hier – die Anfrage landet als Ticket bei uns und wir antworten per E-Mail, meist innerhalb von 24 Stunden.</p>
+      <div class="max-w-xl space-y-4">
+        <select id="supKat" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="">Worum geht es? *</option>
+          <option>⚠️ Problem: Technischer Fehler</option>
+          <option>⚠️ Problem: Onboarding hakt</option>
+          <option>💡 Verbesserungsvorschlag</option>
+          <option>💬 Sonstiges Anliegen</option>
+        </select>
+        <textarea id="supMsg" rows="4" placeholder="Beschreibe kurz dein Anliegen – je genauer, desto schneller können wir helfen … *" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+        <button type="button" onclick="tenantSupportSubmit()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl transition">Anfrage senden</button>
+        <p class="text-xs text-ink-400">Alternativ erreichst du uns per E-Mail: <a href="mailto:hello@fachschmiede.de" class="text-brand-600 font-bold hover:underline">hello@fachschmiede.de</a> · Deine Absenderadresse übermitteln wir automatisch mit.</p>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -642,6 +660,7 @@ async function loadDashboard(){
     if(!res.ok){if(res.status===401){localStorage.removeItem('fs_token');return;}return;}
     var data=await res.json();
     var t=data.tenant||{}, c=data.customization||{};
+    window._tenantEmail=t.email||''; window._tenantCompany=t.company_name||''; window._tenantPage=(c.landing_page&&c.landing_page.slug)||'';
     var lp=(c.landing_page||{});
     if(t.company_name)document.getElementById('mFirmenname').textContent=t.company_name;
     if(lp.slug){var _u=slugToUrl(lp.slug);document.getElementById('mSub').innerHTML='<a href="'+_u+'" target="_blank" rel="noopener" class="text-brand-600 font-bold hover:underline">fachschmiede.de'+_u+'</a> · Mietseite';var _vs=document.getElementById('viewSiteBtn');if(_vs)_vs.href=_u;
@@ -1272,5 +1291,28 @@ function applyCustomColor(){
     }).catch(function(){});
   }
 })();
+
+async function tenantSupportSubmit(){
+  var kat=document.getElementById('supKat').value;
+  var msg=(document.getElementById('supMsg').value||'').trim();
+  if(!kat||msg.length<5){showToast('Bitte Kategorie wählen und Nachricht ausfüllen (mind. 5 Zeichen).');return;}
+  var btn=event.target; btn.disabled=true; btn.textContent='⏳ Sende...';
+  try{
+    var ctx=[];
+    if(window._tenantCompany)ctx.push('Firma: '+window._tenantCompany);
+    if(window._tenantPage)ctx.push('Seite: '+window._tenantPage);
+    var full=msg+(ctx.length?'\n\n— '+ctx.join(' · '):'');
+    var res=await fetch('/api/support/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({category:kat,requester:window._tenantEmail||'',message:full,source:'mieter-dashboard'})});
+    var data=await res.json();
+    if(data.success){
+      document.getElementById('supKat').value='';
+      document.getElementById('supMsg').value='';
+      showToast('✓ Anfrage gesendet! Wir melden uns per E-Mail, meist innerhalb von 24 h.');
+    } else {
+      showToast('✕ Fehler: '+(data.error||'bitte erneut versuchen.'));
+    }
+  }catch(e){showToast('✕ Versand fehlgeschlagen – bitte E-Mail an hello@fachschmiede.de');}
+  btn.disabled=false; btn.textContent='Anfrage senden';
+}
 </script></body>
 </html>

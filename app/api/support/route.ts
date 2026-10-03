@@ -20,6 +20,7 @@ const VALID_CATEGORIES: Record<string, string> = {
   '⚠️ Problem: Onboarding hakt': 'Technisches Problem',
   '⚠️ Problem: Technischer Fehler': 'Technisches Problem',
   '💬 Sonstiges Anliegen': 'Sonstiges',
+  '💡 Verbesserungsvorschlag': 'Verbesserungsvorschlag',
 }
 
 export async function POST(req: NextRequest) {
