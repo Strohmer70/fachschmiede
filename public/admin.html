@@ -2567,7 +2567,8 @@ function filterSupport(){
   document.getElementById('supEmpty').classList.toggle('hidden', visible > 0);
 }
 // 2026-10-03: Echte Ticket-Verwaltung via /api/admin/support-tickets/
-let _supTickets = [];
+// var statt let: showView ruft loadSupportTickets ggf. VOR dieser Zeile auf (Script-Reihenfolge) → TDZ-Fehler!
+var _supTickets = [];
 async function loadSupportTickets(){
   try {
     const res = await fetch('/api/admin/support-tickets/', { headers: { 'Authorization': 'Bearer ' + adminToken } });
