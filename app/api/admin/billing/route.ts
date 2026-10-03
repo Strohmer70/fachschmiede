@@ -41,19 +41,21 @@ export async function GET() {
 
     const tenantsWithPages = (tenants || []).map(t => ({
       ...t,
-      is_test: !t.stripe_subscription_id,
+      // 2026-10-03: LIVE = Stripe-Sub vorhanden UND Status aktiv (gekündigte Subs mit
+      // gespeicherter ID waren vorher ewig "live" → Phantom-Umsatz)
+      is_test: !t.stripe_subscription_id || t.subscription_status !== 'active',
       landing_page: (pagesByTenant[t.id] || [])[0] || null,
       rented_pages: pagesByTenant[t.id] || [],
     }))
 
-    // ── 4) MRR: NUR Live-Mieten (Stripe-Subscription vorhanden) ──
+    // ── 4) MRR: NUR Live-Mieten (aktive Stripe-Subscription) ──
     const livePages = pages.filter(p => {
       const t = (tenants || []).find(x => x.id === p.rented_by)
-      return t?.stripe_subscription_id
+      return t?.stripe_subscription_id && t.subscription_status === 'active'
     })
     const testPages = pages.filter(p => {
       const t = (tenants || []).find(x => x.id === p.rented_by)
-      return t && !t.stripe_subscription_id
+      return t && (!t.stripe_subscription_id || t.subscription_status !== 'active')
     })
 
     const mrrCents = livePages.reduce((sum, r) => sum + (r.monthly_price || 0), 0)

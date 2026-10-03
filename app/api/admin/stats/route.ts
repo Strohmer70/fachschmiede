@@ -48,10 +48,11 @@ export async function GET() {
     if (rentedByIds.length > 0) {
       const { data: tenantRows } = await supabaseAdmin
         .from('tenants')
-        .select('id, stripe_subscription_id')
+        .select('id, stripe_subscription_id, subscription_status')
         .in('id', rentedByIds)
       const liveIdMap: Record<string, boolean> = {}
-      ;(tenantRows || []).forEach((t: any) => { if (t.stripe_subscription_id) liveIdMap[t.id] = true })
+      // 2026-10-03: Nur AKTIVE Subs zählen als Live-Umsatz (gekündigt = Test)
+      ;(tenantRows || []).forEach((t: any) => { if (t.stripe_subscription_id && t.subscription_status === 'active') liveIdMap[t.id] = true })
       liveMrr = (rentals || [])
         .filter(r => r.rented_by && liveIdMap[r.rented_by])
         .reduce((sum, r) => sum + (r.monthly_price || 0), 0)

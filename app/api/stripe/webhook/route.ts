@@ -106,7 +106,9 @@ export async function POST(request: Request) {
 
       case 'customer.subscription.deleted': {
         if (tenant_id) {
-          await supabaseAdmin.from('tenants').update({ subscription_status: 'cancelled' }).eq('id', tenant_id)
+          // 2026-10-03: Auch stripe_subscription_id nullen — sonst zählt der Mieter
+          // wegen gespeicherter ID ewig als "Live-Umsatz" im Admin-Billing
+          await supabaseAdmin.from('tenants').update({ subscription_status: 'cancelled', stripe_subscription_id: null }).eq('id', tenant_id)
         }
         if (landing_page_id) {
           await supabaseAdmin
