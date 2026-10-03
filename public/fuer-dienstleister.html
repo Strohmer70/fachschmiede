@@ -468,7 +468,7 @@ tailwind.config = {
           <span class="text-2xl">🧱</span>
           <div><p class="font-bold text-ink-800">Fliesenleger</p><p class="text-xs text-ink-500">In Planung</p></div>
         </div>
-        <button onclick="showToastDemo()" class="bg-white rounded-2xl border-2 border-dashed border-brand-300 p-6 text-left hover:bg-brand-50 transition">
+        <button onclick="openSupport()" class="bg-white rounded-2xl border-2 border-dashed border-brand-300 p-6 text-left hover:bg-brand-50 transition">
           <p class="font-bold text-brand-600">Dein Gewerk fehlt?</p>
           <p class="text-xs text-ink-500 mt-1">Sag uns Bescheid – wir priorisieren nach Nachfrage →</p>
         </button>
@@ -647,13 +647,23 @@ tailwind.config = {
   </script>
 </footer>
 
-<div id="toastDemo" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 pointer-events-none transition-all duration-300 z-[100] max-w-md w-[calc(100%-2rem)]">
-  <div class="bg-ink-900 text-white rounded-2xl shadow-2xl px-6 py-5 border border-ink-700">
-    <p class="font-bold">🧩 Dein Gewerk fehlt?</p>
-    <p class="text-sm text-ink-300 mt-1">Schreib uns kurz, welches Gewerk du dir wünschst – wir priorisieren nach Nachfrage und melden uns per E-Mail.</p>
-    <a href="mailto:hello@fachschmiede.de?subject=Gewerk-Wunsch%3A%20%5BGewerk%20eintragen%5D&amp;body=Hallo%20fachschmiede-Team%2C%0A%0Aich%20interessiere%20mich%20f%C3%BCr%20eine%20Mietseite%20f%C3%BCr%20das%20Gewerk%3A%20%0AStadt%2FRegion%3A%20%0A%0AViele%20Gr%C3%BC%C3%9Fe" class="inline-block mt-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">✉️ hello@fachschmiede.de</a>
+<!-- ═══════════ GEWERK-WUNSCH-MODAL (echtes Ticket → Admin-Dashboard + Mail) ═══════════ -->
+<div id="supportModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-ink-900/70 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative">
+    <button onclick="closeSupport()" class="absolute top-4 right-4 w-9 h-9 rounded-lg bg-ink-100 hover:bg-ink-200 flex items-center justify-center font-bold text-ink-600" aria-label="Schließen">✕</button>
+    <h3 class="text-2xl font-black text-ink-900">🧩 Dein Gewerk fehlt?</h3>
+    <p class="mt-2 text-sm text-ink-600 leading-relaxed">Sag uns, welches Gewerk du dir als Mietseite wünschst. Wir bauen neue Gewerke nach Nachfrage – du bekommst Bescheid, sobald deins live geht.</p>
+    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); supportSubmit();">
+      <input id="supGewerk" type="text" required placeholder="Dein Gewerk, z. B. Fliesenleger, Tischler … *" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <input id="supMail" type="email" required placeholder="Deine E-Mail-Adresse *" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <textarea id="supMsg" rows="2" placeholder="Optional: Stadt/Region, Zeitplan, Besonderheiten …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+      <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Gewerk wünschen</button>
+    </form>
+    <p class="mt-4 text-xs text-ink-400 text-center">Dein Wunsch landet direkt beim fachschmiede-Team.</p>
   </div>
 </div>
+
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-ink-900 text-white text-sm font-semibold px-6 py-4 rounded-xl shadow-2xl transition-all duration-300 z-[60] max-w-md w-[calc(100%-2rem)] text-center"></div>
 
 <script>
 const menuBtn = document.getElementById('menuBtn');
@@ -677,11 +687,36 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 let tTimer;
-function showToastDemo(){
-  const t = document.getElementById('toastDemo');
-  t.classList.remove('translate-y-24','opacity-0','pointer-events-none');
+const sm = document.getElementById('supportModal');
+function openSupport(){ sm.classList.remove('hidden'); sm.classList.add('flex'); }
+function closeSupport(){ sm.classList.add('hidden'); sm.classList.remove('flex'); }
+sm.addEventListener('click', e => { if(e.target === sm) closeSupport(); });
+function supToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('translate-y-24','opacity-0');
   clearTimeout(tTimer);
-  tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0','pointer-events-none'), 3500);
+  tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0'), 3500);
+}
+async function supportSubmit(){
+  const gewerk = (document.getElementById('supGewerk').value || '').trim();
+  const mail = (document.getElementById('supMail').value || '').trim();
+  const extra = (document.getElementById('supMsg').value || '').trim();
+  if(!gewerk || !mail) { supToast('Bitte Gewerk und E-Mail ausfüllen.'); return; }
+  const message = 'Gewerk-Wunsch: ' + gewerk + (extra ? '\nDetails: ' + extra : '');
+  try {
+    const res = await fetch('/api/support/', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: 'Gewerk fehlt', requester: mail, message: message, source: 'fuer-dienstleister' }) });
+    const data = await res.json();
+    if (!data.success) { supToast('✕ Fehler: ' + (data.error || 'bitte später erneut.')); return; }
+    closeSupport();
+    document.getElementById('supGewerk').value = '';
+    document.getElementById('supMail').value = '';
+    document.getElementById('supMsg').value = '';
+    supToast('✓ Wunsch erhalten! Wir melden uns, sobald dein Gewerk live ist.');
+  } catch(e) {
+    supToast('✕ Versand fehlgeschlagen – bitte E-Mail an hello@fachschmiede.de');
+  }
 }
 
 document.getElementById('jahr').textContent = new Date().getFullYear();
