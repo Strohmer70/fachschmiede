@@ -240,8 +240,11 @@ tailwind.config = {
                 </div>
                 <span id="tglWeb" class="toggle" onclick="toggleSwitch(this)"></span>
               </div>
-              <input id="fWebUrl" type="url" value="" placeholder="https://meinefirma.de" class="mt-3 w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-              <p class="mt-2 text-[11px] text-ink-400">Mit <code>https://</code> beginnen. Erscheint als Button „Zur Website" in der Firmenkarte im Kontaktbereich.</p>
+              <div class="mt-3 flex">
+                <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-ink-200 bg-ink-50 text-sm text-ink-500 font-mono select-none">https://</span>
+                <input id="fWebUrl" type="text" value="" placeholder="www.meinefirma.de" class="flex-1 min-w-0 rounded-r-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              </div>
+              <p class="mt-2 text-[11px] text-ink-400">Einfach Ihre Adresse eingeben – <code>https://</code> ist fest vorangestellt. Erscheint als Button „Zur Website" in der Firmenkarte im Kontaktbereich.</p>
             </div>
             <div class="bg-white rounded-xl border border-ink-200 p-4">
               <div class="flex items-center justify-between gap-4">
@@ -662,7 +665,7 @@ async function loadDashboard(){
     _v('fGebiete',Array.isArray(c.service_areas)?c.service_areas.join(', '):c.service_areas);
     (function(){var w=waSplit(c.whatsapp_number);var sel=document.getElementById('fWaLand');if(sel)sel.value=w.code;var inp=document.getElementById('fWaNum');if(inp)inp.value=w.num;})();
     _t('tglWa',c.whatsapp_enabled!==false);
-    _v('fWebUrl',c.website_url);_t('tglWeb',c.website_enabled===true);
+    _v('fWebUrl',(c.website_url||'').replace(/^https?:\/\//,''));_t('tglWeb',c.website_enabled===true);
     _v('fGbpUrl',c.google_business_url);_t('tglGbp',c.google_business_enabled===true);
     _v('fPlaceId',c.google_maps_place_id);_t('tglMaps',c.google_maps_enabled!==false);
     _v('fJahr',c.founding_year);_t('tglJahr',c.show_founding_year===true);
@@ -809,7 +812,7 @@ async function saveDashboard(){
     opening_hours:v('fOeffnung'), about_text:v('fWillkommen'),
     service_areas:v('fGebiete'),
     whatsapp_number:(function(){var sel=document.getElementById('fWaLand');var code=sel?sel.value:'';var raw=String((document.getElementById('fWaNum')||{}).value||'').replace(/[^0-9]/g,'').replace(/^0+/,'');if(!raw)return '';return code?('+'+code+raw):('+'+raw);})(), whatsapp_enabled:on('tglWa'),
-    website_url:v('fWebUrl'), website_enabled:on('tglWeb'),
+    website_url:(function(){var u=v('fWebUrl');if(!u)return'';return /^https?:\/\//i.test(u)?u:'https://'+u;})(), website_enabled:on('tglWeb'),
     google_business_url:v('fGbpUrl'), google_business_enabled:on('tglGbp'),
     google_maps_place_id:v('fPlaceId'), google_maps_enabled:on('tglMaps'),
     founding_year:v('fJahr'), show_founding_year:on('tglJahr'),
