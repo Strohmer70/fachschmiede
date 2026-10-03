@@ -200,6 +200,24 @@ export async function PATCH(request: Request) {
     }
     update.services_active = clean
   }
+  // 2026-10-03: Standard-Leistungen editieren — {label:{title?,text?}}.
+  // title/text leer bzw. fehlend = Original greift; leeres Objekt = NULL (Reset).
+  if (body.services_custom !== undefined) {
+    const raw = (body.services_custom && typeof body.services_custom === 'object' && !Array.isArray(body.services_custom)) ? body.services_custom : {}
+    const clean: Record<string, { title?: string; text?: string }> = {}
+    for (const [k, v] of Object.entries(raw).slice(0, 30)) {
+      const label = String(k).replace(/\s+/g, ' ').trim().slice(0, 60)
+      if (!label) continue
+      const o = (v && typeof v === 'object') ? v as Record<string, unknown> : {}
+      const title = String(o.title || '').replace(/\s+/g, ' ').trim().slice(0, 60)
+      const text = String(o.text || '').replace(/\s+/g, ' ').trim().slice(0, 280)
+      if (!title && !text) continue
+      clean[label] = {}
+      if (title) clean[label].title = title
+      if (text) clean[label].text = text
+    }
+    update.services_custom = Object.keys(clean).length ? clean : null
+  }
   // 2026-10-03: Eigene Leistungen = [{name, desc}] — kurzer Beschreibungstext optional.
   // Legacy-Strings werden automatisch zu {name, desc:''} normalisiert.
   if (body.custom_services !== undefined) {

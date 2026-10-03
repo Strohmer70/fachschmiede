@@ -309,9 +309,9 @@ tailwind.config = {
           </div>
           <button id="btnAddSvc" onclick="toggleSvcEditor()" class="mt-4 w-full border-2 border-dashed border-brand-300 text-brand-600 font-bold text-sm py-3.5 rounded-xl hover:bg-brand-50 transition">+ Eigene Leistung hinzufügen</button>
           <div id="svcEditor" class="hidden mt-4 bg-white rounded-xl border border-brand-300 p-4 space-y-3">
-            <label class="block text-sm font-bold text-ink-800">Name der eigenen Leistung</label>
+            <label id="svcEdL1" class="block text-sm font-bold text-ink-800">Name der eigenen Leistung</label>
             <input id="newSvcName" type="text" maxlength="60" placeholder="z. B. Dachrinnenreinigung" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <label class="block text-sm font-bold text-ink-800">Kurztext <span class="font-normal text-ink-400">(optional, max. 140 Zeichen)</span></label>
+            <label id="svcEdL2" class="block text-sm font-bold text-ink-800">Kurztext <span id="svcEdL2Sub" class="font-normal text-ink-400">(optional, max. 140 Zeichen)</span></label>
             <textarea id="newSvcDesc" rows="2" maxlength="140" placeholder="1–2 Sätze: Was steckt dahinter? Wie läuft es ab?" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
             <div class="flex gap-2">
               <button onclick="confirmAddSvc()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-2.5 rounded-lg transition">Speichern</button>
@@ -696,7 +696,7 @@ async function loadDashboard(){
     _v('fBeruf',c.berufsbezeichnung);_v('fVerantw',c.verantwortlicher);
     _t('tglEu',c.eu_streitschlichtung===true);_v('fDsbe',c.datenschutz_beauftragter);
     /* ── 2026-10-01: Leistungskarten + Seiten-Module ── */
-    renderServiceToggles(data.available_services||[], (c.services_active)||{});
+    window._stdServices=data.available_services||[]; window._servicesCustom=c.services_custom||{}; renderServiceToggles(window._stdServices, (c.services_active)||{}, window._servicesCustom);
     window._customServices=(c.custom_services||[]).map(function(s){return (typeof s==='string')?{name:s,desc:''}:s;});
     renderCustomServices();
     var mods=c.modules_enabled||{};
@@ -831,8 +831,9 @@ async function saveDashboard(){
       faq:on('tglModFaq'),
       kennzahlen:on('tglModKennzahlen')
     },
-    services_active:(function(){var o={};document.querySelectorAll('#serviceToggles .toggle[data-svc], #customServices .toggle[data-svc]').forEach(function(t){o[t.getAttribute('data-svc')]=t.classList.contains('on');});return o;})(),
-    custom_services:(window._customServices&&window._customServices.length?window._customServices.map(function(s){return (typeof s==='string')?{name:s,desc:''}:s;}).slice(0,8):null)
+    services_active:collectToggleState(),
+    custom_services:(window._customServices&&window._customServices.length?window._customServices.map(function(s){return (typeof s==='string')?{name:s,desc:''}:s;}).slice(0,8):null),
+    services_custom:(window._servicesCustom&&Object.keys(window._servicesCustom).length?window._servicesCustom:null)
   };
   var btn=(window.event&&window.event.target)?window.event.target:null;
   if(btn){btn.disabled=true;btn.textContent='⏳ Speichere...';}
@@ -923,16 +924,54 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // Toggles
 function toggleSwitch(el){ el.classList.toggle('on'); }
 // 2026-10-01: Leistungskarten-Liste dynamisch aus available_services (SSOT) bauen
-function renderServiceToggles(list, active){
+function collectToggleState(){var o={};document.querySelectorAll('#serviceToggles .toggle[data-svc], #customServices .toggle[data-svc]').forEach(function(t){o[t.getAttribute('data-svc')]=t.classList.contains('on');});return o;}
+// 2026-10-03: Standard-Leistungen editierbar (Titel/Text) + Reset zum Originaltext
+window._stdServices=[];
+window._servicesCustom={};
+window._stdEditIdx=null;
+function renderServiceToggles(list, active, customMap){
   var box=document.getElementById('serviceToggles');
   if(!box)return;
-  if(!list.length){box.innerHTML='<div class="bg-white rounded-xl border border-ink-200 p-4 text-sm text-ink-500">Keine Leistungskarten verfügbar.</div>';return;}
-  box.innerHTML=list.map(function(s){
+  window._stdServices=list||window._stdServices||[];
+  if(customMap!==undefined) window._servicesCustom=customMap||{};
+  if(!window._stdServices.length){box.innerHTML='<div class="bg-white rounded-xl border border-ink-200 p-4 text-sm text-ink-500">Keine Leistungskarten verfügbar.</div>';return;}
+  box.innerHTML=window._stdServices.map(function(s,idx){
     var isOn=active[s.label]!==false;
-    return '<div class="flex items-center justify-between bg-white rounded-xl border border-ink-200 p-4">'
-      +'<span class="font-semibold text-sm text-ink-800">'+escHtml((s.emoji?s.emoji+' ':'')+s.label)+'</span>'
-      +'<span class="toggle'+(isOn?' on':'')+'" data-svc="'+escHtml(s.label)+'" onclick="toggleSwitch(this)"></span></div>';
+    var cv=(window._servicesCustom||{})[s.label];
+    var isMod=!!cv;
+    var shownTitle=(cv&&cv.title)?cv.title:s.label;
+    var shownText=(cv&&cv.text)?cv.text:(s.desc||'');
+    if(shownText.length>90) shownText=shownText.slice(0,90)+'…';
+    return '<div class="flex items-center justify-between gap-2 bg-white rounded-xl border '+(isMod?'border-brand-300':'border-ink-200')+' p-4">'
+      +'<div class="min-w-0"><p class="font-semibold text-sm text-ink-800 truncate">'+escHtml((s.emoji?s.emoji+' ':'')+s.label)
+      +(isMod?' <span class="text-[10px] font-bold text-brand-600 align-middle whitespace-nowrap">● geändert</span>':'')
+      +'</p><p class="text-xs text-ink-500 mt-0.5 truncate">'+escHtml(shownTitle+(shownText?' · '+shownText:''))+'</p></div>'
+      +'<div class="flex items-center gap-2 shrink-0">'
+      +'<button onclick="editStdService('+idx+')" title="Überschrift & Text bearbeiten" class="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:text-brand-600 hover:border-brand-300 transition text-sm">✎</button>'
+      +(isMod?'<button onclick="resetStdService('+idx+')" title="Zurück zum Originaltext" class="w-8 h-8 inline-flex items-center justify-center rounded-lg border border-ink-200 text-ink-400 hover:text-brand-600 hover:border-brand-300 transition text-sm">↺</button>':'')
+      +'<span class="toggle'+(isOn?' on':'')+'" data-svc="'+escHtml(s.label)+'" onclick="toggleSwitch(this)"></span></div></div>';
   }).join('');
+}
+function editStdService(idx){
+  var s=(window._stdServices||[])[idx]; if(!s)return;
+  var cv=(window._servicesCustom||{})[s.label]||{};
+  var n=document.getElementById('newSvcName'), ta=document.getElementById('newSvcDesc');
+  if(n)n.value=cv.title||s.label;
+  if(ta){ta.value=cv.text||s.desc||'';ta.maxLength=280;}
+  window._stdEditIdx=idx;
+  var l1=document.getElementById('svcEdL1'), l2=document.getElementById('svcEdL2'), l2s=document.getElementById('svcEdL2Sub');
+  if(l1)l1.textContent='Überschrift der Leistung';
+  if(l2&&l2.firstChild)l2.firstChild.textContent='Beschreibungstext ';
+  if(l2s)l2s.textContent='(max. 280 Zeichen)';
+  var ed=document.getElementById('svcEditor'), btn=document.getElementById('btnAddSvc');
+  if(ed&&btn){ed.classList.remove('hidden');btn.classList.add('hidden');}
+  if(n)n.focus();
+}
+function resetStdService(idx){
+  var s=(window._stdServices||[])[idx]; if(!s)return;
+  if(window._servicesCustom) delete window._servicesCustom[s.label];
+  renderServiceToggles(window._stdServices,collectToggleState(),window._servicesCustom);
+  showToast('↺ „'+s.label+'" zurückgesetzt – Änderungen speichern nicht vergessen.');
 }
 // Eigene Leistungen (2026-10-03) — Name + optionaler Kurztext; Legacy-Strings werden normalisiert
 window._customServices = [];
@@ -954,8 +993,16 @@ function toggleSvcEditor(){
   var ed=document.getElementById('svcEditor'), btn=document.getElementById('btnAddSvc');
   if(!ed||!btn) return;
   ed.classList.toggle('hidden'); btn.classList.toggle('hidden');
-  if(!ed.classList.contains('hidden')){ var i=document.getElementById('newSvcName'); if(i) i.focus(); }
-  else { window._svcEditIdx=null; var ta=document.getElementById('newSvcDesc'); if(ta) ta.value=''; }
+  var l1=document.getElementById('svcEdL1'), l2=document.getElementById('svcEdL2'), l2s=document.getElementById('svcEdL2Sub');
+  if(!ed.classList.contains('hidden')){
+    window._stdEditIdx=null;
+    if(l1)l1.textContent='Name der eigenen Leistung';
+    if(l2&&l2.firstChild)l2.firstChild.textContent='Kurztext ';
+    if(l2s)l2s.textContent='(optional, max. 140 Zeichen)';
+    var ta2=document.getElementById('newSvcDesc'); if(ta2)ta2.maxLength=140;
+    var i=document.getElementById('newSvcName'); if(i) i.focus();
+  }
+  else { window._svcEditIdx=null; window._stdEditIdx=null; var ta=document.getElementById('newSvcDesc'); if(ta){ta.value='';ta.maxLength=140;} }
 }
 function editCustomService(idx){
   var s=(window._customServices||[])[idx]; if(!s) return;
@@ -972,6 +1019,24 @@ function confirmAddSvc(){
   if(!name){ showToast('Bitte einen Namen eingeben.'); return; }
   var ta=document.getElementById('newSvcDesc');
   var desc=(ta?((ta.value||'').trim()):'').slice(0,140);
+  // 2026-10-03: Standard-Leistung im Edit-Modus → services_custom statt custom_services
+  if(window._stdEditIdx!==null&&window._stdEditIdx>=0&&(window._stdServices||[])[window._stdEditIdx]){
+    var std=window._stdServices[window._stdEditIdx];
+    var t2=desc.slice(0,280);
+    window._servicesCustom=window._servicesCustom||{};
+    var obj2={};
+    if(name!==std.label) obj2.title=name.slice(0,60);
+    if(t2!==(std.desc||'')) obj2.text=t2;
+    if(Object.keys(obj2).length) window._servicesCustom[std.label]=obj2;
+    else delete window._servicesCustom[std.label];
+    window._stdEditIdx=null;
+    if(i)i.value=''; if(ta)ta.value='';
+    renderServiceToggles(window._stdServices,collectToggleState(),window._servicesCustom);
+    if(ta) ta.maxLength=140;
+    toggleSvcEditor();
+    showToast('✓ Leistung übernommen – nicht vergessen: Änderungen speichern!');
+    return;
+  }
   var editIdx=(typeof window._svcEditIdx==='number')?window._svcEditIdx:null;
   var list=window._customServices||[];
   if(editIdx===null||editIdx<0||!list[editIdx]){

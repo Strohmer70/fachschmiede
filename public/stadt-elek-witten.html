@@ -883,6 +883,22 @@ async function applyRental(retry){
       }
     });
   }
+  /* 9b) Leistungskarten-Texte ueberschreiben (2026-10-03): Mieter editiert Titel/Text.
+     Reset = Eintrag aus services_custom loeschen → Originaltext der Vorlage greift.
+     XSS-sicher: textContent, keine innerHTML-Injection. */
+  var svcC=d.services_custom||{};
+  Object.keys(svcC).forEach(function(lb){
+    var ov=svcC[lb]; if(!ov) return;
+    document.querySelectorAll('#leistungen h3').forEach(function(h3){
+      if(h3.textContent.replace(/\s+/g,' ').trim()!==lb) return;
+      if(ov.title){ h3.textContent=String(ov.title).slice(0,60); }
+      if(ov.text!=null){
+        var card9=h3.closest('div.reveal')||h3.parentElement;
+        var p9=card9?card9.querySelector('p'):null;
+        if(p9) p9.textContent=String(ov.text).slice(0,280);
+      }
+    });
+  });
   /* 10) Bewertungen rendern (2026-10-01): freigegebene Reviews + Formular-Modal */
   (function(){
     var ks=document.getElementById('kundenstimme');

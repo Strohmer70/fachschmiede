@@ -101,6 +101,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       services_active: cust.services_active || null,
       // ── 2026-10-02: Eigene Leistungen des Mieters ──
       custom_services: cust.custom_services || null,
+      // ── 2026-10-03: Editierter Titel/Text von Standard-Leistungen ──
+      services_custom: cust.services_custom || null,
       // ── 2026-10-01: Mieter-Bilder (Uploads) ──
       logo_url: cust.custom_logo_url || null,
       hero_url: cust.custom_hero_url || null,
