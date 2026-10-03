@@ -644,7 +644,7 @@ tailwind.config = {
     <h3 class="text-2xl font-black text-ink-900">Support &amp; Vorschläge</h3>
     <p class="mt-2 text-sm text-ink-600 leading-relaxed">Die Miete läuft komplett im Self-Service. Melde dich nur, wenn du ein echtes Problem hast – oder uns etwas vorschlagen willst:</p>
     <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); supportSubmit();">
-      <select required class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <select id="supKat" required class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
         <option value="">Worum geht es? *</option>
         <option>🧩 Vorschlag: Mein Gewerk fehlt</option>
         <option>🏙️ Vorschlag: Meine Stadt fehlt</option>
@@ -652,11 +652,11 @@ tailwind.config = {
         <option>⚠️ Problem: Technischer Fehler</option>
         <option>💬 Sonstiges Anliegen</option>
       </select>
-      <input type="email" required placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-      <textarea rows="3" required placeholder="Beschreibe kurz dein Anliegen …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+      <input id="supMail" type="email" required placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <textarea id="supMsg" rows="3" required placeholder="Beschreibe kurz dein Anliegen …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
       <button type="submit" class="w-full bg-ink-900 hover:bg-ink-800 text-white font-bold py-3.5 rounded-xl transition">Nachricht senden</button>
     </form>
-    <p class="mt-4 text-xs text-ink-400 text-center">Demo-Formular – es wird nichts versendet.</p>
+    <p class="mt-4 text-xs text-ink-400 text-center">Deine Nachricht landet direkt beim fachschmiede-Team.</p>
   </div>
 </div>
 
@@ -666,11 +666,11 @@ tailwind.config = {
     <button onclick="closeWaitlist()" class="absolute top-4 right-4 w-9 h-9 rounded-lg bg-ink-100 hover:bg-ink-200 flex items-center justify-center font-bold text-ink-600" aria-label="Schließen">✕</button>
     <h3 class="text-2xl font-black text-ink-900" id="waitTitle">Warteliste</h3>
     <p class="mt-2 text-sm text-ink-600 leading-relaxed" id="waitText"></p>
-    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); supportSubmit();">
-      <input type="email" required placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); waitlistSubmit();">
+      <input id="waitMail" type="email" required placeholder="Deine E-Mail-Adresse" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
       <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Auf Warteliste setzen</button>
     </form>
-    <p class="mt-4 text-xs text-ink-400 text-center">Demo-Formular – es wird nichts versendet.</p>
+    <p class="mt-4 text-xs text-ink-400 text-center">Deine Nachricht landet direkt beim fachschmiede-Team.</p>
   </div>
 </div>
 
@@ -840,13 +840,46 @@ function closeWaitlist(){ wm.classList.add('hidden'); wm.classList.remove('flex'
 wm.addEventListener('click', e => { if(e.target === wm) closeWaitlist(); });
 
 let tTimer;
-function supportSubmit(){
-  closeSupport(); closeWaitlist();
+// 2026-10-03: Echte Übertragung an /api/support/ (Ticket im Admin-Dashboard + Mail an Betrieb)
+function supToast(msg){
   const t = document.getElementById('toast');
-  t.textContent = '✓ Demo: Nachricht erhalten! In der echten Version antworten wir in 24 h.';
+  t.textContent = msg;
   t.classList.remove('translate-y-24','opacity-0');
   clearTimeout(tTimer);
   tTimer = setTimeout(() => t.classList.add('translate-y-24','opacity-0'), 3500);
+}
+async function supportSubmit(){
+  const kat = document.getElementById('supKat').value;
+  const mail = (document.getElementById('supMail').value || '').trim();
+  const msg = (document.getElementById('supMsg').value || '').trim();
+  if(!kat || !mail || !msg) { supToast('Bitte alle Felder ausfüllen.'); return; }
+  try {
+    const res = await fetch('/api/support/', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: kat, requester: mail, message: msg, source: 'sales-elektriker' }) });
+    const data = await res.json();
+    if (!data.success) { supToast('✕ Fehler: ' + (data.error || 'bitte später erneut.')); return; }
+    closeSupport(); closeWaitlist();
+    document.getElementById('supKat').value = '';
+    document.getElementById('supMail').value = '';
+    document.getElementById('supMsg').value = '';
+    supToast('✓ Nachricht erhalten! Wir melden uns in 24 h.');
+  } catch(e) {
+    supToast('✕ Versand fehlgeschlagen – bitte E-Mail an hello@fachschmiede.de');
+  }
+}
+async function waitlistSubmit(){
+  const mail = (document.getElementById('waitMail').value || '').trim();
+  if(!mail) { supToast('Bitte E-Mail-Adresse eintragen.'); return; }
+  try {
+    const res = await fetch('/api/support/', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: 'Stadt fehlt', requester: mail, message: 'Warteliste: Interesse an freigeschalteter Stadt', source: 'sales-elektriker-warteliste' }) });
+    const data = await res.json();
+    closeWaitlist();
+    document.getElementById('waitMail').value = '';
+    supToast(data.success ? '✓ Du stehst auf der Liste! Wir informieren dich per E-Mail.' : '✕ Fehler: ' + (data.error || 'bitte später erneut.'));
+  } catch(e) {
+    supToast('✕ Versand fehlgeschlagen – bitte E-Mail an hello@fachschmiede.de');
+  }
 }
 
 document.getElementById('jahr').textContent = new Date().getFullYear();

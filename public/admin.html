@@ -868,10 +868,10 @@ tailwind.config = {
       <!-- ═══════ VIEW: SUPPORT & ANFRAGEN ═══════ -->
       <div class="view" id="view-support">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Offen</p><p class="mt-2 text-3xl font-black text-red-600">4</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">In Bearbeitung</p><p class="mt-2 text-3xl font-black text-amber-600">2</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Ø Lösungszeit</p><p class="mt-2 text-3xl font-black text-ink-900">6,4 h</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Zufriedenheit</p><p class="mt-2 text-3xl font-black text-ink-900">4,8 ★</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Offen</p><p class="mt-2 text-3xl font-black text-red-600" id="supKpiOpen">0</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">In Bearbeitung</p><p class="mt-2 text-3xl font-black text-amber-600" id="supKpiProgress">0</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Erledigt (gesamt)</p><p class="mt-2 text-3xl font-black text-green-600" id="supKpiDone">0</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Ø Lösungszeit</p><p class="mt-2 text-3xl font-black text-ink-900" id="supKpiAvg">—</p></div>
         </div>
 
         <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden">
@@ -889,70 +889,8 @@ tailwind.config = {
               </select>
             </div>
           </div>
-          <ul class="divide-y divide-ink-100" id="supList">
-            <li class="px-6 py-5" data-kat="Gewerk fehlt" data-status="Offen">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div class="flex flex-wrap items-center gap-2"><span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Gewerk fehlt</span><span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Offen</span></div>
-                  <p class="mt-2 font-bold text-ink-900">„Ich bin GaLaBauer aus Witten – wann kommt das Gewerk Garten- &amp; Landschaftsbau?"</p>
-                  <p class="text-sm text-ink-500 mt-0.5">Interessent über Salespage · 20.07.2026, 09:14</p>
-                </div>
-                <div class="flex gap-2 shrink-0">
-                  <button onclick="showToast('Antwort-Editor geöffnet (Demo).')" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">Antworten</button>
-                  <button onclick="addRequestedGewerk('🌳 Gärtner / Landschaftsbau'); ticketDone(this)" class="text-xs font-bold text-white bg-brand-600 rounded-lg px-3 py-2 hover:bg-brand-700 transition">Gewerk anlegen</button>
-                </div>
-              </div>
-            </li>
-            <li class="px-6 py-5" data-kat="Stadt fehlt" data-status="Offen">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div class="flex flex-wrap items-center gap-2"><span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">Stadt fehlt</span><span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Offen</span></div>
-                  <p class="mt-2 font-bold text-ink-900">„Könnt ihr Elektriker <strong>Kamen</strong> aufnehmen? Ich würde sofort mieten."</p>
-                  <p class="text-sm text-ink-500 mt-0.5">Interessent über Gewerk-Salespage Elektriker · 19.07.2026, 16:40</p>
-                </div>
-                <div class="flex gap-2 shrink-0">
-                  <button onclick="showToast('Antwort-Editor geöffnet (Demo).')" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">Antworten</button>
-                  <button onclick="openModal('modalWebsite'); ticketDone(this)" class="text-xs font-bold text-white bg-brand-600 rounded-lg px-3 py-2 hover:bg-brand-700 transition">Stadt listen</button>
-                </div>
-              </div>
-            </li>
-            <li class="px-6 py-5" data-kat="Technisches Problem" data-status="In Bearbeitung">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div class="flex flex-wrap items-center gap-2"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">Technisches Problem</span><span class="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">In Bearbeitung</span></div>
-                  <p class="mt-2 font-bold text-ink-900">„Mein WhatsApp-Button öffnet am iPhone nicht die App, sondern den Browser."</p>
-                  <p class="text-sm text-ink-500 mt-0.5">Mieter: Volt Elektrotechnik · 18.07.2026, 11:02 · zugewiesen: Technik</p>
-                </div>
-                <div class="flex gap-2 shrink-0">
-                  <button onclick="showToast('Antwort-Editor geöffnet (Demo).')" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">Antworten</button>
-                  <button onclick="ticketDone(this)" class="text-xs font-bold text-white bg-green-600 rounded-lg px-3 py-2 hover:bg-green-700 transition">Erledigt</button>
-                </div>
-              </div>
-            </li>
-            <li class="px-6 py-5" data-kat="Verbesserungsvorschlag" data-status="Offen">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div class="flex flex-wrap items-center gap-2"><span class="bg-brand-100 text-brand-700 text-xs font-bold px-2.5 py-1 rounded-full">Verbesserungsvorschlag</span><span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Offen</span></div>
-                  <p class="mt-2 font-bold text-ink-900">„Könntet ihr ein Terminbuchungs-Modul anbieten? Meine Kunden fragen danach."</p>
-                  <p class="text-sm text-ink-500 mt-0.5">Mieter: Bergmann Bedachungen · 17.07.2026, 08:33</p>
-                </div>
-                <div class="flex gap-2 shrink-0">
-                  <button onclick="showToast('Vorschlag auf die Roadmap gesetzt (Demo).')" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">Zur Roadmap</button>
-                  <button onclick="showToast('Hinweis: Terminbuchung ist bereits im Pro-Tarif enthalten – Mieter informiert (Demo).'); ticketDone(this)" class="text-xs font-bold text-white bg-green-600 rounded-lg px-3 py-2 hover:bg-green-700 transition">Bereits vorhanden</button>
-                </div>
-              </div>
-            </li>
-            <li class="px-6 py-5" data-kat="Technisches Problem" data-status="Erledigt">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div class="flex flex-wrap items-center gap-2"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">Technisches Problem</span><span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Erledigt</span></div>
-                  <p class="mt-2 font-bold text-ink-900">„Google-Maps-Karte zeigte alte Adresse – Place ID aktualisiert."</p>
-                  <p class="text-sm text-ink-500 mt-0.5">Mieter: SHK Krämer · 12.07.2026 · gelöst in 2 Std.</p>
-                </div>
-              </div>
-            </li>
-          </ul>
-          <p id="supEmpty" class="hidden px-6 py-8 text-center text-sm text-ink-400 italic">Keine Tickets in dieser Auswahl.</p>
+          <ul class="divide-y divide-ink-100" id="supList"></ul>
+          <p id="supEmpty" class="hidden px-6 py-8 text-center text-sm text-ink-400 italic">Keine Tickets – wenn Besucher über die Support-Formulare schreiben, erscheinen sie hier.</p>
         </div>
       </div>
 
@@ -2473,6 +2411,11 @@ function showView(id, el){
   if (id === 'rechnungen' && typeof loadInvoiceData === 'function') {
     loadInvoiceData();
   }
+
+  // 2026-10-03: Support-Tickets nachladen
+  if (id === 'support') {
+    loadSupportTickets();
+  }
   
   // Load trades when switching to gewerke view
   if (id === 'gewerke' && typeof loadTrades === 'function') {
@@ -2623,12 +2566,98 @@ function filterSupport(){
   });
   document.getElementById('supEmpty').classList.toggle('hidden', visible > 0);
 }
-function ticketDone(btn){
-  const li = btn.closest('li');
-  li.dataset.status = 'Erledigt';
-  li.style.opacity = '.55';
-  btn.closest('.flex.gap-2').remove();
-  showToast('Ticket als erledigt markiert (Demo).');
+// 2026-10-03: Echte Ticket-Verwaltung via /api/admin/support-tickets/
+let _supTickets = [];
+async function loadSupportTickets(){
+  try {
+    const res = await fetch('/api/admin/support-tickets/', { headers: { 'Authorization': 'Bearer ' + adminToken } });
+    const data = await res.json();
+    if (!data.success) { console.error('Support-API:', data.error); return; }
+    _supTickets = data.tickets || [];
+    renderSupportTickets(_supTickets);
+    updateSupportKpis(_supTickets);
+  } catch(e) { console.error('loadSupportTickets:', e); }
+}
+function _supBadgeKat(kat){
+  const map = {
+    'Gewerk fehlt': 'bg-red-100 text-red-700',
+    'Stadt fehlt': 'bg-amber-100 text-amber-700',
+    'Technisches Problem': 'bg-blue-100 text-blue-700',
+    'Verbesserungsvorschlag': 'bg-brand-100 text-brand-700',
+    'Sonstiges': 'bg-ink-100 text-ink-600'
+  };
+  return map[kat] || 'bg-ink-100 text-ink-600';
+}
+function _supBadgeStatus(st){
+  if (st === 'Erledigt') return '<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Erledigt</span>';
+  if (st === 'In Bearbeitung') return '<span class="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">In Bearbeitung</span>';
+  return '<span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Offen</span>';
+}
+function renderSupportTickets(tickets){
+  const ul = document.getElementById('supList');
+  if (!ul) return;
+  ul.innerHTML = tickets.map(t => {
+    const d = new Date(t.created_at);
+    const datum = d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      + ', ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    const meta = [t.requester ? 'Absender: ' + t.requester : 'Absender: anonym',
+      t.source || '', 'erstellt: ' + datum,
+      t.status === 'Erledigt' && t.resolved_at ? 'gelöst in ' + _supHours(d, new Date(t.resolved_at)) : '']
+      .filter(Boolean).join(' · ');
+    const btns = [];
+    if (t.requester) btns.push('<a href="mailto:' + encodeURIComponent(t.requester) + '?subject=' + encodeURIComponent('Re: Ihre Anfrage bei fachschmiede.de') + '" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">Antworten</a>');
+    if (t.status !== 'In Bearbeitung') btns.push('<button onclick="supSetStatus(\'' + t.id + '\',\'In Bearbeitung\')" class="text-xs font-bold text-white bg-amber-500 rounded-lg px-3 py-2 hover:bg-amber-600 transition">In Bearbeitung</button>');
+    if (t.status !== 'Erledigt') btns.push('<button onclick="supSetStatus(\'' + t.id + '\',\'Erledigt\')" class="text-xs font-bold text-white bg-green-600 rounded-lg px-3 py-2 hover:bg-green-700 transition">Erledigt</button>');
+    btns.push('<button onclick="supDeleteTicket(\'' + t.id + '\')" class="text-xs font-bold text-white bg-red-600 rounded-lg px-3 py-2 hover:bg-red-700 transition">Löschen</button>');
+    return '<li class="px-6 py-5" data-kat="' + t.category + '" data-status="' + t.status + '" data-id="' + t.id + '"' + (t.status === 'Erledigt' ? ' style="opacity:.65"' : '') + '>' +
+      '<div class="flex flex-wrap items-start justify-between gap-3"><div>' +
+      '<div class="flex flex-wrap items-center gap-2"><span class="' + _supBadgeKat(t.category) + ' text-xs font-bold px-2.5 py-1 rounded-full">' + t.category + '</span>' + _supBadgeStatus(t.status) + '</div>' +
+      '<p class="mt-2 font-bold text-ink-900">&bdquo;' + _supEsc(t.message) + '&ldquo;</p>' +
+      '<p class="text-sm text-ink-500 mt-0.5">' + meta + '</p>' +
+      (t.resolution ? '<p class="text-sm text-green-700 mt-1">Lösung: ' + _supEsc(t.resolution) + '</p>' : '') +
+      '</div><div class="flex gap-2 shrink-0">' + btns.join('') + '</div></div></li>';
+  }).join('');
+  filterSupport();
+}
+function _supEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _supHours(a, b){ const h = Math.round((b - a) / 36e5 * 10) / 10; return h < 1 ? Math.max(1, Math.round(h * 60)) + ' Min.' : h.toLocaleString('de-DE') + ' Std.'; }
+function updateSupportKpis(tickets){
+  const n = st => tickets.filter(t => t.status === st).length;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('supKpiOpen', n('Offen'));
+  set('supKpiProgress', n('In Bearbeitung'));
+  set('supKpiDone', n('Erledigt'));
+  const done = tickets.filter(t => t.status === 'Erledigt' && t.resolved_at);
+  if (done.length) {
+    const avg = done.reduce((s, t) => s + (new Date(t.resolved_at) - new Date(t.created_at)), 0) / done.length / 36e5;
+    set('supKpiAvg', (avg < 1 ? Math.round(avg * 60) + ' Min.' : (Math.round(avg * 10) / 10).toLocaleString('de-DE') + ' Std.'));
+  } else set('supKpiAvg', '—');
+}
+async function supSetStatus(id, status){
+  try {
+    const res = await fetch('/api/admin/support-tickets/', {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+      body: JSON.stringify({ id, status })
+    });
+    const data = await res.json();
+    if (!data.success) { showToast('Fehler: ' + data.error); return; }
+    showToast('Status → ' + status);
+    loadSupportTickets();
+  } catch(e) { showToast('Fehler: ' + e.message); }
+}
+async function supDeleteTicket(id){
+  if (!confirm('Ticket wirklich löschen? Das kann nicht rückgängig gemacht werden.')) return;
+  try {
+    const res = await fetch('/api/admin/support-tickets/?id=' + encodeURIComponent(id), {
+      method: 'DELETE', headers: { 'Authorization': 'Bearer ' + adminToken }
+    });
+    const data = await res.json();
+    if (!data.success) { showToast('Fehler: ' + data.error); return; }
+    _supTickets = _supTickets.filter(t => t.id !== id);
+    renderSupportTickets(_supTickets);
+    updateSupportKpis(_supTickets);
+    showToast('Ticket gelöscht.');
+  } catch(e) { showToast('Fehler: ' + e.message); }
 }
 
 // ───────── Aktion: Neue Stadt listen ─────────
