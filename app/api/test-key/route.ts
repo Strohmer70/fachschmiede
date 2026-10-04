@@ -9,7 +9,7 @@ export async function GET() {
   
   // Test direct REST API call
   try {
-    const res = await fetch('https://tlxlkmewbhnpzvrphcq.supabase.co/rest/v1/trades?limit=1', {
+    const res = await fetch('https://tlxlkmewbhnpzvrbphcq.supabase.co/rest/v1/trades?limit=1', {
       headers: {
         'apikey': key,
         'Authorization': `Bearer ${key}`

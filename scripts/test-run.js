@@ -4,7 +4,7 @@ const { createClient } = require('@supabase/supabase-js');
 const fetch = require('node-fetch');
 
 // Umgebungsvariablen
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tlxlkmewbhnpzvrphcq.supabase.co';
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://tlxlkmewbhnpzvrbphcq.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY;
 const MOONSHOT_API_URL = 'https://api.moonshot.ai/v1/chat/completions';

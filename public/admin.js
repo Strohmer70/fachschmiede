@@ -1129,12 +1129,12 @@ async function loadTrades() {
 
   // Fallback: Statische Daten
   const fallbackTrades = [
-    { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Klempner / SHK', slug: 'klempner', emoji: '🔥', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Maler', slug: 'maler', emoji: '🖌️', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 21, rented_pages: 0, available_pages: 21 },
-    { name: 'Garten & Landschaftsbau', slug: 'garten-und-landschaftsbau', emoji: '🌳', total_pages: 21, rented_pages: 0, available_pages: 21 },
+    { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠', total_pages: 20, rented_pages: 0, available_pages: 20 },
+    { name: 'Elektriker', slug: 'elektriker', emoji: '⚡', total_pages: 20, rented_pages: 0, available_pages: 20 },
+    { name: 'Klempner / SHK', slug: 'klempner', emoji: '🔥', total_pages: 20, rented_pages: 0, available_pages: 20 },
+    { name: 'Maler', slug: 'maler', emoji: '🖌️', total_pages: 20, rented_pages: 0, available_pages: 20 },
+    { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨', total_pages: 20, rented_pages: 0, available_pages: 20 },
+    { name: 'Garten & Landschaftsbau', slug: 'garten-und-landschaftsbau', emoji: '🌳', total_pages: 20, rented_pages: 0, available_pages: 20 },
   ];
 
   // 1. Zuerst Trade Requests laden (pending items)
