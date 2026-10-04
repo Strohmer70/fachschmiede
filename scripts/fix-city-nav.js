@@ -1,7 +1,20 @@
 #!/usr/bin/env node
 /**
- * Fix alle Stadtseiten - Einheitliche Portal-Navigation
+ * ⚠️ DEPRECATED (2026-10-04) — DIESER SCRIPT DARF NICHT MEHR LAUFEN!
+ *
+ * Er fügt die interne PORTAL-NAVIGATION oben auf öffentliche Seiten ein.
+ * Dieter: "die braucht der Kunde da nicht sehen" → Nav komplett entfernt
+ * aus allen 127 öffentlichen Seiten. admin.html behält die Nav bewusst.
  */
+console.error('⛔ ABGEKLEMMT: Portal-Nav wurde 2026-10-04 aus Kundensicht entfernt. Script nicht ausführen.');
+process.exit(1);
+
+// ─── ORIGINAL (deaktiviert) ───
+/* EHEMALIGER INHALT — NICHT MEHR AKTIV:
+#!/usr/bin/env node
+//
+// Fix alle Stadtseiten - Einheitliche Portal-Navigation
+//
 
 const fs = require('fs');
 const path = require('path');
@@ -81,3 +94,5 @@ trades.forEach(trade => {
 });
 
 console.log(`\n🎉 ${fixedCount} Stadtseiten mit Navigation versehen!`);
+
+*/

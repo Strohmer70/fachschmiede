@@ -35,9 +35,6 @@ tailwind.config = {
 </head>
 <body class="bg-white text-ink-800 antialiased">
 
-
-<!-- ═══════════ PORTAL-NAVIGATION ═══════════ -->
-
 <!-- ═══════════ HERO ═══════════ -->
 <section class="bg-ink-900 text-white relative overflow-hidden">
   <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl"></div>
@@ -798,7 +795,6 @@ function pickPay(el){
   document.querySelectorAll('.pay-opt').forEach(o => { o.classList.remove('border-brand-600','bg-brand-50'); o.classList.add('border-ink-200'); });
   el.classList.add('border-brand-600','bg-brand-50'); el.classList.remove('border-ink-200');
 }
-
 
 // ── Support (nur Probleme/Vorschläge) ──
 const sm = document.getElementById('supportModal');
