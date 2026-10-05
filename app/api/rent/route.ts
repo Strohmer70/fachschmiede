@@ -35,7 +35,7 @@ function getStripe(): any | null {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { slug, trade, city, firma, name, email, tel, password, farbe, modus } = body || {}
+    const { slug, trade, city, firma, name, email, tel, password, farbe, modus, payment } = body || {}
 
     // ── Validierung ──
     if (!slug || !email || !password) {
@@ -187,6 +187,10 @@ export async function POST(request: Request) {
       }, { status: 503 })
     }
 
+    // Zahlart aus Checkout (Karte/Klarna) strikt validieren – unbekannte Werte = auto
+    const paymentMethodTypes =
+      payment === 'card' ? ['card'] : payment === 'klarna' ? ['klarna'] : undefined
+
     // ── Stripe-Kunde wiederverwenden (Multi-Page: 1 Kunde = viele Seiten) ──
     let stripeCustomerId: string | undefined
     try {
@@ -197,8 +201,8 @@ export async function POST(request: Request) {
     }
 
     const session = await stripe.checkout.sessions.create({
-      // payment_method_types weglassen → Stripe zeigt automatisch alle im Dashboard aktivierten Methoden
-      // (card immer aktiv; SEPA erscheint automatisch sobald Dieter es aktiviert — kein Code-Change nötig)
+      // payment leer/unbekannt → Stripe zeigt alle im Dashboard aktivierten Methoden (aktuell: card + klarna)
+      ...(paymentMethodTypes ? { payment_method_types: paymentMethodTypes } : {}),
       billing_address_collection: 'required',
       // Bestehenden Stripe-Kunden per E-Mail wiederverwenden (kein Kunden-Duplikat pro Seite)
       ...(stripeCustomerId ? { customer: stripeCustomerId } : { customer_email: emailNorm }),

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Garten- & Landschaftsbau-Website mieten | Selbst anmieten &amp; sofort online – DEMO</title>
-<meta name="description" content="Demo: Fertige Garten- & Landschaftsbau-Websites zur Miete. Stadt wählen, selbst individualisieren, sofort online – komplett ohne Wartezeit.">
+<meta name="description" content="Fertige Garten- & Landschaftsbau-Websites zur Miete. Stadt wählen, selbst individualisieren, sofort online – komplett ohne Wartezeit.">
 <meta name="robots" content="noindex, nofollow">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -423,7 +423,7 @@ tailwind.config = {
 <!-- ═══════════ FOOTER ═══════════ -->
 <footer class="bg-ink-900 text-ink-400 text-sm">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <p>© <span id="jahr"></span> MietWebsites – Demo-Portal. Alle Inhalte, Preise und Verfügbarkeiten sind fiktiv.</p>
+    <p>© <span id="jahr"></span> fachschmiede.de – Alle Rechte vorbehalten.</p>
     <div class="flex gap-6">
       <a href="/fuer-dienstleister/" class="hover:text-white transition">Zurück zur Übersicht</a>
       <a href="index.html" class="hover:text-white transition">Musterseite ansehen</a>
@@ -475,7 +475,7 @@ tailwind.config = {
               <label class="mode-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" id="modeMiete" onclick="pickMode('miete')">
                 <input type="radio" name="mode" value="miete" checked class="sr-only" onchange="pickMode('miete')">
                 <span class="font-bold text-ink-900 text-sm">🚀 Sofort mieten</span>
-                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Website sofort online · Zahlung via Stripe/PayPal · monatlich kündbar</span>
+                <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Website sofort online · Zahlung via Stripe (Karte · Klarna) · monatlich kündbar</span>
               </label>
               <label class="mode-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" id="modeTest" onclick="pickMode('test')">
                 <input type="radio" name="mode" value="test" class="sr-only" onchange="pickMode('test')">
@@ -573,26 +573,21 @@ tailwind.config = {
             <li>✓ Endet am <strong id="trialEndLabel"></strong> – danach entscheidest du: mieten oder die Stadt geht zurück in den freien Pool</li>
           </ul>
         </div>
-                <div id="payBlock" class="mt-6 text-left">
+                        <div id="payBlock" class="mt-6 text-left">
           <p class="text-sm font-bold text-ink-800 mb-2">💳 Zahlungsmethode für die Monatsmiete *</p>
-          <div class="grid sm:grid-cols-3 gap-3">
+          <div class="grid sm:grid-cols-2 gap-3">
             <label class="pay-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" onclick="pickPay(this)">
-              <input type="radio" name="pay" checked class="sr-only">
+              <input type="radio" name="pay" value="card" checked class="sr-only">
               <span class="font-bold text-ink-900 text-sm">💳 Kreditkarte</span>
               <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Visa · Mastercard · Amex<br>Abwicklung via <strong>Stripe</strong></span>
             </label>
             <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
-              <input type="radio" name="pay" class="sr-only">
-              <span class="font-bold text-ink-900 text-sm">🏦 SEPA-Lastschrift</span>
-              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Monatliche Abbuchung<br>Abwicklung via <strong>Stripe</strong></span>
-            </label>
-            <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
-              <input type="radio" name="pay" class="sr-only">
-              <span class="font-bold text-ink-900 text-sm">🅿️ PayPal</span>
-              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Direkt über dein<br><strong>PayPal</strong>-Konto</span>
+              <input type="radio" name="pay" value="klarna" class="sr-only">
+              <span class="font-bold text-ink-900 text-sm">🛍️ Klarna</span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Kauf auf Rechnung oder in Raten<br>Abwicklung via <strong>Stripe</strong></span>
             </label>
           </div>
-          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über Stripe bzw. PayPal – jederzeit im Dashboard änderbar, keine Zahlungsdaten auf unseren Servern.</p>
+          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über Stripe – keine Zahlungsdaten auf unseren Servern.</p>
         </div>
         <button id="pubBtn" onclick="publish()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-black text-lg py-4 rounded-xl transition shadow-lg">🚀 Jetzt veröffentlichen &amp; Miete starten</button>
         <p class="mt-3 text-xs text-ink-400">Du kannst alles später im Dashboard ändern – Veröffentlichen ist kein Point of no Return.</p>
@@ -602,12 +597,11 @@ tailwind.config = {
       <div class="onb-step p-10 text-center" id="stepDone">
         <span class="inline-flex w-20 h-20 rounded-full bg-green-500 text-white items-center justify-center text-4xl shadow-lg">✓</span>
         <h3 class="mt-5 text-3xl font-black text-ink-900">Du bist online!</h3>
-        <p id="doneMsg" class="mt-3 text-ink-600 leading-relaxed max-w-md mx-auto">„Garten- & Landschaftsbau <span class="onbCity font-bold text-ink-900">…</span>" ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (Stripe/PayPal).</p>
+        <p id="doneMsg" class="mt-3 text-ink-600 leading-relaxed max-w-md mx-auto">„Garten- & Landschaftsbau <span class="onbCity font-bold text-ink-900">…</span>" ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (Stripe).</p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <a id="doneSiteLink" href="/stadt-garten-bochum.html" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition">Meine Website ansehen</a>
           <a id="doneDashLink" href="/mieter.html" class="bg-ink-900 hover:bg-ink-800 text-white font-bold px-7 py-3.5 rounded-xl transition">Zum Dashboard</a>
         </div>
-        <p class="mt-5 text-xs text-ink-400 italic">Demo: Es wurde nichts gebucht, gespeichert oder veröffentlicht.</p>
       </div>
     </div>
   </div>
@@ -719,7 +713,7 @@ async function publish(){
     name: ((document.getElementById('onbName')||{}).value || '').trim(),
     email: ((document.getElementById('onbLoginMail')||{}).value || '').trim(),
     tel: (document.getElementById('onbTel') || {}).value || '',
-    password: pw1, modus: onbMode
+    password: pw1, modus: onbMode, payment: ((document.querySelector('input[name="pay"]:checked')||{}).value || '')
   };
   if(!payload.firma){ alert('Bitte Firmennamen in Schritt 2 ausfüllen.'); gotoStep(2); return; }
   if(!payload.email){ alert('Bitte E-Mail in Schritt 1 ausfüllen.'); gotoStep(1); return; }
