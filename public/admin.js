@@ -2120,11 +2120,11 @@ async function loadSettings() {
       if (p) p.value = data.pricing.monthly != null ? data.pricing.monthly : 189;
     }
   } catch (e) { /* stiller Fallback */ }
-  // Zahlungsstatus (öffentlicher Endpunkt)
+  // Zahlungsstatus (Admin-Endpunkt, prüft Vercel-Env)
   try {
-    const res = await fetch(`${API_BASE}/payment-status/`);
+    const res = await fetch(`${API_BASE}/admin/payment/`);
     const data = await res.json();
-    const stripeOk = data?.stripe?.configured !== false;
+    const stripeOk = !!data?.stripe?.configured;
     const set = (id, ok, txtOk, txtNo) => {
       const el = document.getElementById(id);
       if (!el) return;
