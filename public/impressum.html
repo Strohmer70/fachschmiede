@@ -18,7 +18,7 @@
   <div class="bg-white rounded-xl border border-slate-200 p-8 space-y-6">
     <div>
       <h2 class="text-xl font-bold mb-2">Angaben gemäß § 5 DDG</h2>
-      <p class="text-slate-600">fachschmiede.de</p>
+      <p class="text-slate-600" id="liPlatformName">fachschmiede.de</p>
       <p class="text-slate-600" id="liBetreiber">Dieter Strohm</p>
       <p class="text-slate-600" id="liAdr1">Am Waldesrand 5</p>
       <p class="text-slate-600" id="liAdr2">58285 Gevelsberg</p>
@@ -93,7 +93,11 @@
         } else if (lg.berufsbezeichnung) {
           hrb.textContent = lg.berufsbezeichnung;
         } else { hrb.style.display = 'none'; }
-        set('liVerantw', lg.verantwortlicher || lg.vertretung || (d.contactName ? d.contactName + ', ' + (d.address || '') : ''));
+        const pn = document.getElementById('liPlatformName');
+        if (pn) pn.style.display = 'none'; // im Mieter-Modus: Plattform-Name ersetzt durch Mieter-Firma
+        const verantw = lg.verantwortlicher || lg.vertretung || (d.contactName && d.address ? d.contactName + ', ' + d.address : '');
+        if (verantw) set('liVerantw', verantw);
+        else { const vSec = document.getElementById('secVerantw'); if (vSec) vSec.style.display = 'none'; }
         const eu = document.getElementById('secEuStreit');
         if (eu && lg.eu_streitschlichtung === false) eu.style.display = 'none';
         document.getElementById('secPlattform').classList.remove('hidden');
