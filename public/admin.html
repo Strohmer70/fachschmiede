@@ -2002,7 +2002,7 @@ function sendCampaign(btn){
     document.getElementById('mailSection').classList.add('hidden');
     btn.disabled = false;
     btn.innerHTML = '📤 Alle senden (<span class="draftCount">0</span>)';
-    showToast(sel + ' Mails an ' + gewerk + ' ' + stadt + ' versendet – inkl. Impressum & Abmelde-Link (Demo).');
+    showToast(sel + ' Mails an ' + gewerk + ' ' + stadt + ' als Versand-Auftrag vorgemerkt. ⚠ Echter Massen-Versand erfolgt erst mit Outreach-Versand-Anbindung – die Entwürfe oben sind echt und übernehmbar.');
   }, 1500);
 }
 
@@ -2033,7 +2033,7 @@ function simulateInvoice(){
   li.className = 'flex gap-3 bg-green-50 border border-green-200 rounded-lg px-3.5 py-2.5';
   li.innerHTML = '<span class="text-ink-400 font-mono shrink-0">' + t + '</span><span class="text-ink-700"><strong>invoice.paid</strong> (Stripe) · Neuer Mieter 224,91 € → <strong>RE-2026-0723</strong> erstellt &amp; versendet ✓</span>';
   document.getElementById('invoiceLog').prepend(li);
-  showToast('Zahlungseingang simuliert: Rechnung RE-2026-0723 wurde automatisch erstellt und an den Mieter versendet (Demo).');
+  showToast('🧪 SIMULATION: So sieht ein echter Zahlungseingang aus. Echte Rechnungen entstehen automatisch \u00fcber Stripe-Abos (Rechnungen-Tab).');
 }
 
 // ── QR-Code (visueller Generator, deterministisch aus String) ──
@@ -2392,33 +2392,27 @@ function doReset(){
   const btnRow = card.querySelector('.mt-4.flex');
   if(btnRow) btnRow.innerHTML = '<button onclick="openModal(\'modalWebsite\')" class="flex-1 text-xs font-bold text-white bg-brand-600 rounded-lg py-2 hover:bg-brand-700 transition">Vermieten</button><button onclick="showToast(\'Vorschau geöffnet (Demo).\')" class="flex-1 text-xs font-bold text-ink-600 border border-ink-200 rounded-lg py-2 hover:bg-ink-50 transition">Vorschau</button>';
   try{ localStorage.removeItem('mw_miete'); }catch(e){}
-  showToast('\u201e' + stadt + '\u201c zurückgesetzt – Mieter-Inhalte entfernt, generierte Inhalte & Blog bleiben. Stadt ist wieder frei (Demo).');
+  showToast('\u201e' + stadt + '\u201c im Demo-Modus zur\u00fcckgesetzt. Echter Reset: Websites-Tab \u2192 Seite w\u00e4hlen \u2192 Status \u00e4ndern.');
   resetTarget = null;
 }
 
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-// Marketing: initiale Kontaktliste laden
+// 2026-10-05: Keine Adressdatenbank angebunden → ehrlicher Leer-Zustand statt Phantasie-Firmen.
 if(document.getElementById('printList')){ finishPrintScrapeInit(); }
 function finishPrintScrapeInit(){
-  printPros = FIRMS.slice(0, 12).map((f, i) => ({
-    name: 'Dachdeckerei ' + f + (i % 3 === 0 ? ' Hattingen' : ''),
-    addr: P_STREETS[i] + ' ' + (3 + i * 2) + ', ' + (45000 + i * 37) + ' Hattingen',
-    sel: true
-  }));
+  printPros = [];
   renderPrintList();
+  const meta = document.getElementById('pResultMeta');
+  if(meta) meta.innerHTML = '<strong class="text-ink-800">Kein Adressdatenbank-Anbieter angebunden.</strong> Print-Versand folgt, sobald eine echte Quelle (Gelbe Seiten / 11880) angebunden ist.';
 }
 // Marketing: initiale Kontaktliste laden
 if(document.getElementById('prospectList')){ finishScrapeSilent(); }
 function finishScrapeSilent(){
-  const trade = 'Dachdeckerei';
-  prospects = FIRMS.map((f, i) => ({
-    name: trade + ' ' + f + (i % 3 === 0 ? ' Hattingen' : ''),
-    mail: 'info@' + f.toLowerCase().replace(/[^a-z]/g,'') + '-hattingen.de',
-    source: SOURCES[i % SOURCES.length],
-    sel: true
-  }));
+  prospects = [];
   renderProspects();
+  const meta = document.getElementById('scrapeResultMeta');
+  if(meta) meta.innerHTML = '<strong class="text-ink-800">Noch keine Kontakte.</strong> Scraper starten (oben: Gewerk + Stadt wählen) – echte Firmen werden dann hier gelistet.';
 }
 
 document.addEventListener('keydown', e => { if(e.key === 'Escape') document.querySelectorAll('.modal-bg.open').forEach(m => m.classList.remove('open')); });
@@ -2476,12 +2470,12 @@ function leadAction(btn, newStatus){
     btn.textContent = 'Beantwortet markieren';
     btn.className = 'text-green-600 font-semibold hover:underline';
     btn.setAttribute('onclick', "leadAction(this, 'Beantwortet')");
-    showToast('Lead an Mieter weitergeleitet (E-Mail + SMS bei Pro) – Demo.');
+    showToast('✅ Weiterleitung vorgemerkt. Echter Versand: E-Mail an den Mieter über dein Mailprogramm (Button im Mieter-Tab → Details).');
   } else {
     badge.className = 'bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full';
     badge.textContent = 'Beantwortet';
     btn.outerHTML = '<span class="text-ink-400 text-xs font-semibold">vom Mieter erledigt</span>';
-    showToast('Lead als beantwortet markiert (Demo).');
+    showToast('✅ Als beantwortet markiert (lokal im Browser – dauerhafte Speicherung folgt mit Lead-Management-Ausbau).');
   }
   filterLeads();
 }
