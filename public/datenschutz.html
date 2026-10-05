@@ -20,9 +20,9 @@
     <div>
       <h2 class="text-xl font-bold mb-2">2. Verantwortlicher</h2>
       <p class="text-slate-600">fachschmiede.de</p>
-      <p class="text-slate-600">Dieter Strohm</p>
-      <p class="text-slate-600">Am Waldesrand 5, 58285 Gevelsberg</p>
-      <p class="text-slate-600">E-Mail: hello@fachschmiede.de</p>
+      <p class="text-slate-600" id="dsResp">Dieter Strohm, Am Waldesrand 5, 58285 Gevelsberg</p>
+      <p class="text-slate-600" id="dsMailLine">E-Mail: hello@fachschmiede.de</p>
+      <p class="text-slate-600" id="dsBfgtLine" style="display:none"></p>
     </div>
     
     <div>
@@ -73,3 +73,17 @@
 </div>
 </body>
 </html>
+
+<script>
+// 2026-10-05: Dynamische Rechtsdaten aus /api/legal (Admin = SSOT).
+(function(){
+  fetch('/api/legal/').then(r=>r.json()).then(d=>{
+    const L = d && d.legal; if(!L || !L.betreiber) return;
+    const set=(id,txt)=>{const el=document.getElementById(id); if(el&&txt) el.textContent=txt;};
+    set('dsResp', L.ds_verantwortlicher || ((L.betreber||L.betreiber||'') + ', ' + (L.anschrift||'')));
+    set('dsMailLine', 'E-Mail: ' + (L.ds_mail || L.email || ''));
+    const bg = document.getElementById('dsBfgtLine');
+    if(bg && L.dsbeauftragter){ bg.style.display='block'; bg.textContent='Datenschutzbeauftragte:r: ' + L.dsbeauftragter; }
+  }).catch(()=>{/* statischer Fallback bleibt */});
+})();
+</script>

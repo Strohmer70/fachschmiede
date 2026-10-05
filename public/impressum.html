@@ -15,23 +15,26 @@
     <div>
       <h2 class="text-xl font-bold mb-2">Angaben gemäß § 5 DDG</h2>
       <p class="text-slate-600">fachschmiede.de</p>
-      <p class="text-slate-600">Dieter Strohm</p>
-      <p class="text-slate-600">Am Waldesrand 5</p>
-      <p class="text-slate-600">58285 Gevelsberg</p>
+      <p class="text-slate-600" id="liBetreiber">Dieter Strohm</p>
+      <p class="text-slate-600" id="liAdr1">Am Waldesrand 5</p>
+      <p class="text-slate-600" id="liAdr2">58285 Gevelsberg</p>
+      <p class="text-slate-600 mt-2" id="liRechtsform"></p>
+      <p class="text-slate-600" id="liUst"></p>
+      <p class="text-slate-600" id="liHrb"></p>
     </div>
     
     <div>
       <h2 class="text-xl font-bold mb-2">Kontakt</h2>
-      <p class="text-slate-600">E-Mail: hello@fachschmiede.de</p>
+      <p class="text-slate-600" id="liMail">E-Mail: hello@fachschmiede.de</p>
+      <p class="text-slate-600" id="liTel"></p>
     </div>
     
-    <div>
+    <div id="secVerantw">
       <h2 class="text-xl font-bold mb-2">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
-      <p class="text-slate-600">Dieter Strohm</p>
-      <p class="text-slate-600">Am Waldesrand 5, 58285 Gevelsberg</p>
+      <p class="text-slate-600" id="liVerantw">Dieter Strohm, Am Waldesrand 5, 58285 Gevelsberg</p>
     </div>
     
-    <div>
+    <div id="secEuStreit">
       <h2 class="text-xl font-bold mb-2">Streitschlichtung</h2>
       <p class="text-slate-600">Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" class="text-orange-600">https://ec.europa.eu/consumers/odr</a></p>
       <p class="text-slate-600 mt-2">Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
@@ -42,3 +45,36 @@
 </div>
 </body>
 </html>
+
+<script>
+// 2026-10-05: Dynamische Rechtsdaten aus /api/legal (Admin-Dashboard = SSOT).
+// Fallback = statische Inhalte oben (bereits korrekt).
+(function(){
+  function splitAdr(a){
+    const i = (a||'').indexOf(',');
+    return i > 0 ? [(a||'').slice(0,i).trim(), (a||'').slice(i+1).trim()] : [(a||'').trim(), ''];
+  }
+  fetch('/api/legal/').then(r=>r.json()).then(d=>{
+    const L = d && d.legal; if(!L || !L.betreiber) return;
+    const set=(id,txt)=>{const el=document.getElementById(id); if(el&&txt) el.textContent=txt;};
+    set('liBetreiber', L.betreiber);
+    const [s1,s2] = splitAdr(L.anschrift);
+    set('liAdr1', s1); set('liAdr2', s2);
+    set('liMail', 'E-Mail: ' + (L.email||''));
+    const tel = document.getElementById('liTel');
+    if(tel){ if(L.telefon){ tel.textContent='Telefon: ' + L.telefon; } else { tel.style.display='none'; } }
+    if(L.rechtsform) set('liRechtsform', 'Rechtsform: ' + L.rechtsform);
+    const ustEl = document.getElementById('liUst');
+    if(ustEl){
+      if(L.kleinunternehmer){ ustEl.textContent = 'Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: nicht ausgewiesen (Kleinunternehmer i. S. d. § 19 Abs. 1 UStG).'; }
+      else if(L.ust_id){ ustEl.textContent = 'Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: ' + L.ust_id; }
+      else { ustEl.style.display='none'; }
+    }
+    const hrb = document.getElementById('liHrb');
+    if(hrb){ if(L.handelsregister){ hrb.textContent = 'Handelsregister: ' + L.handelsregister; } else { hrb.style.display='none'; } }
+    set('liVerantw', L.verantwortlich || ((L.betreiber||'') + ', ' + (L.anschrift||'')));
+    const eu = document.getElementById('secEuStreit');
+    if(eu && L.eu_streit === false) eu.style.display='none';
+  }).catch(()=>{/* statischer Fallback bleibt */});
+})();
+</script>

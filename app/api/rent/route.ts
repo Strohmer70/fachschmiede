@@ -23,6 +23,17 @@ async function resolveCitySlug(lpSlug: string): Promise<string | null> {
 
 const STRIPE_KEY = () => process.env.STRIPE_SECRET_KEY || ''
 const PRICE_DEFAULT = 18900 // €189/Monat in Cent (Fallback)
+
+// 2026-10-05: System-Preis aus platform_settings (admin-configurierbar), Fallback 189 €
+async function getSystemPriceCents(): Promise<number> {
+  try {
+    const { data } = await supabaseAdmin
+      .from('platform_settings').select('value').eq('key', 'pricing').maybeSingle()
+    const m = data?.value?.monthly
+    if (typeof m === 'number' && m >= 9 && m <= 9999) return Math.round(m * 100)
+  } catch { /* Fallback */ }
+  return PRICE_DEFAULT
+}
 const TRIAL_DAYS = 14
 
 function getStripe(): any | null {
@@ -152,7 +163,7 @@ export async function POST(request: Request) {
       }, { onConflict: 'landing_page_id,tenant_id' })
     if (custErr) console.error('[rent] customizations:', custErr.message)
 
-    const priceCents = page.monthly_price || PRICE_DEFAULT
+    const priceCents = page.monthly_price || await getSystemPriceCents()
     // Öffentliche URL: echte Stadt aus DB (city_id) — NIE String-Bastelei am Slug!
     const { data: pageCity } = await supabaseAdmin
       .from('cities')

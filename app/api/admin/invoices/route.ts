@@ -6,20 +6,29 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     // Aktive Mieter als "Rechnungen" interpretieren
+    // HINWEIS: tenants → landing_pages hat KEINE FK-Constraint (rented_by ist TEXT)
+    // → PostgREST kann nicht embedden (PGRST200). Zwei Queries + JS-Join statt !inner.
     const { data: tenants, error } = await supabaseAdmin
       .from('tenants')
-      .select(`
-        *,
-        landing_page:landing_pages!inner(id, slug, title, monthly_price, status, trade:trades(name, slug), city:cities(name, slug))
-      `)
+      .select('*')
       .eq('subscription_status', 'active')
       .order('created_at', { ascending: false })
 
     if (error) throw error
 
+    const tenantIds = (tenants || []).map((t: any) => String(t.id))
+    const { data: pages } = tenantIds.length
+      ? await supabaseAdmin
+          .from('landing_pages')
+          .select('id, slug, title, monthly_price, status, rented_by, trade:trades(name, slug), city:cities(name, slug)')
+          .in('rented_by', tenantIds)
+      : { data: [] as any[] }
+    const pageByTenant: Record<string, any> = {}
+    ;(pages || []).forEach((p: any) => { pageByTenant[String(p.rented_by)] = p })
+
     // Generiere "Rechnungen" aus den Mietverträgen
     const invoices = (tenants || []).map((t: any, idx: number) => {
-      const page = t.landing_page || {}
+      const page = pageByTenant[String(t.id)] || {}
       const trade = page.trade || {}
       const city = page.city || {}
       const price = (page.monthly_price || 0) / 100

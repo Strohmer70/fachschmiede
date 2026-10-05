@@ -184,7 +184,7 @@ tailwind.config = {
       <button type="button" class="side-link w-full text-left" data-view="einstellungen" onclick="showView('einstellungen', this)"><span>⚙️</span> Einstellungen</button>
     </nav>
     <div class="p-4 border-t border-ink-800 text-xs text-ink-500">
-      Angemeldet als <span class="text-ink-300 font-semibold">admin@demo.de</span><br>Rolle: Betreiber (Vermieter)
+      Angemeldet als <span class="text-ink-300 font-semibold">Betreiber-Konto</span><br>Rolle: Betreiber (Vermieter)
       <button onclick="logout()" class="mt-3 w-full text-left font-bold text-ink-400 hover:text-white transition">🔒 Abmelden &amp; Konsole sperren</button>
     </div>
   </aside>
@@ -1280,53 +1280,56 @@ tailwind.config = {
             <h3 class="font-black text-ink-900 flex items-center gap-2">📄 Impressum <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">§ 5 DDG</span></h3>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Betreiber / Firmenname (vollständig) *</label>
-              <input data-req type="text" value="MietWebsites (Demo-Betreiber)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input data-req id="fBetreiber" type="text" value="" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Rechtsform *</label>
-                <select data-req class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                  <option>Einzelunternehmen</option><option>GbR</option><option>OHG</option><option>KG</option><option selected>GmbH</option><option>UG (haftungsbeschränkt)</option><option>AG</option>
+                <select data-req id="fRechtsform" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option>Einzelunternehmen</option><option>GbR</option><option>OHG</option><option>KG</option><option>GmbH</option><option>UG (haftungsbeschränkt)</option><option>AG</option>
                 </select>
               </div>
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Vertretungsberechtigt *</label>
-                <input data-req type="text" value="Max Betreiber (Geschäftsführer)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <input data-req id="fVertretung" type="text" value="" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               </div>
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Anschrift (ladungsfähig) *</label>
-              <input data-req type="text" value="Geschäftsstraße 1, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input data-req id="fAdr" type="text" value="" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               <p class="mt-1 text-[11px] text-ink-400">Kein Postfach – das Gesetz verlangt eine ladungsfähige Anschrift.</p>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Telefon *</label>
-                <input data-req type="text" value="02303 / 987 654" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <input data-req id="fTel" type="text" value="" placeholder="Pflicht, wenn keine E-Mail im Impressum – wir zeigen beides" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               </div>
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail *</label>
-                <input data-req type="email" value="hello@fachschmiede.de" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <input data-req id="fMail" type="email" value="" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">USt-IdNr. (§ 27a UStG) *</label>
-                <input data-req id="fUst" type="text" placeholder="DE …" class="w-full rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                <p class="mt-1 text-[11px] text-amber-700 font-semibold">⚠ Pflichtfeld – fehlt aktuell im Impressum.</p>
+                <input id="fUst" type="text" placeholder="DE …" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <label class="mt-2 flex items-start gap-2 cursor-pointer">
+                  <input id="fKleinUst" type="checkbox" checked onchange="legalCheck()" class="mt-0.5 shrink-0">
+                  <span class="text-[11px] text-ink-600 leading-snug"><strong class="text-ink-800">Kleinunternehmer i. S. d. § 19 UStG</strong> – keine USt-IdNr. nötig, keine Umsatzsteuer auf Rechnungen ausgewiesen.</span>
+                </label>
               </div>
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Handelsregister</label>
-                <input type="text" value="HRB 12345, AG Dortmund" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="fHrb" type="text" value="" placeholder="Nur bei eingetragenen Firmen (GmbH/UG/AG/e.K.)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
               </div>
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlich i. S. d. § 18 Abs. 2 MStV *</label>
-              <input data-req type="text" value="Max Betreiber, Anschrift wie oben" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input data-req id="fVerantw" type="text" value="" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4">
               <div><p class="font-bold text-sm text-ink-900">EU-Streitschlichtung &amp; Verbraucherstreitbeilegung</p><p class="text-xs text-ink-500">Hinweis-Block im Impressum anzeigen</p></div>
-              <span class="toggle on" onclick="this.classList.toggle('on')"></span>
+              <span id="tglEuStreit" class="toggle on" onclick="this.classList.toggle('on')"></span>
             </div>
           </div>
 
@@ -1335,24 +1338,24 @@ tailwind.config = {
             <h3 class="font-black text-ink-900 flex items-center gap-2">🔒 Datenschutzerklärung <span class="text-xs font-bold text-ink-400 uppercase tracking-wider">DSGVO</span></h3>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Verantwortlicher (Art. 13 DSGVO) *</label>
-              <input data-req type="text" value="MietWebsites (Demo-Betreiber), Geschäftsstraße 1, 58239 Schwerte" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input data-req id="fDsResp" type="text" value="" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">E-Mail für Betroffenenanfragen *</label>
               <input data-req id="fDsMail" type="email" placeholder="datenschutz@fachschmiede.de" class="w-full rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-              <p class="mt-1 text-[11px] text-amber-700 font-semibold">⚠ Pflichtfeld – Auskunft, Löschung &amp; Widerspruch (Art. 15–21 DSGVO) brauchen einen Kontakt.</p>
+              <p class="mt-1 text-[11px] text-ink-400">Auskunft, Löschung &amp; Widerspruch (Art. 15–21 DSGVO) brauchen einen Kontakt.</p>
             </div>
             <div>
               <label class="block text-sm font-bold text-ink-800 mb-1.5">Datenschutzbeauftragter <span class="font-normal text-ink-400">(optional)</span></label>
-              <input type="text" placeholder="Nicht bestellt – unter 20 Mitarbeiter:innen mit Datenverarbeitung" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <input id="fDsBfgt" type="text" value="" placeholder="Nicht bestellt – unter 20 Mitarbeiter:innen mit Datenverarbeitung" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div class="space-y-3">
               <p class="font-bold text-sm text-ink-900">Auf den eigenen Seiten eingesetzte Dienste <span class="text-xs font-normal text-ink-400">(erscheinen automatisch in der Erklärung)</span></p>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Kontakt- &amp; Onboarding-Formulare</p><p class="text-xs text-ink-500">Art. 6 Abs. 1 lit. b DSGVO – Vertragsanbahnung</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Google Maps (Stadt-Karten)</p><p class="text-xs text-ink-500">Art. 6 Abs. 1 lit. f DSGVO – nur auf Stadt-Websites</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">WhatsApp-Kontaktbutton</p><p class="text-xs text-ink-500">Weiterleitung zu WhatsApp (Meta) – Hinweis in Erklärung</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Hosting &amp; Server-Logfiles</p><p class="text-xs text-ink-500">AV-Vertrag nach Art. 28 DSGVO liegt vor</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Tracking / Analyse-Cookies</p><p class="text-xs text-ink-500">aktuell kein Tracking – kein Consent-Banner nötig</p></div><span class="toggle" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Kontakt- &amp; Onboarding-Formulare</p><p class="text-xs text-ink-500">Art. 6 Abs. 1 lit. b DSGVO – Vertragsanbahnung</p></div><span id="tglSvcKontakt" class="toggle on" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Google Maps (Stadt-Karten)</p><p class="text-xs text-ink-500">Art. 6 Abs. 1 lit. f DSGVO – nur auf Stadt-Websites</p></div><span id="tglSvcMaps" class="toggle on" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">WhatsApp-Kontaktbutton</p><p class="text-xs text-ink-500">Weiterleitung zu WhatsApp (Meta) – Hinweis in Erklärung</p></div><span id="tglSvcWhatsapp" class="toggle on" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Hosting &amp; Server-Logfiles</p><p class="text-xs text-ink-500">AV-Vertrag nach Art. 28 DSGVO liegt vor</p></div><span id="tglSvcHosting" class="toggle on" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Tracking / Analyse-Cookies</p><p class="text-xs text-ink-500">aktuell kein Tracking – kein Consent-Banner nötig</p></div><span id="tglSvcTracking" class="toggle" onclick="this.classList.toggle('on')"></span></div>
             </div>
           </div>
         </div>
@@ -1365,19 +1368,14 @@ tailwind.config = {
               <p class="text-sm text-ink-500 mt-1">Die Mieter pflegen ihre Angaben selbst (Mieter-Dashboard → Rechtliches). Du siehst hier, wessen Website rechtssicher online ist.</p>
             </div>
             <button onclick="remindAllLegal()" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-3 py-2 hover:bg-brand-50 transition">Alle offenen erinnern</button>
+            <span id="legalTenantCount" class="text-xs text-ink-400"></span>
           </div>
           <div class="mt-4 overflow-x-auto">
             <table class="w-full text-sm min-w-[640px]">
               <thead><tr class="text-left text-xs text-ink-400 uppercase tracking-wider border-b border-ink-100">
                 <th class="pb-3 font-bold">Mieter</th><th class="pb-3 font-bold">Website</th><th class="pb-3 font-bold">Impressum</th><th class="pb-3 font-bold">Datenschutz</th><th class="pb-3 font-bold text-right">Aktion</th>
               </tr></thead>
-              <tbody class="divide-y divide-ink-100">
-                <tr><td class="py-3 font-bold text-ink-900">Bergmann Bedachungen</td><td class="py-3 text-ink-500">fachschmiede.de/Dachdecker/schwerte/</td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3 text-right"><span class="text-xs text-ink-400">online ✓</span></td></tr>
-                <tr><td class="py-3 font-bold text-ink-900">Volt Elektrotechnik</td><td class="py-3 text-ink-500">fachschmiede.de/Elektriker/dortmund/</td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3 text-right"><span class="text-xs text-ink-400">online ✓</span></td></tr>
-                <tr><td class="py-3 font-bold text-ink-900">SHK Krämer</td><td class="py-3 text-ink-500">fachschmiede.de/Klempner/unna/</td><td class="py-3"><span class="text-amber-700 bg-amber-100 text-xs font-bold px-2 py-1 rounded-full">⚠ USt-IdNr. fehlt</span></td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3 text-right"><button onclick="remindLegal('SHK Krämer')" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-3 py-1.5 hover:bg-brand-50 transition">Erinnern</button></td></tr>
-                <tr><td class="py-3 font-bold text-ink-900">Zimmerei Falk</td><td class="py-3 text-ink-500">fachschmiede.de/Zimmerer/iserlohn/</td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3 text-right"><span class="text-xs text-ink-400">online ✓</span></td></tr>
-                <tr><td class="py-3 font-bold text-ink-900">Maler Weber</td><td class="py-3 text-ink-500">fachschmiede.de/Maler/bochum/</td><td class="py-3"><span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span></td><td class="py-3"><span class="text-red-700 bg-red-100 text-xs font-bold px-2 py-1 rounded-full">✗ nicht ausgefüllt</span></td><td class="py-3 text-right"><button onclick="remindLegal('Maler Weber')" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-3 py-1.5 hover:bg-brand-50 transition">Erinnern</button></td></tr>
-              </tbody>
+              <tbody id="legalTenantsBody" class="divide-y divide-ink-100"><tr><td colspan="5" class="py-6 text-center text-sm text-ink-400">Mieter werden geladen …</td></tr></tbody>
             </table>
           </div>
           <p class="mt-3 text-xs text-ink-400 italic">Regel: Eine Mieter-Website geht erst online, wenn Impressum und Datenschutz vollständig sind – neutral gehaltene (freie) Stadt-Websites zeigen bis dahin dein Betreiber-Impressum.</p>
@@ -1394,9 +1392,10 @@ tailwind.config = {
             <div class="mt-5 space-y-4">
               <div class="border border-ink-200 rounded-xl p-4 flex items-center justify-between gap-4">
                 <div><p class="font-bold text-ink-900">Website mieten</p><p class="text-xs text-ink-500">Website + Blog + E-Mail-Leads + Dashboard</p></div>
-                <div class="flex items-center gap-2"><input type="text" value="189" class="w-20 text-sm text-center rounded-lg border border-ink-200 px-3 py-2"><span class="text-sm font-bold text-ink-600">€/Monat</span></div>
+                <div class="flex items-center gap-2"><input id="fPrice" type="text" value="189" class="w-20 text-sm text-center rounded-lg border border-ink-200 px-3 py-2"><span class="text-sm font-bold text-ink-600">€/Monat</span></div>
               </div>
-              <button onclick="showToast('Preise gespeichert – gelten ab dem 01.08.2026 für Neukunden (Demo).')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">Preise speichern</button>
+              <button onclick="savePricing()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">Preise speichern</button>
+              <p class="text-[11px] text-ink-400">Gilt sofort für alle Käufen im Check-in (System-Preis). Bereits vermietete Seiten behalten ihren Preis.</p>
             </div>
           </div>
 
@@ -1404,30 +1403,30 @@ tailwind.config = {
             <h2 class="font-bold text-ink-900 text-lg">Lead-Weiterleitung</h2>
             <p class="text-sm text-ink-500 mt-1">Wie erreichen Anfragen deine Mieter?</p>
             <div class="mt-5 space-y-3">
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">E-Mail an Mieter</p><p class="text-xs text-ink-500">immer aktiv</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Eskalation an mich</p><p class="text-xs text-ink-500">wenn Mieter 48 h nicht reagiert</p></div><span class="toggle" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">E-Mail an Mieter</p><p class="text-xs text-ink-500">immer aktiv</p></div><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Eskalation an mich</p><p class="text-xs text-ink-500">wenn Mieter 48 h nicht reagiert</p></div><span class="text-[10px] font-bold text-ink-500 bg-ink-100 px-2 py-0.5 rounded-full">aus</span></div>
             </div>
           </div>
 
           <div class="bg-white rounded-2xl border border-ink-200 p-6">
             <h2 class="font-bold text-ink-900 text-lg">Automatisierungen</h2>
             <div class="mt-5 space-y-3">
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Self-Check-in sofort online</p><p class="text-xs text-ink-500">Website geht ohne Freigabe live</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Blog-Fassungen automatisch ausspielen</p><p class="text-xs text-ink-500">neue Artikel erscheinen auf allen Mieter-Websites</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Mahnwesen automatisch</p><p class="text-xs text-ink-500">Erinnerung Tag 3 / Mahnung Tag 10 &amp; 20</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Duplicate-Content-Check</p><p class="text-xs text-ink-500">wöchentlicher Abgleich aller Textfassungen</p></div><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Self-Check-in sofort online</p><p class="text-xs text-ink-500">Website geht ohne Freigabe live</p></div><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Blog-Fassungen automatisch ausspielen</p><p class="text-xs text-ink-500">neue Artikel erscheinen auf allen Mieter-Websites</p></div><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Mahnwesen automatisch</p><p class="text-xs text-ink-500">Erinnerung Tag 3 / Mahnung Tag 10 &amp; 20</p></div><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><div><p class="font-bold text-sm text-ink-900">Duplicate-Content-Check</p><p class="text-xs text-ink-500">wöchentlicher Abgleich aller Textfassungen</p></div><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
             </div>
           </div>
 
           <div class="bg-white rounded-2xl border border-ink-200 p-6">
             <h2 class="font-bold text-ink-900 text-lg">Benachrichtigungen an mich</h2>
             <div class="mt-5 space-y-3">
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Neuer Mietvertrag (Self-Check-in)</p><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Zahlung fehlgeschlagen</p><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Neues Support-Ticket</p><span class="toggle on" onclick="this.classList.toggle('on')"></span></div>
-              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Wochenbericht (Leads &amp; Umsatz)</p><span class="toggle" onclick="this.classList.toggle('on')"></span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Neuer Mietvertrag (Self-Check-in)</p><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Zahlung fehlgeschlagen</p><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Neues Support-Ticket</p><span class="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ aktiv</span></div>
+              <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-4"><p class="font-bold text-sm text-ink-900">Wochenbericht (Leads &amp; Umsatz)</p><span class="text-[10px] font-bold text-ink-500 bg-ink-100 px-2 py-0.5 rounded-full">aus</span></div>
             </div>
-            <button onclick="showToast('Einstellungen gespeichert (Demo).')" class="mt-5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition">Alles speichern</button>
+            <p class="mt-5 text-[11px] text-ink-400">Diese Automatisierungen sind System-Standard und fest hinterlegt. Abweichungen? E-Mail an <a href="mailto:hello@fachschmiede.de" class="text-brand-600 font-bold">hello@fachschmiede.de</a>.</p>
           </div>
 
           <div class="bg-white rounded-2xl border border-ink-200 p-6 lg:col-span-2">
@@ -1436,63 +1435,38 @@ tailwind.config = {
                 <h2 class="font-bold text-ink-900 text-lg">Zahlungsanbieter</h2>
                 <p class="text-sm text-ink-500 mt-1">Stripe &amp; PayPal einmalig hier verbinden – der Self-Check-in fragt neue Mieter dann automatisch nach ihrer Zahlungsmethode (Kreditkarte, SEPA-Lastschrift oder PayPal) und richtet das monatliche Abo selbstständig ein.</p>
               </div>
-              <span id="payGlobalStatus" class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">⚠ kein Anbieter verbunden – Check-in läuft im Demo-Modus</span>
+              <span id="payGlobalStatus" class="bg-ink-100 text-ink-500 text-xs font-bold px-3 py-1.5 rounded-full shrink-0">Zahlungsstatus wird geladen …</span>
             </div>
             <div class="mt-6 grid lg:grid-cols-2 gap-6">
-              <!-- Stripe -->
+              <!-- Stripe: Status-Only (Keys liegen in Vercel Env – NIEMALS im Browser-Formular) -->
               <div class="border border-ink-200 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                   <p class="font-black text-ink-900 flex items-center gap-2"><span class="bg-[#635bff] text-white text-xs font-black px-2.5 py-1 rounded-md tracking-wide">stripe</span> Stripe</p>
-                  <span id="stripeStatus" class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">nicht verbunden</span>
+                  <span id="stripeStatus" class="text-xs font-bold text-ink-500 bg-ink-100 px-2.5 py-1 rounded-full">prüfe …</span>
                 </div>
-                <div class="mt-4 space-y-3.5">
-                  <div>
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Publishable Key</label>
-                    <input id="stripePk" type="text" placeholder="pk_live_…" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Secret Key <span class="font-normal text-ink-400">(wird verschlüsselt gespeichert)</span></label>
-                    <input id="stripeSk" type="password" placeholder="sk_live_…" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Webhook-Secret</label>
-                    <input type="password" placeholder="whsec_…" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <div class="mt-4 space-y-3">
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-[11px] text-green-800 leading-relaxed" id="stripeDetail">
+                    <strong>Live-Modus</strong> · Zahlungsmethoden: Kreditkarte + Klarna · Webhook aktiv.<br>
+                    Keys liegen sicher in den Vercel-Umgebungsvariablen – nicht im Browser-Formular.
                   </div>
                   <div class="bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-600 leading-relaxed">
-                    <strong>Webhook-URL</strong> für dein Stripe-Dashboard:<br>
-                    <code class="font-mono text-brand-700">https://www.fachschmiede.de/api/stripe/webhook/</code><br>
-                    Ereignisse: <code class="font-mono">invoice.paid</code> · <code class="font-mono">invoice.payment_failed</code> · <code class="font-mono">customer.subscription.deleted</code>
+                    <strong>Webhook-URL</strong> im Stripe-Dashboard:<br>
+                    <code class="font-mono text-brand-700">https://www.fachschmiede.de/api/stripe/webhook/</code>
                   </div>
-                  <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-3.5">
-                    <div><p class="font-bold text-sm text-ink-900">Testmodus</p><p class="text-xs text-ink-500">erst mit Test-Keys verbinden, dann auf Live umstellen</p></div>
-                    <span class="toggle on" onclick="this.classList.toggle('on')"></span>
-                  </div>
-                  <button onclick="connectStripe()" class="w-full bg-[#635bff] hover:bg-[#5148e0] text-white text-sm font-bold py-3 rounded-xl transition">Mit Stripe verbinden</button>
+                  <a href="https://dashboard.stripe.com" target="_blank" rel="noopener" class="block text-center w-full bg-[#635bff] hover:bg-[#5148e0] text-white text-sm font-bold py-3 rounded-xl transition">Stripe-Dashboard öffnen</a>
                 </div>
               </div>
-              <!-- PayPal -->
+              <!-- PayPal: Status-Only -->
               <div class="border border-ink-200 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                   <p class="font-black text-ink-900 flex items-center gap-2"><span class="bg-[#003087] text-white text-xs font-black px-2.5 py-1 rounded-md italic">PayPal</span> PayPal</p>
-                  <span id="paypalStatus" class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">nicht verbunden</span>
+                  <span id="paypalStatus" class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">geplant</span>
                 </div>
-                <div class="mt-4 space-y-3.5">
-                  <div>
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Client-ID</label>
-                    <input id="ppClient" type="text" placeholder="AX…" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <div class="mt-4 space-y-3">
+                  <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-[11px] text-amber-800 leading-relaxed">
+                    PayPal ist über Stripe <strong>nicht</strong> verfügbar (nur Karte + Klarna). Echte PayPal-Abos bräuchten Braintree – steht auf der Roadmap.
                   </div>
-                  <div>
-                    <label class="block text-xs font-bold text-ink-700 mb-1">Secret <span class="font-normal text-ink-400">(wird verschlüsselt gespeichert)</span></label>
-                    <input id="ppSecret" type="password" placeholder="…" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-                  </div>
-                  <div class="bg-ink-50 border border-ink-200 rounded-lg p-3 text-[11px] text-ink-600 leading-relaxed">
-                    Wird im Check-in als Alternative zu Stripe angeboten. Neue Mieter bestätigen das Abo direkt im PayPal-Fenster – du musst nichts weiter einrichten.
-                  </div>
-                  <div class="flex items-center justify-between bg-ink-50 border border-ink-200 rounded-xl p-3.5">
-                    <div><p class="font-bold text-sm text-ink-900">Sandbox-Modus</p><p class="text-xs text-ink-500">erst testen, dann live schalten</p></div>
-                    <span class="toggle on" onclick="this.classList.toggle('on')"></span>
-                  </div>
-                  <button onclick="connectPayPal()" class="w-full bg-[#003087] hover:bg-[#00256b] text-white text-sm font-bold py-3 rounded-xl transition">Mit PayPal verbinden</button>
+                  <p class="text-[11px] text-ink-500 leading-relaxed">Bis dahin zahlen Mieter sicher per Kreditkarte oder Klarna (Kauf auf Rechnung/Raten).</p>
                 </div>
               </div>
             </div>
@@ -1513,7 +1487,7 @@ tailwind.config = {
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-black text-ink-900">Rechnungsvorschau (PDF)</h3>
       <div class="flex gap-2">
-        <button onclick="showToast('Rechnung als PDF heruntergeladen (Demo).')" class="text-xs font-bold text-white bg-brand-600 rounded-lg px-4 py-2 hover:bg-brand-700 transition">PDF herunterladen</button>
+        <button onclick="showToast('PDF-Export folgt in Kürze – die Rechnungsdaten oben sind vollständig.')" class="text-xs font-bold text-white bg-brand-600 rounded-lg px-4 py-2 hover:bg-brand-700 transition">PDF herunterladen</button>
         <button onclick="closeModal('modalInvoice')" class="text-ink-400 hover:text-ink-900 text-2xl font-black leading-none px-1">×</button>
       </div>
     </div>
@@ -1794,10 +1768,10 @@ tailwind.config = {
     <div class="mt-6">
       <p class="text-xs font-bold text-ink-400 uppercase tracking-wider mb-3">Schnellaktionen</p>
       <div class="grid sm:grid-cols-2 gap-2.5">
-        <button onclick="showToast('Nachricht an Mieter versendet (Demo).')" class="text-sm font-bold text-ink-700 border border-ink-200 rounded-lg px-4 py-3 hover:bg-ink-50 transition text-left">✉️ Nachricht senden</button>
-        <button onclick="showToast('Passwort-Reset-Link an Mieter gesendet (Demo).')" class="text-sm font-bold text-ink-700 border border-ink-200 rounded-lg px-4 py-3 hover:bg-ink-50 transition text-left">🔑 Zugang zurücksetzen</button>
-        <button onclick="showToast('Tarifwechsel-Dialog geöffnet (Demo).')" class="text-sm font-bold text-ink-700 border border-ink-200 rounded-lg px-4 py-3 hover:bg-ink-50 transition text-left">⬆️ Tarif wechseln</button>
-        <button onclick="showToast('Vertrag zur Kündigung vorgemerkt – Website bleibt bis Laufzeitende online (Demo).')" class="text-sm font-bold text-red-600 border border-red-200 rounded-lg px-4 py-3 hover:bg-red-50 transition text-left">⛔ Vertrag kündigen</button>
+        <a id="btnTenantMail" href="#" class="text-sm font-bold text-ink-700 border border-ink-200 rounded-lg px-4 py-3 hover:bg-ink-50 transition text-left block">✉️ Nachricht senden (E-Mail-Programm)</a>
+        <button onclick="showToast('🔑 Passwort-Reset folgt in Kürze – aktuell: manuell über DB möglich. E-Mail an hello@fachschmiede.de genügt.')" class="text-sm font-bold text-ink-700 border border-ink-200 rounded-lg px-4 py-3 hover:bg-ink-50 transition text-left">🔑 Zugang zurücksetzen</button>
+        <button onclick="showToast('Ein Tarif, alles drin – es gibt keine Tarifstufen (Dieters Produkt-Regel).')" class="text-sm font-bold text-ink-700 border border-ink-200 rounded-lg px-4 py-3 hover:bg-ink-50 transition text-left">ℹ️ Ein Tarif – keine Stufen</button>
+        <button onclick="showToast('Kündigung = Mieter storniert das Abo im Stripe-Kundenportal (Link in jeder Rechnungsmail) oder per E-Mail an hello@fachschmiede.de.')" class="text-sm font-bold text-red-600 border border-red-200 rounded-lg px-4 py-3 hover:bg-red-50 transition text-left">⛔ Kündigungsweg anzeigen</button>
       </div>
     </div>
     <div class="mt-6">
@@ -1834,22 +1808,23 @@ function legalCheck(){
     badge.textContent = '⚠ ' + missing.length + ' Pflichtfeld' + (missing.length > 1 ? 'er' : '') + ' offen';
   }
   const ust = document.getElementById('fUst').value.trim();
+  const klein = document.getElementById('fKleinUst').checked;
   const ds = document.getElementById('fDsMail').value.trim();
   const cU = document.getElementById('checkUst'), cD = document.getElementById('checkDsMail');
-  cU.className = 'flex items-center gap-2 ' + (ust ? 'text-ink-600' : 'text-amber-700 font-semibold');
-  cU.innerHTML = ust ? '<span class="text-green-600 font-black">✓</span> USt-IdNr. (§ 27a UStG)' : '<span class="font-black">⚠</span> USt-IdNr. fehlt (§ 27a UStG)';
+  cU.className = 'flex items-center gap-2 ' + ((ust || klein) ? 'text-ink-600' : 'text-amber-700 font-semibold');
+  cU.innerHTML = klein
+    ? '<span class="text-green-600 font-black">✓</span> Kleinunternehmer i.S.d. § 19 UStG (keine USt-IdNr. nötig)'
+    : (ust ? '<span class="text-green-600 font-black">✓</span> USt-IdNr. (§ 27a UStG)' : '<span class="font-black">⚠</span> USt-IdNr. fehlt (§ 27a UStG)');
   cD.className = 'flex items-center gap-2 ' + (ds ? 'text-ink-600' : 'text-amber-700 font-semibold');
   cD.innerHTML = ds ? '<span class="text-green-600 font-black">✓</span> E-Mail für Betroffenenanfragen' : '<span class="font-black">⚠</span> E-Mail für Betroffenenanfragen fehlt';
   return missing.length;
 }
+// 2026-10-05: ECHTES Speichern via /api/admin/legal (wird durch admin.js überschrieben mit echtem PUT)
 function saveRechtliches(){
+  if (typeof saveLegal === 'function') { saveLegal(); return; }
   const missing = legalCheck();
-  showToast(missing === 0
-    ? 'Rechtliche Angaben gespeichert – Impressum & Datenschutz sind jetzt vollständig online (Demo).'
-    : 'Gespeichert, aber ' + missing + ' Pflichtfeld(er) fehlen noch – Seiten bleiben im Warnstatus (Demo).');
+  showToast('⚠ Speicher-Modul lädt noch – bitte Seite neu laden.');
 }
-function remindLegal(name){ showToast('Erinnerung an ' + name + ' versendet: Rechtliche Angaben vervollständigen (Demo).'); }
-function remindAllLegal(){ showToast('Erinnerungen an SHK Krämer und Maler Weber versendet (Demo).'); }
 
 // ── Login-Gate ──
 // HINWEIS: doLogin() und logout() werden durch admin.js überschrieben
@@ -1865,27 +1840,6 @@ function remindAllLegal(){ showToast('Erinnerungen an SHK Krämer und Maler Webe
 //   document.body.style.overflow = 'hidden';
 //   showToast('Abgemeldet – der Bereich ist jetzt gesperrt. (Demo)');
 // }
-
-function connectStripe(){
-  const pk = document.getElementById('stripePk').value.trim(), sk = document.getElementById('stripeSk').value.trim();
-  if(!pk || !sk){ showToast('Bitte Publishable Key und Secret Key eintragen (Demo).'); return; }
-  const s = document.getElementById('stripeStatus');
-  s.className = 'text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full';
-  s.textContent = 'verbunden · Testmodus';
-  document.getElementById('payGlobalStatus').className = 'bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full shrink-0';
-  document.getElementById('payGlobalStatus').textContent = '✓ Stripe aktiv – Check-in bietet Karte & SEPA';
-  showToast('Stripe verbunden – neue Mieten laufen ab sofort über Stripe (Demo).');
-}
-function connectPayPal(){
-  const c = document.getElementById('ppClient').value.trim(), s2 = document.getElementById('ppSecret').value.trim();
-  if(!c || !s2){ showToast('Bitte Client-ID und Secret eintragen (Demo).'); return; }
-  const s = document.getElementById('paypalStatus');
-  s.className = 'text-xs font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full';
-  s.textContent = 'verbunden · Sandbox';
-  document.getElementById('payGlobalStatus').className = 'bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full shrink-0';
-  document.getElementById('payGlobalStatus').textContent = '✓ PayPal aktiv – Check-in bietet PayPal';
-  showToast('PayPal verbunden – neue Mieter können per PayPal zahlen (Demo).');
-}
 
 // ═══════════ MARKETING: E-Mail-Outreach ═══════════
 const SCRAPE_STEPS = [
@@ -2118,12 +2072,6 @@ function switchChannel(ch){
   document.getElementById('printFlow').classList.toggle('hidden', mail);
   document.getElementById('campaignHistory').classList.toggle('hidden', false);
 }
-const P_STREETS = ['Bahnhofstraße','Hauptstraße','Marktweg','Lindenallee','Werkstraße','Gartenweg','Ruhrstraße','Schulstraße','Bergmannsweg','Kirchplatz','Industriestraße','Mühlenweg'];
-const P_IMG = {'Dachdecker':'images/hero.jpg','Elektriker':'images/hero-elektro.jpg','SHK / Klempner':'images/hero-shk.jpg','Zimmerer':'images/hero-zimmerer.jpg','Maler':'images/hero-maler.jpg'};
-const P_WEB = {'Dachdecker':'images/web-dach','Elektriker':'images/web-elek','SHK / Klempner':'images/web-shk','Zimmerer':'images/web-zimm','Maler':'images/web-maler'};
-const P_DOMAIN = {'Dachdecker':'dachdecker','Elektriker':'elektriker','SHK / Klempner':'klempner','Zimmerer':'zimmerei','Maler':'maler'};
-const P_TPATH = {'Dachdecker':'dachdecker','Elektriker':'elektriker','SHK / Klempner':'klempner','Zimmerer':'zimmerer','Maler':'maler','Gartenbau':'garten-und-landschaftsbau'};
-const P_TRADE = {'Dachdecker':'Dachdeckerei','Elektriker':'Elektro','SHK / Klempner':'Haustechnik','Zimmerer':'Zimmerei','Maler':'Malerbetrieb'};
 let printPros = [], printIdx = 0, pTimer = null;
 function slugify(s){ return s.toLowerCase().replace(/ü/g,'ue').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ß/g,'ss').replace(/[^a-z]/g,''); }
 function updatePrintHint(){
@@ -2158,17 +2106,13 @@ function startPrintScrape(){
   }, 600);
 }
 function finishPrintScrape(g, s){
-  const trade = P_TRADE[g] || g;
-  printPros = FIRMS.slice(0, 12).map((f, i) => ({
-    name: trade + ' ' + f + (i % 3 === 0 ? ' ' + s : ''),
-    addr: P_STREETS[i] + ' ' + (3 + i * 2) + ', ' + (45000 + i * 37) + ' ' + s,
-    sel: true
-  }));
+  // 2026-10-05: Ehrlicher Zustand — keine Adressdatenbank angebunden.
+  // (Vorher: Simulator erzeugte Phantasie-Firmen aus gelöschten Demo-Arrays → FIRMS-ReferenceError)
+  printPros = [];
   renderPrintList();
-  const total = printPros.length + 2;
-  document.getElementById('pResultMeta').innerHTML = 'Letzter Lauf: ' + g + ' ' + s + ' · ' + total + ' gefunden · 2 unvollständig/bereits Mieter entfernt → <strong class="text-ink-800">' + printPros.length + ' Empfänger</strong>';
-  document.getElementById('pStep').textContent = 'Fertig – ' + printPros.length + ' Empfänger';
-  showToast(total + ' Adressen gefunden – ' + printPros.length + ' Empfänger nach Bereinigung (Demo).');
+  document.getElementById('pResultMeta').innerHTML = '<strong class="text-ink-800">Kein Adressdatenbank-Anbieter angebunden.</strong> Der Print-Versand braucht echte Geschäftsadressen (z. B. Gelbe-Seiten-API / 11880-Scraper) – steht auf der Roadmap.';
+  document.getElementById('pStep').textContent = 'Bereit, sobald Adressquelle angebunden ist';
+  showToast('📮 Print-Versand: Adressquelle noch nicht angebunden – nutze oben den E-Mail-Outreach (funktioniert echt).');
 }
 function renderPrintList(){
   document.getElementById('printList').innerHTML = printPros.map((pr, i) => `
@@ -2226,7 +2170,7 @@ function renderProspect(){
 }
 function sendPrint(btn){
   const n = printPros.filter(x => x.sel).length;
-  if(!n) return;
+  if(!n){ showToast('📮 Keine Empfänger – zuerst eine Adressquelle anbinden (siehe Hinweis oben).'); return; }
   const g = document.getElementById('pGewerk').value, s = document.getElementById('pStadt').value;
   btn.disabled = true; btn.textContent = '⏳ Druckauftrag läuft …';
   setTimeout(() => {
@@ -2759,12 +2703,12 @@ function remindInvoice(btn){
   btn.textContent = 'Gemahnt ✓';
   btn.className = 'text-ink-400 font-semibold cursor-default';
   btn.removeAttribute('onclick');
-  showToast('1. Mahnung versendet – Mieter sieht Hinweis auch im Dashboard (Demo).');
+  showToast('⚠ Automatisches Mahnwesen ist System-Standard (Stripe-Erinnerungen Tag 3/10/20) – manuelle Mahnung: E-Mail an den Mieter.');
 }
 
 // ═══════════ ECHTE ADMIN-DATEN LADEN ═══════════
 // Admin-Dashboard wird durch admin.js mit echten Daten verbunden
 </script>
-<script src="/admin.js?v=11"></script>
+<script src="/admin.js?v=12"></script>
 </body>
 </html>

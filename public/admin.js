@@ -2000,3 +2000,185 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 // Trigger rebuild 1787308265
+
+// ═══════════════════════════════════════════════════════════════
+// 2026-10-05: RECHTLICHES + EINSTELLUNGEN + MIETER-DETAIL (echt)
+// ═══════════════════════════════════════════════════════════════
+
+const LEGAL_FIELDS = ['fBetreiber','fRechtsform','fVertretung','fAdr','fTel','fMail','fUst','fHrb','fVerantw','fDsResp','fDsMail','fDsBfgt'];
+const LEGAL_MAP = { fBetreiber:'betreiber', fRechtsform:'rechtsform', fVertretung:'vertretung', fAdr:'anschrift', fTel:'telefon', fMail:'email', fUst:'ust_id', fHrb:'handelsregister', fVerantw:'verantwortlich', fDsResp:'ds_verantwortlicher', fDsMail:'ds_mail', fDsBfgt:'dsbeauftragter' };
+const LEGAL_TOGGLES = { tglEuStreit:'eu_streit', tglSvcKontakt:'svc_kontakt', tglSvcMaps:'svc_maps', tglSvcWhatsapp:'svc_whatsapp', tglSvcHosting:'svc_hosting', tglSvcTracking:'svc_tracking' };
+
+async function loadLegal() {
+  try {
+    const res = await fetch(`${API_BASE}/admin/legal/`);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Laden fehlgeschlagen');
+    const L = data.legal || {};
+    LEGAL_FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = L[LEGAL_MAP[id]] || '';
+    });
+    const klein = document.getElementById('fKleinUst');
+    if (klein) klein.checked = !!L.kleinunternehmer;
+    Object.entries(LEGAL_TOGGLES).forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('on', !!L[key]);
+    });
+    if (typeof legalCheck === 'function') legalCheck();
+    renderLegalTenants(data.tenants || []);
+  } catch (e) {
+    showToast('⚠ Rechtsdaten konnten nicht geladen werden: ' + e.message);
+  }
+}
+
+async function saveLegal() {
+  const L = {};
+  LEGAL_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    L[LEGAL_MAP[id]] = el ? el.value.trim() : '';
+  });
+  L.kleinunternehmer = !!document.getElementById('fKleinUst')?.checked;
+  Object.entries(LEGAL_TOGGLES).forEach(([id, key]) => { L[key] = !!document.getElementById(id)?.classList.contains('on'); });
+  if (!L.email) { showToast('❌ Betreiber-E-Mail fehlt (Pflichtfeld).'); return; }
+  try {
+    const res = await fetch(`${API_BASE}/admin/legal/`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ legal: L }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    if (typeof legalCheck === 'function') legalCheck();
+    showToast('✅ Rechtliche Angaben gespeichert – Impressum & Datenschutz aktualisiert!');
+  } catch (e) {
+    showToast('❌ Fehler beim Speichern: ' + e.message);
+  }
+}
+
+function renderLegalTenants(tenants) {
+  const body = document.getElementById('legalTenantsBody');
+  const count = document.getElementById('legalTenantCount');
+  if (!body) return;
+  const active = tenants.filter(t => t.status === 'active' || t.status === 'trialing');
+  if (count) count.textContent = active.length + ' aktive Mieter';
+  if (!tenants.length) {
+    body.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-sm text-ink-400">Noch keine Mieter im System.</td></tr>';
+    return;
+  }
+  body.innerHTML = tenants.map(t => {
+    const impBadge = t.impressumOk
+      ? '<span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span>'
+      : '<span class="text-amber-700 bg-amber-100 text-xs font-bold px-2 py-1 rounded-full" title="' + (t.missing || []).join(', ') + '">⚠ fehlt: ' + (t.missing || []).slice(0, 2).join(', ') + '</span>';
+    const dsBadge = t.dsOk
+      ? '<span class="text-green-700 bg-green-100 text-xs font-bold px-2 py-1 rounded-full">✓ vollständig</span>'
+      : '<span class="text-red-700 bg-red-100 text-xs font-bold px-2 py-1 rounded-full">✗ nicht ausgefüllt</span>';
+    const action = (t.impressumOk && t.dsOk)
+      ? '<span class="text-xs text-ink-400">online ✓</span>'
+      : '<button onclick="remindLegal(\'' + t.id + '\')" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-3 py-1.5 hover:bg-brand-50 transition">Erinnern</button>';
+    return '<tr><td class="py-3 font-bold text-ink-900">' + (t.company || '—') + '</td>' +
+      '<td class="py-3 text-ink-500">' + (t.pageSlug ? 'fachschmiede.de/' + t.pageSlug + '/' : '—') + '</td>' +
+      '<td class="py-3">' + impBadge + '</td><td class="py-3">' + dsBadge + '</td>' +
+      '<td class="py-3 text-right">' + action + '</td></tr>';
+  }).join('');
+}
+
+async function remindLegal(tenantId) {
+  try {
+    showToast('⏳ Erinnerung wird versendet …');
+    const res = await fetch(`${API_BASE}/admin/remind/`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenant_id: tenantId }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Fehler');
+    showToast('✅ Erinnerung per E-Mail versendet.');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function remindAllLegal() {
+  try {
+    showToast('⏳ Erinnerungen werden versendet …');
+    const res = await fetch(`${API_BASE}/admin/remind/`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ all: true }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Fehler');
+    showToast('✅ ' + data.sent + ' Erinnerung(en) versendet.');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+// ───────── EINSTELLUNGEN ─────────
+async function loadSettings() {
+  // Preis
+  try {
+    const res = await fetch(`${API_BASE}/admin/legal/`);
+    const data = await res.json();
+    if (data.success && data.pricing) {
+      const p = document.getElementById('fPrice');
+      if (p) p.value = data.pricing.monthly != null ? data.pricing.monthly : 189;
+    }
+  } catch (e) { /* stiller Fallback */ }
+  // Zahlungsstatus (öffentlicher Endpunkt)
+  try {
+    const res = await fetch(`${API_BASE}/payment-status/`);
+    const data = await res.json();
+    const stripeOk = data?.stripe?.configured !== false;
+    const set = (id, ok, txtOk, txtNo) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = ok ? txtOk : txtNo;
+      el.className = 'text-xs font-bold px-2.5 py-1 rounded-full ' + (ok ? 'text-green-700 bg-green-100' : 'text-amber-700 bg-amber-100');
+    };
+    set('stripeStatus', stripeOk, '✓ Live verbunden', 'nicht konfiguriert');
+    const pg = document.getElementById('payGlobalStatus');
+    if (pg) {
+      pg.textContent = stripeOk ? '✓ Stripe Live – Check-in bereit' : '⚠ Stripe nicht konfiguriert';
+      pg.className = 'text-xs font-bold px-3 py-1.5 rounded-full shrink-0 ' + (stripeOk ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700');
+    }
+  } catch (e) { /* stiller Fallback */ }
+}
+
+async function savePricing() {
+  const raw = (document.getElementById('fPrice')?.value || '189').replace(',', '.').trim();
+  const monthly = Math.round(parseFloat(raw));
+  if (!isFinite(monthly) || monthly < 9 || monthly > 9999) {
+    showToast('❌ Ungültiger Preis (9–9999 €).'); return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/admin/legal/`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pricing: { monthly } }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Fehler');
+    showToast('✅ Preis gespeichert: ' + monthly + ' €/Monat – gilt sofort für Neukäufe.');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+// ───────── MIETER-DETAIL (echt, ersetzt Stub) ─────────
+function showTenantDetail(id) {
+  const t = (dashboardData?.tenants || []).find(x => x.id === id);
+  if (!t) { showToast('Mieter nicht gefunden.'); return; }
+  const page = t.landing_page || {};
+  const statusLabels = { active: 'Aktiv', trialing: 'Testphase', inactive: 'Im Aufbau', past_due: 'Zahlung überfällig', cancelled: 'Gekündigt' };
+  document.getElementById('detName').textContent = t.company_name || 'Mieter';
+  document.getElementById('detSub').textContent = 'Mietvertrag · ' + (statusLabels[t.subscription_status] || t.subscription_status || '—') + ' · seit ' + (t.created_at ? new Date(t.created_at).toLocaleDateString('de-DE') : '—');
+  document.getElementById('detTarif').textContent = page.monthly_price ? (page.monthly_price / 100) + ' €' : '189 €';
+  const leadCount = (dashboardData?.leads || []).filter(l => l.tenant_id === id).length;
+  document.getElementById('detLeads').textContent = leadCount;
+  const mailBtn = document.getElementById('btnTenantMail');
+  if (mailBtn && t.email) {
+    mailBtn.href = 'mailto:' + t.email + '?subject=' + encodeURIComponent('Deine Miet-Website bei fachschmiede.de') + '&body=' + encodeURIComponent('Hallo ' + (t.company_name || '') + ',\n\n');
+  }
+  openModal('modalDetail');
+}
+
+// ───────── VIEW-HOOKS ─────────
+const _origShowView = showView;
+showView = function(id, el) {
+  _origShowView(id, el);
+  if (id === 'rechtliches') { loadLegal(); }
+  if (id === 'einstellungen') { loadSettings(); }
+};
