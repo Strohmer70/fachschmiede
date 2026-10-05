@@ -71,7 +71,10 @@
         document.getElementById('tenantBanner').classList.remove('hidden');
         document.getElementById('tenantBannerText').textContent = 'Dies ist die Website von ' + (d.company || '') + ' – ein Mieter der Plattform fachschmiede.de.';
         const back = document.getElementById('backLink');
-        if (back) { back.href = '/stadt/' + seite + '.html'; back.textContent = '← Zurück zur Website von ' + (d.company || ''); }
+        const TRADE_PREFIX = {'dachdecker':'stadt-dach','elektriker':'stadt-elek','klempner':'stadt-klempner','garten':'stadt-garten','maler':'stadt-maler','zimmerer':'stadt-zimm'};
+        let fileSlug = null;
+        for (const t in TRADE_PREFIX) { if (seite.indexOf(t) === 0) { fileSlug = TRADE_PREFIX[t] + '-' + seite.slice(t.length + 1); break; } }
+        if (back) { back.href = '/' + (fileSlug || seite) + '.html'; back.textContent = '← Zurück zur Website von ' + (d.company || ''); }
         set('liBetreiber', d.company || '');
         const [a1,a2] = ((d.address || '').indexOf(',') > 0)
           ? [d.address.slice(0, d.address.indexOf(',')), d.address.slice(d.address.indexOf(',')+1)]

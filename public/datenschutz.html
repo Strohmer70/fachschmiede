@@ -94,7 +94,10 @@
         document.getElementById('dsTenantBanner').classList.remove('hidden');
         document.getElementById('dsTenantBannerText').textContent = 'Verantwortlich für die Datenverarbeitung auf dieser Website: ' + (d.company || '');
         const back = document.getElementById('dsBackLink');
-        if (back) { back.href = '/stadt/' + seite + '.html'; back.textContent = '← Zurück zur Website von ' + (d.company || ''); }
+        const TRADE_PREFIX = {'dachdecker':'stadt-dach','elektriker':'stadt-elek','klempner':'stadt-klempner','garten':'stadt-garten','maler':'stadt-maler','zimmerer':'stadt-zimm'};
+        let fileSlug = null;
+        for (const t in TRADE_PREFIX) { if (seite.indexOf(t) === 0) { fileSlug = TRADE_PREFIX[t] + '-' + seite.slice(t.length + 1); break; } }
+        if (back) { back.href = '/' + (fileSlug || seite) + '.html'; back.textContent = '← Zurück zur Website von ' + (d.company || ''); }
         set('dsResp', (d.company || '') + (d.address ? ', ' + d.address : ''));
         set('dsMailLine', 'E-Mail: ' + (d.email || '') + (d.phone ? ' · Telefon: ' + d.phone : ''));
         const bg = document.getElementById('dsBfgtLine');
