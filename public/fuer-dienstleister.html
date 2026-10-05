@@ -240,111 +240,100 @@ tailwind.config = {
 </section>
 
 <!-- ═══════════ DASHBOARD-SHOWCASE ═══════════ -->
-<section id="dashboard" class="py-20 sm:py-28 bg-white">
+<section id="dashboard" class="py-20 sm:py-28 bg-white overflow-x-clip">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-      <div class="reveal">
-        <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Dein Kontrollzentrum</p>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">So sieht dein Mieter-Dashboard aus</h2>
-        <p class="mt-4 text-ink-600 text-lg leading-relaxed">Nach dem Self-Check-in bekommst du dein eigenes Dashboard. Dort steuerst du deine komplette Website selbst – ohne Agentur, ohne Wartezeit, ohne Zusatzkosten.</p>
-        <ul class="mt-8 space-y-4">
-          <li class="flex gap-4">
-            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">🏢</span>
-            <div><strong class="text-ink-900">Firmenprofil</strong><p class="text-ink-600 text-sm mt-0.5">Name, Adresse, Telefon, E-Mail, Öffnungszeiten &amp; „Über uns“ – plus WhatsApp-Nummer und Google Maps Place ID für den Kontaktbereich.</p></div>
-          </li>
-          <li class="flex gap-4">
-            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">🧩</span>
-            <div><strong class="text-ink-900">Leistungen &amp; Module</strong><p class="text-ink-600 text-sm mt-0.5">Leistungen per Schalter ein- und ausblenden – z.&nbsp;B. Erfahrung &amp; Qualifikationen nur zeigen, wenn du willst.</p></div>
-          </li>
-          <li class="flex gap-4">
-            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">🎨</span>
-            <div><strong class="text-ink-900">Design &amp; Bilder</strong><p class="text-ink-600 text-sm mt-0.5">Akzentfarbe wählen, Logo und eigene Projekt-Fotos hochladen – Vorschau in Echtzeit.</p></div>
-          </li>
-          <li class="flex gap-4">
-            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">⭐</span>
-            <div><strong class="text-ink-900">Bewertungen</strong><p class="text-ink-600 text-sm mt-0.5">Kundenstimmen prüfen, freischalten und auf deiner Seite präsentieren.</p></div>
-          </li>
-          <li class="flex gap-4">
-            <span class="shrink-0 w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg">📥</span>
-            <div><strong class="text-ink-900">Anfragen &amp; Leads</strong><p class="text-ink-600 text-sm mt-0.5">Alle Website-Anfragen mit Status verwalten – keine Anfrage geht verloren.</p></div>
-          </li>
-        </ul>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="mieter.html" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Dashboard-Demo ansehen →</a>
-          <a href="/sales-dachdecker.html" class="border-2 border-ink-200 hover:border-brand-600 hover:text-brand-600 text-ink-700 font-bold px-7 py-3.5 rounded-xl transition">Stadt auswählen</a>
+    <div class="max-w-3xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Dein Kontrollzentrum</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">So sieht dein Mieter-Dashboard aus</h2>
+      <p class="mt-4 text-ink-600 text-lg leading-relaxed">Nach dem Self-Check-in bekommst du dein eigenes Dashboard. Du steuerst deine komplette Website selbst: ohne Agentur, ohne Wartezeit, ohne Zusatzkosten. Unten siehst du echte Screenshots – 1:1 aus dem Dashboard, mit Musterfirma.</p>
+    </div>
+
+    <div class="mt-12 grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+      <!-- Linke Spalte: Tabs + Details -->
+      <div class="reveal min-w-0">
+        <div class="flex flex-col sm:flex-row lg:flex-col gap-3" role="tablist" aria-label="Dashboard-Bereiche">
+          <button type="button" id="dtab-btn-0" onclick="dashTab(0)" class="dash-tab text-left flex items-start gap-4 rounded-2xl border-2 p-4 transition border-brand-600 bg-brand-50/60">
+            <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-600 text-white flex items-center justify-center text-xl">🏢</span>
+            <span><span class="block font-black text-ink-900">Firmenprofil</span><span class="block text-sm text-ink-600 mt-0.5">Kontakt, WhatsApp, Google &amp; Qualifikationen</span></span>
+          </button>
+          <button type="button" id="dtab-btn-1" onclick="dashTab(1)" class="dash-tab text-left flex items-start gap-4 rounded-2xl border-2 p-4 transition border-ink-200 bg-white hover:border-brand-600">
+            <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl">🧩</span>
+            <span><span class="block font-black text-ink-900">Leistungen &amp; Module</span><span class="block text-sm text-ink-600 mt-0.5">Schalter, eigene Leistungen, Texte editieren</span></span>
+          </button>
+          <button type="button" id="dtab-btn-2" onclick="dashTab(2)" class="dash-tab text-left flex items-start gap-4 rounded-2xl border-2 p-4 transition border-ink-200 bg-white hover:border-brand-600">
+            <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl">🎨</span>
+            <span><span class="block font-black text-ink-900">Design &amp; Bilder</span><span class="block text-sm text-ink-600 mt-0.5">Logo, Akzentfarbe, Fotos – mit Live-Vorschau</span></span>
+          </button>
         </div>
+
+        <!-- Tab-Details: Firmenprofil -->
+        <ul id="dtab-panel-0" class="dash-panel mt-6 space-y-3.5">
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Kontaktdaten &amp; Öffnungszeiten:</strong> Firmenname, Adresse, Telefon, E-Mail, „Über uns“ und deine Einsatzgebiete – selbst eingetragen, sofort auf der Website.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">WhatsApp-Button:</strong> Mit einer Nummer schaltest du den grünen WhatsApp-Kontakt frei – Besucher schreiben dir direkt.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Google-Maps-Karte:</strong> Per Place ID bindet sich automatisch dein Google-Unternehmenseintrag mit Karte, Route und Rezensionen-Pin.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Eigene Website &amp; Google-Business-Profil:</strong> Verlinke deine bestehende Homepage und dein Google-Profil – Besucher finden alles an einem Ort.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Qualifikationen zeigen, wenn du willst:</strong> Meisterbetrieb, Innungsmitgliedschaft, Gründungsjahr, Teamgröße, Projektzahl – jeder Bereich ist ein eigener Schalter.</p></li>
+        </ul>
+
+        <!-- Tab-Details: Leistungen & Module -->
+        <ul id="dtab-panel-1" class="dash-panel mt-6 space-y-3.5 hidden">
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Standard-Leistungen per Schalter:</strong> Dein Gewerk kommt mit fertigen Leistungskarten – du blendest ein, was du wirklich anbietest.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Texte selbst formulieren:</strong> Überschrift und Text jeder Leistung editierbar – mit einem Klick zurück aufs Original.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Eigene Leistungen ergänzen:</strong> Deine Spezialgebiete fügst du als eigene Karte hinzu – so oft du willst.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Module steuern:</strong> FAQ, Blog, Kennzahlen, Kundenbewertungen und Notdienst-Banner – an, aus, jederzeit.</p></li>
+        </ul>
+
+        <!-- Tab-Details: Design & Bilder -->
+        <ul id="dtab-panel-2" class="dash-panel mt-6 space-y-3.5 hidden">
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Akzentfarbe wählen:</strong> Buttons, Links und Highlights übernehmen deine Firmenfarbe – ein Klick genügt.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Eigenes Logo hochladen:</strong> Erscheint im Header, im Kontaktbereich und als Favicon deiner Mietseite.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Echte Bilder statt Platzhalter:</strong> Hero-Bild, Team-Foto und Galerie-Fotos deiner Projekte – du lädst sie hoch, die Seite zeigt sie.</p></li>
+          <li class="flex gap-3"><span class="shrink-0 text-brand-600 font-black">✓</span><p class="text-ink-600 text-sm leading-relaxed"><strong class="text-ink-900">Live-Vorschau &amp; Sofort-Veröffentlichung:</strong> Jede Änderung siehst du vorher – „Veröffentlichen“ schaltet sie sofort auf deiner Seite frei.</p></li>
+        </ul>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#gewerke" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition shadow-lg shadow-brand-600/25">Stadt &amp; Gewerk sichern →</a>
+          <a href="/stadt-dach-schwerte.html" class="border-2 border-ink-200 hover:border-brand-600 hover:text-brand-600 text-ink-700 font-bold px-7 py-3.5 rounded-xl transition">Live-Beispiel ansehen</a>
+        </div>
+        <p class="mt-4 text-xs text-ink-400">Dazu im Dashboard: <strong class="text-ink-600">Anfragen-Verwaltung</strong> (kein Lead geht verloren) und <strong class="text-ink-600">Bewertungen</strong> prüfen &amp; freischalten.</p>
       </div>
 
-      <!-- Dashboard-Mockup -->
-      <div class="reveal relative">
-        <span class="absolute -top-3 left-6 z-10 bg-amber-400 text-ink-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wide">Live-Demo</span>
+      <!-- Rechte Spalte: Echte Screenshots -->
+      <div class="reveal relative min-w-0">
+        <span class="absolute -top-3 left-6 z-10 bg-amber-400 text-ink-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wide">Echte Screenshots</span>
         <div class="bg-white rounded-2xl border border-ink-200 shadow-2xl shadow-ink-900/10 overflow-hidden">
-          <!-- Browser-Leiste -->
           <div class="bg-ink-100 px-4 py-2.5 flex items-center gap-2 border-b border-ink-200">
             <span class="w-3 h-3 rounded-full bg-red-400"></span>
             <span class="w-3 h-3 rounded-full bg-amber-400"></span>
             <span class="w-3 h-3 rounded-full bg-green-400"></span>
-            <span class="ml-3 flex-1 bg-white rounded-md px-3 py-1 text-xs text-ink-500 font-medium truncate">dashboard.mietwebsites.de/mein-betrieb</span>
+            <span class="ml-3 flex-1 bg-white rounded-md px-3 py-1 text-xs text-ink-500 font-medium truncate">fachschmiede.de/mieter.html – Tab: <span id="dcap">Firmenprofil</span></span>
           </div>
-          <!-- Dashboard-Kopf -->
-          <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center justify-between">
-            <div>
-              <p class="text-xs text-ink-400 font-semibold">Mieter-Dashboard</p>
-              <p class="font-black text-ink-900">Bergmann Bedachungen <span class="ml-1 text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full align-middle">ONLINE</span></p>
-            </div>
-           
-          </div>
-          <!-- Tabs -->
-          <div class="px-5 pt-3 flex gap-1 text-xs font-bold text-ink-500 border-b border-ink-100 overflow-x-auto">
-            <span class="px-3 py-2 rounded-t-lg bg-brand-50 text-brand-600 border-b-2 border-brand-600 whitespace-nowrap">Firmenprofil</span>
-            <span class="px-3 py-2 whitespace-nowrap">Leistungen</span>
-            <span class="px-3 py-2 whitespace-nowrap">Design</span>
-            <span class="px-3 py-2 whitespace-nowrap">Bewertungen</span>
-            <span class="px-3 py-2 whitespace-nowrap">Anfragen</span>
-          </div>
-          <!-- Inhalt -->
-          <div class="p-5 space-y-3 bg-ink-50/50">
-            <div class="bg-white rounded-xl border border-ink-200 p-4">
-              <p class="text-xs font-bold text-ink-400 uppercase tracking-wider mb-2">Firmenname</p>
-              <div class="flex items-center justify-between gap-3">
-                <p class="font-semibold text-ink-900 text-sm">Bergmann Bedachungen</p>
-                <span class="text-xs font-bold text-brand-600">Bearbeiten ✎</span>
-              </div>
-            </div>
-            <div class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3">
-              <div>
-                <p class="font-semibold text-ink-900 text-sm">Meisterbetrieb anzeigen</p>
-                <p class="text-xs text-ink-500 mt-0.5">Optional – nur sichtbar, wenn du es aktivierst</p>
-              </div>
-              <span class="shrink-0 w-11 h-6 rounded-full bg-brand-600 relative"><span class="absolute right-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></span></span>
-            </div>
-            <div class="bg-white rounded-xl border border-ink-200 p-4 flex items-center justify-between gap-3">
-              <div>
-                <p class="font-semibold text-ink-900 text-sm">Gründungsjahr anzeigen</p>
-                <p class="text-xs text-ink-500 mt-0.5">Freie Entscheidung – die Seite bleibt neutral</p>
-              </div>
-              <span class="shrink-0 w-11 h-6 rounded-full bg-ink-200 relative"><span class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow"></span></span>
-            </div>
-            <div class="grid grid-cols-3 gap-3">
-              <div class="bg-white rounded-xl border border-ink-200 p-3 text-center">
-                <p class="text-xl font-black text-ink-900">12</p>
-                <p class="text-[10px] font-bold text-ink-500 uppercase">Anfragen</p>
-              </div>
-              <div class="bg-white rounded-xl border border-ink-200 p-3 text-center">
-                <p class="text-xl font-black text-ink-900">4,9★</p>
-                <p class="text-[10px] font-bold text-ink-500 uppercase">Bewertung</p>
-              </div>
-              <div class="bg-white rounded-xl border border-ink-200 p-3 text-center">
-                <p class="text-xl font-black text-green-600">Sofort</p>
-                <p class="text-[10px] font-bold text-ink-500 uppercase">Änderung live</p>
-              </div>
-            </div>
+          <div class="relative bg-ink-50/60">
+            <img id="dshot-0" src="/images/screenshots/dashboard-firmenprofil.png" alt="Mieter-Dashboard: Firmenprofil mit Kontaktdaten, WhatsApp, Google-Maps, eigener Website und Google-Business-Profil" width="1280" height="940" class="w-full h-auto block">
+            <img id="dshot-1" src="/images/screenshots/dashboard-leistungen.png" alt="Mieter-Dashboard: Leistungen und Module mit Schaltern, eigenen Leistungen und editierbaren Texten" width="1280" height="940" loading="lazy" class="w-full h-auto hidden">
+            <img id="dshot-2" src="/images/screenshots/dashboard-design.png" alt="Mieter-Dashboard: Design und Bilder mit Logo-Upload, Akzentfarbe und Foto-Verwaltung" width="1280" height="940" loading="lazy" class="w-full h-auto hidden">
           </div>
         </div>
+        <p class="mt-3 text-center text-xs text-ink-400">1:1-Ausschnitte aus dem echten Mieter-Dashboard – mit Musterfirma, ohne echte Kundendaten.</p>
       </div>
     </div>
   </div>
 </section>
+<script>
+function dashTab(n){
+  [0,1,2].forEach(function(i){
+    var s=document.getElementById('dshot-'+i); if(s) s.classList.toggle('hidden', i!==n);
+    var b=document.getElementById('dtab-btn-'+i);
+    if(b){
+      var on=(i===n);
+      b.classList.toggle('border-brand-600',on); b.classList.toggle('bg-brand-50/60',on);
+      b.classList.toggle('border-ink-200',!on); b.classList.toggle('bg-white',!on);
+    }
+    var p=document.getElementById('dtab-panel-'+i); if(p) p.classList.toggle('hidden', i!==n);
+  });
+  var cap=document.getElementById('dcap'); if(cap) cap.textContent=['Firmenprofil','Leistungen & Module','Design & Bilder'][n];
+}
+</script>
 
 <!-- ═══════════ GEWERKE & STÄDTE ═══════════ -->
 <section id="gewerke" class="py-20 sm:py-28">
