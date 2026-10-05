@@ -681,6 +681,8 @@ async function submitLead(form){
 <!-- ═══════════ MIET-STATUS (echte Vermietung) ═══════════ -->
 <script>
 (function(){var PAGE_SLUG='klempner-hagen';
+document.querySelectorAll('a[href="/impressum.html"]').forEach(function(a){a.href='/impressum.html?seite='+PAGE_SLUG});
+document.querySelectorAll('a[href="/datenschutz.html"]').forEach(function(a){a.href='/datenschutz.html?seite='+PAGE_SLUG});
 function reveal(){var st=document.getElementById('mietPending');if(st)st.remove();}
 function hideSel(sel){var el=document.querySelector(sel);if(el)el.style.display='none';}
 async function applyRental(retry){

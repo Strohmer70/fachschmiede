@@ -8,8 +8,12 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
 <div class="max-w-3xl mx-auto px-6 py-12">
-  <a href="/fuer-dienstleister/" class="text-orange-600 font-bold mb-8 inline-block">← Zurück zur Startseite</a>
-  <h1 class="text-3xl font-black mb-8">Impressum</h1>
+  <a id="backLink" href="/fuer-dienstleister/" class="text-orange-600 font-bold mb-4 inline-block">← Zurück zur Startseite</a>
+  <div id="tenantBanner" class="hidden mb-6 bg-orange-50 border border-orange-200 rounded-xl p-4">
+    <p class="text-sm font-bold text-orange-800" id="tenantBannerText">Impressum einer Mieter-Website</p>
+    <a href="?" class="text-xs text-orange-600 font-semibold underline">Betreiber-Impressum der Plattform ansehen</a>
+  </div>
+  <h1 class="text-3xl font-black mb-8" id="pageTitle">Impressum</h1>
   
   <div class="bg-white rounded-xl border border-slate-200 p-8 space-y-6">
     <div>
@@ -39,6 +43,10 @@
       <p class="text-slate-600">Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" class="text-orange-600">https://ec.europa.eu/consumers/odr</a></p>
       <p class="text-slate-600 mt-2">Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
     </div>
+    <div id="secPlattform" class="hidden border-t border-slate-200 pt-6">
+      <h2 class="text-xl font-bold mb-2">Technischer Betreiber der Plattform</h2>
+      <p class="text-slate-600 text-sm" id="pfText">Hosting und technische Bereitstellung: fachschmiede.de (Dieter Strohm, Am Waldesrand 5, 58285 Gevelsberg, hello@fachschmiede.de)</p>
+    </div>
   </div>
   
   <p class="text-center text-slate-400 text-sm mt-8">© 2026 fachschmiede.de</p>
@@ -50,6 +58,46 @@
 // 2026-10-05: Dynamische Rechtsdaten aus /api/legal (Admin-Dashboard = SSOT).
 // Fallback = statische Inhalte oben (bereits korrekt).
 (function(){
+  // ── 2026-10-05: Mieter-Impressum (?seite=SLUG) — die Mietseite gehört rechtlich dem Mieter ──
+  const seite = new URLSearchParams(location.search).get('seite');
+  if (seite) {
+    fetch('/api/pages/' + encodeURIComponent(seite) + '/')
+      .then(r => r.json())
+      .then(d => {
+        if (!d || d.rented !== true) return; // freie Seite → Betreiber-Impressum
+        const lg = d.legal || {};
+        const set=(id,txt)=>{const el=document.getElementById(id); if(el) el.textContent=txt;};
+        document.getElementById('pageTitle').textContent = 'Impressum – ' + (d.company || 'Mieter-Website');
+        document.getElementById('tenantBanner').classList.remove('hidden');
+        document.getElementById('tenantBannerText').textContent = 'Dies ist die Website von ' + (d.company || '') + ' – ein Mieter der Plattform fachschmiede.de.';
+        const back = document.getElementById('backLink');
+        if (back) { back.href = '/stadt/' + seite + '.html'; back.textContent = '← Zurück zur Website von ' + (d.company || ''); }
+        set('liBetreiber', d.company || '');
+        const [a1,a2] = ((d.address || '').indexOf(',') > 0)
+          ? [d.address.slice(0, d.address.indexOf(',')), d.address.slice(d.address.indexOf(',')+1)]
+          : [d.address || '(Anschrift vom Mieter noch nicht hinterlegt)', ''];
+        set('liAdr1', a1); set('liAdr2', a2);
+        set('liMail', 'E-Mail: ' + (d.email || ''));
+        const tel = document.getElementById('liTel');
+        if (tel) { if (d.phone) { tel.textContent = 'Telefon: ' + d.phone; } else { tel.style.display = 'none'; } }
+        set('liRechtsform', lg.rechtsform ? 'Rechtsform: ' + lg.rechtsform : '');
+        const ustEl = document.getElementById('liUst');
+        if (lg.ust_id) { ustEl.textContent = 'Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: ' + lg.ust_id; }
+        else { ustEl.style.display = 'none'; }
+        const hrb = document.getElementById('liHrb');
+        if (lg.hwk_name || lg.hwk_number) {
+          hrb.textContent = (lg.hwk_name ? lg.hwk_name + ' ' : '') + (lg.hwk_number ? '· Handwerksrolle-Nr.: ' + lg.hwk_number : '');
+        } else if (lg.berufsbezeichnung) {
+          hrb.textContent = lg.berufsbezeichnung;
+        } else { hrb.style.display = 'none'; }
+        set('liVerantw', lg.verantwortlicher || lg.vertretung || (d.contactName ? d.contactName + ', ' + (d.address || '') : ''));
+        const eu = document.getElementById('secEuStreit');
+        if (eu && lg.eu_streitschlichtung === false) eu.style.display = 'none';
+        document.getElementById('secPlattform').classList.remove('hidden');
+      })
+      .catch(() => { /* Betreiber-Impressum als Fallback */ });
+    return;
+  }
   function splitAdr(a){
     const i = (a||'').indexOf(',');
     return i > 0 ? [(a||'').slice(0,i).trim(), (a||'').slice(i+1).trim()] : [(a||'').trim(), ''];

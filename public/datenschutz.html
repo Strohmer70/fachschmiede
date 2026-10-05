@@ -8,8 +8,12 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
 <div class="max-w-3xl mx-auto px-6 py-12">
-  <a href="/fuer-dienstleister/" class="text-orange-600 font-bold mb-8 inline-block">← Zurück zur Startseite</a>
-  <h1 class="text-3xl font-black mb-8">Datenschutzerklärung</h1>
+  <a id="dsBackLink" href="/fuer-dienstleister/" class="text-orange-600 font-bold mb-4 inline-block">← Zurück zur Startseite</a>
+  <div id="dsTenantBanner" class="hidden mb-6 bg-orange-50 border border-orange-200 rounded-xl p-4">
+    <p class="text-sm font-bold text-orange-800" id="dsTenantBannerText">Datenschutzerklärung einer Mieter-Website</p>
+    <a href="?" class="text-xs text-orange-600 font-semibold underline">Plattform-Datenschutzerklärung ansehen</a>
+  </div>
+  <h1 class="text-3xl font-black mb-8" id="dsPageTitle">Datenschutzerklärung</h1>
   
   <div class="bg-white rounded-xl border border-slate-200 p-8 space-y-6">
     <div>
@@ -77,6 +81,28 @@
 <script>
 // 2026-10-05: Dynamische Rechtsdaten aus /api/legal (Admin = SSOT).
 (function(){
+  // ── 2026-10-05: Mieter-Modus (?seite=SLUG) — Verantwortlicher = Mieter ──
+  const seite = new URLSearchParams(location.search).get('seite');
+  if (seite) {
+    fetch('/api/pages/' + encodeURIComponent(seite) + '/')
+      .then(r => r.json())
+      .then(d => {
+        if (!d || d.rented !== true) return;
+        const lg = d.legal || {};
+        const set=(id,txt)=>{const el=document.getElementById(id); if(el) el.textContent=txt;};
+        document.getElementById('dsPageTitle').textContent = 'Datenschutzerklärung – ' + (d.company || '');
+        document.getElementById('dsTenantBanner').classList.remove('hidden');
+        document.getElementById('dsTenantBannerText').textContent = 'Verantwortlich für die Datenverarbeitung auf dieser Website: ' + (d.company || '');
+        const back = document.getElementById('dsBackLink');
+        if (back) { back.href = '/stadt/' + seite + '.html'; back.textContent = '← Zurück zur Website von ' + (d.company || ''); }
+        set('dsResp', (d.company || '') + (d.address ? ', ' + d.address : ''));
+        set('dsMailLine', 'E-Mail: ' + (d.email || '') + (d.phone ? ' · Telefon: ' + d.phone : ''));
+        const bg = document.getElementById('dsBfgtLine');
+        if (lg.datenschutz_beauftragter) { bg.style.display='block'; bg.textContent='Datenschutzbeauftragte:r: ' + lg.datenschutz_beauftragter; }
+      })
+      .catch(() => { /* Plattform-Version als Fallback */ });
+    return;
+  }
   fetch('/api/legal/').then(r=>r.json()).then(d=>{
     const L = d && d.legal; if(!L || !L.betreiber) return;
     const set=(id,txt)=>{const el=document.getElementById(id); if(el&&txt) el.textContent=txt;};

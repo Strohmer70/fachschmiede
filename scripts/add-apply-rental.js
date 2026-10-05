@@ -34,6 +34,9 @@ for (const file of files) {
 <!-- ═══════════ MIET-STATUS (echte Vermietung) ═══════════ -->
 <script>
 (function(){var PAGE_SLUG='${slug}';
+// 2026-10-05: Impressum/Datenschutz immer mit ?seite= aufrufen – Mieter-Seite zeigt Mieter-Angaben, freie Seite automatisch Betreiber-Impressum.
+document.querySelectorAll('a[href="/impressum.html"]').forEach(function(a){a.href='/impressum.html?seite='+PAGE_SLUG});
+document.querySelectorAll('a[href="/datenschutz.html"]').forEach(function(a){a.href='/datenschutz.html?seite='+PAGE_SLUG});
 async function applyRental(){
  try{
   var r=await fetch('/api/pages/'+PAGE_SLUG+'/');if(!r.ok)return;

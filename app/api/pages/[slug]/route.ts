@@ -109,6 +109,18 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       team_url: cust.custom_team_url || null,
       gallery_urls: cust.custom_gallery_urls || [],
       reviews: reviews || [],
+      // ── 2026-10-05: Impressumspflicht-Angaben des Mieters (öffentlich = Pflichtangaben) ──
+      legal: {
+        rechtsform: cust.rechtsform || null,
+        vertretung: cust.vertretung || null,
+        ust_id: cust.ust_id || null,
+        hwk_name: cust.hwk_name || null,
+        hwk_number: cust.hwk_number || null,
+        berufsbezeichnung: cust.berufsbezeichnung || null,
+        verantwortlicher: cust.verantwortlicher || null,
+        eu_streitschlichtung: cust.eu_streitschlichtung !== false,
+        datenschutz_beauftragter: cust.datenschutz_beauftragter || null,
+      },
     })
   } catch (err: any) {
     return json({ error: err?.message }, 500)
