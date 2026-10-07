@@ -454,7 +454,7 @@ function dashTab(n){
       <div class="reveal bg-ink-800 rounded-2xl p-8 border border-ink-700 flex flex-col">
         <h3 class="text-xl font-black">Website mieten</h3>
         <p class="mt-1 text-sm text-ink-400">Für den soliden Start in deiner Stadt</p>
-        <p class="mt-6"><span class="text-5xl font-black">189 €</span><span class="text-ink-400 font-semibold"> / Monat</span></p>
+        <p class="mt-6"><span class="text-5xl font-black"><span class="dynPrice">189</span> €</span><span class="text-ink-400 font-semibold"> / Monat</span></p>
         <ul class="mt-6 space-y-3 text-sm text-ink-200 flex-1">
           <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Komplette Miet-Website (Gewerk + Stadt)</li>
           <li class="flex gap-3"><span class="text-green-400 font-bold">✓</span> Lokale Google-Optimierung</li>
@@ -733,6 +733,19 @@ document.getElementById('jahr').textContent = new Date().getFullYear();
     });
   }
 })();
-</script></body>
+</script>
+<script>
+// 2026-10-07: System-Preis aus Admin-Einstellungen (SSOT via /api/legal).
+// Hartkodierter Wert dient als Fallback, wenn die API nicht erreichbar ist.
+(function(){
+  fetch('/api/legal/').then(function(r){return r.json();}).then(function(d){
+    var m = d && d.pricing && d.pricing.monthly;
+    if (typeof m === 'number' && m >= 9 && m <= 9999) {
+      document.querySelectorAll('.dynPrice').forEach(function(el){ el.textContent = m; });
+    }
+  }).catch(function(){});
+})();
+</script>
+</body>
 </html>
 <!-- Build: Fri Aug 28 06:49:34 PM CST 2026 -->

@@ -496,7 +496,7 @@ tailwind.config = {
             <div class="bg-brand-50 border border-brand-200 rounded-xl p-4">
               <div class="flex items-center justify-between">
                 <span class="font-bold text-ink-900">Dein Preis</span>
-                <span class="font-black text-2xl text-brand-600">189 €<span class="text-sm font-semibold text-ink-500">/Monat</span></span>
+                <span class="font-black text-2xl text-brand-600"><span class="dynPrice">189</span> €<span class="text-sm font-semibold text-ink-500">/Monat</span></span>
               </div>
               <p class="text-xs text-ink-500 mt-1">Inklusive: Website, Blog, E-Mail-Leads, Hosting, SSL, Updates</p>
             </div>
@@ -937,5 +937,18 @@ if (citySearch) {
 })();
 </script>
 
+
+<script>
+// 2026-10-07: System-Preis aus Admin-Einstellungen (SSOT via /api/legal).
+// Hartkodierter Wert dient als Fallback, wenn die API nicht erreichbar ist.
+(function(){
+  fetch('/api/legal/').then(function(r){return r.json();}).then(function(d){
+    var m = d && d.pricing && d.pricing.monthly;
+    if (typeof m === 'number' && m >= 9 && m <= 9999) {
+      document.querySelectorAll('.dynPrice').forEach(function(el){ el.textContent = m; });
+    }
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
