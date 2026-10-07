@@ -85,7 +85,13 @@ export async function ppApi(cfg: PayPalConfig, path: string, body?: any, method?
 // ── Plan je Preis holen oder anlegen (Cache in platform_settings.paypal.plans_by_price) ──
 export async function getOrCreatePlan(cfg: PayPalConfig, priceCents: number, withTrial: boolean): Promise<string> {
   const key = String(priceCents)
-  const cached = (cfg as any).plans_by_price?.[key]?.[withTrial ? 'trial' : 'immediate']?.[cfg.mode]
+  const kind = withTrial ? 'trial' : 'immediate'
+  // 1) Setup-Script hat Pläne für den Standardpreis hinterlegt → direkt nutzen
+  const modePlan = (cfg.modes as any)?.[cfg.mode]?.plans?.[kind]
+  const isDefaultPrice = priceCents === (cfg.price_cents || 18900)
+  if (modePlan && isDefaultPrice) return modePlan
+  // 2) Dynamisch erstellte Pläne (z.B. anderer Preis) aus dem Cache
+  const cached = (cfg as any).plans_by_price?.[key]?.[kind]?.[cfg.mode]
   if (cached) return cached
 
   const modeCfg = cfg.modes[cfg.mode]

@@ -209,11 +209,12 @@ export async function POST(request: Request) {
         email: emailNorm,
         tradePath: tradePath(trade),
       })
-      await supabaseAdmin.from('tenants').update({
+      const { error: ppUpdErr } = await supabaseAdmin.from('tenants').update({
         payment_provider: 'paypal',
         paypal_subscription_id: subscriptionId,
         subscription_status: 'pending',
       }).eq('id', tenant.id)
+      if (ppUpdErr) throw new Error('Tenant-Markierung fehlgeschlagen: ' + ppUpdErr.message)
       return NextResponse.json({
         ok: true,
         payment_method: 'paypal',
