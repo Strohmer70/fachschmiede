@@ -29,20 +29,31 @@
       <p class="text-slate-600" id="dsBfgtLine" style="display:none"></p>
     </div>
     
-    <div>
-      <h2 class="text-xl font-bold mb-2">3. Welche Daten erfassen wir?</h2>
-      <p class="text-slate-600">Wenn Sie uns über das Kontaktformular oder per E-Mail kontaktieren, speichern wir Ihre Angaben zur Bearbeitung der Anfrage. Dies umfasst:</p>
+    <div id="secDsKontakt">
+      <h2 class="text-xl font-bold mb-2">3. Kontaktformulare &amp; Anfragen</h2>
+      <p class="text-slate-600">Wenn Sie uns über das Kontaktformular oder per E-Mail kontaktieren, speichern wir Ihre Angaben zur Bearbeitung der Anfrage (Art. 6 Abs. 1 lit. b DSGVO – Vertragsanbahnung). Dies umfasst:</p>
       <ul class="list-disc ml-6 mt-2 text-slate-600">
         <li>Name</li>
         <li>E-Mail-Adresse</li>
         <li>Telefonnummer (optional)</li>
         <li>Ihre Nachricht</li>
       </ul>
+      <p class="text-slate-600 mt-2">Ihre Daten werden ausschließlich zur Beantwortung Ihrer Anfrage und zur Vermittlung an den von Ihnen gewählten Handwerksbetrieb verwendet.</p>
     </div>
     
-    <div>
-      <h2 class="text-xl font-bold mb-2">4. Zweck der Verarbeitung</h2>
-      <p class="text-slate-600">Wir verwenden Ihre Daten ausschließlich zur Beantwortung Ihrer Anfrage und zur Vermittlung an den von Ihnen gewählten Handwerksbetrieb.</p>
+    <div id="secDsMaps">
+      <h2 class="text-xl font-bold mb-2">4. Google Maps</h2>
+      <p class="text-slate-600">Auf den Stadt-Websites binden wir Kartenmaterial von Google Maps ein. Beim Aufruf einer Karte werden Daten (insb. Ihre IP-Adresse) an Google Ireland Ltd. übertragen (Art. 6 Abs. 1 lit. f DSGVO – Interesse an ansprechender Darstellung unserer Standorte). Weitere Informationen: <a href="https://policies.google.com/privacy" class="text-orange-600">https://policies.google.com/privacy</a></p>
+    </div>
+    
+    <div id="secDsWhatsapp" style="display:none">
+      <h2 class="text-xl font-bold mb-2">WhatsApp-Kontakt</h2>
+      <p class="text-slate-600">Über den WhatsApp-Button auf vermieteten Websites werden Sie zu WhatsApp (Meta Platforms Ireland Ltd.) weitergeleitet. Beim Öffnen des Chats gelten die Datenschutzbedingungen von WhatsApp: <a href="https://www.whatsapp.com/legal/privacy-policy" class="text-orange-600">https://www.whatsapp.com/legal/privacy-policy</a></p>
+    </div>
+    
+    <div id="secDsTracking" style="display:none">
+      <h2 class="text-xl font-bold mb-2">Tracking &amp; Analyse-Cookies</h2>
+      <p class="text-slate-600">Diese Website nutzt Analyse-Tools. Dabei werden Cookies gesetzt und Nutzungsdaten verarbeitet (Art. 6 Abs. 1 lit. a DSGVO – Ihre Einwilligung). Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen.</p>
     </div>
     
     <div>
@@ -62,7 +73,7 @@
       </ul>
     </div>
     
-    <div>
+    <div id="secDsHosting">
       <h2 class="text-xl font-bold mb-2">7. Hosting</h2>
       <p class="text-slate-600">Diese Website wird bei Vercel gehostet. Vercel verarbeitet Daten gemäß ihrer Datenschutzerklärung: <a href="https://vercel.com/legal/privacy-policy" class="text-orange-600">https://vercel.com/legal/privacy-policy</a></p>
     </div>
@@ -109,10 +120,22 @@
   fetch('/api/legal/').then(r=>r.json()).then(d=>{
     const L = d && d.legal; if(!L || !L.betreiber) return;
     const set=(id,txt)=>{const el=document.getElementById(id); if(el&&txt) el.textContent=txt;};
-    set('dsResp', L.ds_verantwortlicher || ((L.betreber||L.betreiber||'') + ', ' + (L.anschrift||'')));
+    set('dsResp', L.ds_verantwortlicher || ((L.betreiber||'') + ', ' + (L.anschrift||'')));
     set('dsMailLine', 'E-Mail: ' + (L.ds_mail || L.email || ''));
     const bg = document.getElementById('dsBfgtLine');
     if(bg && L.dsbeauftragter){ bg.style.display='block'; bg.textContent='Datenschutzbeauftragte:r: ' + L.dsbeauftragter; }
+    // 2026-10-07: Service-Toggles aus dem Admin wirken jetzt auf die Sektionen (E2E-Bugfix).
+    // true/undefined = sichtbar (Toggle nie gesetzt → Standard an, außer Tracking/WhatsApp: Standard aus).
+    const tgl = (id, on, defaultShow) => {
+      const el = document.getElementById(id); if(!el) return;
+      const show = (on === undefined) ? defaultShow : !!on;
+      el.style.display = show ? '' : 'none';
+    };
+    tgl('secDsKontakt', L.svc_kontakt, true);
+    tgl('secDsMaps',    L.svc_maps,    true);
+    tgl('secDsWhatsapp',L.svc_whatsapp,false);
+    tgl('secDsHosting', L.svc_hosting, true);
+    tgl('secDsTracking',L.svc_tracking,false);
   }).catch(()=>{/* statischer Fallback bleibt */});
 })();
 </script>

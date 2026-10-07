@@ -20,6 +20,7 @@
       <h2 class="text-xl font-bold mb-2">Angaben gemäß § 5 DDG</h2>
       <p class="text-slate-600" id="liPlatformName">fachschmiede.de</p>
       <p class="text-slate-600" id="liBetreiber">Dieter Strohm</p>
+      <p class="text-slate-600" id="liVertretung"></p>
       <p class="text-slate-600" id="liAdr1">Am Waldesrand 5</p>
       <p class="text-slate-600" id="liAdr2">58285 Gevelsberg</p>
       <p class="text-slate-600 mt-2" id="liRechtsform"></p>
@@ -113,6 +114,14 @@
     const L = d && d.legal; if(!L || !L.betreiber) return;
     const set=(id,txt)=>{const el=document.getElementById(id); if(el&&txt) el.textContent=txt;};
     set('liBetreiber', L.betreiber);
+    // 2026-10-07: Vertretung war Admin-Feld ohne Public-Ausgabe (E2E-Bugfix).
+    // Anzeige wenn gesetzt UND abweichend vom Betreiber (Einzelunternehmen: Inhaber = gesetzlicher Vertreter → redundant).
+    const vertEl = document.getElementById('liVertretung');
+    if(vertEl){
+      const v = (L.vertretung||'').trim();
+      if(v && v !== (L.betreiber||'').trim()){ vertEl.textContent = 'Vertretungsberechtigt: ' + v; }
+      else { vertEl.style.display = 'none'; }
+    }
     const [s1,s2] = splitAdr(L.anschrift);
     set('liAdr1', s1); set('liAdr2', s2);
     set('liMail', 'E-Mail: ' + (L.email||''));
