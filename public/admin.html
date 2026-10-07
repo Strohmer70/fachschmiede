@@ -1381,7 +1381,11 @@ tailwind.config = {
           <p class="mt-3 text-xs text-ink-400 italic">Regel: Eine Mieter-Website geht erst online, wenn Impressum und Datenschutz vollständig sind – neutral gehaltene (freie) Stadt-Websites zeigen bis dahin dein Betreiber-Impressum.</p>
         </div>
 
-        <button onclick="saveRechtliches()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-6 py-3 rounded-xl transition">Rechtliche Angaben speichern</button>
+        <div class="flex items-center gap-4 mt-1">
+          <button onclick="saveRechtliches()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-6 py-3 rounded-xl transition">Rechtliche Angaben speichern</button>
+          <span id="legalSaveStatus" class="text-xs font-bold text-ink-400">Auto-Save aktiv – Änderungen speichern sich von selbst</span>
+        </div>
+        <p class="mt-2 text-[11px] text-ink-400">💡 Änderungen erscheinen sofort auf <a href="/impressum.html" target="_blank" class="text-brand-600 font-bold underline">Impressum</a> + <a href="/datenschutz.html" target="_blank" class="text-brand-600 font-bold underline">Datenschutz</a> (hard refresh: Strg+Shift+R falls dein Browser cached).</p>
       </div>
 
       <div class="view" id="view-einstellungen">

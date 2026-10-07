@@ -1995,6 +1995,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (adminToken) {
     hideLoginGate();
     loadDashboard();
+    setupLegalAutosave();
   } else {
     showLoginGate();
   }
@@ -2008,6 +2009,43 @@ document.addEventListener('DOMContentLoaded', () => {
 const LEGAL_FIELDS = ['fBetreiber','fRechtsform','fVertretung','fAdr','fTel','fMail','fUst','fHrb','fVerantw','fDsResp','fDsMail','fDsBfgt'];
 const LEGAL_MAP = { fBetreiber:'betreiber', fRechtsform:'rechtsform', fVertretung:'vertretung', fAdr:'anschrift', fTel:'telefon', fMail:'email', fUst:'ust_id', fHrb:'handelsregister', fVerantw:'verantwortlich', fDsResp:'ds_verantwortlicher', fDsMail:'ds_mail', fDsBfgt:'dsbeauftragter' };
 const LEGAL_TOGGLES = { tglEuStreit:'eu_streit', tglSvcKontakt:'svc_kontakt', tglSvcMaps:'svc_maps', tglSvcWhatsapp:'svc_whatsapp', tglSvcHosting:'svc_hosting', tglSvcTracking:'svc_tracking' };
+
+// 2026-10-07: AUTO-SAVE — verhindert "Änderung eingetippt, Save-Button vergessen, wirkt nicht auf Public".
+// Jede Änderung im Rechtliches-Formular speichert sich nach 1,5 s selbst (debounced).
+let _legalSaveTimer = null;
+let _legalDirty = false;
+
+function updateLegalSaveIndicator(state) {
+  const el = document.getElementById('legalSaveStatus');
+  if (!el) return;
+  if (state === 'saving')      { el.textContent = '⏳ Speichere…';          el.className = 'text-xs font-bold text-amber-600'; }
+  else if (state === 'saved')  { el.textContent = '✓ Gespeichert · sofort live'; el.className = 'text-xs font-bold text-green-600'; }
+  else if (state === 'error')  { el.textContent = '❌ Fehler — wird erneut versucht'; el.className = 'text-xs font-bold text-red-600'; }
+}
+
+function onLegalFieldChange() {
+  _legalDirty = true;
+  updateLegalSaveIndicator('saving');
+  clearTimeout(_legalSaveTimer);
+  _legalSaveTimer = setTimeout(() => saveLegal(), 1500);
+}
+
+function setupLegalAutosave() {
+  const view = document.getElementById('view-rechtliches');
+  if (!view || view.dataset.autosaveBound) return;
+  view.dataset.autosaveBound = '1';
+  // Text-Inputs + Selects + Checkboxen
+  view.addEventListener('input',  onLegalFieldChange);
+  view.addEventListener('change', onLegalFieldChange);
+  // Toggle-Spans (class-toggle via onclick) — Click-Phase fangen
+  view.addEventListener('click', (e) => {
+    if (e.target.closest('.toggle')) onLegalFieldChange();
+  }, true);
+  // Warnung beim Verlassen mit ungespeicherten Änderungen
+  window.addEventListener('beforeunload', (ev) => {
+    if (_legalDirty) { ev.preventDefault(); ev.returnValue = ''; }
+  });
+}
 
 async function loadLegal() {
   try {
@@ -2049,9 +2087,12 @@ async function saveLegal() {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    _legalDirty = false;
+    updateLegalSaveIndicator('saved');
     if (typeof legalCheck === 'function') legalCheck();
     showToast('✅ Rechtliche Angaben gespeichert – Impressum & Datenschutz aktualisiert!');
   } catch (e) {
+    updateLegalSaveIndicator('error');
     showToast('❌ Fehler beim Speichern: ' + e.message);
   }
 }
@@ -2179,6 +2220,6 @@ function showTenantDetail(id) {
 const _origShowView = showView;
 showView = function(id, el) {
   _origShowView(id, el);
-  if (id === 'rechtliches') { loadLegal(); }
+  if (id === 'rechtliches') { loadLegal(); setupLegalAutosave(); }
   if (id === 'einstellungen') { loadSettings(); }
 };
