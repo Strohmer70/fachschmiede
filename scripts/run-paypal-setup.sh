@@ -1,0 +1,7 @@
+#!/bin/bash
+cd /root/.openclaw/workspace/fachschmiede
+export PP_LIVE_ID='BAADtjX4kF2W_yhCND2jFTQk7MseLlCarrdGCbsigtZNREMBnrklj8uAO8h-lJuQPFWqZ-vjycQ3PdlLg4'
+export PP_LIVE_SECRET='ELajSrH09uzH2IBOzkdR_hMlwr88agyF_i5c9bZZwtIrZu-Zf6ABj_1hXiSwfviN3ycDmhX4tgW6N_Dw'
+export PP_SANDBOX_ID='BAAoiZIVmZjJHiiBAw5-jD0kcZxb77fJjPgZsasKjHVJKsup50prmNEQWjoBRZcbFhxjV8n3AitoRWsR7g'
+export PP_SANDBOX_SECRET='EPBCXTI0izmP9yIvbIhOyf546imaJaxdDmvaQEXntYPeLlu0R3y_bIGjW0Eh5vPd6ja3pEAisDaOqlwq'
+node scripts/paypal-setup.js

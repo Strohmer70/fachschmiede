@@ -189,14 +189,47 @@ export async function POST(request: Request) {
       }),
     })
 
+    // ── Zahlungsweg: PayPal (primär) oder Stripe (Option) ──
+    const paymentMethod = String((body as any).payment_method || (body as any).provider || '')
+
     // ── Stripe Checkout ──
     const stripe = getStripe()
+    if (paymentMethod === 'paypal') {
+      // ── PayPal-Abo (Server-seitig erstellt, Kunde bestätigt im Popup) ──
+      const { getPayPalConfig, getOrCreatePlan, createSubscription, ppClientId } = await import('@/lib/paypal')
+      const ppCfg = await getPayPalConfig()
+      if (!ppCfg || !ppClientId(ppCfg)) {
+        return NextResponse.json({ error: 'PayPal ist noch nicht konfiguriert. Bitte wähle eine andere Zahlungsmethode.' }, { status: 503 })
+      }
+      const planId = await getOrCreatePlan(ppCfg, priceCents, isTrial)
+      const subscriptionId = await createSubscription(ppCfg, planId, {
+        slug,
+        landingPageId: page.id,
+        tenantId: tenant.id,
+        email: emailNorm,
+        tradePath: tradePath(trade),
+      })
+      await supabaseAdmin.from('tenants').update({
+        payment_provider: 'paypal',
+        paypal_subscription_id: subscriptionId,
+        subscription_status: 'pending',
+      }).eq('id', tenant.id)
+      return NextResponse.json({
+        ok: true,
+        payment_method: 'paypal',
+        paypal: { subscription_id: subscriptionId, client_id: ppClientId(ppCfg), mode: ppCfg.mode },
+        tenant_id: tenant.id,
+      })
+    }
     if (!stripe) {
       return NextResponse.json({
         error: 'Stripe ist noch nicht konfiguriert (STRIPE_SECRET_KEY fehlt). Konto wurde angelegt – wir melden uns.',
         provisioned: true,
       }, { status: 503 })
     }
+
+    // Zahlart-Merker (Admin-Billing zeigt Stripe vs PayPal)
+    await supabaseAdmin.from('tenants').update({ payment_provider: 'stripe' }).eq('id', tenant.id)
 
     // Zahlart aus Checkout (Karte/Klarna) strikt validieren – unbekannte Werte = auto
     const paymentMethodTypes =

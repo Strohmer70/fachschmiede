@@ -14,7 +14,7 @@ export async function GET() {
     // ── 1) Alle Mieter ──
     const { data: tenants, error: tenantsError } = await supabaseAdmin
       .from('tenants')
-      .select('id, email, company_name, contact_name, phone, stripe_customer_id, stripe_subscription_id, subscription_status, created_at')
+      .select('id, email, company_name, contact_name, phone, stripe_customer_id, stripe_subscription_id, paypal_subscription_id, payment_provider, subscription_status, created_at')
       .order('created_at', { ascending: false })
 
     if (tenantsError) throw new Error('Tenants: ' + tenantsError.message)
@@ -39,23 +39,26 @@ export async function GET() {
       pagesByTenant[p.rented_by].push(p)
     })
 
+    // 2026-10-03: LIVE = Abo vorhanden UND Status aktiv (gekündigte Subs mit
+    // gespeicherter ID waren vorher ewig "live" → Phantom-Umsatz)
+    // 2026-10-07: PayPal-Mieter zählen genauso (stripe_subscription_id ODER paypal_subscription_id)
+    const hasLiveSub = (t: any) =>
+      (t.stripe_subscription_id || t.paypal_subscription_id) && t.subscription_status === 'active'
     const tenantsWithPages = (tenants || []).map(t => ({
       ...t,
-      // 2026-10-03: LIVE = Stripe-Sub vorhanden UND Status aktiv (gekündigte Subs mit
-      // gespeicherter ID waren vorher ewig "live" → Phantom-Umsatz)
-      is_test: !t.stripe_subscription_id || t.subscription_status !== 'active',
+      is_test: !hasLiveSub(t),
       landing_page: (pagesByTenant[t.id] || [])[0] || null,
       rented_pages: pagesByTenant[t.id] || [],
     }))
 
-    // ── 4) MRR: NUR Live-Mieten (aktive Stripe-Subscription) ──
+    // ── 4) MRR: NUR Live-Mieten (aktive Subscription, Stripe oder PayPal) ──
     const livePages = pages.filter(p => {
       const t = (tenants || []).find(x => x.id === p.rented_by)
-      return t?.stripe_subscription_id && t.subscription_status === 'active'
+      return t ? hasLiveSub(t) : false
     })
     const testPages = pages.filter(p => {
       const t = (tenants || []).find(x => x.id === p.rented_by)
-      return t && (!t.stripe_subscription_id || t.subscription_status !== 'active')
+      return t && !hasLiveSub(t)
     })
 
     const mrrCents = livePages.reduce((sum, r) => sum + (r.monthly_price || 0), 0)

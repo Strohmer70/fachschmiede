@@ -1,0 +1,22 @@
+{
+  "price_cents": 18900,
+  "trial_days": 14,
+  "modes": {
+    "live": {
+      "product_id": "PROD-5W0479777B218044U",
+      "plans": {
+        "trial": "P-3YC35946S6709604HNLDCH7Y",
+        "immediate": "P-3G936351R9714374LNLDCIAA"
+      },
+      "webhook_id": "11K97809MF935382V"
+    },
+    "sandbox": {
+      "product_id": "PROD-75T32735SB721593U",
+      "plans": {
+        "trial": "P-501388695F6261637NLDCIAI",
+        "immediate": "P-0BG73869BG6873817NLDCIAQ"
+      },
+      "webhook_id": "2MY03574RV222201Y"
+    }
+  }
+}

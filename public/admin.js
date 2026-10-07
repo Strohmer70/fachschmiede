@@ -581,7 +581,7 @@ function renderWebsitesFilter(pages) {
 // ───────── Testmiete beenden + Seite zurücksetzen (2026-10-01) ─────────
 window.testReset = async function(slug) {
   if (!slug) return;
-  if (!confirm('Testmiete für "' + slug + '" wirklich beenden?\n\nDie Seite wird auf „frei" zurückgesetzt. Mieter-Daten dieser Seite (Customizations, Bewertungen) werden gelöscht.\n\nLive-Mieten (mit Stripe) sind hier geschützt und werden NICHT zurückgesetzt.')) return;
+  if (!confirm('Testmiete für "' + slug + '" wirklich beenden?\n\nDie Seite wird auf „frei" zurückgesetzt. Mieter-Daten dieser Seite (Customizations, Bewertungen) werden gelöscht.\n\nLive-Mieten (mit aktivem Zahlungsabo) sind hier geschützt und werden NICHT zurückgesetzt.')) return;
   try {
     const res = await fetch(API_BASE + '/admin/test-reset/', {
       method: 'POST',
@@ -1088,7 +1088,7 @@ async function loadInvoiceData() {
         <tr id="invoiceListEmpty">
           <td colspan="7" class="px-6 py-12 text-center">
             <p class="font-bold text-ink-600 text-lg">Noch keine Rechnungen</p>
-            <p class="text-sm text-ink-400 mt-1">Rechnungen werden automatisch erstellt, sobald Mieter über Stripe bezahlen.</p>
+            <p class="text-sm text-ink-400 mt-1">Rechnungen werden automatisch erstellt, sobald Mieter über Stripe oder PayPal bezahlen.</p>
           </td>
         </tr>
       `;

@@ -575,9 +575,14 @@ tailwind.config = {
         </div>
                         <div id="payBlock" class="mt-6 text-left">
           <p class="text-sm font-bold text-ink-800 mb-2">💳 Zahlungsmethode für die Monatsmiete *</p>
-          <div class="grid sm:grid-cols-2 gap-3">
-            <label class="pay-opt cursor-pointer border-2 border-brand-600 bg-brand-50 rounded-xl p-4 block transition" onclick="pickPay(this)">
-              <input type="radio" name="pay" value="card" checked class="sr-only">
+          <div class="grid sm:grid-cols-3 gap-3">
+            <label class="pay-opt cursor-pointer border-2 border-[#0070ba] bg-[#f0f7ff] rounded-xl p-4 block transition" onclick="pickPay(this)" title="Empfohlen: PayPal">
+              <input type="radio" name="pay" value="paypal" checked class="sr-only">
+              <span class="font-bold text-ink-900 text-sm"><span style="color:#003087;font-weight:900;font-style:italic">Pay</span><span style="color:#0079c1;font-weight:900;font-style:italic">Pal</span> <span class="ml-1 align-middle text-[9px] font-black bg-[#0070ba] text-white rounded px-1.5 py-0.5 uppercase tracking-wide">Empfohlen</span></span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Käuferschutz · Karte &amp; Lastschrift auch ohne PayPal-Konto<br>Abwicklung via <strong>PayPal</strong></span>
+            </label>
+            <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
+              <input type="radio" name="pay" value="card" class="sr-only">
               <span class="font-bold text-ink-900 text-sm">💳 Kreditkarte</span>
               <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Visa · Mastercard · Amex<br>Abwicklung via <strong>Stripe</strong></span>
             </label>
@@ -587,8 +592,14 @@ tailwind.config = {
               <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Kauf auf Rechnung oder in Raten<br>Abwicklung via <strong>Stripe</strong></span>
             </label>
           </div>
-          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über Stripe – keine Zahlungsdaten auf unseren Servern.</p>
+          <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über <strong>PayPal</strong> oder <strong>Stripe</strong> – keine Zahlungsdaten auf unseren Servern.</p>
         </div>
+        <div id="paypalPanel" class="hidden mt-6 text-left bg-[#f0f7ff] border-2 border-[#0070ba] rounded-xl p-5">
+        <p class="font-black text-ink-900 text-lg">Fast geschafft! 🎉</p>
+        <p id="paypalPanelText" class="mt-1 text-sm text-ink-600 leading-relaxed">Dein Konto ist angelegt. Bestätige jetzt dein Abo bei PayPal:</p>
+        <div id="paypal-button-container" class="mt-4 max-w-sm"></div>
+        <p class="mt-3 text-[11px] text-ink-400">Nach der Bestätigung bist du sofort live — dein Dashboard-Zugang kommt per E-Mail.</p>
+      </div>
         <button id="pubBtn" onclick="publish()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-black text-lg py-4 rounded-xl transition shadow-lg">🚀 Jetzt veröffentlichen &amp; Miete starten</button>
         <p class="mt-3 text-xs text-ink-400">Du kannst alles später im Dashboard ändern – Veröffentlichen ist kein Point of no Return.</p>
       </div>
@@ -597,7 +608,7 @@ tailwind.config = {
       <div class="onb-step p-10 text-center" id="stepDone">
         <span class="inline-flex w-20 h-20 rounded-full bg-green-500 text-white items-center justify-center text-4xl shadow-lg">✓</span>
         <h3 class="mt-5 text-3xl font-black text-ink-900">Du bist online!</h3>
-        <p id="doneMsg" class="mt-3 text-ink-600 leading-relaxed max-w-md mx-auto">„Zimmerer <span class="onbCity font-bold text-ink-900">…</span>" ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (Stripe).</p>
+        <p id="doneMsg" class="mt-3 text-ink-600 leading-relaxed max-w-md mx-auto">„Zimmerer <span class="onbCity font-bold text-ink-900">…</span>" ist ab sofort unter deinem Namen erreichbar. Anfragen kommen direkt zu dir – dein Dashboard-Login (E-Mail + dein Passwort aus Schritt 1) ist aktiviert – die Bestätigung ist per E-Mail unterwegs. Die Monatsmiete läuft ab sofort über deine gewählte Zahlungsmethode (PayPal oder Stripe).</p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <a id="doneSiteLink" href="/stadt-zimm-bochum.html" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-7 py-3.5 rounded-xl transition">Meine Website ansehen</a>
           <a id="doneDashLink" href="/mieter.html" class="bg-ink-900 hover:bg-ink-800 text-white font-bold px-7 py-3.5 rounded-xl transition">Zum Dashboard</a>
@@ -729,6 +740,7 @@ async function publish(){
       return;
     }
     if(data.checkout_url){ window.location.href = data.checkout_url; return; }
+    if(data.paypal && data.paypal.subscription_id){ startPayPalFlow(data.paypal); return; }
     // Stripe noch nicht konfiguriert → trotzdem Bestätigung anzeigen
     gotoStep('Done');
     const doneMsg = document.getElementById('doneMsg');
@@ -739,6 +751,38 @@ async function publish(){
     if(btn){ btn.disabled = false; btn.innerHTML = oldLabel; }
     alert('Netzwerkfehler – bitte prüfe deine Verbindung und versuche es erneut.');
   }
+}
+// ── PayPal-Abo-Flow (primär; Stripe = Option) ──
+function startPayPalFlow(pp){
+  const step3 = document.getElementById('step3');
+  if(step3){ step3.querySelectorAll(':scope > *').forEach(function(el){ if(el.id !== 'paypalPanel') el.style.display = 'none'; }); }
+  const panel = document.getElementById('paypalPanel');
+  if(panel){
+    panel.classList.remove('hidden');
+    const txt = document.getElementById('paypalPanelText');
+    if(txt) txt.innerHTML = (window.onbMode === 'test')
+      ? 'Dein Konto ist angelegt. Bestätige jetzt deine <strong>kostenlose 14-Tage-Testphase</strong> bei PayPal (danach <span class="dynPrice">189 €</span>/Monat — jederzeit kündbar):'
+      : 'Dein Konto ist angelegt. Bestätige jetzt dein Abo (<span class="dynPrice">189 €</span>/Monat, monatlich kündbar) bei PayPal:';
+  }
+  loadPayPalSdk(pp.client_id, function(){
+    window.paypal.Buttons({
+      style: { shape:'rect', color:'blue', layout:'vertical', label:'subscribe' },
+      createSubscription: function(){ return pp.subscription_id; },
+      onApprove: function(){
+        const slug = GEWERK_SLUG + '-' + (CITY_SLUGS[onbCity] || '');
+        window.location.href = 'https://www.fachschmiede.de/mieten/erfolg/?slug=' + encodeURIComponent(slug);
+      },
+      onCancel: function(){ if(typeof showToast==='function') showToast('PayPal-Vorgang abgebrochen — der Button bleibt bereit.'); },
+      onError: function(err){ console.error('PayPal Fehler', err); alert('PayPal-Fehler — bitte erneut versuchen oder Stripe als Zahlungsmethode wählen.'); }
+    }).render('#paypal-button-container');
+  });
+}
+function loadPayPalSdk(clientId, cb){
+  if(window.paypal){ return cb(); }
+  const s = document.createElement('script');
+  s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(clientId) + '&vault=true&intent=subscription&currency=EUR&components=buttons';
+  s.onload = cb;
+  document.head.appendChild(s);
 }
 onb.addEventListener('click', e => { if(e.target === onb) closeOnboarding(); });
 
