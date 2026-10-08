@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { readFileSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
+// Side-effect-Imports: Dateien physikalisch ins Serverless-Bundle ziehen
+// (Vercel nft-Trace), damit die Engine sie per fs.readFileSync lesen kann.
+import '../../../../config/system-config.js'
+import articleIndexJson from '../../../../lib/article-index.json'
 // @ts-ignore — CJS-Engine (scripts/lib), allowJs aktiv
 import { generateCity, TRADES } from '../../../../scripts/lib/city-gen.js'
 
@@ -87,7 +91,7 @@ function buildEngineCtx(existingSlugs: string[]) {
   for (const f of SALES_FILES) salesFiles[f] = readFileSync(join(pub, f), 'utf-8')
 
   const systemConfig = readFileSync(join(process.cwd(), 'config', 'system-config.js'), 'utf-8')
-  const articleIndex = readFileSync(join(process.cwd(), 'lib', 'article-index.json'), 'utf-8')
+  const articleIndex = JSON.stringify(articleIndexJson)
   const staticPages = readdirSync(pub).filter((f: string) => f.endsWith('.html'))
   const stadtFiles = readdirSync(pub).filter((f: string) => f.startsWith('stadt-') && f.endsWith('.html'))
 
