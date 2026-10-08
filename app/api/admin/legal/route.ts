@@ -77,7 +77,14 @@ export async function PUT(req: Request) {
       await supabaseAdmin
         .from('platform_settings')
         .upsert({ key: 'pricing', value: { monthly }, updated_at: new Date().toISOString() }, { onConflict: 'key' })
-      return NextResponse.json({ success: true, pricing: { monthly } })
+      // 2026-10-08: Preis auf ALLE Landing Pages propagieren — sonst rechnen
+      // Stats/Invoices/MRR mit dem alten Seiten-Preis weiter (Checkout nutzt eh nur Systempreis)
+      const { error: lpPriceErr } = await supabaseAdmin
+        .from('landing_pages')
+        .update({ monthly_price: monthly * 100 })
+        .not('id', 'is', null)
+      if (lpPriceErr) console.error('[legal] Preis-Propagation landing_pages:', lpPriceErr.message)
+      return NextResponse.json({ success: true, pricing: { monthly }, propagated: !lpPriceErr })
     }
 
     const inLegal = body?.legal || {}

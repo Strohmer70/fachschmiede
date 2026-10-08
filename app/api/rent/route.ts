@@ -163,7 +163,10 @@ export async function POST(request: Request) {
       }, { onConflict: 'landing_page_id,tenant_id' })
     if (custErr) console.error('[rent] customizations:', custErr.message)
 
-    const priceCents = page.monthly_price || await getSystemPriceCents()
+    // 2026-10-08: SYSTEM-PREIS (platform_settings, admin-configurierbar) ist die SSOT.
+    // page.monthly_price darf NICHT mehr gewinnen — sonst zahlen Kunden den alten Seed-Preis (189),
+    // obwohl der Admin-Preis (z.B. 99) auf allen Salespages angezeigt wird.
+    const priceCents = await getSystemPriceCents()
     // Öffentliche URL: echte Stadt aus DB (city_id) — NIE String-Bastelei am Slug!
     const { data: pageCity } = await supabaseAdmin
       .from('cities')
@@ -190,7 +193,14 @@ export async function POST(request: Request) {
     })
 
     // ── Zahlungsweg: PayPal (primär) oder Stripe (Option) ──
-    const paymentMethod = String((body as any).payment_method || (body as any).provider || '')
+    // Zahlungsmethode: payment_method (API-Standard) > provider (Legacy) >
+    // payment-Radio der Salespages ('paypal' → PayPal; 'card'/'klarna' bleibt Stripe-Hint)
+    // 2026-10-08: Salespages senden NUR 'payment' — ohne diese Zeile landete PayPal-Auswahl IMMER bei Stripe!
+    const paymentMethod = String(
+      (body as any).payment_method ||
+      (body as any).provider ||
+      ((body as any).payment === 'paypal' ? 'paypal' : '')
+    )
 
     // ── Stripe Checkout ──
     const stripe = getStripe()
