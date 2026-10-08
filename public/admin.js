@@ -502,7 +502,7 @@ function renderWebsitesTable() {
   }
 
   if (!list.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-ink-400 italic">Keine Einträge für diesen Filter.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-ink-400 italic">Keine Einträge für diesen Filter.</td></tr>';
     return;
   }
 
@@ -510,19 +510,24 @@ function renderWebsitesTable() {
     const cs = g.city?.slug || 'unbekannt';
     const views = g.pages.reduce((s, p) => s + (p.page_views || 0), 0);
     const newest = Math.max(...g.pages.map(p => +new Date(p.created_at)));
-    // Gewerke-Dots: alle Gewerke der Gruppe, farbcodiert
-    const dots = g.pages.map(p => {
-      const k = statusKeyOf(p);
-      const bg = k === 'frei' ? 'bg-green-500' : (k === 'test' ? 'bg-amber-400' : 'bg-ink-300');
-      return `<span title="${p.trade?.name || ''}: ${k}" class="inline-flex items-center justify-center w-7 h-7 rounded-full ${bg} text-xs">${tradeEmojiOf(p.trade?.name)}</span>`;
-    }).join('');
+    // Status-Übersicht als kompakte Zähler-Chips (statt Emoji-Punkt-Wand)
+    const counts = { frei: 0, vermietet: 0, test: 0 };
+    g.pages.forEach(p => { const k = statusKeyOf(p); if (counts[k] !== undefined) counts[k]++; });
+    const chips = [
+      counts.frei ? `<span class="inline-block text-[11px] font-bold text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">${counts.frei} frei</span>` : '',
+      counts.vermietet ? `<span class="inline-block text-[11px] font-bold text-ink-700 bg-ink-100 border border-ink-200 rounded-full px-2 py-0.5">${counts.vermietet} vermietet</span>` : '',
+      counts.test ? `<span class="inline-block text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">${counts.test} Test</span>` : '',
+    ].filter(Boolean).join(' ');
+    // Gewerke-Abdeckung: X/6 + Namen als Tooltip
+    const tradeNames = g.pages.map(p => p.trade?.name || '?').join(', ');
     const fresh = g.pages.some(p => (+new Date() - +new Date(p.created_at)) < 10 * 60 * 1000);
     return `
       <tr class="cursor-pointer hover:bg-brand-50/50 transition" onclick="toggleCityGroup('${cs}')" data-gcity="${cs}">
         <td class="px-6 py-3.5 text-ink-400 text-xs">▸</td>
         <td class="px-2 py-3.5 font-black text-ink-900">${g.city?.name || 'Unbekannt'} <span class="text-ink-400 font-semibold text-xs">· ${g.pages.length}×</span>${fresh ? ' <span class="bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full ml-1">⏳ frisch erstellt</span>' : ''}</td>
         <td class="px-4 py-3.5 text-xs text-ink-500">${g.city?.state || '—'}</td>
-        <td class="px-4 py-3.5"><div class="flex gap-1">${dots}</div></td>
+        <td class="px-4 py-3.5 text-xs text-ink-700" title="${tradeNames}"><span class="font-black">${g.pages.length}/6</span> <span class="text-ink-400">Gewerke</span></td>
+        <td class="px-4 py-3.5"><div class="flex flex-wrap gap-1">${chips || '<span class="text-xs text-ink-400">—</span>'}</div></td>
         <td class="px-4 py-3.5 text-xs text-ink-500">${formatDate(new Date(newest).toISOString())}</td>
         <td class="px-4 py-3.5 text-xs font-bold text-ink-700 text-right">${views}</td>
       </tr>
@@ -533,7 +538,7 @@ function renderWebsitesTable() {
           <td class="px-6 py-2.5"></td>
           <td class="px-2 py-2.5 text-sm text-ink-800" colspan="2">${tradeEmojiOf(p.trade?.name)} ${p.trade?.name || '-'} · ${p.slug}</td>
           <td class="px-4 py-2.5">${statusBadgeOf(p)}</td>
-          <td class="px-4 py-2.5 text-xs text-ink-500">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</td>
+          <td class="px-4 py-2.5 text-xs text-ink-500" colspan="2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</td>
           <td class="px-4 py-2.5 text-right whitespace-nowrap">
             <a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-2.5 py-1.5 hover:bg-brand-50 transition inline-block">Ansehen ↗</a>
             ${isTest ? `<button onclick="event.stopPropagation(); testReset('${p.slug}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-1.5 px-2 hover:bg-red-50 transition ml-1">Test beenden</button>` : ''}

@@ -114,7 +114,7 @@ export async function GET(request: Request) {
     }
     const { data: pages, error } = await supabaseAdmin
       .from('landing_pages')
-      .select('id, slug, title, status, monthly_price, rented_by, created_at, page_views, trades(name, slug), cities(name, slug, state)')
+      .select('id, slug, title, status, monthly_price, rented_by, created_at, page_views, trades(name, slug), city:cities(name, slug, state)')
       .order('created_at', { ascending: false })
     if (error) throw error
     return NextResponse.json({ success: true, pages })

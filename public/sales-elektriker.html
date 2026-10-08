@@ -122,7 +122,7 @@ tailwind.config = {
       <div class="max-w-xl">
         <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Verfügbarkeit</p>
         <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Wähle deine Stadt</h2>
-        <p class="mt-3 text-ink-600">23 von 23 Städten frei – jede Stadtseite ist bereits live und rankt. Über „Live ↗" siehst du die echte Stadt-Website. Alle Städte verfügbar – jetzt anmieten.</p>
+        <p class="mt-3 text-ink-600">20 von 20 Städten frei – jede Stadtseite ist bereits live und rankt. Über „Live ↗" siehst du die echte Stadt-Website. Alle Städte verfügbar – jetzt anmieten.</p>
       </div>
       <div class="flex items-center gap-5 text-sm font-semibold text-ink-600">
         <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span> frei</span>
@@ -402,45 +402,10 @@ tailwind.config = {
       </div>
 
     
-      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-region="Nordrhein-Westfalen" data-city="halver halver">
-        <div class="flex items-start justify-between">
-          <div><h3 class="text-xl font-black text-ink-900">Halver</h3><p class="text-sm text-ink-500 mt-0.5">fachschmiede.de/elektriker/halver/</p></div>
-          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
-        </div>
-        <p class="mt-4 text-sm text-ink-600">~16.100 Einwohner · Märkischer Kreis, Nordrhein-Westfalen</p>
-        <div class="mt-5 flex gap-2">
-          <button onclick="startOnboarding('Halver')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
-          <a href="/elektriker/halver/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
-        </div>
-        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
-      </div>
       
-      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-region="Nordrhein-Westfalen" data-city="herdecke herdecke">
-        <div class="flex items-start justify-between">
-          <div><h3 class="text-xl font-black text-ink-900">Herdecke</h3><p class="text-sm text-ink-500 mt-0.5">fachschmiede.de/elektriker/herdecke/</p></div>
-          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
-        </div>
-        <p class="mt-4 text-sm text-ink-600">~22.800 Einwohner · Ennepe-Ruhr-Kreis, Nordrhein-Westfalen</p>
-        <div class="mt-5 flex gap-2">
-          <button onclick="startOnboarding('Herdecke')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
-          <a href="/elektriker/herdecke/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
-        </div>
-        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
-      </div>
-      
-      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-region="" data-city="dortmund-hoerde hörde">
-        <div class="flex items-start justify-between">
-          <div><h3 class="text-xl font-black text-ink-900">Hörde</h3><p class="text-sm text-ink-500 mt-0.5">fachschmiede.de/elektriker/dortmund-hoerde/</p></div>
-          <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>
-        </div>
-        <p class="mt-4 text-sm text-ink-600">Stadtteil von Dortmund</p>
-        <div class="mt-5 flex gap-2">
-          <button onclick="startOnboarding('Hörde')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition">Jetzt selbst anmieten →</button>
-          <a href="/elektriker/dortmund-hoerde/" class="shrink-0 inline-flex items-center px-4 border-2 border-brand-600 text-brand-600 hover:bg-brand-50 font-bold rounded-xl transition" title="Live-Stadtseite ansehen">Live ↗</a>
-        </div>
-        <p class="mt-3 text-[11px] text-ink-400 text-center">Sofort mieten oder <strong class="text-ink-500">14 Tage kostenlos testen</strong> – du entscheidest im Check-in.</p>
-      </div>
-      </div>
+            
+            
+            </div>
 
     <p id="noResult" class="hidden mt-8 text-center text-ink-500">Keine Stadt gefunden. <button onclick="resetSearch()" class="text-brand-600 font-bold hover:underline">Suche zurücksetzen</button> – oder <button onclick="openSupport('stadt')" class="text-brand-600 font-bold hover:underline">Wunschstadt vorschlagen</button>.</p>
 
@@ -717,7 +682,7 @@ function resetSearch(){ search.value=''; search.dispatchEvent(new Event('input')
 // ── Onboarding (Self-Check-in) ──
 const onb = document.getElementById('onboarding');
 let onbCity = '';
-const CITY_SLUGS = {'Hörde':'dortmund-hoerde','Herdecke':'herdecke','Halver':'halver','Schwerte':'schwerte','Dortmund':'dortmund','Hagen':'hagen','Iserlohn':'iserlohn','Unna':'unna','Bochum':'bochum','Witten':'witten','Lünen':'luenen','Herne':'herne','Castrop-Rauxel':'castrop-rauxel','Kamen':'kamen','Bergkamen':'bergkamen','Fröndenberg':'froendenberg','Holzwickede':'holzwickede','Schwelm':'schwelm','Gevelsberg':'gevelsberg','Ennepetal':'ennepetal','Sprockhövel':'sprockhoevel','Hattingen':'hattingen','Wetter (Ruhr)':'wetter-ruhr'};
+const CITY_SLUGS = {'Schwerte':'schwerte','Dortmund':'dortmund','Hagen':'hagen','Iserlohn':'iserlohn','Unna':'unna','Bochum':'bochum','Witten':'witten','Lünen':'luenen','Herne':'herne','Castrop-Rauxel':'castrop-rauxel','Kamen':'kamen','Bergkamen':'bergkamen','Fröndenberg':'froendenberg','Holzwickede':'holzwickede','Schwelm':'schwelm','Gevelsberg':'gevelsberg','Ennepetal':'ennepetal','Sprockhövel':'sprockhoevel','Hattingen':'hattingen','Wetter (Ruhr)':'wetter-ruhr'};
 const GEWERK_KEY = 'elek';
 const GEWERK_SLUG = 'elektriker';
 const GEWERK_LABEL = 'Elektriker';
