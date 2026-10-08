@@ -96,7 +96,7 @@ async function buildEngineCtx(existingSlugs: string[]) {
   const fileMap: Record<string, string> = {}
   wanted.forEach((p, i) => { fileMap[p] = contents[i] })
 
-  for (const p of stadtTemplatePaths) templateFiles[p.replace('public/', '')] = fileMap[p]
+  for (const p of stadtTemplatePaths) templateFiles['stadt/' + p.replace('public/', '')] = fileMap[p]
   for (const p of blogWittenPaths) templateFiles[p.replace('public/', '')] = fileMap[p]
   const salesFiles: Record<string, string> = {}
   for (const f of SALES_FILES) salesFiles[f] = fileMap['public/' + f]
