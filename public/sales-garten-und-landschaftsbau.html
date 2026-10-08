@@ -760,9 +760,12 @@ function startPayPalFlow(pp){
   if(panel){
     panel.classList.remove('hidden');
     const txt = document.getElementById('paypalPanelText');
-    if(txt) txt.innerHTML = (window.onbMode === 'test')
-      ? 'Dein Konto ist angelegt. Bestätige jetzt deine <strong>kostenlose 14-Tage-Testphase</strong> bei PayPal (danach <span class="dynPrice">189 €</span>/Monat — jederzeit kündbar):'
-      : 'Dein Konto ist angelegt. Bestätige jetzt dein Abo (<span class="dynPrice">189 €</span>/Monat, monatlich kündbar) bei PayPal:';
+    if(txt){
+      var _pm = window._sysPrice || 189;
+      txt.innerHTML = (window.onbMode === 'test')
+        ? 'Dein Konto ist angelegt. Bestätige jetzt deine <strong>kostenlose 14-Tage-Testphase</strong> bei PayPal (danach <strong>'+_pm+' €/Monat</strong> — jederzeit kündbar):'
+        : 'Dein Konto ist angelegt. Bestätige jetzt dein Abo (<strong>'+_pm+' €/Monat</strong>, monatlich kündbar) bei PayPal:';
+    }
   }
   loadPayPalSdk(pp.client_id, function(){
     window.paypal.Buttons({
@@ -992,6 +995,7 @@ if (citySearch) {
   fetch('/api/legal/').then(function(r){return r.json();}).then(function(d){
     var m = d && d.pricing && d.pricing.monthly;
     if (typeof m === 'number' && m >= 9 && m <= 9999) {
+      window._sysPrice = m;
       document.querySelectorAll('.dynPrice').forEach(function(el){ el.textContent = m; });
     }
   }).catch(function(){});
