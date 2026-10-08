@@ -99,6 +99,11 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
+  // Serverless-Function Bundle: Dateien außerhalb des Import-Graphen mitliefern
+  // (wird von POST /api/admin/pages für die Stadt-Generierung benötigt)
+  outputFileTracingIncludes: {
+    '/api/admin/pages': ['./config/**', './lib/article-index.json', './scripts/lib/**'],
+  },
   
   async rewrites() {
     const cityRewrites = generateCityRewrites()
