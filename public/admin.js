@@ -418,76 +418,159 @@ function renderTodoList(tenants, pages) {
 }
 
 // ═══════════ WEBSITES & STÄDTE ═══════════
-function renderWebsitesView(pages, pagination) {
-  console.log('renderWebsitesView() aufgerufen mit', pages.length, 'Seiten');
-  const grid = document.getElementById('stadtGrid');
-  const hint = document.getElementById('stadtGridHint');
-  if (!grid) {
-    console.error('stadtGrid Element nicht gefunden!');
-    return;
-  }
+// ─────────────────────────────────────────────────────────────────
+// Websites & Städte: GRUPPIERTE TABELLEN-ANSICHT (2026-10-08)
+// ─────────────────────────────────────────────────────────────────
+let __websitePages = [];
 
-  if (pages.length === 0) {
-    grid.innerHTML = '';
-    if (hint) hint.textContent = 'Noch keine Seiten vorhanden.';
-    return;
-  }
-
-  // Pagination Info
-  const total = pagination?.total || pages.length;
-  const currentPage = pagination?.page || 1;
-  const totalPages = pagination?.totalPages || 1;
-
-  if (hint) hint.textContent = `${total} Stadt-Websites im Portfolio - Seite ${currentPage} von ${totalPages}.`;
-
-  grid.innerHTML = pages.map(p => {
-    const isRented = p.status === 'rented';
-    const isTest = isRented && p.tenant_mode === 'test';
-    const statusKey = isRented ? (isTest ? 'test' : 'vermietet') : 'frei';
-    const statusBadge = isTest
-      ? '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-full">🧪 Testmiete</span>'
-      : (isRented
-        ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2.5 py-1 rounded-full">🔒 vermietet</span>'
-        : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">✅ frei</span>');
-    const tenantLine = isRented && p.tenant_info
-      ? '<p class="text-xs mt-1 ' + (isTest ? 'text-amber-600' : 'text-ink-500') + '">Mieter: ' + (p.tenant_info.company_name || p.tenant_info.email || '-') + '</p>'
-      : '';
-    const resetBtn = isTest
-      ? '<button onclick="event.preventDefault(); event.stopPropagation(); testReset(\'' + p.slug + '\')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-2 px-2 hover:bg-red-50 transition">Test beenden</button>'
-      : '';
-
-    const tradeEmoji = window.systemConfig?.trades?.reduce?.((map, t) => { map[t.name] = t.emoji; return map; }, {}) || {
-      'Dachdecker': '🏠',
-      'Elektriker': '⚡',
-      'Klempner / SHK': '🔥',
-      'Zimmerer': '🔨',
-      'Maler': '🖌️',
-      'Garten & Landschaftsbau': '🌳',
-    };
-    const emoji = tradeEmoji[p.trade?.name] || '🏗️';
-
-    return `
-      <div class="stadt-card bg-white rounded-2xl border-2 ${isRented ? (isTest ? 'border-amber-200' : 'border-ink-200') : 'border-green-200'} p-5" data-gewerk="${p.trade?.name || ''}" data-status="${statusKey}">
-        <div class="flex items-center justify-between">
-          <p class="font-black text-ink-900">${p.city?.name || 'Unbekannt'}</p>
-          ${statusBadge}
-        </div>
-        <p class="text-xs text-ink-500 mt-1">${emoji} ${p.trade?.name || '-'} · fachschmiede.de${getStaticFileUrl(p.trade?.slug, p.city?.slug)}</p>
-        ${tenantLine}
-        <p class="text-xs text-ink-500 mt-2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</p>
-        <div class="mt-4 flex gap-2">
-          <a href="${getStaticFileUrl(p.trade?.slug, p.city?.slug)}" target="_blank" class="flex-1 text-center text-xs font-bold text-brand-600 border border-brand-200 rounded-lg py-2 hover:bg-brand-50 transition">Ansehen</a>
-          ${resetBtn}
-        </div>
-      </div>
-    `;
-  }).join('') + renderPaginationControls(pagination);
-
-  // Filter-Buttons dynamisch erstellen
-  renderWebsitesFilter(pages);
-  // Aktive Filter nach Re-Render erneut anwenden (2026-10-01)
-  if (typeof applyWebsiteFilters === 'function') applyWebsiteFilters();
+const TRADE_EMOJI_FALLBACK = {
+  'Dachdecker': '🏠', 'Elektriker': '⚡', 'Klempner / SHK': '🔥',
+  'Zimmerer': '🔨', 'Maler': '🖌️', 'Garten & Landschaftsbau': '🌳',
+};
+function tradeEmojiOf(name) {
+  const map = window.systemConfig?.trades?.reduce?.((m, t) => { m[t.name] = t.emoji; return m; }, {}) || TRADE_EMOJI_FALLBACK;
+  return map[name] || '🏗️';
 }
+function statusKeyOf(p) {
+  const isRented = p.status === 'rented';
+  const isTest = isRented && p.tenant_mode === 'test';
+  return isRented ? (isTest ? 'test' : 'vermietet') : 'frei';
+}
+function statusBadgeOf(p) {
+  const k = statusKeyOf(p);
+  return k === 'test'
+    ? '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full">🧪 Testmiete</span>'
+    : (k === 'vermietet'
+      ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2 py-0.5 rounded-full">🔒 vermietet</span>'
+      : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">✅ frei</span>');
+}
+
+function renderWebsitesView(pages, pagination) {
+  __websitePages = pages || [];
+  renderWebsitesTable();
+  renderWebsitesFilter(__websitePages);
+}
+
+function renderWebsitesTable() {
+  const tbody = document.getElementById('stadtGrid');
+  const hint = document.getElementById('stadtGridHint');
+  if (!tbody) return;
+  const pages = __websitePages;
+
+  // ── Filter + Suche + Sortierung ──
+  const q = (document.getElementById('websiteSearch')?.value || '').trim().toLowerCase();
+  const sort = document.getElementById('websiteSort')?.value || 'name-asc';
+
+  // ── Nach Stadt gruppieren ──
+  const groups = {};
+  for (const p of pages) {
+    const cs = p.city?.slug || 'unbekannt';
+    if (!groups[cs]) groups[cs] = { city: p.city, pages: [] };
+    groups[cs].pages.push(p);
+  }
+  let list = Object.values(groups);
+
+  // Filter anwenden
+  list = list.map(g => {
+    let ps = g.pages;
+    if (currentGewerkFilter) ps = ps.filter(p => p.trade?.name === currentGewerkFilter);
+    if (currentStatusFilter) ps = ps.filter(p => statusKeyOf(p) === currentStatusFilter);
+    if (q) {
+      const cityHit = (g.city?.name || '').toLowerCase().includes(q);
+      if (cityHit) {
+        // Stadtname trifft: Gewerke filtern, wenn Suchbegriff auch ein Gewerk ist
+        const tradeFiltered = ps.filter(p => p.trade?.name.toLowerCase().includes(q));
+        if (tradeFiltered.length) ps = tradeFiltered;
+      } else {
+        ps = ps.filter(p =>
+          p.trade?.name.toLowerCase().includes(q) ||
+          p.slug.toLowerCase().includes(q));
+      }
+    }
+    return { ...g, pages: ps };
+  }).filter(g => g.pages.length > 0);
+
+  // Sortierung
+  if (sort === 'name-asc') list.sort((a, b) => (a.city?.name || '').localeCompare(b.city?.name || '', 'de'));
+  else if (sort === 'name-desc') list.sort((a, b) => (b.city?.name || '').localeCompare(a.city?.name || '', 'de'));
+  else if (sort === 'newest') list.sort((a, b) => Math.max(...b.pages.map(p => +new Date(p.created_at))) - Math.max(...a.pages.map(p => +new Date(p.created_at))));
+  else if (sort === 'views') list.sort((a, b) => b.pages.reduce((s, p) => s + (p.page_views || 0), 0) - a.pages.reduce((s, p) => s + (p.page_views || 0), 0));
+
+  if (hint) {
+    const totalViews = pages.reduce((s, p) => s + (p.page_views || 0), 0);
+    hint.textContent = `${pages.length} Stadt-Websites in ${Object.keys(groups).length} Städten · ${totalViews} Aufrufe gesamt${q || currentGewerkFilter || currentStatusFilter ? ` · ${list.length} Gruppen passen zum Filter` : ''}`;
+  }
+
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-ink-400 italic">Keine Einträge für diesen Filter.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map((g, gi) => {
+    const cs = g.city?.slug || 'unbekannt';
+    const views = g.pages.reduce((s, p) => s + (p.page_views || 0), 0);
+    const newest = Math.max(...g.pages.map(p => +new Date(p.created_at)));
+    // Gewerke-Dots: alle Gewerke der Gruppe, farbcodiert
+    const dots = g.pages.map(p => {
+      const k = statusKeyOf(p);
+      const bg = k === 'frei' ? 'bg-green-500' : (k === 'test' ? 'bg-amber-400' : 'bg-ink-300');
+      return `<span title="${p.trade?.name || ''}: ${k}" class="inline-flex items-center justify-center w-7 h-7 rounded-full ${bg} text-xs">${tradeEmojiOf(p.trade?.name)}</span>`;
+    }).join('');
+    const fresh = g.pages.some(p => (+new Date() - +new Date(p.created_at)) < 10 * 60 * 1000);
+    return `
+      <tr class="cursor-pointer hover:bg-brand-50/50 transition" onclick="toggleCityGroup('${cs}')" data-gcity="${cs}">
+        <td class="px-6 py-3.5 text-ink-400 text-xs">▸</td>
+        <td class="px-2 py-3.5 font-black text-ink-900">${g.city?.name || 'Unbekannt'} <span class="text-ink-400 font-semibold text-xs">· ${g.pages.length}×</span>${fresh ? ' <span class="bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full ml-1">⏳ frisch erstellt</span>' : ''}</td>
+        <td class="px-4 py-3.5 text-xs text-ink-500">${g.city?.state || '—'}</td>
+        <td class="px-4 py-3.5"><div class="flex gap-1">${dots}</div></td>
+        <td class="px-4 py-3.5 text-xs text-ink-500">${formatDate(new Date(newest).toISOString())}</td>
+        <td class="px-4 py-3.5 text-xs font-bold text-ink-700 text-right">${views}</td>
+      </tr>
+      ${g.pages.map(p => {
+        const isTest = statusKeyOf(p) === 'test';
+        const url = getStaticFileUrl(p.trade?.slug, p.city?.slug);
+        return `<tr class="hidden bg-ink-50/60" data-gsub="${cs}">
+          <td class="px-6 py-2.5"></td>
+          <td class="px-2 py-2.5 text-sm text-ink-800" colspan="2">${tradeEmojiOf(p.trade?.name)} ${p.trade?.name || '-'} · ${p.slug}</td>
+          <td class="px-4 py-2.5">${statusBadgeOf(p)}</td>
+          <td class="px-4 py-2.5 text-xs text-ink-500">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</td>
+          <td class="px-4 py-2.5 text-right whitespace-nowrap">
+            <a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-2.5 py-1.5 hover:bg-brand-50 transition inline-block">Ansehen ↗</a>
+            ${isTest ? `<button onclick="event.stopPropagation(); testReset('${p.slug}')" class="text-xs font-bold text-red-600 border border-red-200 rounded-lg py-1.5 px-2 hover:bg-red-50 transition ml-1">Test beenden</button>` : ''}
+          </td>
+        </tr>`;
+      }).join('')}`;
+  }).join('');
+}
+
+window.toggleCityGroup = function(slug) {
+  document.querySelectorAll(`[data-gsub="${slug}"]`).forEach(r => r.classList.toggle('hidden'));
+  const head = document.querySelector(`[data-gcity="${slug}"]`);
+  if (head) head.firstElementChild.textContent = head.firstElementChild.textContent === '▸' ? '▾' : '▸';
+};
+
+// CSV-Export der gefilterten Daten
+window.exportWebsiteCsv = function() {
+  const rows = [['Stadt', 'Stadtteil-von', 'Gewerk', 'Slug', 'Status', 'URL', 'Aufrufe', 'Erstellt']];
+  const q = (document.getElementById('websiteSearch')?.value || '').trim().toLowerCase();
+  for (const p of __websitePages) {
+    if (currentGewerkFilter && p.trade?.name !== currentGewerkFilter) continue;
+    if (currentStatusFilter && statusKeyOf(p) !== currentStatusFilter) continue;
+    if (q && !(p.city?.name || '').toLowerCase().includes(q) && !(p.trade?.name || '').toLowerCase().includes(q) && !p.slug.toLowerCase().includes(q)) continue;
+    rows.push([
+      p.city?.name || '', p.city?.state || '', p.trade?.name || '', p.slug, statusKeyOf(p),
+      'https://www.fachschmiede.de' + getStaticFileUrl(p.trade?.slug, p.city?.slug),
+      p.page_views || 0, (p.created_at || '').slice(0, 10),
+    ]);
+  }
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'fachschmiede-staedte-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('✅ CSV exportiert (' + (rows.length - 1) + ' Zeilen)');
+};
 
 // Pagination Controls
 function renderPaginationControls(pagination) {
@@ -608,11 +691,8 @@ let currentGewerkFilter = '';
 let currentStatusFilter = '';
 
 function applyWebsiteFilters() {
-  document.querySelectorAll('.stadt-card').forEach(card => {
-    const gOk = !currentGewerkFilter || card.dataset.gewerk === currentGewerkFilter;
-    const sOk = !currentStatusFilter || card.dataset.status === currentStatusFilter;
-    card.style.display = (gOk && sOk) ? '' : 'none';
-  });
+  // 2026-10-08: gruppierte Tabelle — neu rendern statt einzelne Karten togglen
+  if (typeof renderWebsitesTable === 'function') renderWebsitesTable();
 }
 
 window.filterStaedte = function(gewerk, btn) {
@@ -2254,4 +2334,199 @@ showView = function(id, el) {
   _origShowView(id, el);
   if (id === 'rechtliches') { loadLegal(); setupLegalAutosave(); }
   if (id === 'einstellungen') { loadSettings(); }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// STADT-FINDER MODAL (2026-10-08) — Suche über ~3.300 deutsche Orte
+// ═══════════════════════════════════════════════════════════════════
+let __orte = null;          // de-orte.json (lazy)
+let __pageSlugs = null;     // Set: existierende landing-page-slugs (lazy)
+let __nbSelectedGewerke = new Set(['__all__']);
+let __nbSelection = null;   // aktuell gewählter Ort {n,s,p,b,k,t,c,dn}
+
+async function nbEnsureData() {
+  if (!__orte) {
+    const r = await fetch('/data/de-orte.json');
+    if (!r.ok) throw new Error('Ortedatei nicht ladbar');
+    __orte = await r.json();
+  }
+  if (!__pageSlugs) {
+    __pageSlugs = new Set((__websitePages || []).map(p => p.slug));
+    // Fallback: frisch laden wenn leer
+    if (__pageSlugs.size === 0 && adminToken) {
+      try {
+        const res = await fetch(`${API_BASE}/admin/pages`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        const d = await res.json();
+        if (d.success) __pageSlugs = new Set((d.pages || []).map(p => p.slug));
+      } catch (e) { /* dann halt ohne Existenz-Check */ }
+    }
+  }
+}
+
+function nbFillGewerkChips() {
+  const box = document.getElementById('nbGewerkChips');
+  if (!box || box.dataset.filled) return;
+  const trades = (window.systemConfig?.trades?.length ? window.systemConfig.trades : null) || [
+    { name: 'Dachdecker', slug: 'dachdecker', emoji: '🏠' },
+    { name: 'Elektriker', slug: 'elektriker', emoji: '⚡' },
+    { name: 'Klempner / SHK', slug: 'klempner', emoji: '🔥' },
+    { name: 'Maler', slug: 'maler', emoji: '🖌️' },
+    { name: 'Zimmerer', slug: 'zimmerer', emoji: '🔨' },
+    { name: 'Garten & Landschaftsbau', slug: 'garten-und-landschaftsbau', emoji: '🌳' },
+  ];
+  box.innerHTML = `<button type="button" data-gewerk="__all__" onclick="nbSelectGewerk('__all__', this)"
+      class="nb-gchip bg-brand-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-full transition">Alle 6 Gewerke</button>` +
+    trades.map(t => `<button type="button" data-gewerk="${t.slug}" onclick="nbSelectGewerk('${t.slug}', this)"
+      class="nb-gchip bg-ink-100 text-ink-600 text-xs font-bold px-3 py-1.5 rounded-full transition hover:bg-ink-200">${t.emoji || ''} ${t.name}</button>`).join('');
+  box.dataset.filled = '1';
+}
+
+window.nbSelectGewerk = function(slug, btn) {
+  const all = slug === '__all__';
+  if (all) {
+    __nbSelectedGewerke = new Set(['__all__']);
+  } else {
+    __nbSelectedGewerke.delete('__all__');
+    if (__nbSelectedGewerke.has(slug)) __nbSelectedGewerke.delete(slug); else __nbSelectedGewerke.add(slug);
+    if (__nbSelectedGewerke.size === 0) __nbSelectedGewerke.add('__all__');
+  }
+  const effectiveAll = __nbSelectedGewerke.has('__all__');
+  document.querySelectorAll('.nb-gchip').forEach(b => {
+    const on = effectiveAll ? b.dataset.gewerk === '__all__' : __nbSelectedGewerke.has(b.dataset.gewerk);
+    b.classList.toggle('bg-brand-600', on); b.classList.toggle('text-white', on);
+    b.classList.toggle('bg-ink-100', !on); b.classList.toggle('text-ink-600', !on);
+  });
+  // Ergebnisliste aktualisieren, falls Suche läuft
+  const q = document.getElementById('nbStadtSearch')?.value;
+  if (q && q.trim().length >= 2) nbSearchOrt(q);
+  nbUpdatePreview();
+};
+
+const NB_TRADE_SLUGS = ['dachdecker', 'elektriker', 'klempner', 'maler', 'zimmerer', 'garten-und-landschaftsbau'];
+
+window.nbSearchOrt = function(qRaw) {
+  const q = (qRaw || '').trim().toLowerCase();
+  const box = document.getElementById('nbResults');
+  const btn = document.getElementById('nbCreateBtn');
+  if (!box) return;
+  if (q.length < 2) { box.classList.add('hidden'); __nbSelection = null; nbUpdatePreview(); return; }
+
+  const hits = [];
+  for (const o of __orte) {
+    const hay = o.t === 'd' ? (o.dn + ' ' + o.n) : o.n;
+    if (hay.toLowerCase().includes(q)) hits.push(o);
+    if (hits.length >= 8) break;
+  }
+
+  const effectiveTrades = __nbSelectedGewerke.has('__all__') ? NB_TRADE_SLUGS : [...__nbSelectedGewerke];
+  const popFmt = p => p ? `~${Math.round(p / 100) * 100 >= 1000 ? (Math.round(p / 100) * 100).toLocaleString('de-DE') : '< 5.000'} EW` : '';
+
+  if (!hits.length) {
+    box.innerHTML = '<div class="px-4 py-6 text-center text-xs text-ink-400 italic">Kein Treffer. Tipp: Vollständigen Ortsnamen probieren (Datenbestand: Gemeinden ab ~4.500 EW).</div>';
+    box.classList.remove('hidden');
+    return;
+  }
+
+  box.innerHTML = hits.map((o, i) => {
+    const badges = effectiveTrades.map(ts => {
+      const exists = __pageSlugs && __pageSlugs.has(ts + '-' + o.s);
+      return `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${exists ? 'bg-green-100 text-green-700' : 'bg-ink-100 text-ink-500'}" title="${ts}">${ts === 'garten-und-landschaftsbau' ? 'Garten' : ts[0].toUpperCase()}${exists ? ' ✓' : ''}</span>`;
+    }).join('');
+    const sub = o.t === 'd'
+      ? `Stadtteil von ${(o.n.match(/\(([^)]+)\)/) || [])[1] || o.n} · ${o.b}`
+      : `${o.b}${o.k ? ' · ' + o.k : ''} · ${popFmt(o.p)}${' · Stand 2017'}`;
+    return `<div class="px-4 py-3 hover:bg-brand-50 cursor-pointer transition" onclick="nbPickOrt('${o.s}')">
+      <div class="flex items-center justify-between gap-3">
+        <p class="font-bold text-sm text-ink-900">${o.t === 'd' ? o.dn + ' <span class="text-ink-400 font-semibold text-xs">(' + ((o.n.match(/\(([^)]+)\)/) || [])[1] || o.n) + ')</span>' : o.n}</p>
+        <div class="flex gap-1 shrink-0">${badges}</div>
+      </div>
+      <p class="text-[11px] text-ink-400 mt-0.5">${sub}</p>
+    </div>`;
+  }).join('');
+  box.classList.remove('hidden');
+};
+
+window.nbPickOrt = function(slug) {
+  __nbSelection = __orte.find(o => o.s === slug) || null;
+  document.getElementById('nbResults')?.classList.add('hidden');
+  const inp = document.getElementById('nbStadtSearch');
+  if (inp && __nbSelection) inp.value = __nbSelection.t === 'd' ? __nbSelection.dn : __nbSelection.n;
+  nbUpdatePreview();
+};
+
+function nbMissingTrades(o) {
+  const effectiveTrades = __nbSelectedGewerke.has('__all__') ? NB_TRADE_SLUGS : [...__nbSelectedGewerke];
+  return effectiveTrades.filter(ts => !(__pageSlugs && __pageSlugs.has(ts + '-' + o.s)));
+}
+
+function nbUpdatePreview() {
+  const pv = document.getElementById('nbPreview');
+  const btn = document.getElementById('nbCreateBtn');
+  if (!pv || !btn) return;
+  const o = __nbSelection;
+  if (!o) { pv.classList.add('hidden'); btn.disabled = true; btn.textContent = 'Stadtseite(n) erstellen'; return; }
+  const missing = nbMissingTrades(o);
+  const name = o.t === 'd' ? o.dn : o.n;
+  const label = __nbSelectedGewerke.has('__all__') ? 'alle 6 Gewerke' : [...__nbSelectedGewerke].join(', ');
+  if (!missing.length) {
+    pv.innerHTML = `<strong>${name}</strong> ist für die gewählten Gewerke bereits vollständig gelistet.`;
+    pv.classList.remove('hidden');
+    btn.disabled = true; btn.textContent = 'Bereits vorhanden ✓';
+  } else {
+    pv.innerHTML = `<strong>${name}</strong> (${o.b}) — erstellt wird: <strong>${missing.length} Seite${missing.length > 1 ? 'n' : ''}</strong> (${missing.join(', ')})${missing.length < NB_TRADE_SLUGS.length ? ' · bereits vorhanden: ' + NB_TRADE_SLUGS.filter(t => !missing.includes(t)).join(', ') : ''}.<br>Automatisch: individueller Seitentext, FAQ, Blog-Fassungen, Verlinkung auf den Salespages, Sitemap-Eintrag. Deploy dauert ~3 Minuten.`;
+    pv.classList.remove('hidden');
+    btn.disabled = false;
+    btn.textContent = `${name}: ${missing.length} Seite${missing.length > 1 ? 'n' : ''} erstellen →`;
+  }
+}
+
+window.nbCreateCity = async function() {
+  const o = __nbSelection;
+  if (!o) return;
+  const missing = nbMissingTrades(o);
+  if (!missing.length) return;
+  const btn = document.getElementById('nbCreateBtn');
+  const status = document.getElementById('nbStatus');
+  btn.disabled = true;
+  btn.textContent = '⏳ Erstelle …';
+  if (status) { status.classList.remove('hidden'); status.textContent = '⏳ Dateien werden generiert und committed … (ca. 30–60 Sek.)'; }
+  try {
+    const res = await fetch(`${API_BASE}/admin/pages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+      body: JSON.stringify({ city_slug: o.s, trades: missing }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (status) status.textContent = '✅ ' + data.message;
+      showToast('✅ ' + data.message);
+      __pageSlugs = null; // neu laden
+      await loadPages(1, 500);
+      setTimeout(() => { closeModal('modalWebsite'); if (status) status.classList.add('hidden'); }, 2500);
+    } else {
+      showToast('❌ ' + (data.error || data.message || 'Fehler'));
+      if (status) status.textContent = '❌ ' + (data.error || data.message || 'Fehler');
+      btn.disabled = false; nbUpdatePreview();
+    }
+  } catch (e) {
+    showToast('❌ Netzwerk-Fehler: ' + e.message);
+    if (status) status.textContent = '❌ Netzwerk-Fehler: ' + e.message;
+    btn.disabled = false; nbUpdatePreview();
+  }
+};
+
+// Modal beim Öffnen vorbereiten
+const _origOpenModal = window.openModal;
+window.openModal = function(id) {
+  if (_origOpenModal) _origOpenModal(id);
+  if (id === 'modalWebsite') {
+    nbFillGewerkChips();
+    nbEnsureData().catch(e => showToast('⚠️ Orteliste nicht ladbar: ' + e.message));
+    __nbSelection = null;
+    const inp = document.getElementById('nbStadtSearch');
+    if (inp) inp.value = '';
+    const box = document.getElementById('nbResults');
+    if (box) box.classList.add('hidden');
+    nbUpdatePreview();
+  }
 };

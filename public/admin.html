@@ -389,7 +389,18 @@ tailwind.config = {
             <button onclick="openModal('modalWebsite')" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition shrink-0">+ Neue Stadt-Website listen</button>
           </div>
           <div class="mt-5 flex flex-wrap items-center gap-3">
-            <span class="text-sm font-bold text-ink-700">Gewerk:</span>
+            <div class="relative flex-1 min-w-[220px] max-w-sm">
+              <input id="websiteSearch" type="text" placeholder="Stadt oder Gewerk suchen …" oninput="applyWebsiteFilters()" class="w-full rounded-lg border border-ink-200 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <svg class="absolute left-3 top-2.5 w-4 h-4 text-ink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <select id="websiteSort" onchange="applyWebsiteFilters()" class="text-sm border border-ink-200 rounded-lg px-3 py-2 bg-white">
+              <option value="name-asc">Stadt A → Z</option>
+              <option value="name-desc">Stadt Z → A</option>
+              <option value="newest">Neueste zuerst</option>
+              <option value="views">Meiste Aufrufe</option>
+            </select>
+            <button onclick="exportWebsiteCsv()" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-3 py-2 hover:bg-brand-50 transition">⬇ CSV</button>
+            <span class="text-sm font-bold text-ink-700 ml-2">Gewerk:</span>
             <div class="flex flex-wrap gap-2" id="stadtFilter">
               <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
               <!-- WIRD DYNAMISCH GEFÜLLT -->
@@ -401,14 +412,29 @@ tailwind.config = {
               <button onclick="filterStatus('vermietet', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔒 Vermietet</button>
               <button onclick="filterStatus('test', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🧪 Testmodus</button>
             </div>
-            
             <span class="ml-auto text-xs text-ink-400 font-semibold"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>frei · <span class="inline-block w-2.5 h-2.5 rounded-full bg-ink-300 mr-1 ml-2"></span>vermietet</span>
           </div>
         </div>
 
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="stadtGrid">
-        <!-- Wird dynamisch durch admin.js befüllt -->
-      </div>
+        <div class="bg-white rounded-2xl border border-ink-200 overflow-hidden mt-5">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-xs uppercase tracking-wider text-ink-400 border-b border-ink-100">
+                  <th class="px-6 py-3 font-bold w-8"></th>
+                  <th class="px-2 py-3 font-bold">Stadt</th>
+                  <th class="px-4 py-3 font-bold">Region</th>
+                  <th class="px-4 py-3 font-bold">Gewerke</th>
+                  <th class="px-4 py-3 font-bold">Erstellt</th>
+                  <th class="px-4 py-3 font-bold text-right">Aufrufe</th>
+                </tr>
+              </thead>
+              <tbody id="stadtGrid" class="divide-y divide-ink-100">
+                <!-- wird dynamisch befüllt (gruppiert nach Stadt) -->
+              </tbody>
+            </table>
+          </div>
+        </div>
         <p class="text-xs text-ink-400 italic mt-4" id="stadtGridHint">Lade Stadt-Portfolio...</p>
       </div>
 
@@ -1558,60 +1584,36 @@ tailwind.config = {
 </div>
 
 <div class="modal-bg" id="modalWebsite" onclick="if(event.target===this)closeModal('modalWebsite')">
-  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 my-auto">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 my-auto max-h-[90vh] overflow-y-auto">
     <div class="flex items-start justify-between gap-4">
       <div>
         <h3 class="text-xl font-black text-ink-900">Neue Stadt-Website listen</h3>
-        <p class="mt-1 text-sm text-ink-600">Das System erzeugt die Website aus der Gewerk-Vorlage: lokale Textfassung, FAQ, Blog-Fassungen. Die Stadt erscheint sofort als <strong>frei</strong> auf der Gewerk-Salespage.</p>
+        <p class="mt-1 text-sm text-ink-600">Stadt oder Stadtteil suchen (alle deutschen Orte ab ~5.000 Einwohner, Stand 2017). Das System erzeugt individuelle Seiten mit lokalem Text, FAQ, Blog und verlinkt sie automatisch auf den Salespages.</p>
       </div>
       <button onclick="closeModal('modalWebsite')" class="text-ink-400 hover:text-ink-900 text-2xl font-black leading-none">×</button>
     </div>
-    <form class="mt-6 space-y-4" onsubmit="event.preventDefault(); addStadt(this);">
-      <div>
-        <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk *</label>
-        <select id="nbGewerk" required class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-          <option value="">Bitte wählen …</option>
-          <!-- WIRD DYNAMISCH GEFÜLLT -->
-        </select>
-        <script>
-          (function() {
-            const select = document.getElementById('nbGewerk');
-            fetch('/api/system/config')
-              .then(r => r.json())
-              .then(data => {
-                if (data.success && data.trades) {
-                  select.innerHTML = '<option value="">Bitte wählen …</option>' + 
-                    data.trades.map(t => `<option>${t.emoji} ${t.name}</option>`).join('');
-                }
-              })
-              .catch(() => {
-                // Fallback mit korrekten Daten
-                select.innerHTML = `
-                  <option value="">Bitte wählen …</option>
-                  <option>🏠 Dachdecker</option>
-                  <option>⚡ Elektriker</option>
-                  <option>🔥 Klempner / SHK</option>
-                  <option>🖌️ Maler</option>
-                  <option>🔨 Zimmerer</option>
-                  <option>🌳 Garten & Landschaftsbau</option>`;
-              });
-          })();
-        </script>
+
+    <div class="mt-5">
+      <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk *</label>
+      <div class="flex flex-wrap gap-2" id="nbGewerkChips">
+        <button type="button" data-gewerk="__all__" onclick="nbSelectGewerk('__all__', this)" class="nb-gchip bg-brand-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-full transition">Alle 6 Gewerke</button>
+        <!-- wird dynamisch befüllt -->
       </div>
-      <div>
-        <label class="block text-sm font-bold text-ink-800 mb-1.5">Stadt / Ort *</label>
-        <input id="nbStadt" type="text" required placeholder="z. B. Kamen" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-        <p class="mt-1 text-[11px] text-ink-400">Pro Gewerk und Stadt/Stadtteil gibt es nur eine Website – Doppeleinträge werden automatisch blockiert.</p>
-      </div>
-      <div>
-        <label class="block text-sm font-bold text-ink-800 mb-1.5">Region / Einwohner <span class="font-normal text-ink-400">(optional, für die Stadtbeschreibung)</span></label>
-        <input type="text" placeholder="z. B. ~45.000 Einwohner, Kreis Unna" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-      </div>
-      <div class="bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-700 leading-relaxed">
-        <strong>Automatisch inklusive:</strong> Domain-Vorschlag, lokale Textfassung (Einzigartigkeits-Check), FAQ, Blog-Fassungen, Eintrag auf der öffentlichen Gewerk-Salespage.
-      </div>
-      <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition">Stadt listen &amp; Website erzeugen</button>
-    </form>
+    </div>
+
+    <div class="mt-4">
+      <label class="block text-sm font-bold text-ink-800 mb-1.5">Stadt / Stadtteil suchen *</label>
+      <input id="nbStadtSearch" type="text" autocomplete="off" placeholder="z. B. Halver, Bochum, Charlottenburg …" oninput="nbSearchOrt(this.value)" class="w-full rounded-lg border border-ink-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      <div id="nbResults" class="mt-2 border border-ink-200 rounded-xl divide-y divide-ink-100 max-h-72 overflow-y-auto hidden bg-white"></div>
+    </div>
+
+    <div id="nbPreview" class="hidden mt-4 bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-700 leading-relaxed"></div>
+
+    <div class="mt-5 flex gap-3">
+      <button onclick="closeModal('modalWebsite')" class="flex-1 text-sm font-bold text-ink-600 border border-ink-200 rounded-xl py-3 hover:bg-ink-50 transition">Abbrechen</button>
+      <button id="nbCreateBtn" onclick="nbCreateCity()" disabled class="flex-[2] text-sm font-bold text-white bg-brand-600 rounded-xl py-3 transition disabled:opacity-40 disabled:cursor-not-allowed">Stadtseite(n) erstellen</button>
+    </div>
+    <p id="nbStatus" class="hidden mt-3 text-xs font-bold text-brand-700"></p>
   </div>
 </div>
 
@@ -2687,6 +2689,6 @@ function remindInvoice(btn){
 // ═══════════ ECHTE ADMIN-DATEN LADEN ═══════════
 // Admin-Dashboard wird durch admin.js mit echten Daten verbunden
 </script>
-<script src="/admin.js?v=15"></script>
+<script src="/admin.js?v=16"></script>
 </body>
 </html>
