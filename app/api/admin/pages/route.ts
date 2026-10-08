@@ -109,7 +109,7 @@ async function buildEngineCtx(existingSlugs: string[]) {
 // ─── GET: Liste aller Pages ──────────────────────────────────────
 export async function GET(request: Request) {
   try {
-    if (!checkAuth(request)) {
+    if (!checkAdminAuth(request)) {
       return NextResponse.json({ success: false, error: 'Nicht authentifiziert' }, { status: 401 })
     }
     const { data: pages, error } = await supabaseAdmin
@@ -126,7 +126,7 @@ export async function GET(request: Request) {
 // ─── POST: Stadt + alle Gewerke erzeugen (DB + Dateien + Deploy) ─
 export async function POST(request: Request) {
   try {
-    if (!checkAuth(request)) {
+    if (!checkAdminAuth(request)) {
       return NextResponse.json({ success: false, error: 'Nicht authentifiziert' }, { status: 401 })
     }
     const body = await request.json()
