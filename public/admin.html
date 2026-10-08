@@ -401,30 +401,7 @@ tailwind.config = {
               <button onclick="filterStatus('vermietet', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔒 Vermietet</button>
               <button onclick="filterStatus('test', this)" class="status-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🧪 Testmodus</button>
             </div>
-            <script>
-              (function() {
-                const container = document.getElementById('stadtFilter');
-                fetch('/api/system/config')
-                  .then(r => r.json())
-                  .then(data => {
-                    if (data.success && data.trades) {
-                      container.innerHTML = '<button onclick="filterStaedte(\'\', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>' +
-                        data.trades.map(t => `<button onclick="filterStaedte('${t.name}', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">${t.emoji} ${t.name}</button>`).join('');
-                    }
-                  })
-                  .catch(() => {
-                    // Fallback
-                    container.innerHTML = `
-                      <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
-                      <button onclick="filterStaedte('Dachdecker', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🏠 Dachdecker</button>
-                      <button onclick="filterStaedte('Elektriker', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">⚡ Elektriker</button>
-                      <button onclick="filterStaedte('Klempner / SHK', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔥 Klempner / SHK</button>
-                      <button onclick="filterStaedte('Zimmerer', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🔨 Zimmerer</button>
-                      <button onclick="filterStaedte('Maler', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🖌️ Maler</button>
-                      <button onclick="filterStaedte('Garten & Landschaftsbau', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">🌳 Garten & Landschaftsbau</button>`;
-                  });
-              })();
-            </script>
+            
             <span class="ml-auto text-xs text-ink-400 font-semibold"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>frei · <span class="inline-block w-2.5 h-2.5 rounded-full bg-ink-300 mr-1 ml-2"></span>vermietet</span>
           </div>
         </div>
@@ -2710,6 +2687,6 @@ function remindInvoice(btn){
 // ═══════════ ECHTE ADMIN-DATEN LADEN ═══════════
 // Admin-Dashboard wird durch admin.js mit echten Daten verbunden
 </script>
-<script src="/admin.js?v=14"></script>
+<script src="/admin.js?v=15"></script>
 </body>
 </html>

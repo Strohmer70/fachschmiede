@@ -565,15 +565,15 @@ function renderWebsitesFilter(pages) {
     ? allTrades.map(t => t.name).sort()
     : [...new Set(pages.map(p => p.trade?.name).filter(Boolean))].sort();
 
+  // 2026-10-08: KEIN Label/KEINE Legende injizieren — die stehen statisch in admin.html
+  // (war Doppelung: "Gewerk:"+"Filter:" doppelt, Legende 2x → "2mal Status")
   container.innerHTML = `
-    <span class="text-sm font-bold text-ink-700">Filter:</span>
     <button onclick="filterStaedte('', this)" class="stadt-f bg-ink-900 text-white text-xs font-bold px-3.5 py-1.5 rounded-full">Alle</button>
     ${gewerke.map(g => {
       const trade = allTrades.find(t => t.name === g);
       const emoji = trade?.emoji || window.systemConfig?.trades?.find?.(t => t.name === g)?.emoji || '🏗️';
       return `<button onclick="filterStaedte('${g}', this)" class="stadt-f bg-ink-100 text-ink-600 text-xs font-bold px-3.5 py-1.5 rounded-full hover:bg-ink-200">${emoji} ${g}</button>`;
     }).join('')}
-    <span class="ml-auto text-xs text-ink-400 font-semibold"><span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>frei · <span class="inline-block w-2.5 h-2.5 rounded-full bg-ink-300 mr-1 ml-2"></span>vermietet</span>
   `;
 }
 
