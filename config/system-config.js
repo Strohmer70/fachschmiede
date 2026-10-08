@@ -202,6 +202,7 @@ const SYSTEM_CONFIG = {
     'witten': { name: 'Witten', region: 'Nordrhein-Westfalen', slug: 'witten' },
         'halver': { name: 'Halver', region: 'Nordrhein-Westfalen', slug: 'halver' },
         'herdecke': { name: 'Herdecke', region: 'Nordrhein-Westfalen', slug: 'herdecke' },
+        'dortmund-hoerde': { name: 'Hörde', region: '', slug: 'dortmund-hoerde' },
     // NEUE STÄDTE HIER EINFÜGEN
   },
 
