@@ -2173,10 +2173,42 @@ async function loadSettings() {
       el.className = 'text-xs font-bold px-2.5 py-1 rounded-full ' + (ok ? 'text-green-700 bg-green-100' : 'text-amber-700 bg-amber-100');
     };
     set('stripeStatus', stripeOk, '✓ Live verbunden', 'nicht konfiguriert');
+    // PayPal-Status (echt geprüft: platform_settings + Token-Handshake gegen PayPal-API)
+    const pp = data?.paypal;
+    const ppMode = pp?.mode || null;
+    const ppApi = !!(pp && pp.api);
+    const ppConfigured = !!(pp && pp.configured);
+    const ppOk = ppConfigured && ppApi;
+    const ppSandbox = ppOk && ppMode === 'sandbox';
+    const ppEl = document.getElementById('paypalStatus');
+    if (ppEl) {
+      ppEl.textContent = ppOk ? (ppSandbox ? 'Sandbox verbunden' : '✓ Live verbunden') : 'nicht konfiguriert';
+      ppEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full ' + (ppOk ? (ppSandbox ? 'text-amber-700 bg-amber-100' : 'text-green-700 bg-green-100') : 'text-amber-700 bg-amber-100');
+    }
+    const ppDetail = document.getElementById('paypalDetail');
+    const ppWarn = document.getElementById('paypalDetailWarn');
+    if (ppDetail && ppWarn) {
+      if (ppOk) {
+        ppDetail.classList.remove('hidden');
+        ppWarn.classList.add('hidden');
+        ppDetail.innerHTML = '<strong>' + (ppSandbox ? 'Sandbox-Modus' : 'Live-Modus') + '</strong> · Abo-Checkout aktiv · Webhook ' +
+          (pp.webhook_id ? 'verbunden' : '<strong>fehlt!</strong>') + '.<br>' +
+          'PayPal ist im Self-Check-in die <strong>primäre</strong> Zahlungsmethode (vor Karte/Klarna). 14 Tage kostenlos testen, dann monatliche Abbuchung.';
+      } else {
+        ppDetail.classList.add('hidden');
+        ppWarn.classList.remove('hidden');
+        ppWarn.textContent = pp?.detail ? '⚠ ' + pp.detail : 'PayPal-Zugangsdaten fehlen in Vercel (PAYPAL_CLIENT_ID/SECRET) oder Setup-Pläne nicht hinterlegt.';
+      }
+    }
     const pg = document.getElementById('payGlobalStatus');
     if (pg) {
-      pg.textContent = stripeOk ? '✓ Stripe Live – Check-in bereit' : '⚠ Stripe nicht konfiguriert';
-      pg.className = 'text-xs font-bold px-3 py-1.5 rounded-full shrink-0 ' + (stripeOk ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700');
+      const bothOk = stripeOk && ppOk && !ppSandbox;
+      pg.textContent = bothOk ? '✓ Stripe + PayPal Live – Check-in bereit'
+        : (stripeOk && ppOk) ? '✓ Stripe Live · PayPal Sandbox – Check-in bereit'
+        : stripeOk ? '✓ Stripe Live – Check-in bereit'
+        : ppOk ? '✓ PayPal verbunden – Stripe fehlt'
+        : '⚠ Zahlung nicht konfiguriert';
+      pg.className = 'text-xs font-bold px-3 py-1.5 rounded-full shrink-0 ' + ((stripeOk || ppOk) ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700');
     }
   } catch (e) { /* stiller Fallback */ }
 }
