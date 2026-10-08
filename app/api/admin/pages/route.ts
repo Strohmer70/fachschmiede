@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase-admin'
+import { supabaseAdmin } from '@/lib/supabase'
 import { readFileSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
 // @ts-ignore — CJS-Engine (scripts/lib), allowJs aktiv
