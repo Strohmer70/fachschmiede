@@ -107,8 +107,13 @@ function generateUniqueRegions(html, profile, trade) {
   const climate = climateFor(profile.state)
   const tradeWord = trade.word
   const pop = fmtPop(profile.pop)
+  // Stadtteile: mit Parent-Kontext ("Hörde (Dortmund)") für lokale SEO
+  const pname = profile.isDistrict ? (profile.displayName || profile.name) : profile.name
   const dativKreis = profile.kreis ? profile.kreis.replace(/er Kreis$/, 'en Kreis') : ''
-  const kreisPhrase = dativKreis ? `${profile.name} im ${dativKreis}` : `${profile.name} in ${profile.state}`
+  // Stadtteile ohne Kreis/State: neutrale Phrase statt defektem "X in "
+  const kreisPhrase = dativKreis
+    ? `${pname} im ${dativKreis}`
+    : (profile.state ? `${pname} in ${profile.state}` : `${pname} und dem umliegenden Stadtgebiet`)
 
   let out = html
   let count = 0
@@ -125,11 +130,11 @@ function generateUniqueRegions(html, profile, trade) {
 
   // 1) Hero-Subline
   const heroVariants = D ? [
-    `Von ${d(0)} bis ${d(2)}: Unsere ${tradeWord}-Leistungen sind auf den lokalen Wohnungsbestand in ${profile.name} abgestimmt. ${climate}`,
-    `${profile.name} ist vielfältig — und unsere ${tradeWord}-Leistungen sind es auch. Vom Zentrum um ${d(0)} bis zu den Randlagen bei ${d(1)}: Wir kennen die lokalen Gegebenheiten. ${climate}`,
+    `Von ${d(0)} bis ${d(2)}: Unsere ${tradeWord}-Leistungen sind auf den lokalen Wohnungsbestand in ${pname} abgestimmt. ${climate}`,
+    `${pname} ist vielfältig — und unsere ${tradeWord}-Leistungen sind es auch. Vom Zentrum um ${d(0)} bis zu den Randlagen bei ${d(1)}: Wir kennen die lokalen Gegebenheiten. ${climate}`,
   ] : [
-    `Unsere ${tradeWord}-Leistungen sind auf ${profile.name} und die gesamte Region abgestimmt. ${climate}`,
-    `Vom Zentrum bis in die Randlagen: In ${profile.name} kennen wir den lokalen Wohnungsbestand — und die typischen Bauprobleme der Region. ${climate}`,
+    `Unsere ${tradeWord}-Leistungen sind auf ${pname} und die gesamte Region abgestimmt. ${climate}`,
+    `Vom Zentrum bis in die Randlagen: In ${pname} kennen wir den lokalen Wohnungsbestand — und die typischen Bauprobleme der Region. ${climate}`,
   ]
   replaceOnce(
     /<p class="text-lg text-ink-600 leading-relaxed mb-8 max-w-3xl">((?:(?!<\/p>)[\s\S])*)Witten((?:(?!<\/p>)[\s\S])*)<\/p>/,
@@ -139,11 +144,11 @@ function generateUniqueRegions(html, profile, trade) {
 
   // 2) Motivations-Block
   const motVariants = D ? [
-    `Was uns in ${profile.name} antreibt? Die Vielfalt der Projekte. Kein Haus in ${d(0)} gleicht dem anderen — und genau das macht unsere Arbeit spannend. Wir bringen jahrzehntelange Erfahrung mit und bleiben gleichzeitig am Puls der Zeit.`,
-    `${profile.name} ist unser Zuhause. Wir wohnen hier, arbeiten hier, kennen die Menschen und die Häuser. Ob in ${d(0)} oder einem der anderen Ortsteile — wenn Sie einen ${trade.label} suchen, der die Region wirklich kennt, sind Sie bei uns richtig.`,
+    `Was uns in ${pname} antreibt? Die Vielfalt der Projekte. Kein Haus in ${d(0)} gleicht dem anderen — und genau das macht unsere Arbeit spannend. Wir bringen jahrzehntelange Erfahrung mit und bleiben gleichzeitig am Puls der Zeit.`,
+    `${pname} ist unser Zuhause. Wir wohnen hier, arbeiten hier, kennen die Menschen und die Häuser. Ob in ${d(0)} oder einem der anderen Ortsteile — wenn Sie einen ${trade.label} suchen, der die Region wirklich kennt, sind Sie bei uns richtig.`,
   ] : [
-    `Was uns in ${profile.name} antreibt? Die Menschen und ihre Projekte. Vom Altbau im Zentrum bis zum Neubau am Stadtrand — wir bringen die Erfahrung mit, die Ihr Vorhaben braucht.`,
-    `${profile.name} ist unsere Heimat. Wir kennen die Bauten, die Witterung und die Menschen der Region — und beraten Sie so, wie wir selbst beraten werden wollen.`,
+    `Was uns in ${pname} antreibt? Die Menschen und ihre Projekte. Vom Altbau im Zentrum bis zum Neubau am Stadtrand — wir bringen die Erfahrung mit, die Ihr Vorhaben braucht.`,
+    `${pname} ist unsere Heimat. Wir kennen die Bauten, die Witterung und die Menschen der Region — und beraten Sie so, wie wir selbst beraten werden wollen.`,
   ]
   replaceOnce(
     /<p class="text-sm text-ink-200 leading-relaxed">[^]*?<\/p>/,
@@ -153,10 +158,10 @@ function generateUniqueRegions(html, profile, trade) {
 
   // 3) LOKAL-Intro (nur dach-Template vorhanden — optional)
   const lokalIntro = D ? [
-    `Gerade in ${profile.name} mit seinem gemischten Wohnungsbestand ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbanes Leben im Zentrum mit ruhigen Wohnlagen in den Randlagen. Der Baubestand reicht von klassischen Mietshäusern bis zu großzügigen Einfamilienhäusern in ${d(1)} und Umgebung.`,
+    `Gerade in ${pname} mit seinem gemischten Wohnungsbestand ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbanes Leben im Zentrum mit ruhigen Wohnlagen in den Randlagen. Der Baubestand reicht von klassischen Mietshäusern bis zu großzügigen Einfamilienhäusern in ${d(1)} und Umgebung.`,
   ] : [
-    `In ${profile.name} mit seinen rund ${pop} Einwohnern ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbanes Leben mit ruhigen Wohnlagen — der Baubestand ist ebenso vielfältig wie die Anforderungen.`,
-    `Ob Zentrum oder Randlage: In ${profile.name} mit rund ${pop} Einwohnern unterscheiden sich die Bauprojekte von Ortsteil zu Ortsteil. Wir kennen die lokalen Gegebenheiten und passen unsere Leistungen genau darauf an.`,
+    `In ${pname} mit seinen rund ${pop} Einwohnern ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbanes Leben mit ruhigen Wohnlagen — der Baubestand ist ebenso vielfältig wie die Anforderungen.`,
+    `Ob Zentrum oder Randlage: In ${pname} mit rund ${pop} Einwohnern unterscheiden sich die Bauprojekte von Ortsteil zu Ortsteil. Wir kennen die lokalen Gegebenheiten und passen unsere Leistungen genau darauf an.`,
   ]
   replaceOnce(
     /<p class="text-lg">Gerade in[\s\S]*?<\/p>/,
@@ -166,8 +171,8 @@ function generateUniqueRegions(html, profile, trade) {
   )
 
   // 4) LOKAL-Para2 ("Mit rund … gehört …") — alle Templates
-  const areaList = D ? D.slice(0, 5).join(', ') : `${profile.name} und Umgebung`
-  const lokalPara2 = `Mit rund ${pop} Einwohnern gehört ${profile.name} zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
+  const areaList = D ? D.slice(0, 5).join(', ') : `${pname} und Umgebung`
+  const lokalPara2 = `Mit rund ${pop} Einwohnern gehört ${pname} zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
   replaceOnce(
     /<p>[\s\S]*?Mit rund [\d.]+ Einwohnern gehört[\s\S]*?<\/p>/,
     `<p>${lokalPara2}</p>`,
@@ -206,10 +211,10 @@ function generateUniqueRegions(html, profile, trade) {
     const nTeile = D ? D.length : 'viele'
     const spanSentence = D
       ? `Von ${D[0]} über ${D[D.length > 2 ? 1 : 0]} bis ${D[D.length - 1]}: Jeder Stadtteil verlangt ein eigenes Konzept.`
-      : `Vom Zentrum bis in die Randlagen: Jede Lage in ${profile.name} verlangt ein eigenes Konzept.`
+      : `Vom Zentrum bis in die Randlagen: Jede Lage in ${pname} verlangt ein eigenes Konzept.`
     const tips = [
       climate,
-      `${profile.name}: rund ${pop} Einwohner, ${nTeile === 'viele' ? 'zahlreiche Ortsteile' : nTeile + ' Stadtteile'} — und jedes Gebäude mit eigenen Anforderungen.`,
+      `${pname}: rund ${pop} Einwohner, ${nTeile === 'viele' ? 'zahlreiche Ortsteile' : nTeile + ' Stadtteile'} — und jedes Gebäude mit eigenen Anforderungen.`,
       spanSentence,
     ]
     replaceOnce(
@@ -225,14 +230,15 @@ function generateUniqueRegions(html, profile, trade) {
 
 // ─── Stadt-Datei bauen ───────────────────────────────────────────
 function buildStadtFile(templateHtml, profile, trade) {
-  const cityCap = profile.name
+  // Stadtteile: voller Name mit Parent-Kontext für SEO ("Hörde (Dortmund)")
+  const cityCap = profile.isDistrict ? (profile.displayName || profile.name) : profile.name
   let html = templateHtml
 
   const { html: regen } = generateUniqueRegions(html, profile, trade)
   html = regen
 
-  // Fußzeile: Kreis-Phrase ("Ennepe-Ruhr-Kreis, an der Ruhr" → aktuelles Profil)
-  const kreisPhrase = profile.kreis ? `${profile.kreis}, ${profile.state}` : profile.state
+  // Fußzeile: Kreis-Phrase → aktuelles Profil (Stadtteile: Parent-Stadt)
+  const kreisPhrase = profile.kreis ? `${profile.kreis}, ${profile.state}` : (profile.state || profile.parentName || '')
   html = html.split('Ennepe-Ruhr-Kreis, an der Ruhr').join(kreisPhrase)
 
   // Globale Namens-Swaps (nach Region-Generierung!)
@@ -247,7 +253,7 @@ function buildBlogFiles(templateFiles, profile) {
   // templateFiles: [{name, content}] aus public/blog/{trade}/witten/
   return templateFiles.map(f => ({
     name: f.name,
-    content: f.content.split('Witten').join(profile.name).split('witten').join(profile.slug),
+    content: f.content.split('Witten').join(profile.isDistrict ? (profile.displayName || profile.name) : profile.name).split('witten').join(profile.slug),
   }))
 }
 
@@ -257,8 +263,9 @@ function patchSalespage(html, profile, tradeSlug, tradeLabel, tradeKey) {
   let out = html
   const nameKey = profile.name.replace(/'/g, "\\'")
 
-  // 1) CITY_SLUGS um Stadt erweitern (idempotent)
-  if (!out.includes(`'${nameKey}':'${profile.slug}'`)) {
+  // 1) CITY_SLUGS um Stadt erweitern (idempotent — anhand des Slugs,
+  //    damit spätere Anzeigenamen-Änderungen keinen Doppel-Eintrag erzeugen)
+  if (!out.includes(`'${profile.slug}':'${profile.slug}'`) && !out.match(new RegExp(`'[^']+':'${profile.slug}'`))) {
     const anchor = 'const CITY_SLUGS = {'
     const idx = out.indexOf(anchor)
     if (idx === -1) throw new Error(`[city-gen] CITY_SLUGS nicht in ${file}`)
