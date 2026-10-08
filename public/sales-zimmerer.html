@@ -584,12 +584,12 @@ tailwind.config = {
             <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
               <input type="radio" name="pay" value="card" class="sr-only">
               <span class="font-bold text-ink-900 text-sm">💳 Kreditkarte</span>
-              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Visa · Mastercard · Amex<br>Abwicklung via <strong>Stripe</strong></span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Visa · Mastercard · Amex<br>Abwicklung via <strong style="color:#635bff">Stripe</strong></span>
             </label>
             <label class="pay-opt cursor-pointer border-2 border-ink-200 rounded-xl p-4 block transition hover:border-brand-400" onclick="pickPay(this)">
               <input type="radio" name="pay" value="klarna" class="sr-only">
               <span class="font-bold text-ink-900 text-sm">🛍️ Klarna</span>
-              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Kauf auf Rechnung oder in Raten<br>Abwicklung via <strong>Stripe</strong></span>
+              <span class="mt-1 block text-[11px] text-ink-500 leading-snug">Kauf auf Rechnung oder in Raten<br>Abwicklung via <strong style="color:#635bff">Stripe</strong></span>
             </label>
           </div>
           <p class="mt-2 text-xs text-ink-400">Sichere Abwicklung über <strong>PayPal</strong> oder <strong>Stripe</strong> – keine Zahlungsdaten auf unseren Servern.</p>
@@ -598,6 +598,7 @@ tailwind.config = {
         <p class="font-black text-ink-900 text-lg">Fast geschafft! 🎉</p>
         <p id="paypalPanelText" class="mt-1 text-sm text-ink-600 leading-relaxed">Dein Konto ist angelegt. Bestätige jetzt dein Abo bei PayPal:</p>
         <div id="paypal-button-container" class="mt-4 max-w-sm"></div>
+        <button type="button" onclick="backToPayChoice()" class="mt-3 text-xs font-bold text-ink-500 hover:text-ink-800 underline">&#8629; Lieber mit Kreditkarte oder Klarna zahlen? Zur&uuml;ck zur Zahlungsauswahl</button>
         <p class="mt-3 text-[11px] text-ink-400">Nach der Bestätigung bist du sofort live — dein Dashboard-Zugang kommt per E-Mail.</p>
       </div>
         <button id="pubBtn" onclick="publish()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-black text-lg py-4 rounded-xl transition shadow-lg">🚀 Jetzt veröffentlichen &amp; Miete starten</button>
@@ -753,6 +754,13 @@ async function publish(){
   }
 }
 // ── PayPal-Abo-Flow (primär; Stripe = Option) ──
+// 2026-10-08: Rückweg aus dem PayPal-Panel zur Zahlungsauswahl (Stripe-Option erreichbar halten)
+function backToPayChoice(){
+  const step3 = document.getElementById('step3');
+  if(step3) step3.querySelectorAll(':scope > *').forEach(function(el){ el.style.display = ''; });
+  const panel = document.getElementById('paypalPanel');
+  if(panel) panel.classList.add('hidden');
+}
 function startPayPalFlow(pp){
   const step3 = document.getElementById('step3');
   if(step3){ step3.querySelectorAll(':scope > *').forEach(function(el){ if(el.id !== 'paypalPanel') el.style.display = 'none'; }); }
@@ -802,7 +810,7 @@ function pickMode(mode){
   const trialInfoStep1 = document.getElementById('trialInfoStep1');
   const pubBtn = document.getElementById('pubBtn');
   const submitBtn = document.getElementById('onbSubmitBtn');
-  if(payBlock) payBlock.classList.toggle('hidden', mode === 'test');
+  if(payBlock) payBlock.classList.remove('hidden'); // 2026-10-08: Zahlungsauswahl IMMER zeigen — Stripe-Option nie verstecken
   if(trialInfo) trialInfo.classList.toggle('hidden', mode !== 'test');
   if(trialInfoStep1) trialInfoStep1.classList.toggle('hidden', mode !== 'test');
   if(pubBtn) pubBtn.textContent = mode === 'test' ? '🎁 Testphase starten & veröffentlichen' : '🚀 Jetzt veröffentlichen & Miete starten';
