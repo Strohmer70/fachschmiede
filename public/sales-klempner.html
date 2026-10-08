@@ -791,7 +791,7 @@ function startPayPalFlow(pp){
 function loadPayPalSdk(clientId, cb){
   if(window.paypal){ return cb(); }
   const s = document.createElement('script');
-  s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(clientId) + '&vault=true&intent=subscription&currency=EUR&components=buttons';
+  s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(clientId) + '&vault=true&intent=subscription&currency=EUR&components=buttons&disable-funding=card'; // 2026-10-08: PayPal-Kartenbutton aus — Karten gehen sauber über Stripe
   s.onload = cb;
   document.head.appendChild(s);
 }
