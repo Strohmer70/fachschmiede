@@ -1,11 +1,5 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { readFileSync, readdirSync, existsSync } from 'fs'
-import { join } from 'path'
-// Side-effect-Imports: Dateien physikalisch ins Serverless-Bundle ziehen
-// (Vercel nft-Trace), damit die Engine sie per fs.readFileSync lesen kann.
-import '../../../../config/system-config.js'
-import articleIndexJson from '../../../../lib/article-index.json'
 // @ts-ignore — CJS-Engine (scripts/lib), allowJs aktiv
 import { generateCity, TRADES } from '../../../../scripts/lib/city-gen.js'
 
@@ -71,31 +65,56 @@ async function commitFilesToGitHub(files: { path: string; content: string }[], m
   return commit.sha
 }
 
-// ─── ctx für die Engine aufbauen (fs-reads laufen auf Vercel) ────
-function buildEngineCtx(existingSlugs: string[]) {
-  const pub = join(process.cwd(), 'public')
-  const orteJson = readFileSync(join(pub, 'data', 'de-orte.json'), 'utf-8')
+// ─── ctx für die Engine aufbauen (alle Quellen = GitHub-Repo, SSOT) ──
+// WICHTIG: Nicht aus dem lokalen Bundle lesen! Das Bundle ist Stand Build-Zeit
+// und veraltet nach jedem API-Commit (Sales-Counter, article-index, ...).
+async function ghRaw(path: string): Promise<string> {
+  const res = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/${path}`)
+  if (!res.ok) throw new Error(`raw ${path}: ${res.status}`)
+  return res.text()
+}
+
+async function buildEngineCtx(existingSlugs: string[]) {
+  // Repo-Tree: ein Call → alle Pfade (für stadtFiles, staticPages, Blog-Templates)
+  const tree = await ghApi('git/trees/main?recursive=1')
+  const paths: string[] = (tree.tree || []).map((e: any) => e.path).filter((p: string) => p.startsWith('public/'))
 
   const templateFiles: Record<string, string> = {}
-  for (const t of Object.values(TRADES) as any[]) {
-    const tpl = join(pub, `stadt-${t.key}-witten.html`)
-    if (existsSync(tpl)) templateFiles[`stadt/stadt-${t.key}-witten.html`] = readFileSync(tpl, 'utf-8')
-    const blogDir = join(pub, 'blog', t.articleDir, 'witten')
-    if (existsSync(blogDir)) {
-      for (const f of readdirSync(blogDir)) {
-        if (f.endsWith('.html')) templateFiles[`blog/${t.articleDir}/witten/${f}`] = readFileSync(join(blogDir, f), 'utf-8')
-      }
-    }
-  }
+  const blogWittenPaths = paths.filter(p => /^public\/blog\/[^/]+\/witten\/[^/]+\.html$/.test(p))
+  const stadtTemplatePaths = paths.filter(p => /^public\/stadt-[a-z]+-witten\.html$/.test(p))
+
+  // Alle benötigten Dateien parallel ziehen (Templates + Blog + Sales + Config)
+  const wanted: string[] = [
+    'public/data/de-orte.json',
+    'config/system-config.js',
+    'lib/article-index.json',
+    ...stadtTemplatePaths,
+    ...blogWittenPaths,
+    ...SALES_FILES.map(f => 'public/' + f),
+  ]
+  const contents = await Promise.all(wanted.map(p => ghRaw(p)))
+  const fileMap: Record<string, string> = {}
+  wanted.forEach((p, i) => { fileMap[p] = contents[i] })
+
+  for (const p of stadtTemplatePaths) templateFiles[p.replace('public/', '')] = fileMap[p]
+  for (const p of blogWittenPaths) templateFiles[p.replace('public/', '')] = fileMap[p]
   const salesFiles: Record<string, string> = {}
-  for (const f of SALES_FILES) salesFiles[f] = readFileSync(join(pub, f), 'utf-8')
+  for (const f of SALES_FILES) salesFiles[f] = fileMap['public/' + f]
 
-  const systemConfig = readFileSync(join(process.cwd(), 'config', 'system-config.js'), 'utf-8')
-  const articleIndex = JSON.stringify(articleIndexJson)
-  const staticPages = readdirSync(pub).filter((f: string) => f.endsWith('.html'))
-  const stadtFiles = readdirSync(pub).filter((f: string) => f.startsWith('stadt-') && f.endsWith('.html'))
+  const staticPages = paths
+    .filter(p => /^public\/[^/]+\.html$/.test(p))
+    .map(p => p.replace('public/', ''))
+  const stadtFiles = paths
+    .filter(p => /^public\/stadt-[^/]+\.html$/.test(p))
+    .map(p => p.replace('public/', ''))
 
-  return { orteJson, templateFiles, salesFiles, systemConfig, articleIndex, staticPages, stadtFiles, existingSlugs, baseUrl: BASE_URL }
+  return {
+    orteJson: fileMap['public/data/de-orte.json'],
+    templateFiles, salesFiles,
+    systemConfig: fileMap['config/system-config.js'],
+    articleIndex: fileMap['lib/article-index.json'],
+    staticPages, stadtFiles, existingSlugs, baseUrl: BASE_URL,
+  }
 }
 
 // ─── GET: Liste aller Pages ──────────────────────────────────────
@@ -151,7 +170,7 @@ export async function POST(request: Request) {
     // ── Engine: Dateien generieren ──
     let result
     try {
-      result = generateCity(citySlug, { trades: tradesWanted }, buildEngineCtx(existingSlugs))
+      result = await generateCity(citySlug, { trades: tradesWanted }, await buildEngineCtx(existingSlugs))
     } catch (e: any) {
       return NextResponse.json({ success: false, error: 'Generierung fehlgeschlagen: ' + e.message }, { status: 400 })
     }
