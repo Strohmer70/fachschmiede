@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { checkAdminAuth } from '@/lib/admin-auth'
 // @ts-ignore — CJS-Engine (scripts/lib), allowJs aktiv
 import { generateCity, TRADES } from '../../../../scripts/lib/city-gen.js'
 
@@ -9,19 +10,7 @@ const GITHUB_REPO = 'Strohmer70/fachschmiede'
 const BASE_URL = 'https://www.fachschmiede.de'
 const SALES_FILES = ['sales-dachdecker.html', 'sales-elektriker.html', 'sales-klempner.html', 'sales-maler.html', 'sales-zimmerer.html', 'sales-garten-und-landschaftsbau.html']
 
-// ─── Auth (wie gehabt) ───────────────────────────────────────────
-function getSecret(): string {
-  return process.env.ADMIN_SECRET || process.env.SESSION_SECRET || process.env.STRIPE_SECRET_KEY || ''
-}
-
-function checkAuth(request: Request): boolean {
-  const authHeader = request.headers.get('authorization')
-  const adminToken = request.headers.get('x-admin-token')
-  const secret = getSecret()
-  if (authHeader === `Bearer ${secret}`) return true
-  if (adminToken && adminToken === secret) return true
-  return false
-}
+// ─── Auth: Shared-Lib (Secret-Bearer ODER Login-Token base64(PW+ts)) ──
 
 // ─── GitHub: alle generierten Dateien in EINEM Commit ────────────
 async function ghApi(path: string, opts: { method?: string; body?: any } = {}) {

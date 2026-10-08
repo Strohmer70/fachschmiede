@@ -1,16 +1,12 @@
 import { NextResponse } from 'next/server'
+import { VALID_PASSWORDS } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
-
 
 // 2026-10-01: Zwei gültige Passwörter — historisch gab es 2024 (API/Code)
 // und 2026 (Frontend-Fallback). Dieter kannte nur eins davon → Login schlug fehl.
 // Env ADMIN_PASSWORD wird MIT akzeptiert (nicht exklusiv) — falls in Vercel gesetzt.
-const VALID_PASSWORDS = [
-  process.env.ADMIN_PASSWORD,
-  'fachschmiede2024',
-  'fachschmiede2026',
-].filter(Boolean) as string[]
+// Passwort-Liste jetzt zentral in lib/admin-auth.ts (wird auch von /api/admin/pages genutzt).
 
 export async function POST(request: Request) {
   try {

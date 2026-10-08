@@ -141,7 +141,7 @@ window.loadPages = async function(page = 1, limit = 500) {
   if (!adminToken) return;
 
   try {
-    const res = await fetch(`${API_BASE}/admin/pages?page=${page}&limit=${limit}`, {
+    const res = await fetch(`${API_BASE}/admin/pages/?page=${page}&limit=${limit}`, {
       headers: { 'Authorization': `Bearer ${adminToken}` }
     });
 
@@ -1351,7 +1351,7 @@ async function addStadt(form) {
   showToast('⏳ Erstelle Stadt-Website...');
 
   try {
-    const res = await fetch(`${API_BASE}/admin/pages`, {
+    const res = await fetch(`${API_BASE}/admin/pages/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -2355,7 +2355,7 @@ async function nbEnsureData() {
     // Fallback: frisch laden wenn leer
     if (__pageSlugs.size === 0 && adminToken) {
       try {
-        const res = await fetch(`${API_BASE}/admin/pages`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        const res = await fetch(`${API_BASE}/admin/pages/`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
         const d = await res.json();
         if (d.success) __pageSlugs = new Set((d.pages || []).map(p => p.slug));
       } catch (e) { /* dann halt ohne Existenz-Check */ }
@@ -2491,7 +2491,7 @@ window.nbCreateCity = async function() {
   btn.textContent = '⏳ Erstelle …';
   if (status) { status.classList.remove('hidden'); status.textContent = '⏳ Dateien werden generiert und committed … (ca. 30–60 Sek.)'; }
   try {
-    const res = await fetch(`${API_BASE}/admin/pages`, {
+    const res = await fetch(`${API_BASE}/admin/pages/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
       body: JSON.stringify({ city_slug: o.s, trades: missing }),
