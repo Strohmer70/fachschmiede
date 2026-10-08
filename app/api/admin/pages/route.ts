@@ -61,7 +61,7 @@ async function commitFilesToGitHub(files: { path: string; content: string }[], m
     method: 'POST',
     body: { message, tree: tree.sha, parents: [ref.object.sha] },
   })
-  await ghApi('git/ref/heads/main', { method: 'PATCH', body: { sha: commit.sha, force: false } })
+  await ghApi('git/refs/heads/main', { method: 'PATCH', body: { sha: commit.sha, force: false } })
   return commit.sha
 }
 
@@ -234,6 +234,21 @@ export async function POST(request: Request) {
       }
     } else if (result.files.length && !process.env.GITHUB_TOKEN) {
       deploy = { committed: false, sha: null, error: 'GITHUB_TOKEN fehlt — Dateien nicht committed (Vercel Env setzen!)' }
+    }
+
+    // Konsistenz: Commit fehlgeschlagen → angelegte DB-Zeilen wieder entfernen
+    // (sonst existiert eine Stadt in der DB ohne Dateien → kaputte Fallback-Route)
+    if (!deploy.committed && createdPages.length) {
+      await supabaseAdmin.from('landing_pages').delete().in('slug', createdPages)
+      const { data: left } = await supabaseAdmin.from('landing_pages').select('id').eq('city_id', cityRow.id).limit(1)
+      if (!left || left.length === 0) {
+        await supabaseAdmin.from('cities').delete().eq('id', cityRow.id)
+      }
+      return NextResponse.json({
+        success: false,
+        error: 'Deploy fehlgeschlagen — DB-Einträge zurückgerollt. Grund: ' + (deploy.error || 'unbekannt'),
+        city: cd,
+      }, { status: 502 })
     }
 
     return NextResponse.json({
