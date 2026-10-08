@@ -6,11 +6,11 @@ import { getAllTrades, getAllCities } from '../config/system-config'
 export const dynamic = 'force-static'
 
 export const metadata: Metadata = {
-  title: 'fachschmiede.de – Handwerker & Fachbetriebe im Ruhrgebiet finden',
+  title: 'fachschmiede.de – Handwerker & Fachbetriebe in deiner Stadt finden',
   description:
-    'Dachdecker, Elektriker, Klempner, Zimmerer, Maler und Gartenbau in 20 Städten des Ruhrgebiets. Lokale Fachbetriebe finden – schnell, kostenlos und unkompliziert.',
+    'Dachdecker, Elektriker, Klempner, Zimmerer, Maler und Gartenbau – lokale Fachbetriebe in deiner Stadt finden. Schnell, kostenlos und unkompliziert.',
   openGraph: {
-    title: 'fachschmiede.de – Handwerker im Ruhrgebiet finden',
+    title: 'fachschmiede.de – Handwerker in deiner Stadt finden',
     description:
       'Lokale Fachbetriebe für Dach, Elektrik, Sanitär, Holz, Farbe & Garten – in deiner Stadt.',
     url: 'https://fachschmiede.de',
@@ -101,7 +101,7 @@ export default function PortalHomePage() {
             <span className="text-brand-300">In deiner Stadt.</span>
           </h1>
           <p className="mt-4 text-ink-300 text-base sm:text-lg max-w-2xl mx-auto">
-            Lokale Handwerker im Ruhrgebiet – von Dach bis Garten. Gewerk wählen, Stadt wählen, Anfrage senden.
+            Lokale Handwerker in deiner Nähe – von Dach bis Garten. Gewerk wählen, Stadt wählen, Anfrage senden.
           </p>
           <div className="mt-8">
             <PortalSearch trades={trades} cities={cities} />
@@ -130,7 +130,7 @@ export default function PortalHomePage() {
             { n: `${trades.length}`, label: 'Gewerke' },
             { n: `${cities.length}`, label: 'Städte' },
             { n: `${trades.length * cities.length}+`, label: 'Lokale Seiten' },
-            { n: '100%', label: 'Aus dem Ruhrgebiet' },
+            { n: '100%', label: 'Lokale Fachbetriebe' },
           ].map((s) => (
             <div key={s.label}>
               <div className="text-3xl font-black text-ink-900">{s.n}</div>
@@ -227,7 +227,7 @@ export default function PortalHomePage() {
       {/* ═══════════ STÄDTE-STRIP ═══════════ */}
       <section id="staedte" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 scroll-mt-24">
         <h2 className="text-2xl sm:text-3xl font-black text-ink-900 tracking-tight text-center mb-8">
-          20 Städte im Ruhrgebiet & Umgebung
+          {cities.length} Städte – und es kommen laufend neue dazu
         </h2>
         <div className="flex flex-wrap justify-center gap-2.5">
           {cities.map((city) => (
@@ -252,7 +252,7 @@ export default function PortalHomePage() {
             </h2>
             <p className="mt-4 text-brand-100 max-w-2xl mx-auto text-base sm:text-lg">
               Miete deine eigene lokale Seite und erhalte Anfragen aus deiner Stadt –
-              ab €189/Monat, selbst verwalten, keine Agentur nötig.
+              ab €99/Monat, selbst verwalten, keine Agentur nötig.
             </p>
             <a
               href="/fuer-dienstleister/"
@@ -279,7 +279,7 @@ export default function PortalHomePage() {
                 <span className="font-extrabold text-ink-900">fachschmiede.de</span>
               </div>
               <p className="mt-2 text-ink-500 text-sm max-w-sm">
-                Das lokale Portal für Handwerk & Fachbetriebe im Ruhrgebiet.
+                Das lokale Portal für Handwerk & Fachbetriebe – in ganz Deutschland.
               </p>
             </div>
             <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink-600">

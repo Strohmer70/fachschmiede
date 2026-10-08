@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const trade = getTrade(cleanTrade)
   if (!trade) return { title: 'Nicht gefunden' }
   return {
-    title: `${trade.name} im Ruhrgebiet – Alle Städte & Leistungen | fachschmiede.de`,
-    description: `${trade.name} in 20 Städten des Ruhrgebiets. ${trade.services.slice(0, 3).join(', ')} & mehr. Kostenlose Besichtigung & Festpreis. Jetzt Fachbetrieb finden.`,
+    title: `${trade.name} in deiner Stadt – Alle Städte & Leistungen | fachschmiede.de`,
+    description: `${trade.name} in deiner Stadt und Umgebung. ${trade.services.slice(0, 3).join(', ')} & mehr. Kostenlose Besichtigung & Festpreis. Jetzt Fachbetrieb finden.`,
     openGraph: {
-      title: `${trade.name} im Ruhrgebiet | fachschmiede.de`,
+      title: `${trade.name} lokal finden | fachschmiede.de`,
       description: `Lokale ${trade.plural} in deiner Stadt finden – schnell, kostenlos, unkompliziert.`,
       url: `https://fachschmiede.de/${trade.slug}/`,
       siteName: 'fachschmiede.de',
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 function getTradeContent(slug: string) {
   const contents: Record<string, any> = {
     'dachdecker': {
-      heroTitle: 'Dachdecker im Ruhrgebiet',
+      heroTitle: 'Dachdecker in deiner Stadt',
       heroSubtitle: 'Ob Dachreparatur, Neudeckung oder Sanierung – finden Sie erfahrene Dachdecker in Ihrer Stadt. Kostenlose Besichtigung, Festpreis-Angebot, keine versteckten Kosten.',
       introTitle: 'Ihr Dach in besten Händen',
       introText: 'Das Dach ist der wichtigste Schutz Ihres Hauses. Ob undichte Stelle nach dem Sturm, Alterserscheinungen an der Dachdeckung oder eine komplette Sanierung mit Dämmung – unsere Partnerbetriebe decken alle Leistungen rund ums Dach ab. Vom ersten Aufmaß bis zur finalen Abnahme erhalten Sie transparente Festpreise und verbindliche Termine.',
@@ -61,7 +61,7 @@ function getTradeContent(slug: string) {
       ],
     },
     'elektriker': {
-      heroTitle: 'Elektriker im Ruhrgebiet',
+      heroTitle: 'Elektriker in deiner Stadt',
       heroSubtitle: 'Elektroinstallation, Smart Home, Wallbox, Sicherungskasten – zertifizierte Elektriker in Ihrer Stadt. Sicher nach VDE-Norm, transparent kalkuliert.',
       introTitle: 'Strom sicher & smart',
       introText: 'Elektrik ist Vertrauenssache. Ob Neuinstallation, Modernisierung alter Leitungen oder smarte Steuerung von Licht und Heizung – unsere Partnerbetriebe arbeiten nach den aktuellen VDE-Vorschriften und dokumentieren jede Arbeit ordnungsgemäß. Vom E-Check bis zur Wallbox-Installation.',
@@ -79,7 +79,7 @@ function getTradeContent(slug: string) {
       ],
     },
     'klempner': {
-      heroTitle: 'Klempner & SHK im Ruhrgebiet',
+      heroTitle: 'Klempner & SHK in deiner Stadt',
       heroSubtitle: 'Rohrbruch, Heizungsausfall, Badmodernisierung – SHK-Fachbetriebe in Ihrer Stadt. 24h-Notdienst, transparente Preise, saubere Arbeit.',
       introTitle: 'Wasser. Wärme. Wohlbefinden.',
       introText: 'Sanitär- und Heizungstechnik beeinflusst jeden Tag Ihre Lebensqualität. Ob verstopfter Abfluss, tropfende Armatur oder komplette Badsanierung – unsere Partnerbetriebe decken alle SHK-Leistungen ab. Von der Rohrreinigung bis zur energieeffizienten Heizungsanlage.',
@@ -97,7 +97,7 @@ function getTradeContent(slug: string) {
       ],
     },
     'zimmerer': {
-      heroTitle: 'Zimmerer im Ruhrgebiet',
+      heroTitle: 'Zimmerer in deiner Stadt',
       heroSubtitle: 'Dachstuhl, Carport, Terrassenüberdachung, Holzskelettbau – traditionelles Handwerk mit moderner Technik in Ihrer Stadt.',
       introTitle: 'Holz. Handwerk. Haltbarkeit.',
       introText: 'Der Zimmerer ist der Spezialist für alles aus Holz. Ob Dachstuhl-Neubau, Sanierung alter Fachwerkhäuser oder Carport – unsere Partnerbetriebe verbinden jahrhundertealtes Handwerk mit moderner Bauweise. Vom ersten Plan bis zur fertigen Konstruktion.',
@@ -115,7 +115,7 @@ function getTradeContent(slug: string) {
       ],
     },
     'maler': {
-      heroTitle: 'Maler & Lackierer im Ruhrgebiet',
+      heroTitle: 'Maler & Lackierer in deiner Stadt',
       heroSubtitle: 'Innenanstrich, Fassadensanierung, Bodenbeläge, Trockenbau – farbstarke Profis in Ihrer Stadt. Sauber, termingerecht, mit Garantie.',
       introTitle: 'Farbe verändert alles.',
       introText: 'Ein frischer Anstrich verändert den Charakter eines Raums nachhaltig. Ob Wohnungsrenovierung, Fassadensanierung oder gewerbliche Objekte – unsere Partnerbetriebe arbeiten mit hochwertigen Materialien und sauberer Abdeckung. Von der Farbberatung bis zur letzten Lackschicht.',
@@ -133,7 +133,7 @@ function getTradeContent(slug: string) {
       ],
     },
     'garten-und-landschaftsbau': {
-      heroTitle: 'Garten- und Landschaftsbau im Ruhrgebiet',
+      heroTitle: 'Garten- und Landschaftsbau in deiner Stadt',
       heroSubtitle: 'Gartengestaltung, Rollrasen, Teichbau, Baumpflege – Grün-Profis in Ihrer Stadt. Von der Idee bis zum fertigen Garten.',
       introTitle: 'Ihr Garten. Unsere Leidenschaft.',
       introText: 'Ein schöner Garten ist Lebensqualität pur. Ob pflegeleichter Familiengarten, blühende Staudenwiese oder repräsentativer Vorgarten – unsere Partnerbetriebe gestalten Grünflächen, die zu Ihrem Leben passen. Mit regionaler Pflanzenauswahl und nachhaltigen Materialien.',
@@ -153,10 +153,10 @@ function getTradeContent(slug: string) {
   }
   
   return contents[slug] || {
-    heroTitle: 'Handwerker im Ruhrgebiet',
+    heroTitle: 'Handwerker in deiner Stadt',
     heroSubtitle: 'Erfahrene Fachbetriebe in Ihrer Stadt. Kostenlose Besichtigung, transparente Festpreise, verbindliche Termine.',
     introTitle: 'Professionelle Leistungen in Ihrer Region',
-    introText: 'Wir vermitteln Ihnen erfahrene Fachbetriebe im gesamten Ruhrgebiet. Alle Partner werden sorgfältig ausgewählt und arbeiten nach den anerkannten Regeln der Technik.',
+    introText: 'Wir vermitteln Ihnen erfahrene Fachbetriebe in Ihrer Region. Alle Partner werden sorgfältig ausgewählt und arbeiten nach den anerkannten Regeln der Technik.',
     benefits: [
       { title: 'Kostenlose Besichtigung', desc: 'Vor Ort analysieren, beraten und ein Festpreis-Angebot erstellen.' },
       { title: 'Verbindliche Termine', desc: 'Wir halten, was wir versprechen – pünktlich und zuverlässig.' },
@@ -192,7 +192,7 @@ export default function TradeOverviewPage({ params }: PageProps) {
             <span className="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white text-lg font-black">F</span>
             <span className="leading-tight">
               <span className="block font-extrabold text-lg text-ink-900">fachschmiede.de</span>
-              <span className="block text-xs text-ink-500 font-medium">{trade.name} im Ruhrgebiet</span>
+              <span className="block text-xs text-ink-500 font-medium">{trade.name} in deiner Stadt</span>
             </span>
           </Link>
           <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-600">
@@ -219,7 +219,7 @@ export default function TradeOverviewPage({ params }: PageProps) {
             <div className="flex items-center gap-3 mb-6">
               <span className="text-5xl">{trade.emoji}</span>
               <div>
-                <p className="text-brand-400 font-bold text-sm uppercase tracking-widest">Alle Städte im Ruhrgebiet</p>
+                <p className="text-brand-400 font-bold text-sm uppercase tracking-widest">Alle Städte im Überblick</p>
                 <p className="text-ink-400 text-sm">{cities.length} Städte · {services.length} Leistungen · 1 Ansprechpartner</p>
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function TradeOverviewPage({ params }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: String(cities.length), label: 'Städte im Ruhrgebiet' },
+              { value: String(cities.length), label: 'Städte im Angebot' },
               { value: String(services.length), label: 'Fachleistungen' },
               { value: '100%', label: 'Kostenlose Besichtigung' },
               { value: '24h', label: 'Schnelle Rückmeldung' },
@@ -292,7 +292,7 @@ export default function TradeOverviewPage({ params }: PageProps) {
                 </span>
                 <h3 className="mt-4 text-lg font-bold text-ink-900">{service}</h3>
                 <p className="mt-2 text-ink-600 text-sm leading-relaxed">
-                  Professionelle {service} in {cities.length} Städten des Ruhrgebiets. Kostenlose Besichtigung & Festpreis.
+                  Professionelle {service} in {cities.length} Städten – und es kommen laufend neue dazu. Kostenlose Besichtigung & Festpreis.
                 </p>
                 <a href="#staedte" className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-brand-600 hover:gap-2 transition-all">
                   Stadt wählen <span>→</span>
@@ -370,7 +370,7 @@ export default function TradeOverviewPage({ params }: PageProps) {
           </div>
           <div className="mt-12 grid md:grid-cols-3 gap-8">
             {[
-              { step: '1', title: 'Stadt wählen', desc: `Wählen Sie Ihre Stadt aus den ${cities.length} Städten des Ruhrgebiets. Jede Stadt hat eine eigene lokale Seite mit Ansprechpartner.` },
+              { step: '1', title: 'Stadt wählen', desc: `Wählen Sie Ihre Stadt aus den ${cities.length} verfügbaren Städten. Jede Stadt hat eine eigene lokale Seite mit Ansprechpartner.` },
               { step: '2', title: 'Anfrage senden', desc: 'Beschreiben Sie kurz Ihr Anliegen im Kontaktformular. Sie erhalten zeitnah einen Rückruf mit einem Terminvorschlag.' },
               { step: '3', title: 'Festpreis erhalten', desc: 'Nach der kostenlosen Besichtigung erhalten Sie ein schriftliches Angebot mit Festpreis – ohne versteckte Kosten.' },
             ].map((item, i) => (
@@ -529,11 +529,11 @@ export default function TradeOverviewPage({ params }: PageProps) {
                 <span className="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white text-lg font-black">F</span>
                 <span className="leading-tight">
                   <span className="block font-extrabold text-white">fachschmiede.de</span>
-                  <span className="block text-xs text-ink-400">{trade.name} im Ruhrgebiet</span>
+                  <span className="block text-xs text-ink-400">{trade.name} in deiner Stadt</span>
                 </span>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-ink-400">
-                Lokale Fachbetriebe in {cities.length} Städten des Ruhrgebiets. Kostenlose Besichtigung, transparente Festpreise.
+                Lokale Fachbetriebe in {cities.length} Städten – deutschlandweit erweiterbar. Kostenlose Besichtigung, transparente Festpreise.
               </p>
             </div>
             <div>

@@ -535,7 +535,7 @@ tailwind.config = {
             <div class="bg-brand-50 border border-brand-200 rounded-xl p-4">
               <div class="flex items-center justify-between">
                 <span class="font-bold text-ink-900">Dein Preis</span>
-                <span class="font-black text-2xl text-brand-600"><span class="dynPrice">189</span> €<span class="text-sm font-semibold text-ink-500">/Monat</span></span>
+                <span class="font-black text-2xl text-brand-600"><span class="dynPrice">99</span> €<span class="text-sm font-semibold text-ink-500">/Monat</span></span>
               </div>
               <p class="text-xs text-ink-500 mt-1">Inklusive: Website, Blog, E-Mail-Leads, Hosting, SSL, Updates</p>
             </div>
@@ -808,7 +808,7 @@ function startPayPalFlow(pp){
     panel.classList.remove('hidden');
     const txt = document.getElementById('paypalPanelText');
     if(txt){
-      var _pm = window._sysPrice || 189;
+      var _pm = window._sysPrice || 99;
       txt.innerHTML = (window.onbMode === 'test')
         ? 'Dein Konto ist angelegt. Bestätige jetzt deine <strong>kostenlose 14-Tage-Testphase</strong> bei PayPal (danach <strong>'+_pm+' €/Monat</strong> — jederzeit kündbar):'
         : 'Dein Konto ist angelegt. Bestätige jetzt dein Abo (<strong>'+_pm+' €/Monat</strong>, monatlich kündbar) bei PayPal:';
