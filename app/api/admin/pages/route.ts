@@ -190,9 +190,20 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: 'de-orte.json konnte nicht erweitert werden' }, { status: 500 })
       }
     }
+    // Stadtteile aus de-orte.json auflösen (Einträge mit c=citySlug) —
+    // damit die Engine echte Stadtteil-Namen in Chips/Tipps nutzt statt Generisches
+    let districts: string[] = []
+    try {
+      const orte: any[] = JSON.parse(engineCtx.orteJson)
+      districts = orte
+        .filter((o) => o.c === citySlug && (o.t === 'd' || o.dn))
+        .map((o) => o.dn || o.n)
+        .slice(0, 6)
+    } catch { /* districts bleiben leer — Engine nutzt Generic-Chips */ }
+
     let result
     try {
-      result = await generateCity(citySlug, { trades: tradesWanted }, engineCtx)
+      result = await generateCity(citySlug, { trades: tradesWanted, districts }, engineCtx)
     } catch (e: any) {
       return NextResponse.json({ success: false, error: 'Generierung fehlgeschlagen: ' + e.message }, { status: 400 })
     }

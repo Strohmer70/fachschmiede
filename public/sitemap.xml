@@ -153,7 +153,6 @@
   <url><loc>https://www.fachschmiede.de/stadt-zimm-wetter-ruhr</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-zimm-witten</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/bergkamen/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://www.fachschmiede.de/dachdecker/berlin-spandau/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/bochum/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/castrop-rauxel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/dortmund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -174,7 +173,6 @@
   <url><loc>https://www.fachschmiede.de/dachdecker/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/bergkamen/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://www.fachschmiede.de/elektriker/berlin-spandau/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/bochum/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/castrop-rauxel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/dortmund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -195,7 +193,6 @@
   <url><loc>https://www.fachschmiede.de/elektriker/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/bergkamen/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/berlin-spandau/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/bochum/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/castrop-rauxel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/dortmund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -216,7 +213,6 @@
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/bergkamen/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://www.fachschmiede.de/klempner/berlin-spandau/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/bochum/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/castrop-rauxel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/dortmund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -237,7 +233,6 @@
   <url><loc>https://www.fachschmiede.de/klempner/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/bergkamen/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://www.fachschmiede.de/maler/berlin-spandau/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/bochum/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/castrop-rauxel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/dortmund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -258,7 +253,6 @@
   <url><loc>https://www.fachschmiede.de/maler/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/bergkamen/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://www.fachschmiede.de/zimmerer/berlin-spandau/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/bochum/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/castrop-rauxel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/dortmund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>

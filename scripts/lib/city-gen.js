@@ -106,6 +106,7 @@ function generateUniqueRegions(html, profile, trade) {
   const d = (i) => D ? D[i % D.length] : null
   const climate = climateFor(profile.state)
   const tradeWord = trade.word
+  const popOk = profile.pop > 0
   const pop = fmtPop(profile.pop)
   // Stadtteile: mit Parent-Kontext ("Hörde (Dortmund)") für lokale SEO
   const pname = profile.isDistrict ? (profile.displayName || profile.name) : profile.name
@@ -156,25 +157,61 @@ function generateUniqueRegions(html, profile, trade) {
     'motivation'
   )
 
-  // 3) LOKAL-Intro (nur dach-Template vorhanden — optional)
-  const lokalIntro = D ? [
+  // 3) LOKAL-Intro — `<p class="text-lg">` kommt genau 1× pro Template vor
+  //    (dach: „Gerade in …“, maler/elek/…: „In Witten mit seinem Mischbestand …“)
+  const lokalIntroD = [
     `Gerade in ${pname} mit seinem gemischten Wohnungsbestand ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbanes Leben im Zentrum mit ruhigen Wohnlagen in den Randlagen. Der Baubestand reicht von klassischen Mietshäusern bis zu großzügigen Einfamilienhäusern in ${d(1)} und Umgebung.`,
-  ] : [
-    `In ${pname} mit seinen rund ${pop} Einwohnern ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbanes Leben mit ruhigen Wohnlagen — der Baubestand ist ebenso vielfältig wie die Anforderungen.`,
-    `Ob Zentrum oder Randlage: In ${pname} mit rund ${pop} Einwohnern unterscheiden sich die Bauprojekte von Ortsteil zu Ortsteil. Wir kennen die lokalen Gegebenheiten und passen unsere Leistungen genau darauf an.`,
+    `In ${pname} ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbane Mitte mit ruhigen Randlagen — der Baubestand ist ebenso vielfältig wie die Anforderungen.`,
   ]
-  replaceOnce(
-    /<p class="text-lg">Gerade in[\s\S]*?<\/p>/,
-    `<p class="text-lg">${pick(lokalIntro, seed)}</p>`,
-    'lokal-intro',
-    { required: false }
-  )
+  const lokalIntroNoD = [
+    `In ${pname} ist ${trade.topic} ein Thema, das viele Eigentümer beschäftigt. ${kreisPhrase} verbindet urbane Mitte mit ruhigen Randlagen — der Baubestand ist ebenso vielfältig wie die Anforderungen.`,
+    `Ob Zentrum oder Randlage: In ${pname} unterscheiden sich die Bauprojekte von Straße zu Straße. Wir kennen die lokalen Gegebenheiten und passen unsere Leistungen genau darauf an.`,
+  ]
+  // Custom-Finder: JEDER stadtspezifische Intro-Absatz wird ersetzt
+  // (garten hat 2: „In Witten legen…" + „Von 96.000 Einwohnern…")
+  {
+    const introPoolD = [
+      ...lokalIntroD,
+      `In ${pname} legen die Menschen Wert auf gepflegte Außenanlagen — ob Reihenhaus-Garten oder großzügiges Grundstück. ${kreisPhrase} verbindet urbane Mitte mit ruhigen Randlagen. Wir gestalten Gärten, die zu dieser Vielfalt passen.`,
+      `Jedes Grundstück in ${pname} ist anders — und genau das macht unsere Arbeit aus. Vom kompakten Stadtgarten bis zur großen Außenanlage in der Randlage: Wir kennen die lokalen Bedingungen. ${climate}`,
+    ]
+    const introPoolNoD = [
+      ...lokalIntroNoD,
+      `In ${pname} legen die Menschen Wert auf gepflegte Außenanlagen — ob Reihenhaus-Garten oder großzügiges Grundstück. Wir gestalten Gärten, die zur Region passen.`,
+      `Jedes Grundstück in ${pname} ist anders — und genau das macht unsere Arbeit aus. Vom kompakten Stadtgarten bis zur großen Außenanlage: Wir kennen die lokalen Bedingungen. ${climate}`,
+    ]
+    const introRe = /<p class="text-lg[^"]*"[^>]*>((?:(?!<\/p>)[\s\S])*)<\/p>/g
+    let m, introIdx = 0
+    const parts = []
+    let lastEnd = 0
+    while ((m = introRe.exec(out)) !== null) {
+      if (!/(Einwohnern|Edelstahlstadt|Mischbestand|geprägt durch|legt die Menschen Wert)/.test(m[1])) continue
+      parts.push(out.slice(lastEnd, m.index))
+      const cls = m[0].match(/<p class="([^"]*)"/)[1]
+      const pool = D ? introPoolD : introPoolNoD
+      parts.push(`<p class="${cls}">${pool[introIdx % pool.length]}</p>`)
+      introIdx++
+      lastEnd = m.index + m[0].length
+    }
+    if (introIdx === 0) throw new Error(`[city-gen] lokal-intro in ${trade.key} nicht gefunden`)
+    parts.push(out.slice(lastEnd))
+    out = parts.join('')
+    count += introIdx
+  }
+
+  // 3b) Service-Karten: „Witten an der Ruhr" → „Witten" (Garten-Templates)
+  if (out.includes('Witten an der Ruhr')) {
+    out = out.split('Witten an der Ruhr').join('Witten')
+    count++
+  }
 
   // 4) LOKAL-Para2 ("Mit rund … gehört …") — alle Templates
   const areaList = D ? D.slice(0, 5).join(', ') : `${pname} und Umgebung`
-  const lokalPara2 = `Mit rund ${pop} Einwohnern gehört ${pname} zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
+  const lokalPara2 = popOk
+    ? `Mit rund ${pop} Einwohnern gehört ${pname} zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
+    : `${pname} gehört zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
   replaceOnce(
-    /<p>[\s\S]*?Mit rund [\d.]+ Einwohnern gehört[\s\S]*?<\/p>/,
+    /<p[^>]*>[\s\S]*?Einwohnern gehört[\s\S]*?<\/p>/,
     `<p>${lokalPara2}</p>`,
     'lokal-para2'
   )
@@ -206,23 +243,39 @@ function generateUniqueRegions(html, profile, trade) {
     count++
   }
 
-  // 7) Profi-Tipps (nur dach-Template — optional)
-  if (new RegExp(`-Profi-Tipps für `).test(out)) {
+  // 7) Profi-Tipps — Trigger „…-Tipps für “ deckt Dach-Profi-Tipps,
+  //    Maler-Tipps, Elektro-Tipps etc. ab (NICHT nur „-Profi-Tipps“!)
+  if (new RegExp(`-Tipps für `).test(out)) {
     const nTeile = D ? D.length : 'viele'
     const spanSentence = D
       ? `Von ${D[0]} über ${D[D.length > 2 ? 1 : 0]} bis ${D[D.length - 1]}: Jeder Stadtteil verlangt ein eigenes Konzept.`
       : `Vom Zentrum bis in die Randlagen: Jede Lage in ${pname} verlangt ein eigenes Konzept.`
     const tips = [
       climate,
-      `${pname}: rund ${pop} Einwohner, ${nTeile === 'viele' ? 'zahlreiche Ortsteile' : nTeile + ' Stadtteile'} — und jedes Gebäude mit eigenen Anforderungen.`,
+      popOk
+        ? `${pname}: rund ${pop} Einwohner, ${nTeile === 'viele' ? 'zahlreiche Ortsteile' : nTeile + ' Stadtteile'} — und jedes Gebäude mit eigenen Anforderungen.`
+        : `${pname}: jedes Gebäude mit eigenen Anforderungen — vom Altbau in der Mitte bis zum Neubau am Rand.`,
       spanSentence,
     ]
     replaceOnce(
-      /<div class="space-y-4 text-ink-600 leading-relaxed">([\s\S]*?)<\/div>/,
+      /<div class="space-y-4 text-ink-600 leading-relaxed">((?:(?!<\/div>)[\s\S])*)<\/div>/,
       `<div class="space-y-4 text-ink-600 leading-relaxed">${tips.map(t => `<p>${t}</p>`).join('')}</div>`,
       'tips-body',
       { required: false }
     )
+  }
+
+  // 8) Witten-Regions-Sweep: Fluss-/Kreis-Reste aus allen Templates entfernen
+  //    (v.a. garten: „Ruhrdeich", „nahe der Ruhr", Footer-Metadaten)
+  const regionSwaps = [
+    ['Ruhrdeich', profile.name],
+    ['nahe der Ruhr', 'nahe des Wassers'],
+    ['an der Ruhr', 'am Wasser'],
+    ['Ruhr jetzt teilen', 'jetzt teilen'],
+    [' – Ruhrgebiet, zwischen Bochum und Gelsenkirchen', ` – ${profile.state || 'Ihre Region'}`],
+  ]
+  for (const [from, to] of regionSwaps) {
+    if (out.includes(from)) { out = out.split(from).join(to); count++ }
   }
 
   return { html: out, regionsReplaced: count }
@@ -240,6 +293,8 @@ function buildStadtFile(templateHtml, profile, trade) {
   // Fußzeile: Kreis-Phrase → aktuelles Profil (Stadtteile: Parent-Stadt)
   const kreisPhrase = profile.kreis ? `${profile.kreis}, ${profile.state}` : (profile.state || profile.parentName || '')
   html = html.split('Ennepe-Ruhr-Kreis, an der Ruhr').join(kreisPhrase)
+  // Auch bare „Ennepe-Ruhr-Kreis“-Reste (z.B. im <title>) ersetzen
+  html = html.split('Ennepe-Ruhr-Kreis').join(kreisPhrase)
 
   // Globale Namens-Swaps (nach Region-Generierung!)
   html = html.split('Witten').join(cityCap)
@@ -251,9 +306,19 @@ function buildStadtFile(templateHtml, profile, trade) {
 // ─── Blog-Dateien ────────────────────────────────────────────────
 function buildBlogFiles(templateFiles, profile) {
   // templateFiles: [{name, content}] aus public/blog/{trade}/witten/
+  const cap = profile.isDistrict ? (profile.displayName || profile.name) : profile.name
   return templateFiles.map(f => ({
     name: f.name,
-    content: f.content.split('Witten').join(profile.isDistrict ? (profile.displayName || profile.name) : profile.name).split('witten').join(profile.slug),
+    content: f.content
+      .split('Witten und dem gesamten Ruhrgebiet').join('Witten und der gesamten Region')
+      .split('Witten und dem Ruhrgebiet').join('Witten und der gesamten Region')
+      .split('Witten und das gesamte Ruhrgebiet').join('Witten und die gesamte Region')
+      .split('Witten liegt im Ruhrgebiet').join('Witten liegt in der Region')
+      .split('im Ruhrgebiet').join('in der Region')
+      .split('am Ruhrgebiet').join('an der Region')
+      .split('Ruhrgebiet').join('Region')
+      .split('Witten').join(cap)
+      .split('witten').join(profile.slug),
   }))
 }
 

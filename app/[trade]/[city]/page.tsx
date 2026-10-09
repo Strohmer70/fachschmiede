@@ -128,6 +128,20 @@ export default async function LandingPage({ params }: PageProps) {
   // ═══════════════════════════════════════════
   const heroImage = trade.hero_image || `/images/${tradeSlug}-hero.jpg`
   const teamImage = trade.team_image || `/images/${tradeSlug}-team.jpg`
+
+  // ═══════════════════════════════════════════
+  // GEWERKFARBE: Pro Trade eigene Brand-Palette (DB brand_color),
+  //               per CSS-Override auf die brand-*-Utilities gemappt.
+  //               Sonst zeigt die dynamische Route ALLE Gewerke in einer Farbe!
+  // ═══════════════════════════════════════════
+  const brandHex: string = trade.brand_color || '#e11d48'
+  const bp = (() => {
+    const n = parseInt(brandHex.slice(1), 16)
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255
+    const mix = (t: number) => `rgb(${Math.round(r + (255 - r) * t)},${Math.round(g + (255 - g) * t)},${Math.round(b + (255 - b) * t)})`
+    const dark = (t: number) => `rgb(${Math.round(r * (1 - t))},${Math.round(g * (1 - t))},${Math.round(b * (1 - t))})`
+    return { 50: mix(0.95), 100: mix(0.9), 200: mix(0.78), 400: mix(0.42), 500: mix(0.18), 600: brandHex, 700: dark(0.16), 800: dark(0.32) }
+  })()
   
   // ═══════════════════════════════════════════
   // CONTENT: Erst DB (content_json), dann Fallback
@@ -147,6 +161,28 @@ export default async function LandingPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white text-ink-800 antialiased" style={{fontFamily: "'Inter',system-ui,sans-serif"}}>
+      {/* Gewerkspezifische Brand-Farbe (dynamische Route!) */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .bg-brand-50{background-color:${bp[50]}!important}
+        .hover\\:bg-brand-50:hover{background-color:${bp[50]}!important}
+        .bg-brand-100{background-color:${bp[100]}!important}
+        .from-brand-100{--tw-gradient-from:${bp[100]}!important}
+        .border-brand-200{border-color:${bp[200]}!important}
+        .text-brand-100{color:${bp[100]}!important}
+        .text-brand-400{color:${bp[400]}!important}
+        .hover\\:text-brand-400:hover{color:${bp[400]}!important}
+        .focus\\:ring-brand-500{--tw-ring-color:${bp[500]}!important}
+        .text-brand-500{color:${bp[500]}!important}
+        .bg-brand-600{background-color:${bp[600]}!important}
+        .text-brand-600{color:${bp[600]}!important}
+        .hover\\:text-brand-600:hover{color:${bp[600]}!important}
+        .group-hover\\:text-brand-600:hover{color:${bp[600]}!important}
+        .hover\\:bg-brand-700:hover{background-color:${bp[700]}!important}
+        .text-brand-700{color:${bp[700]}!important}
+        .text-brand-800{color:${bp[800]}!important}
+        .shadow-brand-600\\/25{--tw-shadow-color:${bp[600]}!important}
+        .shadow-brand-600\\/30{--tw-shadow-color:${bp[600]}!important}
+      `}} />
       {/* ═══════════ HEADER ═══════════ */}
       <header className="bg-white/95 backdrop-blur border-b border-ink-100 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
