@@ -200,6 +200,7 @@ const SYSTEM_CONFIG = {
     'unna': { name: 'Unna', region: 'Nordrhein-Westfalen', slug: 'unna' },
     'wetter-ruhr': { name: 'Wetter (Ruhr)', region: 'Nordrhein-Westfalen', slug: 'wetter-ruhr' },
     'witten': { name: 'Witten', region: 'Nordrhein-Westfalen', slug: 'witten' },
+        'berlin-spandau': { name: 'Spandau', region: '', slug: 'berlin-spandau' },
     // NEUE STÄDTE HIER EINFÜGEN
   },
 
