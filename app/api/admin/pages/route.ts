@@ -75,13 +75,16 @@ async function buildEngineCtx(existingSlugs: string[]) {
   // Alle benötigten Dateien parallel ziehen (Templates + Blog + Sales + Config)
   const wanted: string[] = [
     'public/data/de-orte.json',
+    'public/data/city-extras.json',
     'config/system-config.js',
     'lib/article-index.json',
     ...stadtTemplatePaths,
     ...blogWittenPaths,
     ...SALES_FILES.map(f => 'public/' + f),
   ]
-  const contents = await Promise.all(wanted.map(p => ghRaw(p)))
+  const contents = await Promise.all(wanted.map(p => p.endsWith('city-extras.json')
+    ? ghRaw(p).catch(() => '{}') // optionaler Override-Layer — darf fehlen
+    : ghRaw(p)))
   const fileMap: Record<string, string> = {}
   wanted.forEach((p, i) => { fileMap[p] = contents[i] })
 
@@ -99,6 +102,7 @@ async function buildEngineCtx(existingSlugs: string[]) {
 
   return {
     orteJson: fileMap['public/data/de-orte.json'],
+    cityExtras: fileMap['public/data/city-extras.json'] || '{}',
     templateFiles, salesFiles,
     systemConfig: fileMap['config/system-config.js'],
     articleIndex: fileMap['lib/article-index.json'],
@@ -200,6 +204,27 @@ export async function POST(request: Request) {
         .map((o) => o.dn || o.n)
         .slice(0, 6)
     } catch { /* districts bleiben leer — Engine nutzt Generic-Chips */ }
+
+    // city-extras.json (Override-Layer): echte Ortsteile + Einwohnerzahl für
+    // Städte, die de-orte nicht abdeckt (z.B. berlin-spandau: p=0, keine Ortsteile)
+    try {
+      const extras = JSON.parse(engineCtx.cityExtras || '{}')
+      const ex = extras[citySlug]
+      if (ex && typeof ex === 'object') {
+        if (Array.isArray(ex.districts) && ex.districts.length) {
+          districts = ex.districts.map((d: any) => String(d)).slice(0, 9)
+        }
+        if (parseInt(ex.population) > 0) {
+          // population direkt in den orte-Eintrag injizieren (resolveProfile liest ortEntry.p)
+          const orte: any[] = JSON.parse(engineCtx.orteJson)
+          const ort = orte.find((o) => o.s === citySlug)
+          if (ort) {
+            ort.p = parseInt(ex.population)
+            engineCtx.orteJson = JSON.stringify(orte)
+          }
+        }
+      }
+    } catch { /* Extras ungültig → de-orte-Werte gelten */ }
 
     let result
     try {

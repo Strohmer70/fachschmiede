@@ -1,0 +1,7 @@
+{
+  "_comment": "Override-Layer für Städte, die de-orte.json nicht vollständig abdeckt (p:0, keine Ortsteile). population → popOk=true, districts → echte Ortsteile für Tips/Chips/Lokal-Text. Schlüssel = city-slug.",
+  "berlin-spandau": {
+    "population": 246000,
+    "districts": ["Spandau", "Haselhorst", "Siemensstadt", "Staaken", "Gatow", "Kladow", "Hakenfelde", "Falkenhagener Feld", "Wilhelmstadt"]
+  }
+}

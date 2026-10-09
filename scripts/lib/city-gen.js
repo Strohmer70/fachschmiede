@@ -377,7 +377,7 @@ function buildCityCard(profile, tradeSlug, tradeLabel) {
   const popTxt = profile.pop ? `~${fmtPop(profile.pop)} Einwohner · ` : ''
   const where = profile.kreis ? `${profile.kreis}, ${profile.state}` : (profile.isDistrict ? `Stadtteil von ${profile.parentName}` : profile.state)
   return `
-      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-region="${profile.state}" data-city="${profile.slug} ${profile.name.toLowerCase()}">
+      <div class="city-card reveal bg-white rounded-2xl border-2 border-green-500/60 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300" data-region="${profile.state}" data-city="${profile.slug} ${profile.name.toLowerCase()}" data-city-name="${profile.name.replace(/"/g, '&quot;')}">
         <div class="flex items-start justify-between">
           <div><h3 class="text-xl font-black text-ink-900">${profile.name}</h3><p class="text-sm text-ink-500 mt-0.5">fachschmiede.de/${tradeSlug}/${profile.slug}/</p></div>
           <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full shrink-0">Frei</span>

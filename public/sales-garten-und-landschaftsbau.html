@@ -1003,9 +1003,15 @@ if (citySearch) {
   const params = new URLSearchParams(window.location.search);
   const stadtSlug = params.get('stadt');
   if(stadtSlug){
-    // Stadtname aus dem Slug ableiten
-    const CITY_NAMES = {'schwerte':'Schwerte','dortmund':'Dortmund','hagen':'Hagen','iserlohn':'Iserlohn','unna':'Unna','bochum':'Bochum','witten':'Witten','luenen':'Lünen','herne':'Herne','castrop-rauxel':'Castrop-Rauxel','kamen':'Kamen','bergkamen':'Bergkamen','froendenberg':'Fröndenberg','holzwickede':'Holzwickede','schwelm':'Schwelm','gevelsberg':'Gevelsberg','ennepetal':'Ennepetal','sprockhoevel':'Sprockhövel','hattingen':'Hattingen','wetter-ruhr':'Wetter (Ruhr)','muenchen':'München'};
-    const cityName = CITY_NAMES[stadtSlug];
+    // SSOT: Stadtname kommt vom Karten-DOM (data-city / data-city-name),
+    // nicht von einer hartkodierten Liste → funktioniert für JEDE Stadt sofort.
+    let cityName = null;
+    document.querySelectorAll('.city-card[data-city]').forEach(function(c){
+      const dc = (c.getAttribute('data-city') || '').split(' ')[0];
+      if (dc === stadtSlug) {
+        cityName = c.getAttribute('data-city-name') || (c.querySelector('h3') ? c.querySelector('h3').textContent.trim() : null);
+      }
+    });
     if(cityName && typeof startOnboarding === 'function'){
       // Kurz warten bis DOM bereit
       setTimeout(() => { if (onb.classList.contains('hidden')) startOnboarding(cityName); }, 500); // Race-Fix: manuelle Auswahl nie überschreiben
