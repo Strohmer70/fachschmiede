@@ -157,9 +157,42 @@ export async function POST(request: Request) {
     }
 
     // ── Engine: Dateien generieren ──
+    // 2026-10-09: Custom-Ort (nicht in de-orte.json) → als Synthetic-Entry in orteJson injizieren
+    const { custom_ort } = body
+    const engineCtx = await buildEngineCtx(existingSlugs)
+    if (custom_ort && typeof custom_ort === 'object') {
+      const name = String(custom_ort.name || '').trim()
+      const displayName = String(custom_ort.display_name || name).trim()
+      const isDistrict = !!custom_ort.is_district
+      const parentSlug = String(custom_ort.parent_slug || '').trim()
+      if (!name || !displayName) {
+        return NextResponse.json({ success: false, error: 'custom_ort: name/display_name fehlt' }, { status: 400 })
+      }
+      if (isDistrict && !parentSlug) {
+        return NextResponse.json({ success: false, error: 'custom_ort: Stadtteil braucht parent_slug' }, { status: 400 })
+      }
+      try {
+        const orte = JSON.parse(engineCtx.orteJson)
+        if (!orte.some((o: any) => o.s === citySlug)) {
+          orte.push({
+            n: displayName,
+            s: citySlug,
+            p: parseInt(custom_ort.population) || 0,
+            b: String(custom_ort.state || ''),
+            t: isDistrict ? 'd' : 'g',
+            c: isDistrict ? parentSlug : undefined,
+            dn: isDistrict ? name : undefined,
+            k: '',
+          })
+          engineCtx.orteJson = JSON.stringify(orte)
+        }
+      } catch {
+        return NextResponse.json({ success: false, error: 'de-orte.json konnte nicht erweitert werden' }, { status: 500 })
+      }
+    }
     let result
     try {
-      result = await generateCity(citySlug, { trades: tradesWanted }, await buildEngineCtx(existingSlugs))
+      result = await generateCity(citySlug, { trades: tradesWanted }, engineCtx)
     } catch (e: any) {
       return NextResponse.json({ success: false, error: 'Generierung fehlgeschlagen: ' + e.message }, { status: 400 })
     }

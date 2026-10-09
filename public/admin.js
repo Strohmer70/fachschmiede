@@ -2416,10 +2416,13 @@ window.nbSearchOrt = function(qRaw) {
   if (!box) return;
   if (q.length < 2) { box.classList.add('hidden'); __nbSelection = null; nbUpdatePreview(); return; }
 
+  // 2026-10-09: Wort-basierte Suche — "Berlin Spandau" findet "Spandau (Berlin)"
+  // (früher: includes(q) auf volle Phrase → Wort-Reihenfolge musste exakt stimmen)
+  const words = q.split(/\s+/).filter(Boolean);
   const hits = [];
   for (const o of __orte) {
-    const hay = o.t === 'd' ? (o.dn + ' ' + o.n) : o.n;
-    if (hay.toLowerCase().includes(q)) hits.push(o);
+    const hay = (o.t === 'd' ? (o.dn + ' ' + o.n) : o.n).toLowerCase();
+    if (words.every(w => hay.includes(w))) hits.push(o);
     if (hits.length >= 8) break;
   }
 
@@ -2427,7 +2430,26 @@ window.nbSearchOrt = function(qRaw) {
   const popFmt = p => p ? `~${Math.round(p / 100) * 100 >= 1000 ? (Math.round(p / 100) * 100).toLocaleString('de-DE') : '< 5.000'} EW` : '';
 
   if (!hits.length) {
-    box.innerHTML = '<div class="px-4 py-6 text-center text-xs text-ink-400 italic">Kein Treffer. Tipp: Vollständigen Ortsnamen probieren (Datenbestand: Gemeinden ab ~4.500 EW).</div>';
+    box.innerHTML = `
+      <div class="px-4 py-3 text-center text-xs text-ink-400 italic">Kein Treffer im Datenbestand (Gemeinden ab ~4.500 EW, Stand 2017).</div>
+      <div class="px-4 pb-3 border-t border-ink-100 mt-1 pt-3">
+        <p class="text-xs font-black text-ink-700 mb-2">🏘️ Ort trotzdem anlegen (Custom-Eintrag):</p>
+        <input id="nbCusName" type="text" placeholder="Ortsname, z.B. Lichtenrade" class="w-full text-sm border border-ink-200 rounded-lg px-3 py-2 mb-2" oninput="nbCustomSlugLive()">
+        <div class="flex gap-2 mb-2 text-xs items-center flex-wrap">
+          <label class="flex items-center gap-1"><input type="radio" name="nbCusTyp" value="g" checked onchange="nbCustomTypToggle()"> Stadt</label>
+          <label class="flex items-center gap-1"><input type="radio" name="nbCusTyp" value="d" onchange="nbCustomTypToggle()"> Stadtteil von</label>
+          <input id="nbCusParent" type="text" placeholder="Stadt, z.B. Berlin" class="hidden flex-1 min-w-28 text-sm border border-ink-200 rounded-lg px-3 py-1.5" oninput="nbCustomSlugLive()">
+        </div>
+        <div class="flex gap-2 mb-2">
+          <select id="nbCusState" class="flex-1 text-xs border border-ink-200 rounded-lg px-2 py-1.5 text-ink-600">
+            <option value="">Bundesland (optional)</option>
+            ${['Baden-Württemberg','Bayern','Berlin','Brandenburg','Bremen','Hamburg','Hessen','Mecklenburg-Vorpommern','Niedersachsen','Nordrhein-Westfalen','Rheinland-Pfalz','Saarland','Sachsen','Sachsen-Anhalt','Schleswig-Holstein','Thüringen'].map(s => `<option>${s}</option>`).join('')}
+          </select>
+          <input id="nbCusPop" type="number" min="0" placeholder="EW (optional)" class="w-28 text-xs border border-ink-200 rounded-lg px-2 py-1.5">
+        </div>
+        <p class="text-[11px] text-ink-400 mb-2">Slug: <code id="nbCusSlug" class="font-bold text-ink-600">—</code></p>
+        <button type="button" onclick="nbUseCustomOrt()" class="w-full text-sm font-bold bg-ink-900 text-white rounded-lg px-3 py-2 hover:bg-ink-700 transition">Diesen Ort verwenden →</button>
+      </div>`;
     box.classList.remove('hidden');
     return;
   }
@@ -2449,6 +2471,56 @@ window.nbSearchOrt = function(qRaw) {
     </div>`;
   }).join('');
   box.classList.remove('hidden');
+};
+
+window.nbSlugify = function(name) {
+  return String(name || '').trim().toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+};
+
+window.nbCustomTypToggle = function() {
+  const typ = document.querySelector('input[name="nbCusTyp"]:checked')?.value || 'g';
+  document.getElementById('nbCusParent')?.classList.toggle('hidden', typ !== 'd');
+  nbCustomSlugLive();
+};
+
+window.nbCustomSlugLive = function() {
+  const name = document.getElementById('nbCusName')?.value || '';
+  const typ = document.querySelector('input[name="nbCusTyp"]:checked')?.value || 'g';
+  const parent = document.getElementById('nbCusParent')?.value || '';
+  const slug = nbSlugify(typ === 'd' && parent ? nbSlugify(parent) + '-' + nbSlugify(name) : name);
+  const el = document.getElementById('nbCusSlug');
+  if (el) el.textContent = slug || '—';
+};
+
+// Custom-Ort übernehmen → Synthetic-Entry im Format von de-orte.json
+window.nbUseCustomOrt = function() {
+  const name = (document.getElementById('nbCusName')?.value || '').trim();
+  if (!name) { showToast('❌ Bitte Ortsnamen eingeben'); return; }
+  const typ = document.querySelector('input[name="nbCusTyp"]:checked')?.value || 'g';
+  const parentName = (document.getElementById('nbCusParent')?.value || '').trim();
+  if (typ === 'd' && !parentName) { showToast('❌ Bei Stadtteil bitte übergeordnete Stadt angeben'); return; }
+  const state = document.getElementById('nbCusState')?.value || '';
+  const pop = parseInt(document.getElementById('nbCusPop')?.value) || 0;
+  const parentSlug = typ === 'd' ? nbSlugify(parentName) : '';
+  const slug = typ === 'd' ? parentSlug + '-' + nbSlugify(name) : nbSlugify(name);
+  if (!slug) { showToast('❌ Slug ungültig — nur Buchstaben/Zahlen verwenden'); return; }
+  __nbSelection = {
+    n: typ === 'd' ? name + ' (' + parentName + ')' : name,
+    s: slug,
+    p: pop,
+    b: state,
+    t: typ,
+    c: typ === 'd' ? parentSlug : undefined,
+    dn: typ === 'd' ? name : undefined,
+    k: '',
+    __custom: true,
+  };
+  const inp = document.getElementById('nbStadtSearch');
+  if (inp) inp.value = typ === 'd' ? name + ' (' + parentName + ')' : name;
+  nbUpdatePreview();
+  showToast('🏘️ Custom-Ort übernommen: ' + __nbSelection.n);
 };
 
 window.nbPickOrt = function(slug) {
@@ -2478,7 +2550,7 @@ function nbUpdatePreview() {
     pv.classList.remove('hidden');
     btn.disabled = true; btn.textContent = 'Bereits vorhanden ✓';
   } else {
-    pv.innerHTML = `<strong>${name}</strong> (${o.b}) — erstellt wird: <strong>${missing.length} Seite${missing.length > 1 ? 'n' : ''}</strong> (${missing.join(', ')})${missing.length < NB_TRADE_SLUGS.length ? ' · bereits vorhanden: ' + NB_TRADE_SLUGS.filter(t => !missing.includes(t)).join(', ') : ''}.<br>Automatisch: individueller Seitentext, FAQ, Blog-Fassungen, Verlinkung auf den Salespages, Sitemap-Eintrag. Deploy dauert ~3 Minuten.`;
+    pv.innerHTML = `<strong>${name}</strong> (${o.b || 'Custom-Ort'}) — erstellt wird: <strong>${missing.length} Seite${missing.length > 1 ? 'n' : ''}</strong> (${missing.join(', ')})${missing.length < NB_TRADE_SLUGS.length ? ' · bereits vorhanden: ' + NB_TRADE_SLUGS.filter(t => !missing.includes(t)).join(', ') : ''}.<br>Automatisch: individueller Seitentext, FAQ, Blog-Fassungen, Verlinkung auf den Salespages, Sitemap-Eintrag. Deploy dauert ~3 Minuten.`;
     pv.classList.remove('hidden');
     btn.disabled = false;
     btn.textContent = `${name}: ${missing.length} Seite${missing.length > 1 ? 'n' : ''} erstellen →`;
@@ -2499,7 +2571,18 @@ window.nbCreateCity = async function() {
     const res = await fetch(`${API_BASE}/admin/pages/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
-      body: JSON.stringify({ city_slug: o.s, trades: missing }),
+      body: JSON.stringify({
+        city_slug: o.s,
+        trades: missing,
+        ...(o.__custom ? { custom_ort: {
+          name: o.t === 'd' ? o.dn : o.n,
+          display_name: o.n,
+          state: o.b,
+          population: o.p,
+          is_district: o.t === 'd',
+          parent_slug: o.c || null,
+        } } : {}),
+      }),
     });
     const data = await res.json();
     if (data.success) {
