@@ -210,8 +210,11 @@ function generateUniqueRegions(html, profile, trade) {
   const lokalPara2 = popOk
     ? `Mit rund ${pop} Einwohnern gehört ${pname} zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
     : `${pname} gehört zu ${profile.state} — einer Region, in der die Ansprüche an moderne ${tradeWord}-Leistungen stetig wachsen. Unsere Einsatzgebiete decken ${D ? 'alle Stadtteile ab: <strong class="text-ink-900">' + areaList + '</strong>' : profile.name + ' und die gesamte Umgebung ab'}.`
+  // ⚠ Vorsicht: `<p[^>]*>[\s\S]*?Einwohnern gehört` OHNE Bound frisst alles
+  //    vom ersten <p> der Seite bis zur Ziel-Paragraph (~15KB)!
+  //    Deshalb: Match auf "Mit rund … Einwohnern gehört" mit gedeckeltem Prefix.
   replaceOnce(
-    /<p[^>]*>[\s\S]*?Einwohnern gehört[\s\S]*?<\/p>/,
+    /<p[^>]*>(?:(?!<\/p>)[\s\S]){0,200}?Mit rund [\d.]+ Einwohnern gehört[\s\S]*?<\/p>/,
     `<p>${lokalPara2}</p>`,
     'lokal-para2'
   )
@@ -268,11 +271,17 @@ function generateUniqueRegions(html, profile, trade) {
   // 8) Witten-Regions-Sweep: Fluss-/Kreis-Reste aus allen Templates entfernen
   //    (v.a. garten: „Ruhrdeich", „nahe der Ruhr", Footer-Metadaten)
   const regionSwaps = [
+    ['Ennepe-Ruhr-Kreis', profile.state || 'Ihre Region'],
+    [' und Stockum', ''], // Districts-Swap ersetzt Bommern VOR Schritt 8 → generisch suffixen
     ['Ruhrdeich', profile.name],
     ['nahe der Ruhr', 'nahe des Wassers'],
     ['an der Ruhr', 'am Wasser'],
     ['Ruhr jetzt teilen', 'jetzt teilen'],
+    ['Wittens', `${pname}s`],
+    ['Ruhr-Lage', 'Flussnähe'],
+    ['mit der Ruhr', 'mit dem Fluss'],
     [' – Ruhrgebiet, zwischen Bochum und Gelsenkirchen', ` – ${profile.state || 'Ihre Region'}`],
+    ['Ruhr', 'Wasser'], // Catch-all (nach allen spezifischen Ruhr-Patterns!)
   ]
   for (const [from, to] of regionSwaps) {
     if (out.includes(from)) { out = out.split(from).join(to); count++ }
