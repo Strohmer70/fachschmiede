@@ -102,7 +102,173 @@ tailwind.config = {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
     <a href="#" class="flex items-center gap-3">
       <span class="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><p>Spandau (Berlin) gehört zu  — einer Region, in der die Ansprüche an moderne klempner-Leistungen stetig wachsen. Unsere Einsatzgebiete decken Spandau und die gesamte Umgebung ab.</p>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3c3.5 4 6 7 6 10a6 6 0 11-12 0c0-3 2.5-6 6-10z"/></svg>
+      </span>
+      <span class="leading-tight">
+        <span class="block font-extrabold text-lg text-ink-900">Klempner Spandau (Berlin)</span>
+        <span class="block text-xs text-ink-500 font-medium">Miet-Website · <span class="text-brand-600 font-bold">noch frei</span></span>
+      </span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-600">
+      <a href="#leistungen" class="hover:text-brand-600 transition">Leistungen</a>
+      <a href="#ort" class="hover:text-brand-600 transition">Spandau (Berlin)</a>
+      <a href="#ratgeber" class="hover:text-brand-600 transition">Ratgeber</a>
+      <a href="#faq" class="hover:text-brand-600 transition">FAQ</a>
+      <a href="#kontakt" class="hover:text-brand-600 transition">Kontakt</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="/sales-klempner.html?stadt=berlin-spandau" class="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-sm miet-cta">Diese Seite mieten</a>
+      <button id="menuBtn" class="lg:hidden p-2 rounded-lg hover:bg-ink-100" aria-label="Menü öffnen">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden lg:hidden border-t border-ink-100 bg-white px-4 py-4 space-y-1 text-sm font-semibold text-ink-700">
+    <a href="#leistungen" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Leistungen</a>
+    <a href="#ort" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Spandau (Berlin)</a>
+    <a href="#ratgeber" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Ratgeber</a>
+    <a href="#faq" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">FAQ</a>
+    <a href="#kontakt" class="block py-2.5 px-3 rounded-lg hover:bg-ink-50">Kontakt</a>
+    <a href="/sales-klempner.html?stadt=berlin-spandau" class="block mt-2 bg-brand-600 text-white text-center font-bold px-5 py-3 rounded-lg miet-cta">Diese Seite mieten</a>
+  </div>
+</header>
+
+<section class="relative min-h-[86vh] flex items-center">
+  <img src="/images/hero-klempner.jpg" alt="Heizungsbauer installiert eine moderne Wärmepumpe" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 hero-gradient"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-white">
+    <div class="max-w-2xl">
+      <p class="inline-flex items-center gap-2 bg-white/10 border border-white/25 backdrop-blur rounded-full px-4 py-1.5 text-sm font-semibold">
+        <span class="w-2 h-2 rounded-full bg-green-400"></span> Klempner in Spandau (Berlin) – kostenlose Besichtigung
+      </p>
+      <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05]">
+        Klempner in Spandau (Berlin).<br>
+        <span class="text-brand-400">Festpreis. Feste Termine.</span>
+      </h1>
+      <p class="mt-6 text-lg text-ink-200 leading-relaxed max-w-xl">Ob Badsanierung, Heizungstausch oder Wärmepumpe: In Spandau (Berlin) planen und bauen wir Haustechnik, die Jahrzehnte zuverlässig läuft. Wir beraten herstellerunabhängig, arbeiten nach den anerkannten Regeln der Technik und kümmern uns um alles – vom ersten Aufmaß bis zur fördertechnischen Dokumentation.</p>
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href="#kontakt" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-brand-600/30">Kostenlose Besichtigung anfragen</a>
+        <a href="#leistungen" class="inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white font-bold px-8 py-4 rounded-xl text-lg transition">Leistungen ansehen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="miet-banner" class="bg-brand-50 border-y border-brand-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid lg:grid-cols-3 gap-6 items-center">
+    <div class="lg:col-span-2">
+      <p class="font-black text-ink-900 text-lg">Diese Website ist eine Miet-Website – und für Spandau (Berlin) noch frei.</p>
+      <p class="mt-2 text-ink-600 text-sm leading-relaxed">Sie steht heute neutral im Netz und kann sofort angemietet werden: Dein Firmenname, deine Kontaktdaten, deine Leistungen – fertig individualisiert in wenigen Minuten. Alle Texte auf dieser Seite sind für <strong>Spandau (Berlin)</strong> individuell formuliert; jede unserer Stadt-Websites erhält eine eigene Textfassung, damit Google sie als eigenständig wertet. Pro Stadt vergeben wir die Seite nur <strong>einmal</strong>.</p>
+    </div>
+    <div class="lg:text-right">
+      <a href="/sales-klempner.html?stadt=berlin-spandau" class="inline-block bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-brand-600/25">Jetzt für Spandau (Berlin) sichern →</a>
+      <p class="mt-2 text-xs text-ink-500">Self-Check-in · sofort online · monatlich kündbar</p>
+    </div>
+  </div>
+</section>
+
+<section id="leistungen" class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Leistungen</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Alles rund ums Thema Haustechnik in Spandau (Berlin)</h2>
+      <p class="mt-4 text-ink-600 text-lg">Badsanierung, Heizung & Wärmepumpe, Rohrtechnik, Wartung, Klima und Klempner-Notdienst – mit kostenloser Besichtigung und Festpreis-Angebot.</p>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="reveal bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">🚿</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Badsanierung & Sanitär</h3>
+        <p class="mt-2 text-ink-600 text-sm leading-relaxed">Komplettbad, Gäste-WC oder barrierefreies Bad: Wir sanieren von der Planung bis zur letzten Fuge – inklusive Fliesen, Elektrik-Anschluss und Trockenbau aus einer Hand.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">🔥</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Heizung & Wärmepumpe</h3>
+        <p class="mt-2 text-ink-600 text-sm leading-relaxed">Heizungstausch nach GEG, Wärmepumpe, Hybridanlage oder Gas-Brennwert: Wir rechnen ehrlich nach, was sich für Ihr Haus lohnt – mit Förderberatung und hydraulischem Abgleich.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">💧</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Rohr & Leitung</h3>
+        <p class="mt-2 text-ink-600 text-sm leading-relaxed">Strangsanierung, Leckortung, Trinkwasserhygiene: Wir erneuern alte Leitungen sauber und staubarm – mit Kamerainspektion und dokumentierter Druckprüfung.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">🧰</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Wartung & Service</h3>
+        <p class="mt-2 text-ink-600 text-sm leading-relaxed">Heizungswartung, Thermen-Check, Wartungsvertrag: Regelmäßig gewartete Anlagen verbrauchen weniger und fallen seltener aus. Wir erinnern Sie automatisch an den Termin.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">🌡️</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Klima & Lüftung</h3>
+        <p class="mt-2 text-ink-600 text-sm leading-relaxed">Split-Klimageräte und kontrollierte Wohnraumlüftung: kühle Schlafzimmer im Sommer, frische Luft ohne Zug im Winter – sauber geplant und leise installiert.</p>
+      </div>
+      <div class="reveal bg-white rounded-2xl p-7 border border-ink-200 hover:shadow-xl hover:-translate-y-1 transition duration-300">
+        <span class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl">⚠️</span>
+        <h3 class="mt-4 text-lg font-bold text-ink-900">Klempner-Notdienst</h3>
+        <p class="mt-2 text-ink-600 text-sm leading-relaxed">Rohrbruch, verstopfter Abfluss, Heizungsausfall: Unser Notdienst sichert schnell ab, ortet die Ursache und dokumentiert alles für die Versicherung – auch am Wochenende.</p>
+      </div>
+    <p class="text-lg text-ink-600 leading-relaxed mb-8 max-w-3xl">Vom Zentrum bis in die Randlagen: In Spandau (Berlin) kennen wir den lokalen Wohnungsbestand — und die typischen Bauprobleme der Region. Die regionale Witterung setzt den Gebäuden hier einiges ab — regelmäßige Fachkontrolle zahlt sich aus.</p>
+    </div>
+    
+  </div>
+</section>
+
+<section id="ueber-uns" class="py-20 sm:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="reveal">
+      <img src="/images/team-klempner.jpg" alt="Klempner bei der Arbeit" class="rounded-2xl shadow-2xl w-full object-cover aspect-[3/2]">
+      <div class="mt-4 bg-ink-900 text-white rounded-2xl p-6">
+      <div class="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-5">
+        <p class="text-3xl font-black text-brand-400 shrink-0 leading-tight pt-0.5">Spandau (Berlin)</p>
+        <div class="min-w-0">
+          <p class="text-sm text-ink-200 leading-relaxed">Spandau (Berlin) ist unsere Heimat. Wir kennen die Bauten, die Witterung und die Menschen der Region — und beraten Sie so, wie wir selbst beraten werden wollen.</p>
+          <p class="mt-3 text-xs text-brand-400 font-bold uppercase tracking-wider">unser Standort – kurze Wege in der gesamten Region</p>
+        </div>
+      </div>
+    </div>
+    
+    </div>
+    <div class="reveal">
+      <p class="text-brand-600 font-bold text-sm uppercase tracking-widest">Über uns</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl font-black text-ink-900 tracking-tight">Ein Betrieb, auf den Sie sich verlassen können</h2>
+      <p class="mt-6 text-ink-600 text-lg leading-relaxed">
+        Ein SHK-Betrieb aus Spandau (Berlin), auf den Sie sich verlassen können. Wir kennen die Heizungs- und Sanitäranlagen in der Region.
+      </p>
+      <p class="mt-4 text-ink-600 leading-relaxed">
+        Wir wissen, welche Heizungsanlagen in Spandau (Berlin) typisch sind und worauf es bei der Wartung ankommt.
+      </p>
+      <ul class="mt-8 space-y-4">
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Fachgerechte Ausführung:</strong> Qualifizierte Arbeit nach den anerkannten Regeln der Technik.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Schriftliches Angebot:</strong> Transparent kalkuliert – keine versteckten Kosten, keine Überraschungen.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Saubere Baustelle:</strong> Wir hinterlassen Ihr Grundstück so, wie wir es vorgefunden haben – versprochen.</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-brand-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+          <span class="text-ink-700"><strong class="text-ink-900">Persönliche Betreuung:</strong> Ein fester Ansprechpartner begleitet Ihr Projekt von Anfang bis Ende.</span>
+        </li>
+      </ul>
+      <a href="#kontakt" class="mt-8 inline-flex items-center gap-2 text-brand-600 font-bold hover:gap-3 transition-all">
+        Lernen Sie uns kennen – kostenlose Erstberatung
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ LOKAL IN WITTEN (Unique Content) ═══════════ -->
+<section class="py-20 sm:py-28 bg-ink-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl sm:text-4xl font-black text-ink-900 mb-6">Klempner in Spandau (Berlin) — wir kennen die Stadt</h2>
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+      <div class="space-y-5 text-ink-600 leading-relaxed">
+        <p class="text-lg">In Spandau (Berlin) ist die Haustechnik ein Thema, das viele Eigentümer beschäftigt. Spandau (Berlin) und dem umliegenden Stadtgebiet verbindet urbane Spandau mit ruhigen Randlagen — der Baubestand ist ebenso vielfältig wie die Anforderungen.</p>
+        <p>Spandau (Berlin) gehört zu  — einer Region, in der die Ansprüche an moderne klempner-Leistungen stetig wachsen. Unsere Einsatzgebiete decken Spandau und die gesamte Umgebung ab.</p>
         <p>Unsere Kunden in Spandau (Berlin) schätzen vor allem drei Dinge: transparente Festpreise, verlässliche Termine und saubere Arbeit. Egal ob es um ein Einfamilienhaus in Spandau geht oder um eine Wohnanlage im Zentrum — wir behandeln jedes Projekt so, als wäre es unser eigenes.</p>
       </div>
       <div class="space-y-4">
@@ -369,7 +535,7 @@ tailwind.config = {
           <span class="block text-xs text-ink-400">Miet-Website · noch frei</span>
         </span>
       </div>
-      <p class="mt-4 text-sm leading-relaxed">Klempner & SHK-Meisterbetrieb Spandau (Berlin) – Sanitär, Heizung, Badsanierung & Notdienst – Berlin, am Wasser.</p>
+      <p class="mt-4 text-sm leading-relaxed">Klempner & SHK-Meisterbetrieb Spandau (Berlin) – Sanitär, Heizung, Badsanierung & Notdienst – Ihre Region, am Wasser.</p>
     </div>
     <div>
       <p class="font-bold text-white text-sm uppercase tracking-widest">Leistungen</p>
