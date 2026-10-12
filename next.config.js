@@ -111,6 +111,9 @@ const nextConfig = {
     
     return {
       beforeFiles: [
+        // IndexNow-Verifikations-Key (höchste Priorität — muss exakt unter /{key}.txt erreichbar sein)
+        { source: '/c7a5f6c2f404642bc65d79e57b39e6d3.txt', destination: '/api/indexnow-key' },
+        
         // Blog-Artikel (statische HTML) - HÖCHSTE PRIORITÄT
         ...blogRewrites,
         
