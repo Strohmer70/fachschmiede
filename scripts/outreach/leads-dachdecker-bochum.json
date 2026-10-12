@@ -1,0 +1,45 @@
+[
+  {
+    "firma": "Immel Bedachungen GmbH, Bochum, Dachdecker",
+    "website": "https://www.dachdecker-immel.de/",
+    "emails": [
+      "office@immel-gmbh.de"
+    ],
+    "phones": [
+      "+49023487727",
+      "+490234853156"
+    ],
+    "scraped_at": "2026-10-12T08:49:54.419Z",
+    "gewerk": "dachdecker",
+    "stadt": "bochum"
+  },
+  {
+    "firma": "Koartis GbR | Dachdecker Bochum",
+    "website": "https://koartis.de/",
+    "emails": [
+      "info@koartis.de"
+    ],
+    "phones": [
+      "+4923279035190",
+      "023493823699",
+      "093526363928"
+    ],
+    "scraped_at": "2026-10-12T08:49:59.538Z",
+    "gewerk": "dachdecker",
+    "stadt": "bochum"
+  },
+  {
+    "firma": "Mark Dachdecker",
+    "website": "https://mark-dachdecker.de/dachdecker-bochum/",
+    "emails": [
+      "info@mark-dachdecker.de"
+    ],
+    "phones": [
+      "+4915569539013",
+      "+493055464289"
+    ],
+    "scraped_at": "2026-10-12T08:50:15.616Z",
+    "gewerk": "dachdecker",
+    "stadt": "bochum"
+  }
+]
