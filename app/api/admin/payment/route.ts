@@ -4,7 +4,36 @@ import { NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Optional: ?subId=I-xxx → echten PayPal-Subscription-Status abfragen (Diagnose)
+  const url = new URL(req.url)
+  const subId = url.searchParams.get('subId') || ''
+  if (subId) {
+    try {
+      const { getPayPalConfig, ppApi } = await import('@/lib/paypal')
+      const cfg = await getPayPalConfig()
+      if (!cfg) return NextResponse.json({ error: 'paypal not configured' }, { status: 503 })
+      const sub = await ppApi(cfg, '/v1/billing/subscriptions/' + encodeURIComponent(subId))
+      return NextResponse.json({
+        success: true,
+        id: sub.id,
+        status: sub.status,
+        plan_id: sub.plan_id,
+        custom_id: sub.custom_id,
+        subscriber: sub.subscriber?.email_address || null,
+        start_time: sub.start_time,
+        status_update_time: sub.status_update_time,
+        billing_info: sub.billing_info ? {
+          outstanding_balance: sub.billing_info.outstanding_balance,
+          last_payment: sub.billing_info.last_payment,
+          next_billing_time: sub.billing_info.next_billing_time,
+          failed_payments_count: sub.billing_info.failed_payments_count,
+        } : null,
+      })
+    } catch (e: any) {
+      return NextResponse.json({ success: false, error: String(e?.message || e).slice(0, 400) }, { status: 500 })
+    }
+  }
   // ── Stripe: Env-Check ──
   const hasStripeSecret = !!process.env.STRIPE_SECRET_KEY
   const keyPrefix = (process.env.STRIPE_SECRET_KEY || '').slice(0, 7) // sk_live / sk_test
