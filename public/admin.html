@@ -1046,13 +1046,13 @@ tailwind.config = {
               <div class="mt-5 space-y-4">
                 <div>
                   <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk</label>
-                  <select id="pGewerk" onchange="updatePrintHint()" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <select id="pGewerk" onchange="updatePrintHint();printFilterChanged()" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
                     <option>Dachdecker</option><option>Elektriker</option><option>SHK / Klempner</option><option>Zimmerer</option><option>Maler</option>
                   </select>
                 </div>
                 <div>
                   <label class="block text-sm font-bold text-ink-800 mb-1.5">Stadt / Region</label>
-                  <select id="pStadt" onchange="updatePrintHint()" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <select id="pStadt" onchange="updatePrintHint();printFilterChanged()" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
                     <option>Hattingen</option><option>Schwerte</option><option>Dortmund</option><option>Hagen</option><option>Iserlohn</option><option>Unna</option><option>Bochum</option><option>Witten</option><option>Lünen</option><option>Herne</option><option>Castrop-Rauxel</option><option>Kamen</option><option>Bergkamen</option><option>Fröndenberg</option><option>Holzwickede</option><option>Schwelm</option><option>Gevelsberg</option><option>Ennepetal</option><option>Sprockhövel</option><option>Wetter (Ruhr)</option>
                   </select>
                 </div>
@@ -2267,14 +2267,19 @@ function renderPrintList() {
     updatePrintCount();
     return;
   }
+  // Ohne Straße (kein Komma in der Adresse) → nicht druckbar, Postbote braucht Straße!
+  const hasStreet = a => !!a && a.includes(',');
   tb.innerHTML = list.map(p => {
     const sent = !!p.print_sent_at;
+    const noStreet = !hasStreet(p.address);
+    if (noStreet) printSel.delete(p.id);
+    const dis = sent || noStreet;
     return `
-    <tr class="hover:bg-ink-50 ${sent ? 'opacity-50' : ''}">
-      <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${printSel.has(p.id) ? 'checked' : ''} ${sent ? 'disabled' : ''} onchange="togglePrint('${p.id}', this.checked)"></td>
+    <tr class="hover:bg-ink-50 ${dis ? 'opacity-50' : ''}">
+      <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${printSel.has(p.id) ? 'checked' : ''} ${dis ? 'disabled' : ''} onchange="togglePrint('${p.id}', this.checked)"></td>
       <td class="px-4 py-3 font-bold text-ink-900">${mktEscape(p.company_name)}</td>
-      <td class="px-4 py-3 text-ink-500 text-xs">${mktEscape(p.address || '—')}</td>
-      <td class="px-4 py-3"><span class="${sent ? 'text-ink-500 bg-ink-100' : 'text-brand-700 bg-brand-50'} text-xs font-bold px-2 py-1 rounded-full">${sent ? 'versendet' : 'neu'}</span></td>
+      <td class="px-4 py-3 text-ink-500 text-xs">${mktEscape(p.address || '—')}${noStreet ? ' <span class="text-red-600 font-bold" title="Straße fehlt — Nachscrapen nötig">⚠️ Straße fehlt</span>' : ''}</td>
+      <td class="px-4 py-3"><span class="${sent ? 'text-ink-500 bg-ink-100' : noStreet ? 'text-red-700 bg-red-50' : 'text-brand-700 bg-brand-50'} text-xs font-bold px-2 py-1 rounded-full">${sent ? 'versendet' : noStreet ? 'unvollständig' : 'neu'}</span></td>
     </tr>`;
   }).join('');
   updatePrintCount();
@@ -2290,17 +2295,26 @@ function toggleAllPrint() {
   list.forEach(p => { if (all) printSel.delete(p.id); else printSel.add(p.id); });
   renderPrintList();
 }
+// NUR Empfänger aus dem AKTUELLEN Filter zählen — stale IDs aus anderen Filtern ignorieren!
+function currentPrintSel() {
+  const inFilter = new Set(printFiltered().map(p => p.id));
+  return [...printSel].filter(id => inFilter.has(id) && !prospects.find(x => x.id === id)?.print_sent_at);
+}
+function printFilterChanged() {
+  // Stale Selektionen (anderes Gewerk/andere Stadt) sofort verwerfen
+  const inFilter = new Set(printFiltered().map(p => p.id));
+  [...printSel].forEach(id => { if (!inFilter.has(id)) printSel.delete(id); });
+  renderPrintList();
+}
 function updatePrintCount() {
-  const n = [...printSel].filter(id => {
-    const p = prospects.find(x => x.id === id);
-    return p && !p.print_sent_at;
-  }).length;
+  const n = currentPrintSel().length;
   const c1 = document.getElementById('pSelCount'); if (c1) c1.textContent = n;
   const c2 = document.getElementById('pSendCount'); if (c2) c2.textContent = n;
+  return n;
 }
 
 async function buildProspects() {
-  const ids = [...printSel].filter(id => {
+  const ids = currentPrintSel().filter(id => {
     const p = prospects.find(x => x.id === id);
     return p && p.address && !p.print_sent_at;
   });

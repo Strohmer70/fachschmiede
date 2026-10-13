@@ -90,7 +90,10 @@ export async function POST(request: Request) {
       .in('id', ids)
     if (error) throw error
 
-    const withAddr = (contacts || []).filter((c: any) => c.address)
+    // Posttauglich = Adresse MIT Straße (Komma-Separator) UND 5-stellige PLZ
+    const isMailable = (c: any) =>
+      !!c.address && c.address.includes(',') && /\b\d{5}\b/.test(c.address)
+    const withAddr = (contacts || []).filter(isMailable)
     const skippedNoAddress = (contacts || []).length - withAddr.length
 
     const letters = []
