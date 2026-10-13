@@ -1974,11 +1974,11 @@ async function startScrape() {
     const pct = document.getElementById('scrapePct'); if (pct) pct.textContent = '75 %';
   }
   try {
-    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&limit=8`);
+    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&enrich=1`);
     const bar = document.getElementById('scrapeBar'); if (bar) bar.style.width = '100%';
     const pct = document.getElementById('scrapePct'); if (pct) pct.textContent = '100 %';
     if (data.warning) showToast('⚠️ ' + data.warning);
-    else showToast(`✅ Scrape fertig: ${data.inserted} neu · ${data.skipped} übersprungen (bekannt/keine Daten)`);
+    else showToast(`✅ ${data.inserted} neue Betriebe (OSM) · ${data.skipped} übersprungen` + (data.enrich ? ` · ${data.enrich.enriched} Adressen nachgepflegt` : ''));
     await loadContacts();
   } catch (e) {
     showToast('❌ Scrape fehlgeschlagen: ' + e.message);
@@ -2223,7 +2223,7 @@ async function startPrintScrape() {
   document.getElementById('pBar').style.width = '75%';
   document.getElementById('pPct').textContent = '75 %';
   try {
-    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&limit=8`);
+    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&enrich=1`);
     document.getElementById('pBar').style.width = '100%';
     document.getElementById('pPct').textContent = '100 %';
     if (data.warning) showToast('⚠️ ' + data.warning);

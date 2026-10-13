@@ -19,7 +19,19 @@ const TRADE_LABELS: Record<string, string> = {
 }
 
 // muss zu app/sitemap.ts CITIES + public/stadt-*.html-Slugs passen!
-function slugifyCity(name: string): string {
+// Stadt-Slug aus der System-Config (SSOT) — z. B. "Spandau" → berlin-spandau!
+let citiesCache: { name: string; slug: string }[] | null = null
+async function resolveCitySlug(name: string): Promise<string> {
+  if (!citiesCache) {
+    try {
+      const mod = await import('@/config/system-config.js')
+      citiesCache = mod.getAllCities() as { name: string; slug: string }[]
+    } catch {
+      citiesCache = []
+    }
+  }
+  const hit = citiesCache.find((c) => c.name.toLowerCase() === name.toLowerCase())
+  if (hit?.slug) return hit.slug
   return name
     .toLowerCase()
     .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
@@ -28,9 +40,9 @@ function slugifyCity(name: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-function buildMail(company: string, trade: string, city: string) {
+
+function buildMail(company: string, trade: string, city: string, citySlug: string) {
   const tradeLabel = TRADE_LABELS[trade] || trade
-  const citySlug = slugifyCity(city)
   const url = `https://www.fachschmiede.de/${trade}/${citySlug}/`
   const subject = `${city}: Ihre ${tradeLabel}-Website ist noch frei`
   const body = `Guten Tag,
@@ -87,7 +99,7 @@ export async function POST(request: Request) {
     const drafts = []
     for (const c of contacts) {
       if (c.sent_at) continue // bereits versendet → nie doppelt mailen!
-      const mail = buildMail(c.company_name, c.trade, c.city)
+      const mail = buildMail(c.company_name, c.trade, c.city, await resolveCitySlug(c.city))
       const { error: upErr } = await supabaseAdmin
         .from('marketing_contacts')
         .update({ mail_subject: mail.subject, mail_body: mail.body, status: 'draft' })

@@ -5,10 +5,13 @@ import { checkAdminAuth } from '@/lib/admin-auth'
 export const maxDuration = 60
 
 // ─── GET /api/admin/marketing/scrape/ ───────────────────────────
-// ECHTER Server-Scraper: DuckDuckGo-Suche → Website → Impressum →
-// E-Mail, Telefon, Adresse extrahieren → in marketing_contacts speichern.
-// Nur öffentliche Geschäftsdaten (Impressum/Verzeichnisse), B2B.
-// Query: ?gewerk=dachdecker&stadt=Hattingen&limit=8
+// ECHTER Server-Scraper, zwei Modi:
+//  1) OSM (OpenStreetMap Overpass): Betriebe mit craft=*-Tag in der Stadt —
+//     liefert oft Name + Telefon + E-Mail + LADUNGSFÄHIGE ADRESSE (ideal für Print).
+//  2) enrich=1: Bestehende Kontakte ohne Adresse → Website + Impressum crawlen
+//     und Adresse/E-Mail/Telefon nachpflegen.
+// Nur öffentliche Geschäftsdaten (B2B). Daten: © OpenStreetMap-Mitwirkende (ODbL).
+// Query: ?gewerk=dachdecker&stadt=Hattingen&enrich=1
 
 const TRADE_LABELS: Record<string, string> = {
   dachdecker: 'Dachdecker',
@@ -16,28 +19,98 @@ const TRADE_LABELS: Record<string, string> = {
   klempner: 'Klempner',
   maler: 'Maler',
   zimmerer: 'Zimmerer',
-  'garten-und-landschaftsbau': 'Gartenbau',
+  'garten-und-landschaftsbau': 'Garten- und Landschaftsbau',
 }
 
-// Verzeichnisse/Portale — keine echten Betriebe
+// craft-Tags je Gewerk (OSM-Tagging)
+const CRAFT_TAGS: Record<string, string> = {
+  dachdecker: 'roofer',
+  elektriker: 'electrician',
+  klempner: 'plumber',
+  maler: 'painter',
+  zimmerer: 'carpenter',
+  'garten-und-landschaftsbau': 'gardener',
+}
+
+// Verzeichnisse/Portale — beim Enrich-Crawl ignoreren
 const BLOCKLIST = [
   'werkenntdenbesten', 'trustlocal', 'yelp', 'gelbeseiten', 'dasoertliche',
   'suchehandwerker', 'ziegelruf', '11880', 'golocal', 'kennstdueinen',
-  'anwalt.de', 'branchenbuch', 'wlw', 'provenexpert', 'facebook', 'instagram',
-  'wikipedia', 'youtube', 'google.', 'bing.', 'amazon', 'ebay',
-  'immobilienscout', 'gelbeseiten.de', 'companybook', 'northdata',
-  'webwiki', 'dastelefonbuch', 'goyellow', 'mein-prospekt', 'focus.de',
-  'handelsregister', 'firmenwissen', 'kompass', 'aboutyou',
+  'provenexpert', 'facebook', 'instagram', 'wikipedia', 'youtube',
+  'google.', 'bing.', 'amazon', 'ebay', 'northdata', 'firmenwissen',
+  'webwiki', 'dastelefonbuch', 'goyellow',
 ]
 
-const UA =
+const UA = 'fachschmiede-admin-scraper/1.0 (contact: hello@fachschmiede.de)'
+const FETCH_UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
 
-function isBlocked(url: string): boolean {
-  const u = url.toLowerCase()
-  return BLOCKLIST.some(b => u.includes(b))
+const OVERPASS_ENDPOINTS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+]
+
+async function overpassQuery(query: string): Promise<any[] | null> {
+  for (const ep of OVERPASS_ENDPOINTS) {
+    try {
+      const ctrl = new AbortController()
+      const t = setTimeout(() => ctrl.abort(), 40000)
+      const res = await fetch(ep, {
+        method: 'POST',
+        signal: ctrl.signal,
+        headers: { 'User-Agent': UA, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(query),
+      })
+      clearTimeout(t)
+      if (!res.ok) continue
+      const data = await res.json()
+      return data.elements || []
+    } catch {
+      continue // nächster Mirror
+    }
+  }
+  return null
 }
 
+function osmAddr(t: Record<string, string>): string | null {
+  const street = [t['addr:street'], t['addr:housenumber']].filter(Boolean).join(' ')
+  const city = t['addr:city'] || t['addr:suburb'] || t['addr:place'] || ''
+  const plz = t['addr:postcode'] || ''
+  const parts = [street, [plz, city].filter(Boolean).join(' ')].filter(Boolean)
+  return parts.length ? parts.join(', ') : null
+}
+
+async function osmScrape(gewerk: string, stadt: string): Promise<{ rows: any[]; error?: string }> {
+  const craft = CRAFT_TAGS[gewerk]
+  if (!craft) return { rows: [], error: 'Unbekanntes Gewerk' }
+
+  const query = `[out:json][timeout:35];area["name"="${stadt.replace(/"/g, '')}"]->.a;(node["craft"="${craft}"](area.a);way["craft"="${craft}"](area.a););out center 25;`
+  const elements = await overpassQuery(query)
+  if (!elements) {
+    return { rows: [], error: 'Overpass (OSM) nicht erreichbar — bitte in 1–2 Minuten erneut versuchen.' }
+  }
+
+  const rows = elements
+    .map((e: any) => {
+      const t = e.tags || {}
+      if (!t.name) return null
+      return {
+        company_name: String(t.name).slice(0, 120),
+        trade: gewerk,
+        city: stadt,
+        email: t.email || t['contact:email'] || null,
+        phone: t.phone || t['contact:phone'] || null,
+        website: t.website || t['contact:website'] || t.url || null,
+        address: osmAddr(t),
+        source: 'OpenStreetMap (ODbL)',
+      }
+    })
+    .filter(Boolean)
+  return { rows }
+}
+
+// ── Enrich: Website + Impressum von bestehenden Kontakten crawlen ──
 async function fetchWithTimeout(url: string, ms = 8000): Promise<string | null> {
   try {
     const ctrl = new AbortController()
@@ -45,7 +118,7 @@ async function fetchWithTimeout(url: string, ms = 8000): Promise<string | null> 
     const res = await fetch(url, {
       signal: ctrl.signal,
       redirect: 'follow',
-      headers: { 'User-Agent': UA, 'Accept-Language': 'de-DE,de;q=0.9' },
+      headers: { 'User-Agent': FETCH_UA, 'Accept-Language': 'de-DE,de;q=0.9' },
     })
     clearTimeout(t)
     if (!res.ok) return null
@@ -55,25 +128,6 @@ async function fetchWithTimeout(url: string, ms = 8000): Promise<string | null> 
   } catch {
     return null
   }
-}
-
-async function ddgSearch(query: string, limit: number): Promise<string[]> {
-  const html = await fetchWithTimeout(
-    'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query),
-    10000
-  )
-  if (!html) return []
-  const urls: string[] = []
-  // DDG wrapped links: //duckduckgo.com/l/?uddg=<encoded>
-  const re = /uddg=([^&"']+)/g
-  let m
-  while ((m = re.exec(html)) && urls.length < limit + 4) {
-    try {
-      const u = decodeURIComponent(m[1])
-      if (u.startsWith('http') && !isBlocked(u)) urls.push(u)
-    } catch { /* skip */ }
-  }
-  return urls
 }
 
 function extractEmails(html: string): string[] {
@@ -100,7 +154,6 @@ function extractPhone(html: string): string | null {
 }
 
 function extractAddress(html: string): string | null {
-  // Straße + Hausnr.
   const streetRe = /((?:[A-ZÄÖÜ][\wÄÖÜäöüß.-]+\s+){1,3}(?:Straße|Strasse|Str\.|weg|Weg|gasse|Gasse|platz|Platz|ring|Ring|allee|Allee|damm|Damm|pfad|Pfad|steig|Steig|chaussee|Chaussee|markt|Markt)\s*\d+\s*(?:[-/]\s*\d+)?)/m
   const plzRe = /\b(\d{5})\s+([A-ZÄÖÜ][\wÄÖÜäöüß-]+(?:\s+[A-ZÄÖÜ][\wÄÖÜäöüß-]+)?)/
   const s = html.match(streetRe)
@@ -110,38 +163,58 @@ function extractAddress(html: string): string | null {
   return null
 }
 
-function extractCompany(html: string, fallback: string): string {
-  const og = html.match(/og:site_name" content="([^"]+)"/i) || html.match(/<title[^>]*>([^<]+)</i)
-  if (og) {
-    let name = og[1].replace(/[|–—-].*$/, '').replace(/\s+(GmbH|e\.?\s?K\.?|KG|OHG|GbR)\.?\s*$/i, '$1').trim()
-    if (name.length >= 3 && name.length <= 60) return name
-  }
-  return fallback
-}
+async function enrichContacts(gewerk: string, stadt: string): Promise<{ enriched: number; failed: number }> {
+  const { data: targets } = await supabaseAdmin
+    .from('marketing_contacts')
+    .select('id, website, email')
+    .eq('trade', gewerk)
+    .eq('city', stadt)
+    .is('address', null)
+    .not('website', 'is', null)
+    .limit(9)
 
-async function crawlSite(url: string): Promise<{
-  email: string | null; phone: string | null; address: string | null; company: string
-} | null> {
-  const home = await fetchWithTimeout(url)
-  if (!home) return null
+  const list = (targets || []).filter((c: any) => !BLOCKLIST.some(b => (c.website || '').includes(b)))
+  if (!list.length) return { enriched: 0, failed: 0 }
 
-  // Impressum-Link finden
-  let impUrl: string | null = null
-  const linkRe = /href="([^"]*impressum[^"]*)"/i
-  const lm = home.match(linkRe)
-  if (lm) {
-    try { impUrl = new URL(lm[1], url).href } catch { impUrl = null }
-  }
-  const imp = (impUrl && (await fetchWithTimeout(impUrl))) || (await fetchWithTimeout(new URL('/impressum', url).href))
+  let enriched = 0
+  let failed = 0
+  const queue = [...list]
+  const worker = async (): Promise<void> => {
+    while (queue.length) {
+      const c = queue.shift()!
+      try {
+        const home = await fetchWithTimeout(c.website)
+        if (!home) { failed++; continue }
+        let imp: string | null = null
+        const lm = home.match(/href="([^"]*impressum[^"]*)"/i)
+        if (lm) {
+          try { imp = await fetchWithTimeout(new URL(lm[1], c.website).href) } catch { imp = null }
+        }
+        if (!imp) imp = await fetchWithTimeout(new URL('/impressum', c.website).href)
+        const text = ((imp || '') + '\n' + home).slice(0, 300000)
 
-  const text = ((imp || '') + '\n' + home).slice(0, 400000)
-  const emails = extractEmails(text)
-  return {
-    email: emails[0] || null,
-    phone: extractPhone(text),
-    address: extractAddress(text),
-    company: extractCompany(home, new URL(url).hostname.replace(/^www\./, '')),
+        const patch: any = {}
+        const addr = extractAddress(text)
+        if (addr) patch.address = addr
+        if (!c.email) {
+          const em = extractEmails(text)
+          if (em[0]) patch.email = em[0]
+        }
+        if (!patch.address && !patch.email) { failed++; continue }
+        if (!patch.email) {
+          const ph = extractPhone(text)
+          if (ph) patch.phone = ph
+        }
+        const { error } = await supabaseAdmin.from('marketing_contacts').update(patch).eq('id', c.id)
+        if (!error) enriched++
+        else failed++
+      } catch {
+        failed++
+      }
+    }
   }
+  await Promise.all([worker(), worker(), worker()])
+  return { enriched, failed }
 }
 
 export async function GET(request: Request) {
@@ -152,75 +225,65 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const gewerk = searchParams.get('gewerk') || 'dachdecker'
     const stadt = searchParams.get('stadt') || 'Hattingen'
-    const limit = Math.min(parseInt(searchParams.get('limit') || '8', 10) || 8, 12)
+    const doEnrich = searchParams.get('enrich') === '1'
 
     if (!TRADE_LABELS[gewerk]) {
       return NextResponse.json({ error: 'Unbekanntes Gewerk' }, { status: 400 })
     }
 
-    const tradeLabel = TRADE_LABELS[gewerk]
-    const urls = await ddgSearch(`${tradeLabel} ${stadt}`, limit)
-    if (!urls.length) {
-      return NextResponse.json({
-        success: true, found: 0, inserted: 0, skipped: 0, contacts: [],
-        warning: 'Suchmaschine hat nichts geliefert (Rate-Limit?). Bitte in 1–2 Minuten erneut versuchen.',
-      })
-    }
-
-    // bereits bekannte Websites überspringen
-    const { data: known } = await supabaseAdmin
-      .from('marketing_contacts')
-      .select('website')
-      .eq('trade', gewerk)
-      .eq('city', stadt)
-    const knownSites = new Set((known || []).map((k: any) => (k.website || '').replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')))
-
-    const results: any[] = []
-    let inserted = 0, skipped = 0
-
-    // mit Konkurrenz 3 crawlen
-    const queue = [...urls]
-    const worker = async (): Promise<void> => {
-      while (queue.length) {
-        const url = queue.shift()!
-        const norm = url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
-        if (knownSites.has(norm)) { skipped++; continue }
-        const data = await crawlSite(url)
-        if (!data || (!data.email && !data.address)) { skipped++; continue }
-        // Doppel-Schutz: gleiche E-Mail schon vorhanden?
-        if (data.email) {
-          const { data: dupe } = await supabaseAdmin
-            .from('marketing_contacts')
-            .select('id')
-            .eq('email', data.email)
-            .eq('trade', gewerk)
-            .limit(1)
-          if (dupe?.length) { skipped++; continue }
-        }
-        const { data: row, error } = await supabaseAdmin
+    // ── 1) OSM-Scrape ──
+    const osm = await osmScrape(gewerk, stadt)
+    let inserted = 0
+    let skipped = 0
+    const contacts: any[] = []
+    for (const row of osm.rows) {
+      // Dedupe: gleiche E-Mail ODER gleiche Firma+Stadt schon vorhanden?
+      if (row.email) {
+        const { data: dupe } = await supabaseAdmin
           .from('marketing_contacts')
-          .insert({
-            company_name: data.company,
-            trade: gewerk,
-            city: stadt,
-            email: data.email,
-            website: url,
-            phone: data.phone,
-            address: data.address,
-            source: 'Admin-Scraper',
-            status: 'neu',
-          })
-          .select()
-          .single()
-        if (error) { skipped++; continue }
-        inserted++
-        knownSites.add(norm)
-        results.push(row)
+          .select('id')
+          .eq('email', row.email)
+          .eq('trade', gewerk)
+          .limit(1)
+        if (dupe?.length) { skipped++; continue }
       }
-    }
-    await Promise.all([worker(), worker(), worker()])
+      const { data: dupe2 } = await supabaseAdmin
+        .from('marketing_contacts')
+        .select('id')
+        .eq('company_name', row.company_name)
+        .eq('city', stadt)
+        .eq('trade', gewerk)
+        .limit(1)
+      if (dupe2?.length) { skipped++; continue }
 
-    return NextResponse.json({ success: true, found: results.length + skipped, inserted, skipped, contacts: results })
+      const { data: newRow, error } = await supabaseAdmin
+        .from('marketing_contacts')
+        .insert({ ...row, status: 'neu' })
+        .select()
+        .single()
+      if (error) { skipped++; continue }
+      inserted++
+      contacts.push(newRow)
+    }
+
+    // ── 2) Enrich (Adressen nachpflegen) ──
+    let enrichResult = { enriched: 0, failed: 0 }
+    if (doEnrich) {
+      enrichResult = await enrichContacts(gewerk, stadt)
+    }
+
+    return NextResponse.json({
+      success: true,
+      source: 'OpenStreetMap (© OSM-Mitwirkende, ODbL)',
+      found: osm.rows.length,
+      inserted,
+      skipped,
+      enrich: doEnrich ? enrichResult : undefined,
+      warning: osm.error || (osm.rows.length === 0
+        ? 'OSM hat für diese Kombination nichts geliefert (Abdeckung ist lückenhaft). Mit "Adressen nachpflegen" bestehende Kontakte anreichern.'
+        : undefined),
+      contacts,
+    })
   } catch (error: any) {
     console.error('Marketing scrape error:', error)
     return NextResponse.json({ error: error.message || 'Internal error' }, { status: 500 })

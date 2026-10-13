@@ -18,7 +18,19 @@ const TRADE_LABELS: Record<string, string> = {
   'garten-und-landschaftsbau': 'Garten- und Landschaftsbau',
 }
 
-function slugifyCity(name: string): string {
+// Stadt-Slug aus der System-Config (SSOT) — berlin-spandau statt "spandau"!
+let citiesCache: { name: string; slug: string }[] | null = null
+async function resolveCitySlug(name: string): Promise<string> {
+  if (!citiesCache) {
+    try {
+      const mod = await import('@/config/system-config.js')
+      citiesCache = mod.getAllCities() as { name: string; slug: string }[]
+    } catch {
+      citiesCache = []
+    }
+  }
+  const hit = citiesCache.find((c) => c.name.toLowerCase() === name.toLowerCase())
+  if (hit?.slug) return hit.slug
   return name
     .toLowerCase()
     .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
@@ -26,6 +38,7 @@ function slugifyCity(name: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 }
+
 
 const esc = (s: string) =>
   String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -48,9 +61,10 @@ export async function POST(request: Request) {
     const withAddr = (contacts || []).filter((c: any) => c.address)
     const skippedNoAddress = (contacts || []).length - withAddr.length
 
-    const letters = withAddr.map((c: any) => {
+    const letters = []
+    for (const c of withAddr) {
       const tradeLabel = TRADE_LABELS[c.trade] || c.trade
-      const url = `https://www.fachschmiede.de/${c.trade}/${slugifyCity(c.city)}/`
+      const url = `https://www.fachschmiede.de/${c.trade}/${await resolveCitySlug(c.city)}/`
       const subject = `Ihre ${tradeLabel}-Website für ${c.city} – noch frei`
       const text = `Sehr geehrte Damen und Herren,
 
@@ -79,8 +93,8 @@ PS: Dieser Brief erreicht ${c.company_name}, weil Ihr Betrieb in
 ${c.city} öffentlich gelistet ist. Kein Verteiler. Wenn Sie keine
 Werbung mehr wünschen, genügt ein kurzer Hinweis – wir streichen
 Sie sofort und dauerhaft.`
-      return { id: c.id, to: c.company_name, address: c.address, subject, body: text, url, trade: c.trade, city: c.city }
-    })
+      letters.push({ id: c.id, to: c.company_name, address: c.address, subject, body: text, url, trade: c.trade, city: c.city })
+    }
 
     const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
     const pages = letters.map((L: any) => {
