@@ -1860,12 +1860,12 @@ async function mktApi(path, opts = {}) {
 
 async function loadMarketingData() {
   try {
-    const stats = await mktApi('/stats');
+    const stats = await mktApi('/stats/');
     document.getElementById('kpiScraped').textContent = (stats.totalContacts || 0).toLocaleString('de-DE');
     document.getElementById('kpiSent').textContent = (stats.contacted || 0).toLocaleString('de-DE');
     document.getElementById('kpiReplied').textContent = (stats.replied || 0).toLocaleString('de-DE');
     updateQuotaBadge(stats.sentToday || 0);
-    const camp = await mktApi('/campaigns');
+    const camp = await mktApi('/campaigns/');
     renderCampaignHistory(camp.campaigns || []);
     await loadContacts();
   } catch (e) {
@@ -1880,7 +1880,7 @@ function updateQuotaBadge(sentToday) {
 }
 
 async function loadContacts() {
-  const data = await mktApi('/contacts');
+  const data = await mktApi('/contacts/');
   prospects = (data.contacts || []).map(c => ({ ...c, sel: c.status === 'neu' }));
   renderProspects();
   const neu = prospects.filter(p => p.status === 'neu').length;
@@ -1954,7 +1954,7 @@ async function generateMails(regen) {
   const btn = document.getElementById('genBtn');
   btn.disabled = true; btn.textContent = '⏳ Generiere …';
   try {
-    const data = await mktApi('/generate', { method: 'POST', body: JSON.stringify({ ids: sel.map(p => p.id) }) });
+    const data = await mktApi('/generate/', { method: 'POST', body: JSON.stringify({ ids: sel.map(p => p.id) }) });
     drafts = data.drafts || [];
     if (!drafts.length) { showToast('Nichts zu generieren — alle ausgewählten Kontakte wurden schon mailiert.'); return; }
     renderDrafts();
@@ -2002,7 +2002,7 @@ async function sendCampaign(btn) {
   btn.disabled = true;
   btn.textContent = '⏳ Versand läuft …';
   try {
-    const data = await mktApi('/send', { method: 'POST', body: JSON.stringify({ drafts: payload }) });
+    const data = await mktApi('/send/', { method: 'POST', body: JSON.stringify({ drafts: payload }) });
     let ok = 0, fail = 0;
     (data.results || []).forEach(r => {
       const idx = drafts.findIndex(d => d.id === r.id);
@@ -2019,7 +2019,7 @@ async function sendCampaign(btn) {
       showToast(`📤 ${ok} Mails versendet${fail ? ' · ' + fail + ' fehlgeschlagen' : ''}`);
     }
     await loadContacts();
-    const camp = await mktApi('/campaigns');
+    const camp = await mktApi('/campaigns/');
     renderCampaignHistory(camp.campaigns || []);
     if (data.skippedByLimit === 0) {
       document.getElementById('mailSection').classList.add('hidden');
