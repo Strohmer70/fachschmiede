@@ -8,7 +8,7 @@ export const maxDuration = 60
 // POST /api/admin/marketing/recover-emails/
 // Findet fehlende E-Mails: crawlt Homepage + /impressum + /kontakt
 // von Kontakten MIT Website aber OHNE E-Mail, extrahiert Adressen.
-// Batched (max 25/Call) wegen 60 s Serverless-Limit.
+// Batched wegen 60 s Serverless-Limit; Pfade pro Betrieb PARALLEL.
 // ═══════════════════════════════════════════════════════════════
 
 const JUNK = /(\.png|\.jpe?g|\.gif|\.webp|\.svg|@2x|@3x|example\.com|sentry|wixpress|@wix|fonts\.|unsplash|placeholder|no-?reply@|noreply@)/i
@@ -16,7 +16,7 @@ const JUNK = /(\.png|\.jpe?g|\.gif|\.webp|\.svg|@2x|@3x|example\.com|sentry|wixp
 function extractEmails(html: string): string[] {
   const found = new Set<string>()
   // mailto: Links (%40-codiert)
-  Array.from(html.matchAll(/mailto:([^"'>\s?&]+)/gi)).forEach(m => {
+  Array.from(html.matchAll(/mailto:([^"' >\s?&]+)/gi)).forEach(m => {
     const decoded = decodeURIComponent(m[1]).replace(/^(mailto:)/i, '')
     if (decoded.includes('@')) found.add(decoded.toLowerCase().trim())
   })
@@ -27,26 +27,33 @@ function extractEmails(html: string): string[] {
   return Array.from(found).filter(e => !JUNK.test(e) && e.length < 80 && /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(e))
 }
 
+async function fetchPage(url: string): Promise<string> {
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), 7000)
+    const res = await fetch(url, {
+      signal: ctrl.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      redirect: 'follow',
+    })
+    clearTimeout(t)
+    if (!res.ok) return ''
+    return await res.text()
+  } catch {
+    return ''
+  }
+}
+
 async function crawlEmails(url: string): Promise<string[]> {
   const base = url.replace(/\/$/, '')
   const paths = ['', '/impressum', '/impressum.html', '/kontakt', '/kontakt.html']
-  for (const p of paths) {
-    try {
-      const ctrl = new AbortController()
-      const t = setTimeout(() => ctrl.abort(), 7000)
-      const res = await fetch(base + p, {
-        signal: ctrl.signal,
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
-        redirect: 'follow',
-      })
-      clearTimeout(t)
-      if (!res.ok) continue
-      const html = await res.text()
-      const emails = extractEmails(html)
-      if (emails.length) return emails
-    } catch {
-      continue
-    }
+  // ALLE Pfade PARALLEL — langsame Seite kostet max 7 s, nicht 5×7 s
+  const htmls = await Promise.all(paths.map(p => fetchPage(base + p)))
+  // Priorität: Homepage > Impressum > Kontakt
+  for (const html of htmls) {
+    if (!html) continue
+    const emails = extractEmails(html)
+    if (emails.length) return emails
   }
   return []
 }
@@ -57,9 +64,8 @@ export async function POST(request: Request) {
   }
   try {
     const body = await request.json().catch(() => ({}))
-    const limit = Math.min(Number(body?.limit) || 12, 15)
+    const limit = Math.min(Number(body?.limit) || 15, 20)
 
-    // Kontakte mit Website aber ohne E-Mail
     const { data: contacts, error } = await supabaseAdmin
       .from('marketing_contacts')
       .select('id, company_name, website')
@@ -75,7 +81,7 @@ export async function POST(request: Request) {
     const start = Date.now()
     const results: { company: string; email: string | null }[] = []
     for (const c of contacts) {
-      // Serverless-Hardlimit 60 s → vor 48 s sauber aufhören (partielle Ergebnisse bleiben gespeichert)
+      // Serverless-Hardlimit 60 s → vor 48 s sauber aufhören (Teilergebnisse bleiben gespeichert)
       if (Date.now() - start > 48000) {
         results.push({ company: c.company_name, email: null })
         continue
