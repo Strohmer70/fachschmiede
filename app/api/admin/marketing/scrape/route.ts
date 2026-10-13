@@ -55,7 +55,7 @@ async function overpassQuery(query: string): Promise<any[] | null> {
   for (const ep of OVERPASS_ENDPOINTS) {
     try {
       const ctrl = new AbortController()
-      const t = setTimeout(() => ctrl.abort(), 40000)
+      const t = setTimeout(() => ctrl.abort(), 14000)
       const res = await fetch(ep, {
         method: 'POST',
         signal: ctrl.signal,
@@ -111,7 +111,7 @@ async function osmScrape(gewerk: string, stadt: string): Promise<{ rows: any[]; 
 }
 
 // ── Enrich: Website + Impressum von bestehenden Kontakten crawlen ──
-async function fetchWithTimeout(url: string, ms = 8000): Promise<string | null> {
+async function fetchWithTimeout(url: string, ms = 6000): Promise<string | null> {
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), ms)
@@ -171,7 +171,7 @@ async function enrichContacts(gewerk: string, stadt: string): Promise<{ enriched
     .eq('city', stadt)
     .is('address', null)
     .not('website', 'is', null)
-    .limit(9)
+    .limit(6)
 
   const list = (targets || []).filter((c: any) => !BLOCKLIST.some(b => (c.website || '').includes(b)))
   if (!list.length) return { enriched: 0, failed: 0 }
@@ -183,7 +183,7 @@ async function enrichContacts(gewerk: string, stadt: string): Promise<{ enriched
     while (queue.length) {
       const c = queue.shift()!
       try {
-        const home = await fetchWithTimeout(c.website)
+        const home = await fetchWithTimeout(c.website, 5000)
         if (!home) { failed++; continue }
         let imp: string | null = null
         const lm = home.match(/href="([^"]*impressum[^"]*)"/i)
@@ -266,7 +266,7 @@ export async function GET(request: Request) {
       contacts.push(newRow)
     }
 
-    // ── 2) Enrich (Adressen nachpflegen) ──
+    // ── 2) Enrich (Adressen nachpflegen) — nur wenn Budget übrig (Vercel 60s) ──
     let enrichResult = { enriched: 0, failed: 0 }
     if (doEnrich) {
       enrichResult = await enrichContacts(gewerk, stadt)
