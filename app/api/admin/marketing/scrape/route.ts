@@ -356,7 +356,7 @@ export async function GET(request: Request) {
         .insert({ ...row, status: 'neu' })
         .select()
         .single()
-      if (error) { skipped++; continue }
+      if (error) { console.error('INSERT-Fehler:', error.message, JSON.stringify(row).slice(0, 120)); skipped++; continue }
       inserted++
       contacts.push(newRow)
     }
