@@ -158,9 +158,9 @@ const SYSTEM_CONFIG = {
       icon: "🌳",
       color: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#166534',900:'#14532d' },
       images: {
-        hero: 'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=1920&q=80',
-        team: 'https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=800&q=80',
-        project: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&q=80',
+        hero: '/images/hero-garten.jpg',
+        team: '/images/team-garten.jpg',
+        project: '/images/web-garten-2.png',
       },
       services: ['Gartengestaltung', 'Rasenanlage', 'Heckenschnitt', 'Baumpflege', 'Gartenpflege', 'Terrassenbau'],
       keywords: ['Garten', 'Rasen', 'Hecke', 'Baum', 'Terrasse'],

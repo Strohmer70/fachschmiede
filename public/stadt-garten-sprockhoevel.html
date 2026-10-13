@@ -996,11 +996,11 @@ async function applyRental(retry){
       if(hs){var lg=document.createElement('img');lg.src=d.logo_url;lg.alt='Logo '+ (d.company||'');lg.style.cssText='height:2.25rem;width:auto;max-width:10rem;object-fit:contain';hs.replaceWith(lg);}
     }
     if(d.hero_url){
-      var hi=document.querySelector('img[src$="/images/hero.jpg"]');
+      var hi=document.querySelector('img[src$="/images/hero-garten.jpg"]');
       if(hi)hi.src=d.hero_url;
     }
     if(d.team_url){
-      var ti=document.querySelector('#ueber-uns img[src$="/images/team.jpg"]');
+      var ti=document.querySelector('#ueber-uns img[src$="/images/team-garten.jpg"]');
       if(ti)ti.src=d.team_url;
     }
     if(d.gallery_urls&&d.gallery_urls.length){
