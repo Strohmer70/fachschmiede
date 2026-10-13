@@ -57,7 +57,7 @@ export async function POST(request: Request) {
   }
   try {
     const body = await request.json().catch(() => ({}))
-    const limit = Math.min(Number(body?.limit) || 25, 40)
+    const limit = Math.min(Number(body?.limit) || 12, 15)
 
     // Kontakte mit Website aber ohne E-Mail
     const { data: contacts, error } = await supabaseAdmin
@@ -72,8 +72,14 @@ export async function POST(request: Request) {
     }
 
     let recovered = 0
+    const start = Date.now()
     const results: { company: string; email: string | null }[] = []
     for (const c of contacts) {
+      // Serverless-Hardlimit 60 s → vor 48 s sauber aufhören (partielle Ergebnisse bleiben gespeichert)
+      if (Date.now() - start > 48000) {
+        results.push({ company: c.company_name, email: null })
+        continue
+      }
       const emails = await crawlEmails(c.website)
       const best = emails[0] || null
       if (best) {
@@ -83,10 +89,12 @@ export async function POST(request: Request) {
       results.push({ company: c.company_name, email: best })
     }
 
+    const timedOut = results.filter(r => r.email === null).length
     return NextResponse.json({
       success: true,
       scanned: contacts.length,
       recovered,
+      skippedSlow: timedOut,
       results,
     })
   } catch (error: any) {
