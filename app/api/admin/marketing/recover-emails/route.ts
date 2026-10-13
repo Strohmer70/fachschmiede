@@ -79,11 +79,13 @@ export async function POST(request: Request) {
 
     let recovered = 0
     const start = Date.now()
-    const results: { company: string; email: string | null }[] = []
+    const results: { company: string; email: string | null; timedOut?: boolean }[] = []
     for (const c of contacts) {
       // Serverless-Hardlimit 60 s → vor 48 s sauber aufhören (Teilergebnisse bleiben gespeichert)
-      if (Date.now() - start > 48000) {
-        results.push({ company: c.company_name, email: null })
+      let timedOutContact = false
+      if (Date.now() - start > 48000) timedOutContact = true
+      if (timedOutContact) {
+        results.push({ company: c.company_name, email: null, timedOut: true })
         continue
       }
       const emails = await crawlEmails(c.website)
@@ -92,10 +94,10 @@ export async function POST(request: Request) {
         await supabaseAdmin.from('marketing_contacts').update({ email: best }).eq('id', c.id)
         recovered++
       }
-      results.push({ company: c.company_name, email: best })
+      results.push({ company: c.company_name, email: best, timedOut: false })
     }
 
-    const timedOut = results.filter(r => r.email === null).length
+    const timedOut = results.filter(r => r.timedOut).length
     return NextResponse.json({
       success: true,
       scanned: contacts.length,
