@@ -964,18 +964,20 @@ tailwind.config = {
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-bold text-ink-800 mb-1.5">Quellen</label>
+                <label class="block text-sm font-bold text-ink-800 mb-1.5">Quelle</label>
                 <div class="flex flex-wrap gap-2">
-                  <span class="toggle-chip on" onclick="this.classList.toggle('on')">Google Maps</span>
-                  <span class="toggle-chip on" onclick="this.classList.toggle('on')">Branchenverzeichnisse</span>
-                  <span class="toggle-chip" onclick="this.classList.toggle('on')">Innungslisten</span>
-                  <span class="toggle-chip" onclick="this.classList.toggle('on')">Handwerkskammer</span>
+                  <span class="toggle-chip on cursor-default">✓ Google Maps / OpenStreetMap + Impressum-Crawl</span>
+                  <span class="toggle-chip cursor-default opacity-50" title="Geplant — noch nicht implementiert">Branchenverzeichnisse · folgt</span>
+                  <span class="toggle-chip cursor-default opacity-50" title="Geplant — noch nicht implementiert">Innungslisten · folgt</span>
+                  <span class="toggle-chip cursor-default opacity-50" title="Geplant — noch nicht implementiert">Handwerkskammer · folgt</span>
                 </div>
               </div>
               <div id="scrapeHint" class="bg-brand-50 border border-brand-200 rounded-xl p-3.5 text-xs text-brand-800 leading-relaxed">
                 💡 Wähle Gewerk und Stadt aus, um öffentlich gelistete Betriebe zu finden. Du brauchst dafür eine <strong>Google Places API</strong>.
               </div>
               <button id="scrapeBtn" onclick="startScrape()" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition">🕷 Scrape starten</button>
+              <button onclick="recoverEmails()" id="recoverBtn" class="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-3 rounded-xl transition">📧 Fehlende E-Mails nachscrapen (<span id="recoverCount">…</span>)</button>
+              <p class="mt-1.5 text-[11px] text-ink-400 leading-relaxed">Crawlt Homepage + Impressum + Kontaktseite aller Betriebe ohne E-Mail — und ergänzt sie automatisch. Mehrfach klickbar, bis alle vollständig sind.</p>
               <div id="scrapeProgress" class="hidden">
                 <div class="flex justify-between text-xs font-bold text-ink-600 mb-1"><span id="scrapeStep">Suche läuft …</span><span id="scrapePct">0 %</span></div>
                 <div class="w-full bg-ink-100 rounded-full h-2"><div id="scrapeBar" class="bg-brand-600 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
@@ -1906,8 +1908,10 @@ async function loadContacts() {
   const neu = prospects.filter(p => p.status === 'neu').length;
   const draft = prospects.filter(p => p.status === 'draft').length;
   const metaEl = document.getElementById('scrapeResultMeta');
+  const noMail = prospects.filter(p => !p.email).length;
   if (metaEl) metaEl.innerHTML =
-    `<strong class="text-ink-800">${prospects.length} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf · ${prospects.filter(p => p.address).length} mit Postadresse`;
+    `<strong class="text-ink-800">${prospects.length} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf · ${prospects.filter(p => p.address).length} mit Postadresse · <span class="text-amber-600 font-bold">${noMail} ohne E-Mail</span>${noMail ? ' → <button onclick="recoverEmails()" class="underline font-bold">nachscrapen</button>' : ''}`;
+  updateRecoverCount();
   if (typeof renderPrintList === 'function') renderPrintList();
 }
 
@@ -1930,11 +1934,14 @@ function renderProspects() {
     const order = { neu: 0, draft: 1, replied: 2, sent: 3, print_sent: 4, stopp: 5 };
     tb.innerHTML = [...list].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9)).map(p => {
       const disabled = p.status === 'sent' || p.status === 'stopp' || p.status === 'print_sent';
+      const noMail = !p.email;
+      if (noMail) p.sel = false;
+      const dis = disabled || noMail;
       return `
-      <tr class="hover:bg-ink-50 ${disabled ? 'opacity-50' : ''}">
-        <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${p.sel && !disabled ? 'checked' : ''} ${disabled ? 'disabled' : ''} onchange="toggleProspect('${p.id}', this.checked)"></td>
+      <tr class="hover:bg-ink-50 ${dis ? 'opacity-50' : ''}">
+        <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${p.sel && !dis ? 'checked' : ''} ${dis ? 'disabled' : ''} onchange="toggleProspect('${p.id}', this.checked)"></td>
         <td class="px-4 py-3 font-bold text-ink-900">${mktEscape(p.company_name)}</td>
-        <td class="px-4 py-3 text-ink-500 font-mono text-xs">${mktEscape(p.email)}</td>
+        <td class="px-4 py-3 text-ink-500 font-mono text-xs">${noMail ? '<span class="text-red-600 font-bold" title="Keine E-Mail im Impressum gefunden — per Button nachscrapen oder nur Print">⚠️ keine E-Mail · nur Print</span>' : mktEscape(p.email)}</td>
         <td class="px-4 py-3 text-ink-500 text-xs">${mktEscape(p.city)}</td>
         <td class="px-4 py-3">${disabled
           ? `<span class="${MK_STATUS_CLASS[p.status] || 'text-ink-500 bg-ink-100'} text-xs font-bold px-2 py-1 rounded-full">${MK_STATUS_LABEL[p.status] || mktEscape(p.status)}</span>`
@@ -1954,13 +1961,13 @@ function toggleProspect(id, val) {
   updateSelCount();
 }
 function toggleAllProspects() {
-  const list = getFilteredProspects().filter(p => !['sent','stopp','print_sent'].includes(p.status));
+  const list = getFilteredProspects().filter(p => !['sent','stopp','print_sent'].includes(p.status) && p.email);
   const allSel = list.length > 0 && list.every(p => p.sel);
   list.forEach(p => p.sel = !allSel);
   renderProspects();
 }
 function updateSelCount() {
-  const n = getFilteredProspects().filter(p => p.sel && !['sent','stopp','print_sent'].includes(p.status)).length;
+  const n = getFilteredProspects().filter(p => p.sel && !['sent','stopp','print_sent'].includes(p.status) && p.email).length;
   document.getElementById('selCount').textContent = n;
 }
 
@@ -2005,9 +2012,36 @@ async function startScrape() {
   }
 }
 
+async function recoverEmails() {
+  const btn = document.getElementById('recoverBtn');
+  btn.disabled = true; btn.textContent = '⏳ Crawle Websites … (bis 60 s)';
+  try {
+    const data = await mktApi('/recover-emails/', { method: 'POST', body: JSON.stringify({ limit: 30 }) });
+    showToast(data.recovered
+      ? `📧 ${data.recovered} von ${data.scanned} E-Mails gefunden & gespeichert!`
+      : `📧 ${data.scanned} Websites geprüt — keine E-Mail gefunden (oder schon alle vollständig).`);
+    await loadContacts();
+  } catch (e) {
+    showToast('❌ Nachscrapen fehlgeschlagen: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📧 Fehlende E-Mails nachscrapen (<span id="recoverCount">…</span>)';
+  }
+}
+
+async function updateRecoverCount() {
+  const data = await mktApi('/contacts/').catch(() => null);
+  if (!data) return;
+  const noMail = (data.contacts || []).filter(c => !c.email).length;
+  const el = document.getElementById('recoverCount');
+  if (el) el.textContent = noMail;
+}
+
 async function generateMails(regen) {
-  const sel = getFilteredProspects().filter(p => p.sel && p.status !== 'sent' && p.status !== 'stopped');
-  if (!sel.length) { showToast('Bitte zuerst Kontakte auswählen (Status „neu" oder „Entwurf").'); return; }
+  const allSel = getFilteredProspects().filter(p => p.sel && p.status !== 'sent' && p.status !== 'stopped');
+  const sel = allSel.filter(p => p.email);
+  const noMail = allSel.filter(p => !p.email).length;
+  if (!sel.length) { showToast(noMail ? `${noMail} ausgewählte Kontakte haben keine E-Mail — erst nachscrapen (Button oben) oder Print nutzen.` : 'Bitte zuerst Kontakte auswählen (Status „neu" oder „Entwurf").'); return; }
   const btn = document.getElementById('genBtn');
   btn.disabled = true; btn.textContent = '⏳ Generiere …';
   try {
@@ -2017,7 +2051,7 @@ async function generateMails(regen) {
     renderDrafts();
     document.getElementById('mailSection').classList.remove('hidden');
     document.getElementById('mailSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    showToast(`✨ ${drafts.length} personalisierte Entwürfe bereit · 1 Mail, kein Follow-up`);
+    showToast(`✨ ${drafts.length} personalisierte Entwürfe bereit${noMail ? ` · ${noMail} ohne E-Mail übersprungen` : ''} · 1 Mail, kein Follow-up`);
     await loadContacts();
   } catch (e) {
     showToast('❌ Generieren fehlgeschlagen: ' + e.message);

@@ -104,6 +104,8 @@ export async function POST(request: Request) {
     for (const c of contacts) {
       // UWG-Sicherheit: Stopp/Antwort/Bounce/Gesendet → NIEMALS neu anschreiben
       if (c.sent_at || ['stopp', 'replied', 'bounced', 'sent'].includes(c.status)) continue
+      // Ohne E-Mail kein Mail-Entwurf (Print-Kontakte dürfen nicht in den Mail-Flow!)
+      if (!c.email || !String(c.email).includes('@')) continue
       const cityInfo = await resolveCity(c.city)
       const mail = buildMail(c.company_name, c.trade, cityInfo.name, cityInfo.slug)
       const { error: upErr } = await supabaseAdmin
