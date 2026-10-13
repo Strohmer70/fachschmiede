@@ -58,6 +58,11 @@ export async function GET(request: Request) {
       .select('id', { count: 'exact', head: true })
       .gte('sent_at', todayStart.toISOString())
 
+    const { count: printSent } = await supabaseAdmin
+      .from('marketing_contacts')
+      .select('id', { count: 'exact', head: true })
+      .not('print_sent_at', 'is', null)
+
     return NextResponse.json({
       success: true,
       // Flatte Aliase (Admin-Dashboard liest top-level)
@@ -65,6 +70,7 @@ export async function GET(request: Request) {
       contacted: sentContacts || 0,
       replied: repliedContacts || 0,
       sentToday: sentToday || 0,
+      printSent: printSent || 0,
       stats: {
         totalContacts: totalContacts || 0,
         sentContacts: sentContacts || 0,
@@ -79,6 +85,7 @@ export async function GET(request: Request) {
         openRate,
         replyRate,
         conversionRate,
+        printSent: printSent || 0,
       }
     })
   } catch (error: any) {

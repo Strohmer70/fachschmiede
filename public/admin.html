@@ -908,22 +908,22 @@ tailwind.config = {
           <button id="chPrint" onclick="switchChannel('print')" class="bg-ink-100 text-ink-600 text-xs font-bold px-3 py-1.5 rounded-lg border border-ink-200 hover:border-brand-400 transition">📮 Prospekt-Versand (Print)</button>
           <button onclick="showToast('WhatsApp-Outreach ist in Planung – als Nächstes im Marketing-Bereich (Demo).')" class="bg-ink-100 text-ink-400 text-xs font-bold px-3 py-1.5 rounded-lg border border-dashed border-ink-300">💬 WhatsApp · geplant</button>
           <button onclick="showToast('Google-Ads-Kampagnen sind in Planung (Demo).')" class="bg-ink-100 text-ink-400 text-xs font-bold px-3 py-1.5 rounded-lg border border-dashed border-ink-300">🎯 Google Ads · geplant</button>
-          <span class="ml-auto text-xs text-ink-400">E-Mail via SMTP · Prospekte via Druckdienst (Deutsche Post E-Post)</span>
+          <span class="ml-auto text-xs text-ink-400">E-Mail via Brevo (Limit 20/Tag) · Prospekte: Drucken &amp; selbst per Post versenden</span>
         </div>
 
         <!-- KPIs -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Gescrapte Kontakte</p><p class="mt-2 text-3xl font-black text-ink-900" id="kpiScraped">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Versendete Mails</p><p class="mt-2 text-3xl font-black text-ink-900" id="kpiSent">0</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Öffnungsrate</p><p class="mt-2 text-3xl font-black text-ink-900">–</p><p class="mt-1 text-xs font-bold text-ink-400">Noch keine Daten</p></div>
-          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Prospekte (Print) versendet</p><p class="mt-2 text-3xl font-black text-ink-900" id="kpiPrint">0</p><p class="mt-1 text-xs font-bold text-ink-400">Noch keine Daten</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Versendete Mails</p><p class="mt-2 text-3xl font-black text-ink-900" id="kpiSent">0</p><p class="mt-1 text-xs font-bold text-ink-400" id="quotaBadge">heute 0/20</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Antworten</p><p class="mt-2 text-3xl font-black text-ink-900" id="kpiReplied">0</p><p class="mt-1 text-xs font-bold text-ink-400">Antwort = Status manuell setzen</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Prospekte (Print)</p><p class="mt-2 text-3xl font-black text-ink-900" id="kpiPrint">0</p><p class="mt-1 text-xs font-bold text-ink-400">Briefe gedruckt &amp; abgeschickt</p></div>
         </div>
 
         <div id="mailFlow" class="grid lg:grid-cols-5 gap-6">
           <!-- Scraper -->
           <div class="lg:col-span-2 bg-white rounded-2xl border border-ink-200 p-6">
-            <h2 class="font-black text-ink-900 text-lg">🎯 Zielgruppe wählen</h2>
-            <p class="mt-1 text-sm text-ink-500">Kontakt-Pool filtern (Gewerk/Stadt). Der Scraper läuft dezentral über Finn — neue Leads erscheinen automatisch in der Liste rechts.</p>
+            <h2 class="font-black text-ink-900 text-lg">🕷 Zielgruppe scrapen</h2>
+            <p class="mt-1 text-sm text-ink-500">Echte Betriebe finden: Suchmaschine + Impressum-Crawl, nur öffentliche Firmendaten (B2B). Neue Kontakte landen direkt in der Liste rechts.</p>
             <div class="mt-5 space-y-4">
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk</label>
@@ -938,6 +938,14 @@ tailwind.config = {
                     if (data.success && data.trades) {
                       const select = document.getElementById('scrapeGewerk');
                       select.innerHTML = '<option value="">Alle Gewerke</option>' + data.trades.map(t => `<option value="${t.slug}">${t.emoji} ${t.name}</option>`).join('');
+    // 2026-10-13: Städte DYNAMISCH aus System-Config (alle 21, inkl. Spandau!)
+    const cityOpts = '<option value="">Alle Städte</option>' + (data.cities || []).map(c => `<option>${c.name}</option>`).join('');
+    const sSel = document.getElementById('scrapeStadt');
+    if (sSel) sSel.innerHTML = cityOpts;
+    const pSel = document.getElementById('pStadt');
+    if (pSel) pSel.innerHTML = cityOpts;
+    const pG = document.getElementById('pGewerk');
+    if (pG) pG.innerHTML = '<option value="">Alle Gewerke</option>' + data.trades.map(t => `<option value="${t.slug}">${t.emoji} ${t.name}</option>`).join('');
                     }
                   })
                   .catch(() => {
@@ -967,7 +975,7 @@ tailwind.config = {
               <div id="scrapeHint" class="bg-brand-50 border border-brand-200 rounded-xl p-3.5 text-xs text-brand-800 leading-relaxed">
                 💡 Wähle Gewerk und Stadt aus, um öffentlich gelistete Betriebe zu finden. Du brauchst dafür eine <strong>Google Places API</strong>.
               </div>
-              <button id="scrapeBtn" onclick="startScrape()" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition">🔍 Pool filtern</button>
+              <button id="scrapeBtn" onclick="startScrape()" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition">🕷 Scrape starten</button>
               <div id="scrapeProgress" class="hidden">
                 <div class="flex justify-between text-xs font-bold text-ink-600 mb-1"><span id="scrapeStep">Suche läuft …</span><span id="scrapePct">0 %</span></div>
                 <div class="w-full bg-ink-100 rounded-full h-2"><div id="scrapeBar" class="bg-brand-600 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
@@ -1079,7 +1087,7 @@ tailwind.config = {
                   <tbody id="printList" class="divide-y divide-ink-100"></tbody>
                 </table>
               </div>
-              <p class="mt-3 text-[11px] text-ink-400 leading-relaxed">⚖️ Nur ladungsfähige Geschäftsadressen aus öffentlichen Quellen. Werbung per Briefpost ist zulässig (§ 7 UWG) – anders als E-Mail ist keine vorherige Einwilligung nötig. Adressen werden nach dem Versand nicht dauerhaft gespeichert.</p>
+              <p class="mt-3 text-[11px] text-ink-400 leading-relaxed">⚖️ Nur ladungsfähige Geschäftsadressen aus öffentlichen Quellen. Werbung per Briefpost ist zulässig (§ 7 UWG) – anders als E-Mail ist keine vorherige Einwilligung nötig. Adressen bleiben im eigenen System (Statusverfolgung) und sind jederzeit löschbar.</p>
             </div>
           </div>
 
@@ -1094,7 +1102,7 @@ tailwind.config = {
                 <button onclick="prospectNav(-1)" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">← Empfänger</button>
                 <span id="prospectPos" class="text-xs font-bold text-ink-500 px-1">0 / 0</span>
                 <button onclick="prospectNav(1)" class="text-xs font-bold text-ink-600 border border-ink-200 rounded-lg px-3 py-2 hover:bg-ink-50 transition">Empfänger →</button>
-                <button onclick="sendPrint(this)" class="text-xs font-bold text-white bg-green-600 rounded-lg px-5 py-2 hover:bg-green-700 transition">🖨 Drucken &amp; versenden (<span id="pSendCount">0</span>)</button>
+                <button onclick="sendPrint(this)" class="text-xs font-bold text-white bg-green-600 rounded-lg px-5 py-2 hover:bg-green-700 transition">🖨 Drucken &amp; als versendet markieren (<span id="pSendCount">0</span>)</button>
               </div>
             </div>
 
@@ -1134,7 +1142,7 @@ tailwind.config = {
                     </div>
                   </div>
                   <!-- Komplette Website als Screenshot (3 Streifen) -->
-                  <div class="px-4 py-3 border-b border-ink-100">
+                  <div class="px-4 py-3 border-b border-ink-100" id="pWebShots">
                     <p class="text-[8px] font-black text-brand-600 uppercase tracking-widest">So sieht Ihre Website aus</p>
                     <p class="text-[8px] text-ink-500 leading-snug mt-0.5">Die <strong>komplette Seite</strong> als echter Screenshot – von links nach rechts: Header &amp; Hero, Leistungen, Vor-Ort-Bereich mit Karte, Ratgeber, FAQ &amp; Kontaktformular:</p>
                     <div class="mt-2 grid grid-cols-3 gap-1.5">
@@ -1858,20 +1866,31 @@ async function mktApi(path, opts = {}) {
   return data;
 }
 
+function setKpi(id, v) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = (v || 0).toLocaleString('de-DE');
+}
+
 async function loadMarketingData() {
+  // 1) KONTAKTE ZUERST — die Liste ist wichtiger als jede KPI.
+  //    (2026-10-13: kpiReplied fehlte im HTML → Crash → Liste blieb leer. Nie wieder:
+  //     jeder Block eigenes try/catch, alle Zugriffe defensiv.)
+  try { await loadContacts(); }
+  catch (e) { console.error('Kontakte:', e); showToast('⚠️ Kontakte konnten nicht geladen werden: ' + e.message); }
+  // 2) KPIs
   try {
     const stats = await mktApi('/stats/');
-    document.getElementById('kpiScraped').textContent = (stats.totalContacts || 0).toLocaleString('de-DE');
-    document.getElementById('kpiSent').textContent = (stats.contacted || 0).toLocaleString('de-DE');
-    document.getElementById('kpiReplied').textContent = (stats.replied || 0).toLocaleString('de-DE');
+    setKpi('kpiScraped', stats.totalContacts);
+    setKpi('kpiSent', stats.contacted);
+    setKpi('kpiReplied', stats.replied);
+    setKpi('kpiPrint', stats.printSent);
     updateQuotaBadge(stats.sentToday || 0);
+  } catch (e) { console.error('Stats:', e); }
+  // 3) Kampagnen-Verlauf
+  try {
     const camp = await mktApi('/campaigns/');
     renderCampaignHistory(camp.campaigns || []);
-    await loadContacts();
-  } catch (e) {
-    console.error('Marketing-Load:', e);
-    showToast('⚠️ Marketing-Daten konnten nicht geladen werden: ' + e.message);
-  }
+  } catch (e) { console.error('Kampagnen:', e); }
 }
 
 function updateQuotaBadge(sentToday) {
@@ -1885,8 +1904,10 @@ async function loadContacts() {
   renderProspects();
   const neu = prospects.filter(p => p.status === 'neu').length;
   const draft = prospects.filter(p => p.status === 'draft').length;
-  document.getElementById('scrapeResultMeta').innerHTML =
-    `<strong class="text-ink-800">${prospects.length} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf`;
+  const metaEl = document.getElementById('scrapeResultMeta');
+  if (metaEl) metaEl.innerHTML =
+    `<strong class="text-ink-800">${prospects.length} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf · ${prospects.filter(p => p.address).length} mit Postadresse`;
+  if (typeof renderPrintList === 'function') renderPrintList();
 }
 
 // Gewerk-/Stadt-Selects als Filter nutzen
@@ -1937,15 +1958,34 @@ function updateSelCount() {
   document.getElementById('selCount').textContent = n;
 }
 
-// "Scrape starten" → Filter anwenden + Hinweis (Scraper selbst läuft lokal über Finn)
+// ECHTER Server-Scraper: Suchmaschine + Impressum-Crawl (bis ~60 s)
 async function startScrape() {
-  renderProspects();
-  const g = document.getElementById('scrapeGewerk')?.value || '';
-  const s = document.getElementById('scrapeStadt')?.value || '';
-  const n = getFilteredProspects().length;
-  document.getElementById('scrapeResultMeta').innerHTML =
-    `Filter: <strong class="text-ink-800">${g || 'Alle Gewerke'}</strong> · <strong class="text-ink-800">${s || 'Alle Städte'}</strong> → <strong class="text-ink-800">${n} Kontakte</strong>`;
-  showToast(`🔍 ${n} Kontakte im Pool${g || s ? ' (gefiltert)' : ''}. Der Scraper selbst läuft über Finn — Ergebnisse landen automatisch hier.`);
+  const g = document.getElementById('scrapeGewerk')?.value || 'dachdecker';
+  const sEl = document.getElementById('scrapeStadt');
+  const s = (sEl && sEl.value) ? sEl.value : 'Hattingen';
+  const btn = document.getElementById('scrapeBtn');
+  const prog = document.getElementById('scrapeProgress');
+  btn.disabled = true; btn.textContent = '⏳ Scraper läuft …';
+  if (prog) {
+    prog.classList.remove('hidden');
+    const step = document.getElementById('scrapeStep');
+    if (step) step.textContent = `Suche "${g}" in ${s} · Impressum-Crawl läuft … (bis 60 s)`;
+    const bar = document.getElementById('scrapeBar'); if (bar) bar.style.width = '75%';
+    const pct = document.getElementById('scrapePct'); if (pct) pct.textContent = '75 %';
+  }
+  try {
+    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&limit=8`);
+    const bar = document.getElementById('scrapeBar'); if (bar) bar.style.width = '100%';
+    const pct = document.getElementById('scrapePct'); if (pct) pct.textContent = '100 %';
+    if (data.warning) showToast('⚠️ ' + data.warning);
+    else showToast(`✅ Scrape fertig: ${data.inserted} neu · ${data.skipped} übersprungen (bekannt/keine Daten)`);
+    await loadContacts();
+  } catch (e) {
+    showToast('❌ Scrape fehlgeschlagen: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '🕷 Scrape starten';
+    setTimeout(() => { if (prog) prog.classList.add('hidden'); }, 1500);
+  }
 }
 
 async function generateMails(regen) {
@@ -2119,116 +2159,219 @@ function switchChannel(ch){
   document.getElementById('printFlow').classList.toggle('hidden', mail);
   document.getElementById('campaignHistory').classList.toggle('hidden', false);
 }
-let printPros = [], printIdx = 0, pTimer = null;
-function slugify(s){ return s.toLowerCase().replace(/ü/g,'ue').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ß/g,'ss').replace(/[^a-z]/g,''); }
-function updatePrintHint(){
-  const g = document.getElementById('pGewerk').value, s = document.getElementById('pStadt').value;
-  document.getElementById('printHint').innerHTML = '💡 Das Prospekt zeigt die <strong>komplette Website als echten Screenshot</strong> (Header bis Karte &amp; Kontakt) plus drei <strong>Dashboard-Ausschnitte</strong> (Firmenprofil, Leistungen, Design) – der Empfänger sieht sofort, was er bekommt und was er selbst ändern kann.';
+// ═══════════ PRINT: Prospekt-Versand (ECHT — gleiche DB wie E-Mail) ═══════════
+let printIdx = 0;
+let printSel = new Set();
+let printLetters = [];
+let printHtml = '';
+
+const P_TRADE_LABEL = {
+  dachdecker: 'Dachdecker', elektriker: 'Elektriker', klempner: 'Klempner',
+  maler: 'Maler', zimmerer: 'Zimmerer', 'garten-und-landschaftsbau': 'Garten- und Landschaftsbau',
 }
-function startPrintScrape(){
-  const g = document.getElementById('pGewerk').value, s = document.getElementById('pStadt').value;
+const P_IMG = {
+  dachdecker: '/images/hero.jpg', elektriker: '/images/hero-elektro.jpg',
+  klempner: '/images/hero-klempner.jpg', maler: '/images/hero-maler.jpg', zimmerer: '/images/hero-zimmerer.jpg',
+}
+const P_WEB = {
+  dachdecker: '/images/web-dach', elektriker: '/images/web-elek', klempner: '/images/web-shk',
+  maler: '/images/web-maler', zimmerer: '/images/web-zimm',
+  // garten: bewusst KEINE Screenshots (Bilder fehlen) — Block wird ausgeblendet
+}
+
+function pSlugify(name) {
+  return String(name || '').toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/[()]/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function drawQr(url) {
+  const el = document.getElementById('pQr');
+  if (el) el.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(url)}" width="100%" alt="QR-Code zur Demo">`;
+}
+
+function updatePrintHint() {
+  const g = document.getElementById('pGewerk')?.value || 'dachdecker';
+  const sEl = document.getElementById('pStadt');
+  const s = (sEl && sEl.value) || 'Hattingen';
+  const url = `fachschmiede.de/${g}/${pSlugify(s)}/`;
+  const note = P_WEB[g] ? 'mit echten Website-Screenshots' : 'als Anschreiben mit Link & QR-Code (Screenshots folgen für dieses Gewerk)';
+  const el = document.getElementById('printHint');
+  if (el) el.innerHTML = `💡 Das Prospekt verweist auf <strong>${url}</strong> – der Empfänger sieht seine zukünftige Seite live (${note}).`;
+}
+
+function printFiltered() {
+  const g = document.getElementById('pGewerk')?.value || '';
+  const s = document.getElementById('pStadt')?.value || '';
+  return prospects.filter(p =>
+    (!g || p.trade === g) &&
+    (!s || p.city === s) &&
+    p.address && p.address.length > 5
+  );
+}
+
+// Adress-Scrape = derselbe Server-Scraper (extrahiert auch Postadressen)
+async function startPrintScrape() {
+  const g = document.getElementById('pGewerk')?.value || 'dachdecker';
+  const sEl = document.getElementById('pStadt');
+  const s = (sEl && sEl.value) ? sEl.value : 'Hattingen';
   const btn = document.getElementById('pScrapeBtn');
-  btn.disabled = true; btn.classList.add('opacity-50');
-  document.getElementById('prospectSection').classList.add('hidden');
   const prog = document.getElementById('pProgress');
+  btn.disabled = true; btn.classList.add('opacity-50');
   prog.classList.remove('hidden');
-  const steps = ['Verzeichnisse nach Geschäftsadressen durchsuchen …','Adressen extrahieren (Straße, PLZ, Ort) …','Unvollständige & bestehende Mieter entfernen …','Empfängerliste aufbereiten …'];
-  let i = 0, pct = 0;
-  document.getElementById('pStep').textContent = steps[0];
-  clearInterval(pTimer);
-  pTimer = setInterval(() => {
-    pct += 25;
-    if(pct >= 100){
-      clearInterval(pTimer);
-      document.getElementById('pBar').style.width = '100%';
-      document.getElementById('pPct').textContent = '100 %';
-      finishPrintScrape(g, s);
-      btn.disabled = false; btn.classList.remove('opacity-50');
-      return;
-    }
-    document.getElementById('pBar').style.width = pct + '%';
-    document.getElementById('pPct').textContent = pct + ' %';
-    i++;
-    if(i < steps.length) document.getElementById('pStep').textContent = steps[i];
-  }, 600);
+  document.getElementById('pStep').textContent = `Suche + Impressum-Crawl: ${g} in ${s} … (bis 60 s)`;
+  document.getElementById('pBar').style.width = '75%';
+  document.getElementById('pPct').textContent = '75 %';
+  try {
+    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&limit=8`);
+    document.getElementById('pBar').style.width = '100%';
+    document.getElementById('pPct').textContent = '100 %';
+    if (data.warning) showToast('⚠️ ' + data.warning);
+    else showToast(`📮 Scrape fertig: ${data.inserted} Betriebe neu · ${data.skipped} übersprungen`);
+    await loadContacts();
+    const n = printFiltered().length;
+    const meta = document.getElementById('pResultMeta');
+    if (meta) meta.innerHTML = `<strong class="text-ink-800">${n} Empfänger</strong> mit Postadresse im aktuellen Filter`;
+  } catch (e) {
+    showToast('❌ Scrape fehlgeschlagen: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.classList.remove('opacity-50');
+    setTimeout(() => prog.classList.add('hidden'), 1200);
+  }
 }
-function finishPrintScrape(g, s){
-  // 2026-10-05: Ehrlicher Zustand — keine Adressdatenbank angebunden.
-  // (Vorher: Simulator erzeugte Phantasie-Firmen aus gelöschten Demo-Arrays → FIRMS-ReferenceError)
-  printPros = [];
-  renderPrintList();
-  document.getElementById('pResultMeta').innerHTML = '<strong class="text-ink-800">Kein Adressdatenbank-Anbieter angebunden.</strong> Der Print-Versand braucht echte Geschäftsadressen (z. B. Gelbe-Seiten-API / 11880-Scraper) – steht auf der Roadmap.';
-  document.getElementById('pStep').textContent = 'Bereit, sobald Adressquelle angebunden ist';
-  showToast('📮 Print-Versand: Adressquelle noch nicht angebunden – nutze oben den E-Mail-Outreach (funktioniert echt).');
-}
-function renderPrintList(){
-  document.getElementById('printList').innerHTML = printPros.map((pr, i) => `
-    <tr class="hover:bg-ink-50">
-      <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${pr.sel ? 'checked' : ''} onchange="togglePrint(${i}, this.checked)"></td>
-      <td class="px-4 py-3 font-bold text-ink-900">${pr.name}</td>
-      <td class="px-4 py-3 text-ink-500 text-xs">${pr.addr}</td>
-      <td class="px-4 py-3"><span class="text-brand-700 bg-brand-50 text-xs font-bold px-2 py-1 rounded-full">neu</span></td>
-    </tr>`).join('');
+
+function renderPrintList() {
+  const list = printFiltered();
+  const tb = document.getElementById('printList');
+  if (!tb) return;
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="4" class="px-4 py-10 text-center text-sm text-ink-400 italic">Keine Empfänger mit Postadresse für diesen Filter — erst scrapen oder Filter ändern.</td></tr>';
+    updatePrintCount();
+    return;
+  }
+  tb.innerHTML = list.map(p => {
+    const sent = !!p.print_sent_at;
+    return `
+    <tr class="hover:bg-ink-50 ${sent ? 'opacity-50' : ''}">
+      <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${printSel.has(p.id) ? 'checked' : ''} ${sent ? 'disabled' : ''} onchange="togglePrint('${p.id}', this.checked)"></td>
+      <td class="px-4 py-3 font-bold text-ink-900">${mktEscape(p.company_name)}</td>
+      <td class="px-4 py-3 text-ink-500 text-xs">${mktEscape(p.address || '—')}</td>
+      <td class="px-4 py-3"><span class="${sent ? 'text-ink-500 bg-ink-100' : 'text-brand-700 bg-brand-50'} text-xs font-bold px-2 py-1 rounded-full">${sent ? 'versendet' : 'neu'}</span></td>
+    </tr>`;
+  }).join('');
   updatePrintCount();
 }
-function togglePrint(i, v){ printPros[i].sel = v; updatePrintCount(); }
-function toggleAllPrint(){ const all = printPros.every(x => x.sel); printPros.forEach(x => x.sel = !all); renderPrintList(); }
-function updatePrintCount(){
-  const n = printPros.filter(x => x.sel).length;
-  document.getElementById('pSelCount').textContent = n;
-  document.getElementById('pSendCount').textContent = n;
-  document.getElementById('pGenBtn').innerHTML = '🖨 Prospekte erstellen (<span id="pSelCount">' + n + '</span>)';
+
+function togglePrint(id, v) {
+  if (v) printSel.add(id); else printSel.delete(id);
+  updatePrintCount();
 }
-function buildProspects(){
-  const sel = printPros.filter(x => x.sel);
-  if(!sel.length){ showToast('Bitte zuerst Empfänger auswählen (Demo).'); return; }
-  printIdx = 0;
-  renderProspect();
-  document.getElementById('prospectSection').classList.remove('hidden');
-  document.getElementById('prospectSection').scrollIntoView({behavior:'smooth', block:'start'});
-  showToast(sel.length + ' individuelle Prospekte erstellt – Vorschau für Empfänger 1 (Demo).');
+function toggleAllPrint() {
+  const list = printFiltered().filter(p => !p.print_sent_at);
+  const all = list.length > 0 && list.every(p => printSel.has(p.id));
+  list.forEach(p => { if (all) printSel.delete(p.id); else printSel.add(p.id); });
+  renderPrintList();
 }
-function prospectNav(d){
-  const sel = printPros.filter(x => x.sel);
-  printIdx = (printIdx + d + sel.length) % sel.length;
-  renderProspect();
+function updatePrintCount() {
+  const n = [...printSel].filter(id => {
+    const p = prospects.find(x => x.id === id);
+    return p && !p.print_sent_at;
+  }).length;
+  const c1 = document.getElementById('pSelCount'); if (c1) c1.textContent = n;
+  const c2 = document.getElementById('pSendCount'); if (c2) c2.textContent = n;
 }
-function renderProspect(){
-  const sel = printPros.filter(x => x.sel);
-  if(!sel.length) return;
-  const pr = sel[printIdx];
-  const g = document.getElementById('pGewerk').value, s = document.getElementById('pStadt').value;
-  const gShort = g.replace('SHK / Klempner','Klempner');
-  const dom = 'fachschmiede.de/' + (P_TPATH[g] || 'dachdecker') + '/' + slugify(s) + '/';
-  document.getElementById('prospectPos').textContent = (printIdx + 1) + ' / ' + sel.length;
-  document.getElementById('pShotDomain').textContent = dom;
-  document.getElementById('pShotDomain2').textContent = dom;
-  drawQr(dom);
-  document.getElementById('pShotImg').style.backgroundImage = 'url(\'' + P_IMG[g] + '\')';
-  document.getElementById('pShotTitle').textContent = gShort + ' in ' + s;
-  const parts = pr.addr.split(', ');
-  document.getElementById('pLetterTo').innerHTML = pr.name + '<br>' + (parts[0] || '') + '<br>' + (parts[1] || '');
-  document.getElementById('pLetterSubject').textContent = 'Die ' + gShort + '-Website für ' + s + ' ist noch frei – reserviert für Sie?';
-  document.getElementById('pShotDomain3').textContent = dom;
-  document.getElementById('pShotImg').style.backgroundImage = 'url(\'' + P_IMG[g] + '\')';
-  document.getElementById('pWeb1').src = P_WEB[g] + '-1.png';
-  document.getElementById('pWeb2').src = P_WEB[g] + '-2.png';
-  document.getElementById('pWeb3').src = P_WEB[g] + '-3.png';
-}
-function sendPrint(btn){
-  const n = printPros.filter(x => x.sel).length;
-  if(!n){ showToast('📮 Keine Empfänger – zuerst eine Adressquelle anbinden (siehe Hinweis oben).'); return; }
-  const g = document.getElementById('pGewerk').value, s = document.getElementById('pStadt').value;
-  btn.disabled = true; btn.textContent = '⏳ Druckauftrag läuft …';
-  setTimeout(() => {
-    document.getElementById('kpiPrint').textContent = (86 + n);
-    const row = document.createElement('tr');
-    row.innerHTML = '<td class="py-3 font-bold text-ink-900">📮 ' + g + ' ' + s + ' (Print)</td><td class="py-3 text-ink-500">' + n + ' Prospekte · heute</td><td class="py-3 text-ink-400">per Post</td><td class="py-3 text-ink-400">–</td><td class="py-3"><span class="text-brand-700 bg-brand-50 text-xs font-bold px-2 py-1 rounded-full">in Zustellung</span></td>';
-    document.getElementById('campaignList').prepend(row);
+
+async function buildProspects() {
+  const ids = [...printSel].filter(id => {
+    const p = prospects.find(x => x.id === id);
+    return p && p.address && !p.print_sent_at;
+  });
+  if (!ids.length) { showToast('Bitte Empfänger mit Postadresse auswählen (erst scrapen).'); return; }
+  const btn = document.getElementById('pGenBtn');
+  btn.disabled = true; btn.textContent = '⏳ Erstelle Briefe …';
+  try {
+    const data = await mktApi('/print/', { method: 'POST', body: JSON.stringify({ ids }) });
+    printLetters = data.letters || [];
+    printHtml = data.html || '';
+    if (data.skippedNoAddress) showToast(`⚠️ ${data.skippedNoAddress} ohne Adresse übersprungen`);
+    if (!printLetters.length) { showToast('Keine Briefe erstellbar — Adressen fehlen.'); return; }
+    printIdx = 0;
+    renderProspect();
+    document.getElementById('prospectSection').classList.remove('hidden');
+    document.getElementById('prospectSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast(`🖨 ${printLetters.length} Prospekt-Briefe erstellt — Vorschau prüfen, dann drucken!`);
+  } catch (e) {
+    showToast('❌ Prospekte fehlgeschlagen: ' + e.message);
+  } finally {
     btn.disabled = false;
-    btn.innerHTML = '🖨 Drucken &amp; versenden (<span id="pSendCount">' + n + '</span>)';
-    showToast(n + ' Prospekte an ' + g + ' ' + s + ' gedruckt & an den Druckdienst übergeben – Zustellung in 2–3 Tagen (Demo).');
-  }, 1500);
+    btn.innerHTML = '🖨 Prospekte erstellen (<span id="pSelCount">' + updatePrintCount() + '</span>)';
+  }
+}
+
+function prospectNav(d) {
+  if (!printLetters.length) return;
+  printIdx = (printIdx + d + printLetters.length) % printLetters.length;
+  renderProspect();
+}
+
+function renderProspect() {
+  if (!printLetters.length) return;
+  const L = printLetters[printIdx];
+  const pos = document.getElementById('prospectPos');
+  if (pos) pos.textContent = (printIdx + 1) + ' / ' + printLetters.length;
+  const dom = L.url.replace('https://www.', '');
+  ['pShotDomain', 'pShotDomain2', 'pShotDomain3'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.textContent = dom;
+  });
+  drawQr(L.url);
+  const hero = P_IMG[L.trade];
+  const heroEl = document.getElementById('pShotImg');
+  if (heroEl) heroEl.style.backgroundImage = hero ? `url('${hero}')` : 'none';
+  const titleEl = document.getElementById('pShotTitle');
+  if (titleEl) titleEl.textContent = `${P_TRADE_LABEL[L.trade] || L.trade} in ${L.city}`;
+  // Website-Screenshot-Streifen NUR wenn Bilder fürs Gewerk existieren (Garten: ausblenden!)
+  const web = P_WEB[L.trade];
+  ['pWeb1', 'pWeb2', 'pWeb3'].forEach((id, k) => {
+    const el = document.getElementById(id);
+    if (el) { el.src = web ? `${web}-${k + 1}.png` : ''; el.style.display = web ? 'block' : 'none'; }
+  });
+  const shots = document.getElementById('pWebShots');
+  if (shots) shots.style.display = web ? '' : 'none';
+  const to = document.getElementById('pLetterTo');
+  if (to) to.innerHTML = `${mktEscape(L.to)}<br>${mktEscape(L.address).replace(/, /g, '<br>')}`;
+  const subj = document.getElementById('pLetterSubject');
+  if (subj) subj.textContent = L.subject;
+  const body = document.getElementById('pLetterBody');
+  if (body) body.innerHTML = mktEscape(L.body).replace(/\n/g, '<br>').split('<br><br>').map(par => `<p>${par}</p>`).join('');
+}
+
+// Druckt alle Briefe (Druckdialog) + markiert als versendet
+async function sendPrint(btn) {
+  if (!printLetters.length || !printHtml) { showToast('Erst Prospekte erstellen.'); return; }
+  const w = window.open('', '_blank');
+  if (!w) { showToast('⚠️ Popup blockiert — bitte Popups für fachschmiede.de erlauben.'); return; }
+  w.document.open();
+  w.document.write(printHtml);
+  w.document.close();
+  const ids = printLetters.map(l => l.id);
+  btn.disabled = true; btn.textContent = '⏳ Markiere …';
+  try {
+    await mktApi('/print/mark-sent/', { method: 'POST', body: JSON.stringify({ ids }) });
+    printSel.clear();
+    await loadContacts();
+    try {
+      const stats = await mktApi('/stats/');
+      setKpi('kpiPrint', stats.printSent);
+      const camp = await mktApi('/campaigns/');
+      renderCampaignHistory(camp.campaigns || []);
+    } catch (_) { /* KPI-Refresh optional */ }
+    showToast(`📮 ${ids.length} Briefe als versendet markiert — drucken, kuvertieren, absenden!`);
+  } catch (e) {
+    showToast('⚠️ Gedruckt, aber Markierung fehlgeschlagen: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🖨 Drucken &amp; als versendet markieren (<span id="pSendCount">0</span>)';
+  }
 }
 
 const viewMeta = {
