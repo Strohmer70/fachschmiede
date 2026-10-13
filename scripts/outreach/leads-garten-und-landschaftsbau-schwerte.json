@@ -1,0 +1,59 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-schwerte/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:38:13.031Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Willkommen // HA Gartenbau Schwerte",
+    "website": "https://gartenbau-schwerte.de/",
+    "emails": [
+      "ha.gartenbau@yahoo.com"
+    ],
+    "phones": [
+      "01722599306"
+    ],
+    "scraped_at": "2026-10-12T10:38:18.174Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Schwerter-Werkteam, Garten und Landschaftsbau",
+    "website": "https://www.schwerter-werkteam.de/garten-und-landschaftsbau/",
+    "emails": [
+      "schwerter-werkteam@email.de"
+    ],
+    "phones": [
+      "02304697018",
+      "02304697019",
+      "017632187536"
+    ],
+    "scraped_at": "2026-10-12T10:38:23.634Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Garten Pflege",
+    "website": "https://garten-gepflegt.de/galabau-schwerte/",
+    "emails": [
+      "info@garten-gepflegt.de"
+    ],
+    "phones": [
+      "015792502605",
+      "0230931768",
+      "0230976768"
+    ],
+    "scraped_at": "2026-10-12T10:38:43.673Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwerte"
+  }
+]

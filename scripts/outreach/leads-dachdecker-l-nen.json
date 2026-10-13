@@ -1,0 +1,60 @@
+[
+  {
+    "firma": "Dachdecker Friedrich JACOB GmbH aus Lünen NRW",
+    "website": "https://www.dachdecker-jacob-luenen.de/",
+    "emails": [
+      "info@friedrich-jacob.de"
+    ],
+    "phones": [
+      "+49230650363",
+      "01135025293161"
+    ],
+    "scraped_at": "2026-10-12T09:30:05.281Z",
+    "gewerk": "dachdecker",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Das sind wir",
+    "website": "https://www.dachkuehn.de/",
+    "emails": [
+      "info@dachkuehn.de"
+    ],
+    "phones": [
+      "+49230613591",
+      "0366403662"
+    ],
+    "scraped_at": "2026-10-12T09:30:10.384Z",
+    "gewerk": "dachdecker",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Dachdecker",
+    "website": "https://www.dachdecker-krohn.de/",
+    "emails": [
+      "info@dachdecker-krohn.de"
+    ],
+    "phones": [
+      "0166666666667",
+      "046046805819",
+      "02239836131274"
+    ],
+    "scraped_at": "2026-10-12T09:30:15.412Z",
+    "gewerk": "dachdecker",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Janz - Dach. Fassade. Solar.",
+    "website": "https://janz-dach.de/",
+    "emails": [
+      "info@janz-dach.de"
+    ],
+    "phones": [
+      "037219751460",
+      "0230641019",
+      "0230647774"
+    ],
+    "scraped_at": "2026-10-12T09:30:28.598Z",
+    "gewerk": "dachdecker",
+    "stadt": "Lünen"
+  }
+]

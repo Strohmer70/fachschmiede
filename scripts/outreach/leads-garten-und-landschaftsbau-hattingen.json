@@ -1,0 +1,87 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-hattingen/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:32:50.982Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Heinrich Garten und Landschaftsbau",
+    "website": "http://gartenbau-heinrich.de/",
+    "emails": [
+      "heinrich_gala-bau@freenet.de"
+    ],
+    "phones": [
+      "0691769040045",
+      "0240730085214",
+      "+4915774491775"
+    ],
+    "scraped_at": "2026-10-12T10:32:56.594Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Friedrich Tiggemann GmbH",
+    "website": "http://www.galabau-tiggemann.de/",
+    "emails": [
+      "info@galabau-tiggemann.de"
+    ],
+    "phones": [
+      "01717779798",
+      "017684442411",
+      "+491717779798"
+    ],
+    "scraped_at": "2026-10-12T10:33:00.285Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Garten",
+    "website": "https://landschaftsbau-hill.de/",
+    "emails": [
+      "info@landschaftsbau-hill.de"
+    ],
+    "phones": [
+      "+4923029788722",
+      "04164681921",
+      "0143040724814"
+    ],
+    "scraped_at": "2026-10-12T10:33:06.503Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Sergej Heinrich Garten- und Landschaftsbau in Hattingen",
+    "website": "https://www.gartenbau.org/hattingen/sergej-heinrich-garten--und-landschaftsbau-aULlp3",
+    "emails": [
+      "info@gartenbau.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "05023591205",
+      "+49911340983283"
+    ],
+    "scraped_at": "2026-10-12T10:33:11.561Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Garten- Landschafts- Straßenbau Baar",
+    "website": "https://www.strassenbau-baar.de/",
+    "emails": [
+      "info@strassenbau-baar.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T10:33:41.199Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hattingen"
+  }
+]

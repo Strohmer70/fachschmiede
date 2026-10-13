@@ -1,0 +1,28 @@
+[
+  {
+    "firma": "Holzbau Krupka",
+    "website": "https://www.holzbau-krupka.de/",
+    "emails": [
+      "info@holzbau-krupka.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T10:21:06.495Z",
+    "gewerk": "zimmerer",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Holzbau",
+    "website": "http://www.holzbau-kriegel.de/",
+    "emails": [
+      "holzbau-kriegel@gmx.de"
+    ],
+    "phones": [
+      "017661254546",
+      "0751769040024",
+      "0210511071052"
+    ],
+    "scraped_at": "2026-10-12T10:21:11.135Z",
+    "gewerk": "zimmerer",
+    "stadt": "Herne"
+  }
+]

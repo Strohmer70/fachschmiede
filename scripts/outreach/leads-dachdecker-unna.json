@@ -1,0 +1,70 @@
+[
+  {
+    "firma": "Startseite",
+    "website": "http://www.dachdeckerunna.de/",
+    "emails": [
+      "dudabedachung@t-online.de"
+    ],
+    "phones": [
+      "023035888913"
+    ],
+    "scraped_at": "2026-10-12T09:32:39.591Z",
+    "gewerk": "dachdecker",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Tuschinski Bedachungen",
+    "website": "https://tuschinski-bedachungen.de/",
+    "emails": [
+      "mail@tuschinski-bedachungen.de"
+    ],
+    "phones": [
+      "0230353041"
+    ],
+    "scraped_at": "2026-10-12T09:32:44.602Z",
+    "gewerk": "dachdecker",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Reimann Wiggers Dachdeckerei - Dachdeckermeisterbetrieb aus Unna",
+    "website": "https://rw-dach.de/",
+    "emails": [
+      "info@rw-dach.de"
+    ],
+    "phones": [
+      "023039479433"
+    ],
+    "scraped_at": "2026-10-12T09:32:48.347Z",
+    "gewerk": "dachdecker",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Wiese GmbH Dachtechnik",
+    "website": "https://www.wiese-dach.de/",
+    "emails": [
+      "info@wiese-dachtechnik.de"
+    ],
+    "phones": [
+      "+492303254560",
+      "+4923032545656",
+      "+49230325456"
+    ],
+    "scraped_at": "2026-10-12T09:32:54.217Z",
+    "gewerk": "dachdecker",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "TOP DACH SERVICE",
+    "website": "https://topdach-service.de/standorte/unna",
+    "emails": [
+      "bauservice443@yahoo.com"
+    ],
+    "phones": [
+      "+491786001652",
+      "01786001652"
+    ],
+    "scraped_at": "2026-10-12T09:32:58.064Z",
+    "gewerk": "dachdecker",
+    "stadt": "Unna"
+  }
+]

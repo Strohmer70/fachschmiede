@@ -1,0 +1,100 @@
+[
+  {
+    "firma": "K. Heinen",
+    "website": "https://www.haustechnik-heinen.de/",
+    "emails": [
+      "info@goertz-sanitaer-heizung.de",
+      "info@haustechnik-heinen.de"
+    ],
+    "phones": [
+      "0405854949",
+      "01717497764"
+    ],
+    "scraped_at": "2026-10-12T09:52:07.662Z",
+    "gewerk": "klempner",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Innung für Klempnerei, Sanitär",
+    "website": "https://www.kh-mk.de/vorteilsinnung/innung-fuer-klempnerei-sanitaer-und-heizungstechnik-iserlohn/",
+    "emails": [
+      "info@shk-nrw.de",
+      "j.rodermund@kh-mk.de",
+      "h.alberts@kh-mk.de",
+      "info@kh-mk.de"
+    ],
+    "phones": [
+      "0190120180704",
+      "0211690650",
+      "0210910092021"
+    ],
+    "scraped_at": "2026-10-12T09:52:18.225Z",
+    "gewerk": "klempner",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Klempner Brenner",
+    "website": "https://klempner-brenner.de/klempner/iserlohn/",
+    "emails": [
+      "info@klempner-brenner.de"
+    ],
+    "phones": [
+      "+4915257476798",
+      "015257476798"
+    ],
+    "scraped_at": "2026-10-12T09:52:23.078Z",
+    "gewerk": "klempner",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Meinewebsite 13",
+    "website": "https://www.sanitär-heizungsbau-fallinski.de/",
+    "emails": [
+      "dirk.fallinski@gmx.de",
+      "beispiel@beispiel.com"
+    ],
+    "phones": [
+      "0230451484",
+      "0250911063528",
+      "05339197919052"
+    ],
+    "scraped_at": "2026-10-12T09:52:27.430Z",
+    "gewerk": "klempner",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Wieschendahl GmbH – Sanitär, Heizung &amp; Haustechnik in Iserlohn",
+    "website": "https://wieschendahl-iserlohn.de/",
+    "emails": [
+      "shk@wieschendahl-iserlohn.de",
+      "leon.halkic@agentur-id.de",
+      "info@hwk-swf.de",
+      "web@agentur-id.de",
+      "christiane.mau@agentur-id.de",
+      "poststelle@ldi.nrw.de",
+      "u003epoststelle@ldi.nrw.de",
+      "info@viessmann.com",
+      "u003einfo@viessmann.com",
+      "info@meister1.de",
+      "u003einfo@meister1.de",
+      "lukas.brinkmann@gc-gruppe.de",
+      "info@agentur-id.de",
+      "info@immersight.de",
+      "legal@vimeo.com",
+      "info@klimarando.de",
+      "u003email@shk-info.de",
+      "support@digital-ateam.de",
+      "thomas.ries@gc-gruppe.de",
+      "info@cituro.com",
+      "u003einfo@cituro.com"
+    ],
+    "phones": [
+      "0237152626",
+      "0290611265",
+      "01409321705000"
+    ],
+    "scraped_at": "2026-10-12T09:52:33.534Z",
+    "gewerk": "klempner",
+    "stadt": "Iserlohn"
+  }
+]

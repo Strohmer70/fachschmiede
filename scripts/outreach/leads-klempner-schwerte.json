@@ -1,0 +1,64 @@
+[
+  {
+    "firma": "Heinke",
+    "website": "https://www.heinke-sanitaer.de/",
+    "emails": [
+      "info@heinke-sanitaer.de"
+    ],
+    "phones": [
+      "0230417995"
+    ],
+    "scraped_at": "2026-10-12T09:54:42.728Z",
+    "gewerk": "klempner",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Klempner für Schwerte - Ihr Fachmann für Heizung und Sanitär",
+    "website": "https://www.klempner-vorort.de/heizung-sanitaer-schwerte/",
+    "emails": [
+      "info@klempner-vorort.de"
+    ],
+    "phones": [
+      "015161133280"
+    ],
+    "scraped_at": "2026-10-12T09:55:02.909Z",
+    "gewerk": "klempner",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Bad, Heizung &amp; Klima in Schwerte | Hesse Bad und Heizung",
+    "website": "https://hesse-bad-heizung.de/",
+    "emails": [
+      "info@hesse-bad-heizung.de",
+      "u003einfo@hesse-bad-heizung.de",
+      "service@hesse-bad-heizung.de",
+      "info@hwk-do.de",
+      "u003eservice@hesse-bad-heizung.de",
+      "christiane.mau@agentur-id.de",
+      "poststelle@ldi.nrw.de",
+      "u003epoststelle@ldi.nrw.de",
+      "info@viessmann.com",
+      "u003einfo@viessmann.com",
+      "info@meister1.de",
+      "u003einfo@meister1.de",
+      "lukas.brinkmann@gc-gruppe.de",
+      "info@agentur-id.de",
+      "info@immersight.de",
+      "legal@vimeo.com",
+      "info@klimarando.de",
+      "u003email@shk-info.de",
+      "support@digital-ateam.de",
+      "thomas.ries@gc-gruppe.de",
+      "info@cituro.com",
+      "u003einfo@cituro.com"
+    ],
+    "phones": [
+      "0230416655",
+      "09285759001",
+      "084162737872"
+    ],
+    "scraped_at": "2026-10-12T09:55:07.945Z",
+    "gewerk": "klempner",
+    "stadt": "Schwerte"
+  }
+]

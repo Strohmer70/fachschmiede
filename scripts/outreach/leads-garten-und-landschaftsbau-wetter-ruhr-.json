@@ -1,0 +1,92 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-wetter-ruhr/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:40:24.487Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Paul Lesnik Galabau",
+    "website": "https://www.paullesnikgalabau.de/",
+    "emails": [
+      "info@paullesnikgalabau.de"
+    ],
+    "phones": [
+      "01631285943",
+      "02233374943",
+      "03767362438"
+    ],
+    "scraped_at": "2026-10-12T10:40:28.307Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Gahler",
+    "website": "https://www.gahlerbau-wetter.de/",
+    "emails": [
+      "info@bautenschutznrw.de",
+      "max@beispiel.de"
+    ],
+    "phones": [
+      "+4915112429439",
+      "+4915123456789",
+      "015112429439"
+    ],
+    "scraped_at": "2026-10-12T10:40:32.910Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Professioneller Garten",
+    "website": "https://www.baeumer-landschaftsbau.de/",
+    "emails": [
+      "info@baeumer-landschaftsbau.de"
+    ],
+    "phones": [
+      "0701769040041",
+      "0241107134654",
+      "023358453291"
+    ],
+    "scraped_at": "2026-10-12T10:40:38.589Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Gartenbau Wetter (Ruhr)",
+    "website": "https://www.gala-garten.de/wetter-ruhr/",
+    "emails": [
+      "info@galabau-dewit.de"
+    ],
+    "phones": [
+      "0605336466",
+      "06053331300",
+      "06053331200"
+    ],
+    "scraped_at": "2026-10-12T10:40:45.811Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Bäumer Garten- und Landschaftbau in Wetter (Ruhr)",
+    "website": "https://www.gartenbau.org/wetter/baeumer-garten--und-landschaftbau-aUMc68",
+    "emails": [
+      "info@gartenbau.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "05023591205",
+      "+49911340983283"
+    ],
+    "scraped_at": "2026-10-12T10:40:50.725Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Wetter (Ruhr)"
+  }
+]

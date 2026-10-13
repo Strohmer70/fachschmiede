@@ -1,0 +1,87 @@
+[
+  {
+    "firma": "KOLLMANN",
+    "website": "https://www.malermeister-castrop.de/",
+    "emails": [
+      "kontakt@malermeister-castrop.de"
+    ],
+    "phones": [
+      "06113537118"
+    ],
+    "scraped_at": "2026-10-12T09:59:25.496Z",
+    "gewerk": "maler",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "Hünnemeyer &bull; Malermeister seit 1951",
+    "website": "https://maler-castrop.de/",
+    "emails": [
+      "info@maler-castrop.de"
+    ],
+    "phones": [
+      "+492305922913",
+      "+492305922914",
+      "02305922913"
+    ],
+    "scraped_at": "2026-10-12T09:59:30.288Z",
+    "gewerk": "maler",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "Home",
+    "website": "https://malermeister-meyke.de/",
+    "emails": [
+      "info@malermeister-meyke.de"
+    ],
+    "phones": [
+      "+49230583133"
+    ],
+    "scraped_at": "2026-10-12T09:59:36.221Z",
+    "gewerk": "maler",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "Malermeister KLEX",
+    "website": "https://malermeister-klex.de/",
+    "emails": [
+      "info@malermeister-klex.de"
+    ],
+    "phones": [
+      "+4917684332949",
+      "017684332949"
+    ],
+    "scraped_at": "2026-10-12T09:59:41.119Z",
+    "gewerk": "maler",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "Hünnemeyer &bull; Malermeister seit 1951",
+    "website": "https://maler-castrop.de/ueber_uns",
+    "emails": [
+      "info@maler-castrop.de"
+    ],
+    "phones": [
+      "+492305922913",
+      "+492305922914",
+      "02305922913"
+    ],
+    "scraped_at": "2026-10-12T09:59:46.368Z",
+    "gewerk": "maler",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "",
+    "website": "https://www.malerbetrieb-wilken.de/",
+    "emails": [
+      "info@malerbetrieb-wilken.de"
+    ],
+    "phones": [
+      "0841769040058",
+      "0251021054647",
+      "+492305543223"
+    ],
+    "scraped_at": "2026-10-12T09:59:51.516Z",
+    "gewerk": "maler",
+    "stadt": "Castrop-Rauxel"
+  }
+]

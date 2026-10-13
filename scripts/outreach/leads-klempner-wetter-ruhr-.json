@@ -1,0 +1,47 @@
+[
+  {
+    "firma": "Volmerhaus GmbH &amp; Co. KG - Heizung, Sanitär, Klima und Lüftung",
+    "website": "https://volmerhaus.de/",
+    "emails": [
+      "info@volmerhaus.de"
+    ],
+    "phones": [
+      "+49233597930",
+      "0233597930",
+      "063732841651"
+    ],
+    "scraped_at": "2026-10-12T09:56:54.869Z",
+    "gewerk": "klempner",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Dominik Meier  Heizungs",
+    "website": "https://www.meier-im-dienst.de/",
+    "emails": [
+      "info@meier-im-dienst.de",
+      "service@w4pro.de"
+    ],
+    "phones": [
+      "+492335801370",
+      "0272871166389",
+      "0277133369439"
+    ],
+    "scraped_at": "2026-10-12T09:57:05.494Z",
+    "gewerk": "klempner",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Bergmann Sanitär",
+    "website": "https://bergmann-shk.de/klempner-wetter-ruhr/",
+    "emails": [
+      "info@bergmann-shk.de"
+    ],
+    "phones": [
+      "+4915792829034",
+      "015792829034"
+    ],
+    "scraped_at": "2026-10-12T09:57:10.145Z",
+    "gewerk": "klempner",
+    "stadt": "Wetter (Ruhr)"
+  }
+]

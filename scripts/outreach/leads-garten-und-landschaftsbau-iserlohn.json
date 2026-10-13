@@ -1,0 +1,73 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-iserlohn/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:35:11.727Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Terrassenbau Iserlohn",
+    "website": "https://terrassenbau-iserlohn.de/leistungen/galabau",
+    "emails": [
+      "kontakt@terrassenbau-iserlohn.de"
+    ],
+    "phones": [
+      "+4915888642950",
+      "015888642950"
+    ],
+    "scraped_at": "2026-10-12T10:35:19.271Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Garten- und Landschaftsbau",
+    "website": "https://www.gala-edi.de/",
+    "emails": [
+      "info@gala-edi.de"
+    ],
+    "phones": [
+      "+492374501367"
+    ],
+    "scraped_at": "2026-10-12T10:35:24.142Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Startseite",
+    "website": "https://www.salamon-garten.de/",
+    "emails": [
+      "info@salamon-garten.de"
+    ],
+    "phones": [
+      "+492371461267",
+      "0715114480",
+      "02371461267"
+    ],
+    "scraped_at": "2026-10-12T10:35:38.712Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "EAX Garten und Landschaftsbau in Iserlohn - Stück für Stück zum Gartenglück.",
+    "website": "https://www.eax-gartenlandschaftsbau.de/",
+    "emails": [
+      "info@eax-gartenlandschaftsbau.de"
+    ],
+    "phones": [
+      "017630181177",
+      "03921568627",
+      "019607843140"
+    ],
+    "scraped_at": "2026-10-12T10:35:46.361Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Iserlohn"
+  }
+]

@@ -1,0 +1,75 @@
+[
+  {
+    "firma": "",
+    "website": "https://malerbetrieb-schmehl.de/",
+    "emails": [
+      "info@malermeister-schmehl.de"
+    ],
+    "phones": [
+      "0941769040093",
+      "0260901082521",
+      "+49230474646"
+    ],
+    "scraped_at": "2026-10-12T10:09:46.690Z",
+    "gewerk": "maler",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Maler Broer in Schwerte",
+    "website": "https://www.malermeister-broer.de/",
+    "emails": [
+      "info@malermeister-broer.de"
+    ],
+    "phones": [
+      "02304940024",
+      "02304940025"
+    ],
+    "scraped_at": "2026-10-12T10:09:52.434Z",
+    "gewerk": "maler",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Malermeister  Sascha Jakob",
+    "website": "https://sj-maler.de/",
+    "emails": [
+      "info@sj-maler.de",
+      "sascha.j.1180@gmail.com"
+    ],
+    "phones": [
+      "0921769040077",
+      "0231122141406",
+      "+4917624393915"
+    ],
+    "scraped_at": "2026-10-12T10:09:57.656Z",
+    "gewerk": "maler",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Malermeisterin Walger Schwerte",
+    "website": "https://maler-walger.de/",
+    "emails": [
+      "malermeisterin-walger@t-online.de",
+      "u00a0malermeisterin-walger@t-online.de"
+    ],
+    "phones": [
+      "0230473987"
+    ],
+    "scraped_at": "2026-10-12T10:10:19.082Z",
+    "gewerk": "maler",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Ihr Meisterbetrieb in Schwerte",
+    "website": "https://maler-bardun.de/",
+    "emails": [
+      "bardun@schwerte.de"
+    ],
+    "phones": [
+      "0691769040045",
+      "0251114062656"
+    ],
+    "scraped_at": "2026-10-12T10:10:25.071Z",
+    "gewerk": "maler",
+    "stadt": "Schwerte"
+  }
+]

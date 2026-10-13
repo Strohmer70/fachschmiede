@@ -1,0 +1,77 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-sprockh%C3%B6vel/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:38:52.414Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "demo-galabau.wmf-goe.de",
+    "website": "https://galabau-dannemann.de/garten-und-landschaftsbau-sprockhoevel/",
+    "emails": [
+      "info@galabau-dannemann.de"
+    ],
+    "phones": [
+      "+4923399290329",
+      "023399290329",
+      "084223742271"
+    ],
+    "scraped_at": "2026-10-12T10:38:56.060Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Mark Hartmann Garten- und Landschaftsbau Galabau Hartmann",
+    "website": "https://www.gartenbau.org/sprockhoevel/mark-hartmann-garten--und-landschaftsbau-galabau-hartmann-aULlpn",
+    "emails": [
+      "info@gartenbau.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "05023591205",
+      "+49911340983283"
+    ],
+    "scraped_at": "2026-10-12T10:39:05.514Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Gartenbau Sprockhövel",
+    "website": "https://www.gartenbau-kurz.de/sprockhoevel/",
+    "emails": [
+      "info@galabau-dewit.de"
+    ],
+    "phones": [
+      "0605336466",
+      "06053331300",
+      "06053331200"
+    ],
+    "scraped_at": "2026-10-12T10:39:16.760Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "L&amp;O Gartenbau",
+    "website": "https://www.lo-gartenbau.de/",
+    "emails": [
+      "kontakt@lo-gartenbau.de",
+      "beispiel@email.com"
+    ],
+    "phones": [
+      "015750400852",
+      "02233374943",
+      "0543613260724"
+    ],
+    "scraped_at": "2026-10-12T10:39:21.439Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Sprockhövel"
+  }
+]

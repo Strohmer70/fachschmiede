@@ -1,0 +1,77 @@
+[
+  {
+    "firma": "Sanitär-Heizung Bodemann in Hagen",
+    "website": "https://bodemann-shk.de/",
+    "emails": [
+      "info@bodemann-shk.de"
+    ],
+    "phones": [
+      "+4915123580389",
+      "015123580389",
+      "+492331334865"
+    ],
+    "scraped_at": "2026-10-12T09:49:29.360Z",
+    "gewerk": "klempner",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "wanderer-shk",
+    "website": "https://www.wanderer-shk.de/",
+    "emails": [
+      "hallo@wanderer-shk.de"
+    ],
+    "phones": [
+      "02233374943",
+      "01731468032",
+      "097415488115"
+    ],
+    "scraped_at": "2026-10-12T09:49:34.835Z",
+    "gewerk": "klempner",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Kieslich&#x20;Sanit&#x00E4;r&#x20;Heizung&#x20;Klima",
+    "website": "https://kieslich-shk.de/",
+    "emails": [
+      "info@kieslich-shk.de"
+    ],
+    "phones": [
+      "023317815411",
+      "0196078431372549",
+      "0453075822604"
+    ],
+    "scraped_at": "2026-10-12T09:49:39.682Z",
+    "gewerk": "klempner",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Krummenohl SHK-Installationsbetrieb",
+    "website": "https://krummenohl.de/",
+    "emails": [
+      "info@krummenohl.de"
+    ],
+    "phones": [
+      "004923317390200",
+      "00491635588207",
+      "04923317390200"
+    ],
+    "scraped_at": "2026-10-12T09:49:48.517Z",
+    "gewerk": "klempner",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Peter Schmitz, Hagen: Meisterbetrieb Sanitär und Heizung",
+    "website": "https://www.wasser-waerme-schmitz.de/",
+    "emails": [
+      "info@wasser-waerme-schmitz.de"
+    ],
+    "phones": [
+      "023311860000",
+      "09288012096366",
+      "09390012096373"
+    ],
+    "scraped_at": "2026-10-12T09:49:53.064Z",
+    "gewerk": "klempner",
+    "stadt": "Hagen"
+  }
+]

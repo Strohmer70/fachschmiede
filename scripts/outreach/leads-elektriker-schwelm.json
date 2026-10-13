@@ -1,0 +1,61 @@
+[
+  {
+    "firma": "Elektriker in Schwelm » Über 1381 Top Fachbetriebe",
+    "website": "https://www.elektriker.org/schwelm",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "+4923389158260"
+    ],
+    "scraped_at": "2026-10-12T09:41:55.309Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Elektrobetrieb Weimann",
+    "website": "https://elektrobetrieb-weimann.de/schwelm/",
+    "emails": [
+      "kontakt@elektrobetrieb-weimann.de"
+    ],
+    "phones": [
+      "+491743523228",
+      "01743523228"
+    ],
+    "scraped_at": "2026-10-12T09:41:59.889Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Elektriker Neumann – Schwelm",
+    "website": "https://elektrohilfe-neumann.de/elektriker/schwelm/",
+    "emails": [
+      "neumann.annahme@gmail.com",
+      "ihre@email.de"
+    ],
+    "phones": [
+      "015257466282",
+      "+4915257466282",
+      "04818263522417"
+    ],
+    "scraped_at": "2026-10-12T09:42:04.574Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Elektro Mürer",
+    "website": "https://elektro-muerer.de/",
+    "emails": [
+      "info@elektro-muerer.de"
+    ],
+    "phones": [
+      "0666666666667",
+      "0180805170415"
+    ],
+    "scraped_at": "2026-10-12T09:42:10.359Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwelm"
+  }
+]

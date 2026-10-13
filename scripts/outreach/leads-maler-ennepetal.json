@@ -1,0 +1,92 @@
+[
+  {
+    "firma": "Ihr Malermeister in Ennepetal",
+    "website": "https://www.maler-meinecke.de/",
+    "emails": [
+      "meinecke-ralf@web.de"
+    ],
+    "phones": [
+      "00492333974644",
+      "0492333974644",
+      "+492333974644"
+    ],
+    "scraped_at": "2026-10-12T10:00:38.256Z",
+    "gewerk": "maler",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "FarbFuchs",
+    "website": "https://www.maler-farbfuchs.de/",
+    "emails": [
+      "info@maler-farbfuchs.de"
+    ],
+    "phones": [
+      "01604536760",
+      "0891769040062",
+      "0260727210527"
+    ],
+    "scraped_at": "2026-10-12T10:00:44.787Z",
+    "gewerk": "maler",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Malermeister Thomas Metzdorf",
+    "website": "https://www.malermeister-thomas-metzdorf.de/",
+    "emails": [
+      "info@tmetzdorf.de"
+    ],
+    "phones": [
+      "+49023334034055",
+      "023334034055",
+      "01799718458"
+    ],
+    "scraped_at": "2026-10-12T10:00:48.937Z",
+    "gewerk": "maler",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "FARBTRAUM IST IHR MALERBETRIEB IN ENNEPETAL",
+    "website": "https://www.farb-traum.de/",
+    "emails": [
+      "igor-rotaermel@farb-traum.de"
+    ],
+    "phones": [
+      "017661847454",
+      "+4917661847454",
+      "0921769040077"
+    ],
+    "scraped_at": "2026-10-12T10:00:54.531Z",
+    "gewerk": "maler",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Maler",
+    "website": "https://www.malerbetrieb-glaserei-fuchs.de/",
+    "emails": [
+      "info@malerbetrieb-glaserei-fuchs.de"
+    ],
+    "phones": [
+      "0212198016",
+      "0988547197",
+      "0233373467"
+    ],
+    "scraped_at": "2026-10-12T10:00:58.141Z",
+    "gewerk": "maler",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Home",
+    "website": "https://www.malermeister-christianhermes.de/",
+    "emails": [
+      "christian.hermes@malermeister-christianhermes.de"
+    ],
+    "phones": [
+      "040820171920",
+      "010101481490",
+      "010101374430"
+    ],
+    "scraped_at": "2026-10-12T10:01:03.214Z",
+    "gewerk": "maler",
+    "stadt": "Ennepetal"
+  }
+]

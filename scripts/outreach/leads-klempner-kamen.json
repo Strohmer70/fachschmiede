@@ -1,0 +1,73 @@
+[
+  {
+    "firma": "Flechsig Sanitär &amp; Heizung",
+    "website": "https://www.flechsig-sanitaer.de/",
+    "emails": [
+      "info@flechsig-sanitaer.de"
+    ],
+    "phones": [
+      "0230738009",
+      "01716822038"
+    ],
+    "scraped_at": "2026-10-12T09:52:41.100Z",
+    "gewerk": "klempner",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "KemsalTec",
+    "website": "https://www.kemsaltec.de/",
+    "emails": [
+      "info@kemsaltec.de"
+    ],
+    "phones": [
+      "+491732966901"
+    ],
+    "scraped_at": "2026-10-12T09:52:44.810Z",
+    "gewerk": "klempner",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Löbbe GmbH",
+    "website": "https://www.loebbe-kamen.de/",
+    "emails": [
+      "loebbe-kamen@t-online.de"
+    ],
+    "phones": [
+      "0230772316",
+      "092026181548",
+      "08102026165119"
+    ],
+    "scraped_at": "2026-10-12T09:52:50.265Z",
+    "gewerk": "klempner",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "John Installations- und Heizungsbaugesellschaft mit beschränkter Haftung",
+    "website": "https://www.john-kamen.de/",
+    "emails": [
+      "info@john-kamen.de"
+    ],
+    "phones": [
+      "0230773535",
+      "092026193411",
+      "08102026174621"
+    ],
+    "scraped_at": "2026-10-12T09:52:56.278Z",
+    "gewerk": "klempner",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Lambert SHK – Sanitär, Heizung, Klima",
+    "website": "https://www.shk-lambert.de/lp/sanitaer-kamen",
+    "emails": [
+      "info@shk-lambert.de"
+    ],
+    "phones": [
+      "+4923899004275",
+      "023899004275"
+    ],
+    "scraped_at": "2026-10-12T09:53:12.014Z",
+    "gewerk": "klempner",
+    "stadt": "Kamen"
+  }
+]

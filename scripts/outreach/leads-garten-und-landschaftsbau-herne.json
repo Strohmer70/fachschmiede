@@ -1,0 +1,90 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-herne/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:33:51.254Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Gartenbaubetrieb Lars Klingler",
+    "website": "https://www.galabau-herne.de/",
+    "emails": [
+      "support@webador.de",
+      "info@galabau-herne.de"
+    ],
+    "phones": [
+      "+4915734915463",
+      "035561513566",
+      "076898077548"
+    ],
+    "scraped_at": "2026-10-12T10:33:55.726Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/garten-und-landschaftsbau/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:34:01.817Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Gartenbau Nowak &amp; Kensbock",
+    "website": "https://www.gartenbau-nk.de/",
+    "emails": [
+      "info@gartenbau-nk.de"
+    ],
+    "phones": [
+      "+4915758252938",
+      "022599999996"
+    ],
+    "scraped_at": "2026-10-12T10:34:06.366Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Gartenbau Steden &#8211; Ihr Garten",
+    "website": "https://gartenbau-steden.de/",
+    "emails": [
+      "info@gartenbau-steden.de"
+    ],
+    "phones": [
+      "+4923239600963",
+      "+491731879678",
+      "023239600963"
+    ],
+    "scraped_at": "2026-10-12T10:34:12.464Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Gartenbaubetrieb Lars Klingler",
+    "website": "https://www.galabau-herne.de/ueber-mich",
+    "emails": [
+      "support@webador.de",
+      "info@galabau-herne.de"
+    ],
+    "phones": [
+      "+4915734915463",
+      "035561513566"
+    ],
+    "scraped_at": "2026-10-12T10:34:17.413Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Herne"
+  }
+]

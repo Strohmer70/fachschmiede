@@ -1,0 +1,68 @@
+[
+  {
+    "firma": "Malerfachbetrieb Ortwein",
+    "website": "https://maler-ortwein.de/",
+    "emails": [
+      "info@maler-ortwein.de"
+    ],
+    "phones": [
+      "0233562120"
+    ],
+    "scraped_at": "2026-10-12T10:11:59.430Z",
+    "gewerk": "maler",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Malerbetrieb Dietl",
+    "website": "https://www.malerbetrieb-dietl.de/stadt/wetter-ruhr",
+    "emails": [
+      "info@malerbetrieb-dietl.de"
+    ],
+    "phones": [
+      "+4920417731272"
+    ],
+    "scraped_at": "2026-10-12T10:12:05.151Z",
+    "gewerk": "maler",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Malerbetrieb Alexander Sauer",
+    "website": "http://www.sauer-malerbetrieb.de/",
+    "emails": [
+      "info@sauer-malerbetrieb.de"
+    ],
+    "phones": [
+      "0661769040053",
+      "0200601115421",
+      "023358898410"
+    ],
+    "scraped_at": "2026-10-12T10:12:10.770Z",
+    "gewerk": "maler",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Malerfachbetrieb Ortwein",
+    "website": "https://maler-ortwein.de/ueber-uns/",
+    "emails": [
+      "info@maler-ortwein.de"
+    ],
+    "phones": [
+      "0233562120"
+    ],
+    "scraped_at": "2026-10-12T10:12:33.396Z",
+    "gewerk": "maler",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Malermeister in Wetter an der Ruhr    Zuverlässigkeit &amp; Termintreue",
+    "website": "https://malermeister-karl.de/nordrhein-westfalen/wetter-an-der-ruhr/",
+    "emails": [
+      "info@malermeister-karl.de",
+      "info@schluesseldienst-karl.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T10:12:46.603Z",
+    "gewerk": "maler",
+    "stadt": "Wetter (Ruhr)"
+  }
+]

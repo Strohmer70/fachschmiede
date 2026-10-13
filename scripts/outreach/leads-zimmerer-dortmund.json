@@ -1,0 +1,72 @@
+[
+  {
+    "firma": "Holzzimmer Holzbau GmbH",
+    "website": "https://www.holzzimmer.de/",
+    "emails": [
+      "info@holzzimmer.de"
+    ],
+    "phones": [
+      "+491735444601"
+    ],
+    "scraped_at": "2026-10-12T10:15:42.404Z",
+    "gewerk": "zimmerer",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Patzer und Schlegel",
+    "website": "https://zimmerei-patzerundschlegel.de/",
+    "emails": [
+      "kontakt@zimmerei-patzerundschlegel.de"
+    ],
+    "phones": [
+      "0231596453",
+      "09545474982",
+      "0925555578172"
+    ],
+    "scraped_at": "2026-10-12T10:15:47.732Z",
+    "gewerk": "zimmerer",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "BauGuru24",
+    "website": "https://www.bauguru24.de/handwerker/dortmund/zimmerei-holzbau",
+    "emails": [
+      "info@bauguru24.de"
+    ],
+    "phones": [
+      "+495731156615",
+      "05731156615"
+    ],
+    "scraped_at": "2026-10-12T10:15:52.549Z",
+    "gewerk": "zimmerer",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Zimmerei Heß",
+    "website": "https://zimmerei-hess.de/",
+    "emails": [
+      "info@zimmerei-hess.de"
+    ],
+    "phones": [
+      "+492319062634",
+      "0443437429",
+      "02319062634"
+    ],
+    "scraped_at": "2026-10-12T10:15:58.360Z",
+    "gewerk": "zimmerer",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Bau- Zimmerei &amp; Bedachung André Müller",
+    "website": "https://www.bzb-andre-mueller.de/",
+    "emails": [
+      "info@bzb-andre-mueller.de"
+    ],
+    "phones": [
+      "015118950346"
+    ],
+    "scraped_at": "2026-10-12T10:16:15.847Z",
+    "gewerk": "zimmerer",
+    "stadt": "Dortmund"
+  }
+]

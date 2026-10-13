@@ -1,0 +1,60 @@
+[
+  {
+    "firma": "elektro roggenkämper GmbH - Ihr Elektriker aus Dortmund",
+    "website": "https://www.elektro-roggenkaemper.de/",
+    "emails": [
+      "info@elektro-roggenkaemper.de"
+    ],
+    "phones": [
+      "+492313178338"
+    ],
+    "scraped_at": "2026-10-12T09:36:22.663Z",
+    "gewerk": "elektriker",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Elektriker in Dortmund » Über 1266 Top Fachbetriebe",
+    "website": "https://www.elektriker.org/dortmund",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "+4917624366103"
+    ],
+    "scraped_at": "2026-10-12T09:36:27.040Z",
+    "gewerk": "elektriker",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Elektriker Neumann – Dortmund",
+    "website": "https://elektrohilfe-neumann.de/elektriker/dortmund/",
+    "emails": [
+      "neumann.annahme@gmail.com",
+      "ihre@email.de"
+    ],
+    "phones": [
+      "015257466282",
+      "+4915257466282",
+      "04818263522417"
+    ],
+    "scraped_at": "2026-10-12T09:36:30.537Z",
+    "gewerk": "elektriker",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Elektriker Dortmund",
+    "website": "https://elektrotechnik-rueschenbaum.de/",
+    "emails": [
+      "m.giesenkirchen@elektro-rueschenbaum.de"
+    ],
+    "phones": [
+      "023048499",
+      "0231004019"
+    ],
+    "scraped_at": "2026-10-12T09:36:46.160Z",
+    "gewerk": "elektriker",
+    "stadt": "Dortmund"
+  }
+]

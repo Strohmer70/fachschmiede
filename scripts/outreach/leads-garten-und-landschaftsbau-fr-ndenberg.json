@@ -1,0 +1,76 @@
+[
+  {
+    "firma": "Garten",
+    "website": "https://www.galabau-klein.com/",
+    "emails": [
+      "klein.froendenberg@freenet.de"
+    ],
+    "phones": [
+      "0237376930",
+      "010101436714",
+      "010101357537"
+    ],
+    "scraped_at": "2026-10-12T10:31:05.450Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-fr%C3%B6ndenberg/ruhr/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:31:10.676Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "Gärtnerei",
+    "website": "https://www.galabau-klein.com/unternehmen",
+    "emails": [
+      "klein.froendenberg@freenet.de"
+    ],
+    "phones": [
+      "0237376930",
+      "010101436714",
+      "010101357537"
+    ],
+    "scraped_at": "2026-10-12T10:31:16.006Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "Mark Hering Garten- und Landschaftsbau Galabau Hering",
+    "website": "https://www.gartenbau.org/froendenberg-ruhr/mark-hering-garten-und-landschaftsbau-galabau-hering-aUOD8M",
+    "emails": [
+      "info@gartenbau.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "05023591205",
+      "+49911340983283"
+    ],
+    "scraped_at": "2026-10-12T10:31:19.827Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "Start",
+    "website": "https://www.galabau-hering.de/",
+    "emails": [
+      "m.hering@galabau-hering.de"
+    ],
+    "phones": [
+      "015783495721",
+      "05020200516",
+      "040000000001540"
+    ],
+    "scraped_at": "2026-10-12T10:31:34.090Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Fröndenberg"
+  }
+]

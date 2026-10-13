@@ -1,0 +1,65 @@
+[
+  {
+    "firma": "Ihr Elektriker - Büscher Elektrotechnik GmbH Bochum",
+    "website": "https://elektrobuescher.de/",
+    "emails": [
+      "hb@elektrobuescher.de",
+      "ub@elektrobuescher.de",
+      "morgado@elektrobuescher.de",
+      "bergermann@elektrobuescher.de",
+      "wh@elektrobuescher.de",
+      "info@elektrobuescher.de"
+    ],
+    "phones": [
+      "+4923435955",
+      "0496230125428",
+      "022696717911"
+    ],
+    "scraped_at": "2026-10-12T09:34:57.944Z",
+    "gewerk": "elektriker",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Elektriker in Bochum » Über 1870 Top Fachbetriebe",
+    "website": "https://www.elektriker.org/bochum",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "+4917624366103"
+    ],
+    "scraped_at": "2026-10-12T09:35:03.457Z",
+    "gewerk": "elektriker",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Elektro Heimeshoff",
+    "website": "https://elektro-heimeshoff.de/",
+    "emails": [
+      "info@elektro-heimeshoff.de"
+    ],
+    "phones": [
+      "+49234521352",
+      "0234521352",
+      "+49234578364"
+    ],
+    "scraped_at": "2026-10-12T09:35:07.347Z",
+    "gewerk": "elektriker",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "ESR-Elektrosysteme Rhein-Ruhr",
+    "website": "https://esr-elektro.de/",
+    "emails": [
+      "info@esr-elektro.de"
+    ],
+    "phones": [
+      "053475935828877"
+    ],
+    "scraped_at": "2026-10-12T09:35:17.521Z",
+    "gewerk": "elektriker",
+    "stadt": "Bochum"
+  }
+]

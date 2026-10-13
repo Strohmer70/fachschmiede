@@ -1,0 +1,92 @@
+[
+  {
+    "firma": "Elektro Sachs GmbH",
+    "website": "https://www.elektro-sachs-gmbh.de/",
+    "emails": [
+      "postfach@elektro-sachs-gmbh.de"
+    ],
+    "phones": [
+      "+49232322625",
+      "0232322625",
+      "050891356459"
+    ],
+    "scraped_at": "2026-10-12T09:39:12.091Z",
+    "gewerk": "elektriker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Elektriker Herne - ETM Service GmbH",
+    "website": "https://www.elektrikerherne.de/",
+    "emails": [
+      "etm@elektrikerherne.de"
+    ],
+    "phones": [
+      "+4923235974174",
+      "023235974174"
+    ],
+    "scraped_at": "2026-10-12T09:39:21.730Z",
+    "gewerk": "elektriker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Elektro Sachs GmbH",
+    "website": "https://www.elektro-sachs-gmbh.de/elektrotechnik",
+    "emails": [
+      "postfach@elektro-sachs-gmbh.de"
+    ],
+    "phones": [
+      "+49232322625",
+      "0232322625",
+      "050891356459"
+    ],
+    "scraped_at": "2026-10-12T09:39:27.999Z",
+    "gewerk": "elektriker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Marcel Sachs Elektrotechnik » Top Elektriker in Herne",
+    "website": "https://www.elektriker.org/herne/marcel-sachs-elektrotechnik-aUPqTC",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "0399999999"
+    ],
+    "scraped_at": "2026-10-12T09:39:32.470Z",
+    "gewerk": "elektriker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Elektriker Neumann – Herne",
+    "website": "https://elektrohilfe-neumann.de/elektriker/herne/",
+    "emails": [
+      "neumann.annahme@gmail.com",
+      "ihre@email.de"
+    ],
+    "phones": [
+      "015257466282",
+      "+4915257466282",
+      "04818263522417"
+    ],
+    "scraped_at": "2026-10-12T09:39:36.081Z",
+    "gewerk": "elektriker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Elektro Sachs GmbH » Top Elektriker in Herne",
+    "website": "https://www.elektriker.org/herne/elektro-sachs-gmbh-aUM9Na",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "0232322625"
+    ],
+    "scraped_at": "2026-10-12T09:39:39.927Z",
+    "gewerk": "elektriker",
+    "stadt": "Herne"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "firma": "Waleri Steiger",
+    "website": "https://www.steiger-sl.de/",
+    "emails": [
+      "verwaltung.steiger@gmail.com"
+    ],
+    "phones": [
+      "015161552927",
+      "092026231019",
+      "08102026205525"
+    ],
+    "scraped_at": "2026-10-12T09:44:45.504Z",
+    "gewerk": "klempner",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "Piwczynski",
+    "website": "https://www.heizungsanitar.de/",
+    "emails": [
+      "info@heizungsanitar.de"
+    ],
+    "phones": [
+      "02271758827",
+      "0230914092530",
+      "0230914173700"
+    ],
+    "scraped_at": "2026-10-12T09:44:54.060Z",
+    "gewerk": "klempner",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "Pyka Haustechnik",
+    "website": "https://pyka-haustechnik.de/bergkamen",
+    "emails": [
+      "flags@2x.png",
+      "info@pyka-haustechnik.de"
+    ],
+    "phones": [
+      "+4915735985105",
+      "015735985105",
+      "01761234567"
+    ],
+    "scraped_at": "2026-10-12T09:44:58.912Z",
+    "gewerk": "klempner",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "Pöttke Heizungsservice UG (haftungsbeschränkt)",
+    "website": "https://poettke-heizung.de/",
+    "emails": [
+      "info@poettke-heizung.de"
+    ],
+    "phones": [
+      "+4923063015236",
+      "023063015236"
+    ],
+    "scraped_at": "2026-10-12T09:45:03.707Z",
+    "gewerk": "klempner",
+    "stadt": "Bergkamen"
+  }
+]

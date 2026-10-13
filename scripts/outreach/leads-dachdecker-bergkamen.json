@@ -1,0 +1,73 @@
+[
+  {
+    "firma": "Hoer Bedachungen",
+    "website": "https://hoer-dachdecker.de/",
+    "emails": [
+      "hoer-torsten@t-online.de"
+    ],
+    "phones": [
+      "02306998966",
+      "016097081658"
+    ],
+    "scraped_at": "2026-10-12T09:21:31.007Z",
+    "gewerk": "dachdecker",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "Dachdeckermeister Benjamin Suttrop",
+    "website": "https://suttrop-bedachungen.de/",
+    "emails": [
+      "mail@suttrop-bedachungen.de",
+      "info@polarismedia.de"
+    ],
+    "phones": [
+      "+4923063018888",
+      "+4915252496733",
+      "+4969400502030"
+    ],
+    "scraped_at": "2026-10-12T09:21:41.153Z",
+    "gewerk": "dachdecker",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "TOP DACH SERVICE",
+    "website": "https://topdach-service.de/standorte/bergkamen",
+    "emails": [
+      "bauservice443@yahoo.com"
+    ],
+    "phones": [
+      "+491786001652",
+      "01786001652"
+    ],
+    "scraped_at": "2026-10-12T09:21:55.735Z",
+    "gewerk": "dachdecker",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "Dachdeckermeister Thomas Schlossarek",
+    "website": "https://www.dachschlossarek.de/",
+    "emails": [
+      "info@dachschlossarek.de"
+    ],
+    "phones": [
+      "02307554423",
+      "02307554424"
+    ],
+    "scraped_at": "2026-10-12T09:22:02.787Z",
+    "gewerk": "dachdecker",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "Pohl Bedachungen",
+    "website": "https://dachdecker-pohl.de/dachdecker-bergkamen/",
+    "emails": [
+      "anfragen@pohlbedachungen-kamen.de"
+    ],
+    "phones": [
+      "+4917697793978"
+    ],
+    "scraped_at": "2026-10-12T09:22:08.669Z",
+    "gewerk": "dachdecker",
+    "stadt": "Bergkamen"
+  }
+]

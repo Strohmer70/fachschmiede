@@ -1,0 +1,96 @@
+[
+  {
+    "firma": "Heizungsfirma",
+    "website": "https://www.kersting-shk.de/",
+    "emails": [
+      "info@kersting-shk.de"
+    ],
+    "phones": [
+      "0231411720",
+      "010101436714",
+      "010101357537"
+    ],
+    "scraped_at": "2026-10-12T09:46:58.288Z",
+    "gewerk": "klempner",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Haustechnik Barkey GmbH",
+    "website": "https://www.barkey-shk.de/",
+    "emails": [
+      "info@barkey-shk.de"
+    ],
+    "phones": [
+      "0231121380",
+      "092026202138",
+      "08102026182641"
+    ],
+    "scraped_at": "2026-10-12T09:47:04.177Z",
+    "gewerk": "klempner",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Meisterbetrieb Schmale GmbH - Ihr Profi für Heizung in Dortmund",
+    "website": "https://schmale-shk.de/",
+    "emails": [
+      "info@schmale-shk.de",
+      "info@hwk-do.de",
+      "christiane.mau@agentur-id.de",
+      "poststelle@ldi.nrw.de",
+      "u003epoststelle@ldi.nrw.de",
+      "web@agentur-id.de",
+      "info@agentur-id.de",
+      "lukas.brinkmann@gc-gruppe.de",
+      "info@viessmann.com",
+      "u003einfo@viessmann.com",
+      "info@meister1.de",
+      "u003einfo@meister1.de",
+      "info@immersight.de",
+      "thomas.ries@gc-gruppe.de",
+      "legal@vimeo.com",
+      "info@klimarando.de",
+      "u003email@shk-info.de",
+      "support@digital-ateam.de",
+      "info@cituro.com",
+      "u003einfo@cituro.com"
+    ],
+    "phones": [
+      "066356500218",
+      "022552104763",
+      "01721053273"
+    ],
+    "scraped_at": "2026-10-12T09:47:10.259Z",
+    "gewerk": "klempner",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Sven Hülsmann GmbH | SHK | Dortmund",
+    "website": "https://www.sven-huelsmann-shk.de/",
+    "emails": [
+      "info@sven-huelsmann-shk.de"
+    ],
+    "phones": [
+      "0231523037",
+      "092026190400",
+      "08102026172011"
+    ],
+    "scraped_at": "2026-10-12T09:47:15.286Z",
+    "gewerk": "klempner",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Stephan Hartwig e.K. Sanitär- u. Heizungstechnik",
+    "website": "https://www.wasserwaermeluft.de/handwerkersuche/stephan-hartwig-e-k-sanitaer-u-heizungstechnik-44329-dortmund",
+    "emails": [
+      "info@stephan-hartwig.de"
+    ],
+    "phones": [
+      "+49231231318",
+      "+49231230353",
+      "0484938479"
+    ],
+    "scraped_at": "2026-10-12T09:47:20.542Z",
+    "gewerk": "klempner",
+    "stadt": "Dortmund"
+  }
+]

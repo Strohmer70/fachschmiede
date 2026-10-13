@@ -1,0 +1,73 @@
+[
+  {
+    "firma": "Dachklempner",
+    "website": "https://www.koschinski-dach.de/",
+    "emails": [
+      "kontakt@koschinski-dach.de"
+    ],
+    "phones": [
+      "023012864",
+      "0288564933",
+      "010101581085"
+    ],
+    "scraped_at": "2026-10-12T09:27:51.735Z",
+    "gewerk": "dachdecker",
+    "stadt": "Holzwickede"
+  },
+  {
+    "firma": "Dachdeckerbetrieb",
+    "website": "https://www.koschinski-dach.de/uber-uns",
+    "emails": [
+      "kontakt@koschinski-dach.de"
+    ],
+    "phones": [
+      "023012864",
+      "010101581085",
+      "010101873870"
+    ],
+    "scraped_at": "2026-10-12T09:27:56.931Z",
+    "gewerk": "dachdecker",
+    "stadt": "Holzwickede"
+  },
+  {
+    "firma": "Dachdecker in Holzwickede",
+    "website": "https://www.dachdecker-betriebe.de/Dachdecker/holzwickede",
+    "emails": [
+      "kontakt@123media.site"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T09:28:10.160Z",
+    "gewerk": "dachdecker",
+    "stadt": "Holzwickede"
+  },
+  {
+    "firma": "Dachdecker Holzwickede",
+    "website": "https://www.flueshoeh-dach.de/dachdecker-holzwickede.php",
+    "emails": [
+      "info@flueshoeh-dach.de"
+    ],
+    "phones": [
+      "+492304467015",
+      "+491739001607",
+      "02304467015"
+    ],
+    "scraped_at": "2026-10-12T09:28:15.224Z",
+    "gewerk": "dachdecker",
+    "stadt": "Holzwickede"
+  },
+  {
+    "firma": "Homepage der Rumpel GmbH",
+    "website": "http://backuprumpelgmbh.net/main.html",
+    "emails": [
+      "rumpel-gmbh@t-online.de",
+      "info@rumpel-gmbh.de"
+    ],
+    "phones": [
+      "023019189699",
+      "023019189697"
+    ],
+    "scraped_at": "2026-10-12T09:28:19.093Z",
+    "gewerk": "dachdecker",
+    "stadt": "Holzwickede"
+  }
+]

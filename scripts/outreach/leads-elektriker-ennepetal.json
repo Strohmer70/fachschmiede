@@ -1,0 +1,60 @@
+[
+  {
+    "firma": "Elektriker in Ennepetal » Über 1275 Top Fachbetriebe",
+    "website": "https://www.elektriker.org/ennepetal",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "+4923389158260"
+    ],
+    "scraped_at": "2026-10-12T09:36:52.802Z",
+    "gewerk": "elektriker",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Bertram Dühn Elektrotechnik",
+    "website": "https://www.duehn-elektrotechnik.de/",
+    "emails": [
+      "post@duehn-elektrotechnik.de"
+    ],
+    "phones": [
+      "+490233381124",
+      "03931305781"
+    ],
+    "scraped_at": "2026-10-12T09:36:56.847Z",
+    "gewerk": "elektriker",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Elektro Wiemer GmbH » Top Elektriker in Ennepetal",
+    "website": "https://www.elektriker.org/ennepetal/elektro-wiemer-gmbh-aULwKK",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "0233372773"
+    ],
+    "scraped_at": "2026-10-12T09:37:00.782Z",
+    "gewerk": "elektriker",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Elektriker Opalinski aus Ennepetal",
+    "website": "https://elektro-en.de/",
+    "emails": [
+      "info@elektro-en.de"
+    ],
+    "phones": [
+      "02333616358",
+      "01731701000"
+    ],
+    "scraped_at": "2026-10-12T09:37:11.051Z",
+    "gewerk": "elektriker",
+    "stadt": "Ennepetal"
+  }
+]

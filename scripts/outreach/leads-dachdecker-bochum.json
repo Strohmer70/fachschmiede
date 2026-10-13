@@ -1,5 +1,20 @@
 [
   {
+    "firma": "ziegelruf.de",
+    "website": "https://ziegelruf.de/dachdecker/bochum/",
+    "emails": [
+      "info@ziegelruf.de"
+    ],
+    "phones": [
+      "02346105255",
+      "02344156080",
+      "023490402358"
+    ],
+    "scraped_at": "2026-10-12T09:22:15.484Z",
+    "gewerk": "dachdecker",
+    "stadt": "Bochum"
+  },
+  {
     "firma": "Immel Bedachungen GmbH, Bochum, Dachdecker",
     "website": "https://www.dachdecker-immel.de/",
     "emails": [
@@ -9,9 +24,9 @@
       "+49023487727",
       "+490234853156"
     ],
-    "scraped_at": "2026-10-12T08:49:54.419Z",
+    "scraped_at": "2026-10-12T09:22:40.640Z",
     "gewerk": "dachdecker",
-    "stadt": "bochum"
+    "stadt": "Bochum"
   },
   {
     "firma": "Koartis GbR | Dachdecker Bochum",
@@ -24,22 +39,23 @@
       "023493823699",
       "093526363928"
     ],
-    "scraped_at": "2026-10-12T08:49:59.538Z",
+    "scraped_at": "2026-10-12T09:22:45.850Z",
     "gewerk": "dachdecker",
-    "stadt": "bochum"
+    "stadt": "Bochum"
   },
   {
-    "firma": "Mark Dachdecker",
-    "website": "https://mark-dachdecker.de/dachdecker-bochum/",
+    "firma": "Hoose Bedachungen",
+    "website": "https://www.hoosedach.de/",
     "emails": [
-      "info@mark-dachdecker.de"
+      "kontakt@hoosedach.de"
     ],
     "phones": [
-      "+4915569539013",
-      "+493055464289"
+      "+49234492277",
+      "0234492277",
+      "043248248248"
     ],
-    "scraped_at": "2026-10-12T08:50:15.616Z",
+    "scraped_at": "2026-10-12T09:22:55.973Z",
     "gewerk": "dachdecker",
-    "stadt": "bochum"
+    "stadt": "Bochum"
   }
 ]

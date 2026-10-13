@@ -1,0 +1,77 @@
+[
+  {
+    "firma": "Jäger GmbH Dachdeckermeisterbetrieb",
+    "website": "https://www.dachdecker-jäger.de/",
+    "emails": [
+      "info@ddjh.de"
+    ],
+    "phones": [
+      "+49232431477",
+      "0232431477",
+      "0232430998"
+    ],
+    "scraped_at": "2026-10-12T09:26:44.311Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Dachdeckermeister Berster GmbH",
+    "website": "https://berstergmbh.de/",
+    "emails": [
+      "info@berstergmbh.de"
+    ],
+    "phones": [
+      "023249173010",
+      "084223742271",
+      "084273742771"
+    ],
+    "scraped_at": "2026-10-12T09:26:51.145Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Ihr Dachdecker aus der Region",
+    "website": "https://www.backhaus-dach.de/",
+    "emails": [
+      "backhaus@backhaus-dach.de"
+    ],
+    "phones": [
+      "03921568627",
+      "019607843140",
+      "0196078431"
+    ],
+    "scraped_at": "2026-10-12T09:27:01.571Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Dachdecker",
+    "website": "https://www.ok-team-krüger.de/",
+    "emails": [
+      "ok-team@t-online.de"
+    ],
+    "phones": [
+      "0232427699",
+      "010101201592",
+      "010101747703"
+    ],
+    "scraped_at": "2026-10-12T09:27:07.735Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Dachdecker",
+    "website": "https://www.ok-team-krüger.de/interior-3",
+    "emails": [
+      "ok-team@t-online.de"
+    ],
+    "phones": [
+      "0232427699",
+      "010101201592",
+      "010101747703"
+    ],
+    "scraped_at": "2026-10-12T09:27:11.802Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hattingen"
+  }
+]

@@ -1,0 +1,59 @@
+[
+  {
+    "firma": "Bedachungen Sindermann",
+    "website": "https://www.dachdecker-dortmund.de/",
+    "emails": [
+      "info@dachdecker-dortmund.de"
+    ],
+    "phones": [
+      "+492313119167",
+      "010240499300",
+      "0102404991024"
+    ],
+    "scraped_at": "2026-10-12T09:23:42.655Z",
+    "gewerk": "dachdecker",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "dachdecker-mirco-reuss.de",
+    "website": "https://dachdecker-mirco-reuss.de/",
+    "emails": [
+      "info@dachdecker-mirco-reuss.de"
+    ],
+    "phones": [
+      "+4915233780073",
+      "017669824371"
+    ],
+    "scraped_at": "2026-10-12T09:23:48.746Z",
+    "gewerk": "dachdecker",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Dachdecker Dortmund",
+    "website": "https://jnk-dach.de/",
+    "emails": [
+      "info@jnk-dach.de"
+    ],
+    "phones": [
+      "+491630314499"
+    ],
+    "scraped_at": "2026-10-12T09:23:53.393Z",
+    "gewerk": "dachdecker",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Das-Dach-Team-Dortmund&#x20;Dachdecker&#x20;in&#x20;Dortmund",
+    "website": "https://das-dach-team.de/",
+    "emails": [
+      "info@das-dach-team.de"
+    ],
+    "phones": [
+      "+4915224118846",
+      "+4915758406045",
+      "0746678392"
+    ],
+    "scraped_at": "2026-10-12T09:24:02.487Z",
+    "gewerk": "dachdecker",
+    "stadt": "Dortmund"
+  }
+]

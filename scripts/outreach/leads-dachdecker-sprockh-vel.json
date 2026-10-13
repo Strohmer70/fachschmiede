@@ -1,0 +1,75 @@
+[
+  {
+    "firma": "Dachdecker Baumann in Sprockhövel",
+    "website": "http://www.dachdeckerbaumann.de/",
+    "emails": [
+      "info@dachdeckerbaumann.de"
+    ],
+    "phones": [
+      "02339124073",
+      "02339124074"
+    ],
+    "scraped_at": "2026-10-12T09:32:05.096Z",
+    "gewerk": "dachdecker",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Patrick Becker GmbH",
+    "website": "https://www.dachbecker.de/",
+    "emails": [
+      "info@dachbecker.de"
+    ],
+    "phones": [
+      "02324903813",
+      "0701769040041",
+      "0240926102735"
+    ],
+    "scraped_at": "2026-10-12T09:32:11.353Z",
+    "gewerk": "dachdecker",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Dachdeckermeister Sprockhövel",
+    "website": "https://www.dachdecker-peters.de/",
+    "emails": [
+      "info@dachdecker-peters.de"
+    ],
+    "phones": [
+      "023397583",
+      "01717432627"
+    ],
+    "scraped_at": "2026-10-12T09:32:14.925Z",
+    "gewerk": "dachdecker",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "TecDach",
+    "website": "https://www.tecdach.de/",
+    "emails": [
+      "info@tecdach.de"
+    ],
+    "phones": [
+      "+4915888655856",
+      "0643999999995",
+      "015888655856"
+    ],
+    "scraped_at": "2026-10-12T09:32:18.321Z",
+    "gewerk": "dachdecker",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Dachdeckerei Nico Wilke",
+    "website": "https://www.dachdeckereiwilke.de/",
+    "emails": [
+      "info@dachdeckereiwilke.de"
+    ],
+    "phones": [
+      "015144954549",
+      "088899999998",
+      "0292632792"
+    ],
+    "scraped_at": "2026-10-12T09:32:22.639Z",
+    "gewerk": "dachdecker",
+    "stadt": "Sprockhövel"
+  }
+]

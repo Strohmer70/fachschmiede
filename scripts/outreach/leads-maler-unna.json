@@ -1,0 +1,72 @@
+[
+  {
+    "firma": "G. Schütte und Sohn",
+    "website": "https://www.malermeister-unna.de/",
+    "emails": [
+      "info@malermeister-unna.de"
+    ],
+    "phones": [
+      "0230315254",
+      "01774424064"
+    ],
+    "scraped_at": "2026-10-12T10:11:04.504Z",
+    "gewerk": "maler",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Malermeister Lange",
+    "website": "https://lange-maler.de/",
+    "emails": [
+      "malermeister.lange@web.de"
+    ],
+    "phones": [
+      "+4923033346978",
+      "+4917621648890",
+      "023033346978"
+    ],
+    "scraped_at": "2026-10-12T10:11:10.356Z",
+    "gewerk": "maler",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Malermeister Mike Budzinski",
+    "website": "https://malermeister-budzinski.de/",
+    "emails": [
+      "info@malermeister-budzinski.de"
+    ],
+    "phones": [
+      "+4923034853"
+    ],
+    "scraped_at": "2026-10-12T10:11:17.322Z",
+    "gewerk": "maler",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Rainer Clausius",
+    "website": "https://maler-clausius.de/",
+    "emails": [
+      "info@maler-clausius.de"
+    ],
+    "phones": [
+      "+4923014900",
+      "06220030109"
+    ],
+    "scraped_at": "2026-10-12T10:11:25.083Z",
+    "gewerk": "maler",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Die Maler 21",
+    "website": "https://www.diemaler21.de/",
+    "emails": [
+      "info@diemaler21.de"
+    ],
+    "phones": [
+      "06496968654",
+      "0344300000002"
+    ],
+    "scraped_at": "2026-10-12T10:11:32.251Z",
+    "gewerk": "maler",
+    "stadt": "Unna"
+  }
+]

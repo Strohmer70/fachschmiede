@@ -922,8 +922,8 @@ tailwind.config = {
         <div id="mailFlow" class="grid lg:grid-cols-5 gap-6">
           <!-- Scraper -->
           <div class="lg:col-span-2 bg-white rounded-2xl border border-ink-200 p-6">
-            <h2 class="font-black text-ink-900 text-lg">🕷 Zielgruppe scrapen</h2>
-            <p class="mt-1 text-sm text-ink-500">Öffentlich gelistete Betriebe finden (Branchenverzeichnisse, Google Maps, Innungslisten). Nur Firmendaten, keine Privatpersonen.</p>
+            <h2 class="font-black text-ink-900 text-lg">🎯 Zielgruppe wählen</h2>
+            <p class="mt-1 text-sm text-ink-500">Kontakt-Pool filtern (Gewerk/Stadt). Der Scraper läuft dezentral über Finn — neue Leads erscheinen automatisch in der Liste rechts.</p>
             <div class="mt-5 space-y-4">
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Gewerk</label>
@@ -937,7 +937,7 @@ tailwind.config = {
                   .then(data => {
                     if (data.success && data.trades) {
                       const select = document.getElementById('scrapeGewerk');
-                      select.innerHTML = data.trades.map(t => `<option value="${t.slug}">${t.emoji} ${t.name}</option>`).join('');
+                      select.innerHTML = '<option value="">Alle Gewerke</option>' + data.trades.map(t => `<option value="${t.slug}">${t.emoji} ${t.name}</option>`).join('');
                     }
                   })
                   .catch(() => {
@@ -951,6 +951,7 @@ tailwind.config = {
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Stadt / Region</label>
                 <select id="scrapeStadt" class="w-full rounded-lg border border-ink-200 px-4 py-3 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option value="">Alle Städte</option>
                   <option>Hattingen</option><option>Schwerte</option><option>Dortmund</option><option>Hagen</option><option>Iserlohn</option><option>Unna</option><option>Bochum</option><option>Witten</option><option>Lünen</option><option>Herne</option><option>Castrop-Rauxel</option><option>Kamen</option><option>Bergkamen</option><option>Fröndenberg</option><option>Holzwickede</option><option>Schwelm</option><option>Gevelsberg</option><option>Ennepetal</option><option>Sprockhövel</option><option>Wetter (Ruhr)</option>
                 </select>
               </div>
@@ -966,7 +967,7 @@ tailwind.config = {
               <div id="scrapeHint" class="bg-brand-50 border border-brand-200 rounded-xl p-3.5 text-xs text-brand-800 leading-relaxed">
                 💡 Wähle Gewerk und Stadt aus, um öffentlich gelistete Betriebe zu finden. Du brauchst dafür eine <strong>Google Places API</strong>.
               </div>
-              <button id="scrapeBtn" onclick="startScrape()" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition">🕷 Scrape starten</button>
+              <button id="scrapeBtn" onclick="startScrape()" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition">🔍 Pool filtern</button>
               <div id="scrapeProgress" class="hidden">
                 <div class="flex justify-between text-xs font-bold text-ink-600 mb-1"><span id="scrapeStep">Suche läuft …</span><span id="scrapePct">0 %</span></div>
                 <div class="w-full bg-ink-100 rounded-full h-2"><div id="scrapeBar" class="bg-brand-600 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
@@ -989,7 +990,7 @@ tailwind.config = {
             <div class="mt-4 overflow-x-auto max-h-96 overflow-y-auto border border-ink-100 rounded-xl">
               <table class="w-full text-sm min-w-[620px]">
                 <thead class="sticky top-0 bg-ink-50"><tr class="text-left text-xs text-ink-400 uppercase tracking-wider">
-                  <th class="px-4 py-3 font-bold w-8"></th><th class="px-4 py-3 font-bold">Betrieb</th><th class="px-4 py-3 font-bold">E-Mail</th><th class="px-4 py-3 font-bold">Quelle</th><th class="px-4 py-3 font-bold">Status</th>
+                  <th class="px-4 py-3 font-bold w-8"></th><th class="px-4 py-3 font-bold">Betrieb</th><th class="px-4 py-3 font-bold">E-Mail</th><th class="px-4 py-3 font-bold">Stadt</th><th class="px-4 py-3 font-bold">Status</th>
                 </tr></thead>
                 <tbody id="prospectList" class="divide-y divide-ink-100"></tbody>
               </table>
@@ -1828,169 +1829,228 @@ function saveRechtliches(){
 //   showToast('Abgemeldet – der Bereich ist jetzt gesperrt. (Demo)');
 // }
 
-// ═══════════ MARKETING: E-Mail-Outreach ═══════════
-const SCRAPE_STEPS = [
-  'Quellen werden durchsucht (Google Maps, Verzeichnisse) …',
-  'Betriebsdaten werden extrahiert (Name, E-Mail, Web) …',
-  'Duplikate & bestehende Mieter werden entfernt …',
-  'Kontakte werden aufbereitet …'
-];
-let scrapeTimer = null;
-// ═══════════ ECHTER SCRAPER (API-basiert) ═══════════
-let prospects = [];
-async function startScrape(){
-  const gewerk = document.getElementById('scrapeGewerk').value;
-  const stadt = document.getElementById('scrapeStadt').value;
-  const btn = document.getElementById('scrapeBtn');
-  
-  btn.disabled = true; 
-  btn.classList.add('opacity-50');
-  document.getElementById('mailSection').classList.add('hidden');
-  const prog = document.getElementById('scrapeProgress');
-  prog.classList.remove('hidden');
-  
-  // Echte API-Anfrage an unseren Scraper-Endpoint
+// ═══════════ MARKETING: E-Mail-Outreach (ECHT — DB + Brevo) ═══════════
+// 2026-10-13: Demo-Flow ersetzt. Kontakte kommen aus marketing_contacts (Supabase),
+// Mails werden generiert (Variante A, EINE Mail, kein Follow-up) und 1:1 via
+// Brevo versendet. Hartes Tageslimit: 20 Mails/Tag (Domain-Schutz).
+let prospects = [];   // Kontakte aus DB
+let drafts = [];      // generierte Entwürfe [{id,to,name,subject,body}]
+
+const MK_STATUS_LABEL = { neu: 'neu', draft: 'Entwurf', sent: 'gesendet', replied: 'Antwort', stopped: 'Stopp' };
+const MK_STATUS_CLASS = {
+  neu: 'text-brand-700 bg-brand-50',
+  draft: 'text-amber-700 bg-amber-50',
+  sent: 'text-ink-500 bg-ink-100',
+  replied: 'text-green-700 bg-green-100',
+  stopped: 'text-red-600 bg-red-50',
+};
+const MK_DAILY_LIMIT = 20;
+
+function mktEscape(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function mktApi(path, opts = {}) {
+  const res = await fetch(`${API_BASE}/admin/marketing${path}`, {
+    ...opts,
+    headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+
+async function loadMarketingData() {
   try {
-    document.getElementById('scrapeStep').textContent = 'API-Anfrage wird gesendet …';
-    document.getElementById('scrapeBar').style.width = '30%';
-    document.getElementById('scrapePct').textContent = '30 %';
-    
-    const res = await fetch(`${API_BASE}/marketing/scrape?gewerk=${encodeURIComponent(gewerk)}&stadt=${encodeURIComponent(stadt)}`, {
-      headers: { 'Authorization': 'Bearer ' + adminToken }
-    });
-    
-    document.getElementById('scrapeBar').style.width = '70%';
-    document.getElementById('scrapePct').textContent = '70 %';
-    
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      if (err.error && err.error.includes('API-Key')) {
-        showToast('⚠️ Google Places API-Key nicht konfiguriert. Bitte in den Einstellungen hinterlegen.');
-      } else {
-        showToast('❌ Scraper-Fehler: ' + (err.error || res.statusText));
-      }
-      throw new Error(err.error || 'Scraper nicht verfügbar');
-    }
-    
-    const data = await res.json();
-    
-    document.getElementById('scrapeBar').style.width = '100%';
-    document.getElementById('scrapePct').textContent = '100 %';
-    
-    if (data.contacts && data.contacts.length > 0) {
-      prospects = data.contacts.map(c => ({...c, sel: true}));
-      renderProspects();
-      const demoBadge = data.mode === 'demo' ? ' <span class="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full align-middle">Demo-Daten</span>' : '';
-      document.getElementById('scrapeResultMeta').innerHTML = 'Letzter Lauf: ' + gewerk + ' ' + stadt + ' · ' + data.totalFound + ' gefunden · ' + data.removed + ' entfernt → <strong class="text-ink-800">' + prospects.length + ' neue Kontakte</strong>' + demoBadge;
-      document.getElementById('kpiScraped').textContent = prospects.length.toLocaleString('de-DE');
-      document.getElementById('scrapeStep').textContent = 'Fertig – ' + prospects.length + ' neue Kontakte';
-      document.getElementById('scrapeHint').innerHTML = '💡 <strong>' + gewerk + ' ' + stadt + ':</strong> freie Miet-Stadt! Die gescrapten Betriebe sind direkte Interessenten für die Stadt-Website.';
-      showToast(prospects.length + ' Kontakte gefunden – bereit für E-Mail-Outreach');
-    } else {
-      document.getElementById('scrapeResultMeta').textContent = 'Keine Kontakte gefunden für ' + gewerk + ' ' + stadt + '. Versuche eine andere Stadt oder ein anderes Gewerk.';
-      document.getElementById('scrapeStep').textContent = 'Keine Ergebnisse';
-      showToast('Keine Kontakte gefunden');
-    }
-  } catch(e) {
-    console.error('Scrape-Fehler:', e);
-    document.getElementById('scrapeStep').textContent = 'Fehler – siehe Toast';
-    // Fallback: Zeige Hinweis dass API-Key fehlt
-    document.getElementById('scrapeResultMeta').innerHTML = '<span class="text-amber-600">⚠️ Scraper nicht verfügbar. Mögliche Ursachen: Google Places API-Key nicht konfiguriert, oder der Scraper-Endpoint ist nicht erreichbar.</span>';
-  } finally {
-    btn.disabled = false; 
-    btn.classList.remove('opacity-50');
+    const stats = await mktApi('/stats');
+    document.getElementById('kpiScraped').textContent = (stats.totalContacts || 0).toLocaleString('de-DE');
+    document.getElementById('kpiSent').textContent = (stats.contacted || 0).toLocaleString('de-DE');
+    document.getElementById('kpiReplied').textContent = (stats.replied || 0).toLocaleString('de-DE');
+    updateQuotaBadge(stats.sentToday || 0);
+    const camp = await mktApi('/campaigns');
+    renderCampaignHistory(camp.campaigns || []);
+    await loadContacts();
+  } catch (e) {
+    console.error('Marketing-Load:', e);
+    showToast('⚠️ Marketing-Daten konnten nicht geladen werden: ' + e.message);
   }
 }
-function renderProspects(){
+
+function updateQuotaBadge(sentToday) {
+  const el = document.getElementById('quotaBadge');
+  if (el) el.textContent = `heute ${sentToday}/${MK_DAILY_LIMIT}`;
+}
+
+async function loadContacts() {
+  const data = await mktApi('/contacts');
+  prospects = (data.contacts || []).map(c => ({ ...c, sel: c.status === 'neu' }));
+  renderProspects();
+  const neu = prospects.filter(p => p.status === 'neu').length;
+  const draft = prospects.filter(p => p.status === 'draft').length;
+  document.getElementById('scrapeResultMeta').innerHTML =
+    `<strong class="text-ink-800">${prospects.length} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf`;
+}
+
+// Gewerk-/Stadt-Selects als Filter nutzen
+function getFilteredProspects() {
+  const g = document.getElementById('scrapeGewerk')?.value || '';
+  const s = document.getElementById('scrapeStadt')?.value || '';
+  return prospects.filter(p =>
+    (!g || p.trade === g) &&
+    (!s || p.city === s)
+  );
+}
+
+function renderProspects() {
+  const list = getFilteredProspects();
   const tb = document.getElementById('prospectList');
-  tb.innerHTML = prospects.map((pr, i) => `
-    <tr class="hover:bg-ink-50">
-      <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${pr.sel ? 'checked' : ''} onchange="toggleProspect(${i}, this.checked)"></td>
-      <td class="px-4 py-3 font-bold text-ink-900">${pr.name}</td>
-      <td class="px-4 py-3 text-ink-500 font-mono text-xs">${pr.mail}</td>
-      <td class="px-4 py-3 text-ink-500 text-xs">${pr.source}</td>
-      <td class="px-4 py-3"><span class="text-brand-700 bg-brand-50 text-xs font-bold px-2 py-1 rounded-full">neu</span></td>
-    </tr>`).join('');
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="5" class="px-4 py-10 text-center text-sm text-ink-400 italic">Keine Kontakte für diesen Filter. Scraper läuft über Finn — neue Leads erscheinen automatisch hier.</td></tr>';
+  } else {
+    const order = { neu: 0, draft: 1, replied: 2, sent: 3, stopped: 4 };
+    tb.innerHTML = [...list].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9)).map(p => {
+      const disabled = p.status === 'sent' || p.status === 'stopped';
+      return `
+      <tr class="hover:bg-ink-50 ${disabled ? 'opacity-50' : ''}">
+        <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${p.sel && !disabled ? 'checked' : ''} ${disabled ? 'disabled' : ''} onchange="toggleProspect('${p.id}', this.checked)"></td>
+        <td class="px-4 py-3 font-bold text-ink-900">${mktEscape(p.company_name)}</td>
+        <td class="px-4 py-3 text-ink-500 font-mono text-xs">${mktEscape(p.email)}</td>
+        <td class="px-4 py-3 text-ink-500 text-xs">${mktEscape(p.city)}</td>
+        <td class="px-4 py-3"><span class="${MK_STATUS_CLASS[p.status] || 'text-ink-500 bg-ink-100'} text-xs font-bold px-2 py-1 rounded-full">${MK_STATUS_LABEL[p.status] || mktEscape(p.status)}</span></td>
+      </tr>`;
+    }).join('');
+  }
   updateSelCount();
 }
-function toggleProspect(i, val){ prospects[i].sel = val; updateSelCount(); }
-function toggleAllProspects(){
-  const allSel = prospects.every(pr => pr.sel);
-  prospects.forEach(pr => pr.sel = !allSel);
+
+function toggleProspect(id, val) {
+  const p = prospects.find(x => x.id === id);
+  if (p) p.sel = val;
+  updateSelCount();
+}
+function toggleAllProspects() {
+  const list = getFilteredProspects().filter(p => p.status !== 'sent' && p.status !== 'stopped');
+  const allSel = list.length > 0 && list.every(p => p.sel);
+  list.forEach(p => p.sel = !allSel);
   renderProspects();
 }
-function updateSelCount(){
-  const n = prospects.filter(pr => pr.sel).length;
+function updateSelCount() {
+  const n = getFilteredProspects().filter(p => p.sel && p.status !== 'sent' && p.status !== 'stopped').length;
   document.getElementById('selCount').textContent = n;
-  document.getElementById('genBtn').innerHTML = '✨ KI-Mails generieren (<span id="selCount">' + n + '</span>)';
 }
-const MAIL_BETREFF = [
-  'Ihre Sichtbarkeit in {stadt} – fertige Website für Sie reserviert',
-  '{firma}: Die Dachdecker-Website für {stadt} ist noch frei',
-  'Wie {firma} in {stadt} mehr Anfragen bekommt (2-Min-Idee)',
-  'Nur 1x pro Stadt: {gewerk}-Website {stadt} zum Anmieten'
-];
-const MAIL_BODY = [
-  'Guten Tag,\n\nbei unserem letzten Scan für {stadt} ist uns {firma} aufgefallen – und dass die besten Google-Plätze für „{gewerk} {stadt}" aktuell unbesetzt sind.\n\nWir betreiben fertige, lokal optimierte Handwerker-Websites zur Miete: Die Website „{gewerk} {stadt}" ist komplett fertig (Texte, Ratgeber, Kontaktformular, Google-Maps-Anbindung) und kann sofort unter Ihrem Namen online gehen – Sie können sie 14 Tage kostenlos testen, ohne Zahlungsdaten.\n\nPro Stadt vergeben wir die Website nur einmal. Wäre das interessant für {firma}?\n\nBeste Grüße\nDas MietWebsites-Team',
-  'Guten Tag,\n\nkurz der Grund meiner Mail: In {stadt} suchen jeden Monat hunderte Menschen nach „{gewerk}". Unsere vorgefertigte Website dafür ist fertig und noch frei – sie rankt bereits und kann heute mit Ihrem Firmennamen, Ihrer Rufnummer und Ihrem Google-Standort online gehen.\n\nTesten Sie sie 14 Tage kostenlos. Wenn sie Ihnen Anfragen bringt, bleibt sie für eine kleine Monatsmiete bei Ihnen – wenn nicht, entstehen keine Kosten.\n\nSoll ich Ihnen {firma} dafür vormerken?\n\nFreundliche Grüße\nDas MietWebsites-Team',
-  'Guten Tag,\n\n{firma} kennen wir aus den Branchenverzeichnissen für {stadt} – deshalb kurz und konkret: Wir stellen fertige Handwerker-Websites zur Miete bereit, und die Seite „{gewerk} {stadt}" ist aktuell noch zu haben.\n\nKein Agentur-Projekt, keine Wartezeit: fertige Stadt-Texte, Blog-Artikel, Kontaktformular, rechtssichere Texte – individualisiert in wenigen Minuten. 14 Tage kostenlos testen, monatlich kündbar.\n\nInteressiert? Eine kurze Antwort genügt.\n\nBeste Grüße\nDas MietWebsites-Team'
-];
-let drafts = [];
-function generateMails(regen){
-  const sel = prospects.filter(pr => pr.sel);
-  if(!sel.length){ showToast('Bitte zuerst Kontakte auswählen (Demo).'); return; }
-  const gewerk = document.getElementById('scrapeGewerk').value.replace('SHK / Klempner','Klempner');
-  const stadt = document.getElementById('scrapeStadt').value;
-  drafts = sel.slice(0, 6).map((pr, i) => {
-    const betreff = MAIL_BETREFF[(i + (regen ? 1 : 0)) % MAIL_BETREFF.length]
-      .replace('{stadt}', stadt).replace('{firma}', pr.name).replace('{gewerk}', gewerk);
-    const body = MAIL_BODY[i % MAIL_BODY.length]
-      .replaceAll('{stadt}', stadt).replaceAll('{firma}', pr.name).replaceAll('{gewerk}', gewerk);
-    return {to: pr.mail, name: pr.name, betreff, body};
-  });
-  renderDrafts();
-  document.getElementById('mailSection').classList.remove('hidden');
-  document.getElementById('mailSection').scrollIntoView({behavior:'smooth', block:'start'});
-  showToast(drafts.length + ' personalisierte Entwürfe generiert – Vorschau für die ersten ' + drafts.length + ' von ' + sel.length + ' (Demo).');
+
+// "Scrape starten" → Filter anwenden + Hinweis (Scraper selbst läuft lokal über Finn)
+async function startScrape() {
+  renderProspects();
+  const g = document.getElementById('scrapeGewerk')?.value || '';
+  const s = document.getElementById('scrapeStadt')?.value || '';
+  const n = getFilteredProspects().length;
+  document.getElementById('scrapeResultMeta').innerHTML =
+    `Filter: <strong class="text-ink-800">${g || 'Alle Gewerke'}</strong> · <strong class="text-ink-800">${s || 'Alle Städte'}</strong> → <strong class="text-ink-800">${n} Kontakte</strong>`;
+  showToast(`🔍 ${n} Kontakte im Pool${g || s ? ' (gefiltert)' : ''}. Der Scraper selbst läuft über Finn — Ergebnisse landen automatisch hier.`);
 }
-function renderDrafts(){
+
+async function generateMails(regen) {
+  const sel = getFilteredProspects().filter(p => p.sel && p.status !== 'sent' && p.status !== 'stopped');
+  if (!sel.length) { showToast('Bitte zuerst Kontakte auswählen (Status „neu" oder „Entwurf").'); return; }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = '⏳ Generiere …';
+  try {
+    const data = await mktApi('/generate', { method: 'POST', body: JSON.stringify({ ids: sel.map(p => p.id) }) });
+    drafts = data.drafts || [];
+    if (!drafts.length) { showToast('Nichts zu generieren — alle ausgewählten Kontakte wurden schon mailiert.'); return; }
+    renderDrafts();
+    document.getElementById('mailSection').classList.remove('hidden');
+    document.getElementById('mailSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast(`✨ ${drafts.length} personalisierte Entwürfe bereit · 1 Mail, kein Follow-up`);
+    await loadContacts();
+  } catch (e) {
+    showToast('❌ Generieren fehlgeschlagen: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Mails generieren (<span id="selCount">' + document.getElementById('selCount').textContent + '</span>)';
+  }
+}
+
+function renderDrafts() {
   document.getElementById('mailDrafts').innerHTML = drafts.map((d, i) => `
-    <div class="border border-ink-200 rounded-xl overflow-hidden">
+    <div class="border border-ink-200 rounded-xl overflow-hidden" id="draftCard-${i}">
       <div class="bg-ink-50 px-5 py-3 flex flex-wrap items-center justify-between gap-2">
-        <p class="text-xs font-bold text-ink-700">An: <span class="font-mono">${d.to}</span> · <span class="text-ink-400 font-semibold">${d.name}</span></p>
-        <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-1 rounded-full">KI-Entwurf ${i+1}</span>
+        <p class="text-xs font-bold text-ink-700">An: <span class="font-mono">${mktEscape(d.to)}</span> · <span class="text-ink-400 font-semibold">${mktEscape(d.name)}</span> · <span class="text-ink-400">${mktEscape(d.city)}</span></p>
+        <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-1 rounded-full">Entwurf ${i + 1}</span>
       </div>
       <div class="p-5 space-y-3">
         <div>
           <label class="block text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-1">Betreff</label>
-          <input type="text" value="${d.betreff.replace(/"/g,'&quot;')}" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <input id="draft-subj-${i}" type="text" value="${mktEscape(d.subject)}" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-1">Text</label>
-          <textarea rows="7" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-500">${d.body}</textarea>
+          <label class="block text-[11px] font-bold text-ink-400 uppercase tracking-wider mb-1">Text (vor dem Senden anpassbar)</label>
+          <textarea id="draft-body-${i}" rows="14" class="w-full rounded-lg border border-ink-200 px-3.5 py-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono">${mktEscape(d.body)}</textarea>
         </div>
+        <p id="draftStatus-${i}" class="text-xs font-bold text-ink-400"></p>
       </div>
     </div>`).join('');
   document.querySelectorAll('.draftCount').forEach(el => el.textContent = drafts.length);
 }
-function sendCampaign(btn){
-  if(!drafts.length) return;
-  const gewerk = document.getElementById('scrapeGewerk').value;
-  const stadt = document.getElementById('scrapeStadt').value;
-  const sel = prospects.filter(pr => pr.sel).length;
+
+async function sendCampaign(btn) {
+  if (!drafts.length) return;
+  const payload = drafts.map((d, i) => ({
+    id: d.id,
+    subject: (document.getElementById('draft-subj-' + i)?.value ?? d.subject).trim(),
+    body: (document.getElementById('draft-body-' + i)?.value ?? d.body).trim(),
+  }));
   btn.disabled = true;
   btn.textContent = '⏳ Versand läuft …';
-  setTimeout(() => {
-    const n = 1204 + sel;
-    document.getElementById('kpiSent').textContent = n.toLocaleString('de-DE');
-    const row = document.createElement('tr');
-    row.innerHTML = '<td class="py-3 font-bold text-ink-900">' + gewerk + ' ' + stadt + '</td><td class="py-3 text-ink-500">' + sel + ' · heute</td><td class="py-3 text-ink-400">–</td><td class="py-3 text-ink-400">–</td><td class="py-3"><span class="text-brand-700 bg-brand-50 text-xs font-bold px-2 py-1 rounded-full">läuft</span></td>';
-    document.getElementById('campaignList').prepend(row);
-    document.getElementById('mailSection').classList.add('hidden');
+  try {
+    const data = await mktApi('/send', { method: 'POST', body: JSON.stringify({ drafts: payload }) });
+    let ok = 0, fail = 0;
+    (data.results || []).forEach(r => {
+      const idx = drafts.findIndex(d => d.id === r.id);
+      const el = idx >= 0 ? document.getElementById('draftStatus-' + idx) : null;
+      if (r.ok) { ok++; if (el) { el.textContent = '✓ gesendet an ' + (r.to || ''); el.className = 'text-xs font-bold text-green-700'; } }
+      else { fail++; if (el) { el.textContent = '✗ ' + (r.error || 'Fehler'); el.className = 'text-xs font-bold text-red-600'; } }
+    });
+    updateQuotaBadge(data.sentToday ?? 0);
+    const kpiEl = document.getElementById('kpiSent');
+    kpiEl.textContent = ((parseInt(String(kpiEl.textContent).replace(/\./g, '')) || 0) + ok).toLocaleString('de-DE');
+    if (data.skippedByLimit > 0) {
+      showToast(`⏸ Tageslimit ${MK_DAILY_LIMIT} erreicht — ${data.skippedByLimit} Entwürfe bleiben als „Entwurf" gespeichert und können morgen gesendet werden.`);
+    } else {
+      showToast(`📤 ${ok} Mails versendet${fail ? ' · ' + fail + ' fehlgeschlagen' : ''}`);
+    }
+    await loadContacts();
+    const camp = await mktApi('/campaigns');
+    renderCampaignHistory(camp.campaigns || []);
+    if (data.skippedByLimit === 0) {
+      document.getElementById('mailSection').classList.add('hidden');
+      drafts = [];
+    }
+  } catch (e) {
+    showToast('❌ Versand fehlgeschlagen: ' + e.message);
+  } finally {
     btn.disabled = false;
-    btn.innerHTML = '📤 Alle senden (<span class="draftCount">0</span>)';
-    showToast(sel + ' Mails an ' + gewerk + ' ' + stadt + ' als Versand-Auftrag vorgemerkt. ⚠ Echter Massen-Versand erfolgt erst mit Outreach-Versand-Anbindung – die Entwürfe oben sind echt und übernehmbar.');
-  }, 1500);
+    btn.innerHTML = '📤 Alle senden (<span class="draftCount">' + drafts.length + '</span>)';
+  }
+}
+
+function renderCampaignHistory(campaigns) {
+  const tb = document.getElementById('campaignList');
+  if (!tb) return;
+  if (!campaigns.length) {
+    tb.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-sm text-ink-400 italic">Noch keine Kampagnen. Generiere oben Entwürfe und starte den ersten Versand.</td></tr>';
+    return;
+  }
+  tb.innerHTML = campaigns.map(c => {
+    const d = c.created_at ? new Date(c.created_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+    const res = c.results || {};
+    return `<tr>
+      <td class="py-3 font-bold text-ink-900">${mktEscape(c.name)}</td>
+      <td class="py-3 text-ink-500">${c.sent_count || 0} · ${d}</td>
+      <td class="py-3 text-ink-400">–</td>
+      <td class="py-3 text-ink-400">–</td>
+      <td class="py-3"><span class="text-xs font-bold px-2 py-1 rounded-full ${res.failed ? 'text-amber-700 bg-amber-50' : 'text-green-700 bg-green-50'}">${res.failed ? (res.ok || 0) + '✓ / ' + res.failed + '✗' : 'versendet'}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 // ── Rechnungen (Automatik nach Zahlungseingang) ──
@@ -2340,6 +2400,11 @@ function showView(id, el){
   // Load invoice data when switching to rechnungen view
   if (id === 'rechnungen' && typeof loadInvoiceData === 'function') {
     loadInvoiceData();
+  }
+
+  // Marketing: echte Kontakte + Kampagnen laden
+  if (id === 'marketing' && typeof loadMarketingData === 'function') {
+    loadMarketingData();
   }
 
   // 2026-10-03: Support-Tickets nachladen

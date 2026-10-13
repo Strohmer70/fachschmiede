@@ -1,0 +1,32 @@
+[
+  {
+    "firma": "Liesegang Zimmerei &amp; Holzbau",
+    "website": "https://www.zimmerei-liesegang.de/",
+    "emails": [
+      "info@zimmerei-liesegang.de"
+    ],
+    "phones": [
+      "0218673922",
+      "0218674022",
+      "0218675622"
+    ],
+    "scraped_at": "2026-10-12T10:13:34.749Z",
+    "gewerk": "zimmerer",
+    "stadt": "Bergkamen"
+  },
+  {
+    "firma": "anyhelpnow",
+    "website": "https://anyhelpnow.com/handwerk/zimmerei/bergkamen",
+    "emails": [
+      "info@anyhelpnow.com"
+    ],
+    "phones": [
+      "0387426610720",
+      "0693240166",
+      "0346673819"
+    ],
+    "scraped_at": "2026-10-12T10:14:05.704Z",
+    "gewerk": "zimmerer",
+    "stadt": "Bergkamen"
+  }
+]

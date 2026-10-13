@@ -1,0 +1,56 @@
+[
+  {
+    "firma": "MARX Castrop",
+    "website": "https://marx-dach-holzbau.de/",
+    "emails": [
+      "info@marx-dach-holzbau.de"
+    ],
+    "phones": [
+      "+491741483236"
+    ],
+    "scraped_at": "2026-10-12T10:15:20.262Z",
+    "gewerk": "zimmerer",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "MARX Castrop",
+    "website": "https://marx-dach-holzbau.de/zimmerei",
+    "emails": [
+      "info@marx-dach-holzbau.de"
+    ],
+    "phones": [
+      "+491741483236"
+    ],
+    "scraped_at": "2026-10-12T10:15:25.230Z",
+    "gewerk": "zimmerer",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "Startseite",
+    "website": "https://www.akustikholzbau.de/",
+    "emails": [
+      "info@akustikholzbau.de"
+    ],
+    "phones": [
+      "02305971010"
+    ],
+    "scraped_at": "2026-10-12T10:15:31.230Z",
+    "gewerk": "zimmerer",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "anyhelpnow",
+    "website": "https://anyhelpnow.com/handwerk/zimmerei/castrop-rauxel",
+    "emails": [
+      "info@anyhelpnow.com"
+    ],
+    "phones": [
+      "0387426610720",
+      "0693240166",
+      "0346673819"
+    ],
+    "scraped_at": "2026-10-12T10:15:35.139Z",
+    "gewerk": "zimmerer",
+    "stadt": "Castrop-Rauxel"
+  }
+]

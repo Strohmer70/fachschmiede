@@ -1,0 +1,60 @@
+[
+  {
+    "firma": "Malermeister Karsten Dahl",
+    "website": "https://malermeister-dahl.de/",
+    "emails": [
+      "hallo@malermeister-dahl.de"
+    ],
+    "phones": [
+      "01776445023",
+      "0123971795",
+      "0135661440"
+    ],
+    "scraped_at": "2026-10-12T10:12:54.306Z",
+    "gewerk": "maler",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Maler Scholz Witten",
+    "website": "https://scholz-maler.de/",
+    "emails": [
+      "info@scholz-maler.de"
+    ],
+    "phones": [
+      "+491722807637",
+      "01722807637",
+      "023023948484"
+    ],
+    "scraped_at": "2026-10-12T10:13:07.984Z",
+    "gewerk": "maler",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Malerarbeiten, Trockenbau &amp; Bodenbeläge in Witten",
+    "website": "https://www.malermeister-stanczuk.de/",
+    "emails": [
+      "kontakt@malermeister-stanczuk.de",
+      "info@malermeister-stanczuk.de"
+    ],
+    "phones": [
+      "023022038389",
+      "06359120500"
+    ],
+    "scraped_at": "2026-10-12T10:13:13.972Z",
+    "gewerk": "maler",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Malermeister Tobias Ziebs aus Witten",
+    "website": "https://www.malermeister-ziebs.de/",
+    "emails": [
+      "info@malermeister-ziebs.de"
+    ],
+    "phones": [
+      "01703049064"
+    ],
+    "scraped_at": "2026-10-12T10:13:20.866Z",
+    "gewerk": "maler",
+    "stadt": "Witten"
+  }
+]

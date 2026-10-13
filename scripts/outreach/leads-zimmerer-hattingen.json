@@ -1,0 +1,31 @@
+[
+  {
+    "firma": "Handarbeit mit Seele",
+    "website": "https://kreativholzbau.de/",
+    "emails": [
+      "info@kreativholzbau.de"
+    ],
+    "phones": [
+      "015202480009",
+      "030587507225"
+    ],
+    "scraped_at": "2026-10-12T10:20:23.940Z",
+    "gewerk": "zimmerer",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Kontakt u. Anfahrt",
+    "website": "https://kreativholzbau.de/kontakt-u-anfahrt",
+    "emails": [
+      "info@kreativholzbau.de"
+    ],
+    "phones": [
+      "015202480009",
+      "030587507225",
+      "0697115827689"
+    ],
+    "scraped_at": "2026-10-12T10:20:28.215Z",
+    "gewerk": "zimmerer",
+    "stadt": "Hattingen"
+  }
+]

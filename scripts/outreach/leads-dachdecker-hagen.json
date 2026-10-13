@@ -1,0 +1,92 @@
+[
+  {
+    "firma": "Dachdecker für Hagen, Dortmund und Umgebung",
+    "website": "https://www.dach-doerr.de/",
+    "emails": [
+      "info@dach-doerr.de"
+    ],
+    "phones": [
+      "023313060408",
+      "04126328778",
+      "0858719914"
+    ],
+    "scraped_at": "2026-10-12T09:26:07.367Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Dachdecker Hagen",
+    "website": "https://www.dachdecker-keinecke.de/",
+    "emails": [
+      "info@dachdecker-keinecke.de"
+    ],
+    "phones": [
+      "02331688326",
+      "023313964267"
+    ],
+    "scraped_at": "2026-10-12T09:26:12.233Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Dachdecker Hagen",
+    "website": "https://www.tewes-hagen.de/",
+    "emails": [
+      "info@tewes-hagen.de"
+    ],
+    "phones": [
+      "0233171801",
+      "015110768547"
+    ],
+    "scraped_at": "2026-10-12T09:26:16.505Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Dachdecker",
+    "website": "https://www.vollcamm-bedachungen.de/",
+    "emails": [
+      "info@vollcamm.de"
+    ],
+    "phones": [
+      "02331630819",
+      "010101305453",
+      "010101223427"
+    ],
+    "scraped_at": "2026-10-12T09:26:20.481Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Westphal Dächer + Fassaden GmbH &#8211; Dachdeckermeisterbetrieb aus Hagen",
+    "website": "https://www.westphal-dach.de/",
+    "emails": [
+      "d@echer.de",
+      "j.westphal@westphal-dach.de",
+      "mail@verbraucher-schlichter.de"
+    ],
+    "phones": [
+      "+492331971070",
+      "078517957940",
+      "078517957941"
+    ],
+    "scraped_at": "2026-10-12T09:26:29.420Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Dachdecker in Hagen NRW",
+    "website": "https://droegekamp.de/",
+    "emails": [
+      "info@droegekamp.de"
+    ],
+    "phones": [
+      "+0492331341280",
+      "02331341280",
+      "01791797195"
+    ],
+    "scraped_at": "2026-10-12T09:26:36.322Z",
+    "gewerk": "dachdecker",
+    "stadt": "Hagen"
+  }
+]

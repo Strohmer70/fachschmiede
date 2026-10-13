@@ -1,0 +1,63 @@
+[
+  {
+    "firma": "Bentzien u. Schmidt GbR",
+    "website": "https://www.haustechnik-bentzienschmidt.de/",
+    "emails": [
+      "info@bentzien-schmidt.de",
+      "tscnoitmhnndfe-b@e.iized"
+    ],
+    "phones": [
+      "023249934454",
+      "092026194024",
+      "08102026175203"
+    ],
+    "scraped_at": "2026-10-12T09:50:02.078Z",
+    "gewerk": "klempner",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "SHK Pohl",
+    "website": "https://shk-pohl.de/heizung-sanitaer-hattingen/",
+    "emails": [
+      "info@promonexus.de"
+    ],
+    "phones": [
+      "01781202882",
+      "015777406869",
+      "01108399300"
+    ],
+    "scraped_at": "2026-10-12T09:50:07.163Z",
+    "gewerk": "klempner",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Timo Sommer Sanitär &#8211; Heizung &#8211; Sanitär &#8211; Meisterbetrieb",
+    "website": "https://sommer-sanitaer.de/",
+    "emails": [
+      "in**@so*************.de",
+      "info@sommer-sanitaer.de"
+    ],
+    "phones": [
+      "0617283951",
+      "01725218915"
+    ],
+    "scraped_at": "2026-10-12T09:50:11.325Z",
+    "gewerk": "klempner",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Sonnenschein KG, Start, 45525 Hattingen",
+    "website": "https://www.sonnenschein-shk.de/",
+    "emails": [
+      "info@sonnenschein-shk.de",
+      "service@w4pro.de"
+    ],
+    "phones": [
+      "+49232424004",
+      "0232424004"
+    ],
+    "scraped_at": "2026-10-12T09:50:27.561Z",
+    "gewerk": "klempner",
+    "stadt": "Hattingen"
+  }
+]

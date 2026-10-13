@@ -1,0 +1,44 @@
+[
+  {
+    "firma": "BauGuru24",
+    "website": "https://www.bauguru24.de/handwerker/hagen/zimmerei-holzbau",
+    "emails": [
+      "info@bauguru24.de"
+    ],
+    "phones": [
+      "+495731156615",
+      "05731156615"
+    ],
+    "scraped_at": "2026-10-12T10:19:15.953Z",
+    "gewerk": "zimmerer",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Mein Bauernhof",
+    "website": "https://suchehandwerker.de/betrieb/petermann-nachf-zimmerei-und-holzbau-gmbh-329722/",
+    "emails": [
+      "info@petermann-holzbau.de"
+    ],
+    "phones": [
+      "+49233451718"
+    ],
+    "scraped_at": "2026-10-12T10:20:08.586Z",
+    "gewerk": "zimmerer",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Rode",
+    "website": "https://rode-holzbau.de/",
+    "emails": [
+      "rode.holzbau@t-online.de"
+    ],
+    "phones": [
+      "0233177378",
+      "0181923352",
+      "0250620250128"
+    ],
+    "scraped_at": "2026-10-12T10:20:15.900Z",
+    "gewerk": "zimmerer",
+    "stadt": "Hagen"
+  }
+]

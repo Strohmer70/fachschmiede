@@ -1,0 +1,61 @@
+[
+  {
+    "firma": "Dachbau Mark",
+    "website": "https://www.dachbaumark.de/",
+    "emails": [
+      "info@dachbaumark.de"
+    ],
+    "phones": [
+      "+4923749247711",
+      "0588235294",
+      "0588235294118"
+    ],
+    "scraped_at": "2026-10-12T09:28:28.716Z",
+    "gewerk": "dachdecker",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Startseite",
+    "website": "https://bartels-dachdecker.de/",
+    "emails": [
+      "dachdecker.bartels@t-online.de"
+    ],
+    "phones": [
+      "0941769040093",
+      "0251007071928",
+      "0774277874"
+    ],
+    "scraped_at": "2026-10-12T09:28:37.970Z",
+    "gewerk": "dachdecker",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Trümper | Bedachungen &amp; Architektur",
+    "website": "https://truemper-dach.de/",
+    "emails": [
+      "info@truemper-dach.de"
+    ],
+    "phones": [
+      "0237129404",
+      "0847753790"
+    ],
+    "scraped_at": "2026-10-12T09:29:05.723Z",
+    "gewerk": "dachdecker",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Lindenberger Bedachungs GmbH",
+    "website": "https://www.lindenberger-bedachungen.de/",
+    "emails": [
+      "info@lindenberger-bedachungen.de"
+    ],
+    "phones": [
+      "010101968384",
+      "010101358155",
+      "010101349064"
+    ],
+    "scraped_at": "2026-10-12T09:29:10.336Z",
+    "gewerk": "dachdecker",
+    "stadt": "Iserlohn"
+  }
+]

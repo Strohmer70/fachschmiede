@@ -1,0 +1,30 @@
+[
+  {
+    "firma": "Meinewebsite",
+    "website": "https://www.otgo-zimmerei.de/",
+    "emails": [
+      "otgo-zimmerei@online.de"
+    ],
+    "phones": [
+      "01625654452",
+      "076475383039",
+      "05339197919052"
+    ],
+    "scraped_at": "2026-10-12T10:24:43.892Z",
+    "gewerk": "zimmerer",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Zimmerei + Holzbau   Schwelm &#128296; finderr",
+    "website": "https://www.finderr.de/holzbaujakobi.de-zimmerei-schwelm-holzbau-100682819",
+    "emails": [
+      "info@finderr.de"
+    ],
+    "phones": [
+      "0909595108"
+    ],
+    "scraped_at": "2026-10-12T10:24:48.360Z",
+    "gewerk": "zimmerer",
+    "stadt": "Schwelm"
+  }
+]

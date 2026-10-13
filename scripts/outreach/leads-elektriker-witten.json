@@ -1,0 +1,95 @@
+[
+  {
+    "firma": "Elektro Lüttkopf",
+    "website": "https://www.elektro-luettkopf.de/",
+    "emails": [
+      "elektro.luettkopf@t-online.de"
+    ],
+    "phones": [
+      "+491758378076",
+      "037872696495"
+    ],
+    "scraped_at": "2026-10-12T09:44:12.869Z",
+    "gewerk": "elektriker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "ELEKTRO Wieshoff",
+    "website": "https://www.elektro-wieshoff.de/",
+    "emails": [
+      "info@elektro-wieshoff.de"
+    ],
+    "phones": [
+      "0230252044",
+      "092026210715",
+      "054608462628"
+    ],
+    "scraped_at": "2026-10-12T09:44:17.822Z",
+    "gewerk": "elektriker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Elektriker Neumann – Witten",
+    "website": "https://elektrohilfe-neumann.de/elektriker/witten/",
+    "emails": [
+      "neumann.annahme@gmail.com",
+      "ihre@email.de"
+    ],
+    "phones": [
+      "015257466282",
+      "+4915257466282",
+      "04818263522417"
+    ],
+    "scraped_at": "2026-10-12T09:44:20.846Z",
+    "gewerk": "elektriker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Elektriker Witten",
+    "website": "https://pf-elektro.de/",
+    "emails": [
+      "info@pf-elektro.de",
+      "privacy@defiant.com",
+      "u200dsupport@hcaptcha.com",
+      "dpo-google@google.com",
+      "support@fb.com"
+    ],
+    "phones": [
+      "+492302",
+      "0230227326",
+      "071723273264"
+    ],
+    "scraped_at": "2026-10-12T09:44:25.604Z",
+    "gewerk": "elektriker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Elektro Arnold Witten",
+    "website": "https://elektroarnold.com/",
+    "emails": [
+      "info@elektroarnold.com"
+    ],
+    "phones": [
+      "07112411344",
+      "+491715814126"
+    ],
+    "scraped_at": "2026-10-12T09:44:31.037Z",
+    "gewerk": "elektriker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "ELEKTRO Wieshoff",
+    "website": "https://www.elektro-wieshoff.de/elektro",
+    "emails": [
+      "info@elektro-wieshoff.de"
+    ],
+    "phones": [
+      "0230252044",
+      "092026210715",
+      "054608462628"
+    ],
+    "scraped_at": "2026-10-12T09:44:36.242Z",
+    "gewerk": "elektriker",
+    "stadt": "Witten"
+  }
+]

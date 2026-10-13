@@ -1,0 +1,76 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-schwelm/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:37:25.688Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "demo-galabau.wmf-goe.de",
+    "website": "https://galabau-dannemann.de/garten-und-landschaftsbau-schwelm/",
+    "emails": [
+      "info@galabau-dannemann.de"
+    ],
+    "phones": [
+      "+4923399290329",
+      "023399290329",
+      "084223742271"
+    ],
+    "scraped_at": "2026-10-12T10:37:30.810Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Gartenbau Schwelm",
+    "website": "https://www.gala-garten.de/schwelm/",
+    "emails": [
+      "info@galabau-dewit.de"
+    ],
+    "phones": [
+      "0605336466",
+      "06053331300",
+      "06053331200"
+    ],
+    "scraped_at": "2026-10-12T10:37:40.391Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Garten",
+    "website": "https://www.mkadrijaj.de/",
+    "emails": [
+      "galabau_kadrijaj@live.de"
+    ],
+    "phones": [
+      "08106048578",
+      "0500460131920",
+      "016094808304"
+    ],
+    "scraped_at": "2026-10-12T10:37:45.028Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Gartenbau Schwelm",
+    "website": "https://www.gartenbau-kurz.de/schwelm/",
+    "emails": [
+      "info@galabau-dewit.de"
+    ],
+    "phones": [
+      "0605336466",
+      "06053331300",
+      "06053331200"
+    ],
+    "scraped_at": "2026-10-12T10:38:05.125Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Schwelm"
+  }
+]

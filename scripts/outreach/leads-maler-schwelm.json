@@ -1,0 +1,27 @@
+[
+  {
+    "firma": "Malermeister in Schwelm    Zuverlässigkeit &amp; Termintreue",
+    "website": "https://malermeister-karl.de/nordrhein-westfalen/schwelm/",
+    "emails": [
+      "info@malermeister-karl.de",
+      "info@schluesseldienst-karl.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T10:09:29.065Z",
+    "gewerk": "maler",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Malerbetrieb Dietl",
+    "website": "https://www.malerbetrieb-dietl.de/stadt/schwelm",
+    "emails": [
+      "info@malerbetrieb-dietl.de"
+    ],
+    "phones": [
+      "+4920417731272"
+    ],
+    "scraped_at": "2026-10-12T10:09:33.752Z",
+    "gewerk": "maler",
+    "stadt": "Schwelm"
+  }
+]

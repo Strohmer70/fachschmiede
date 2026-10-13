@@ -1,0 +1,43 @@
+[
+  {
+    "firma": "Zimmerei &amp; Holzbau Thomas &#8211; Inhaber. Armin Thomas",
+    "website": "https://www.holzbau-unna.de/",
+    "emails": [
+      "info@holzbau-unna.de"
+    ],
+    "phones": [
+      "076334760923"
+    ],
+    "scraped_at": "2026-10-12T10:26:16.806Z",
+    "gewerk": "zimmerer",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Michael Zimmermann",
+    "website": "https://www.tischler-unna.com/",
+    "emails": [
+      "info@mz-tischlerei.de"
+    ],
+    "phones": [
+      "02233374943",
+      "+49230312812",
+      "027538520112"
+    ],
+    "scraped_at": "2026-10-12T10:26:23.144Z",
+    "gewerk": "zimmerer",
+    "stadt": "Unna"
+  },
+  {
+    "firma": "Kontakt &#8211; Zimmerei &amp; Holzbau Thomas",
+    "website": "https://www.holzbau-unna.de/kontakt/",
+    "emails": [
+      "info@holzbau-unna.de"
+    ],
+    "phones": [
+      "076334760923"
+    ],
+    "scraped_at": "2026-10-12T10:26:32.258Z",
+    "gewerk": "zimmerer",
+    "stadt": "Unna"
+  }
+]

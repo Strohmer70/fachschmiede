@@ -1,0 +1,33 @@
+[
+  {
+    "firma": "anyhelpnow",
+    "website": "https://anyhelpnow.com/handwerk/zimmerei/kamen",
+    "emails": [
+      "info@anyhelpnow.com"
+    ],
+    "phones": [
+      "0387426610720",
+      "0693240166",
+      "0346673819"
+    ],
+    "scraped_at": "2026-10-12T10:23:05.750Z",
+    "gewerk": "zimmerer",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Zimmerei Blaue",
+    "website": "http://www.zimmerei-blaue.de/zimmerei_zimmermann_zimmerer_kamen.html",
+    "emails": [
+      "zimmerei-blaue-ug@t-online.de",
+      "zimmerei-blaue@t-online.de"
+    ],
+    "phones": [
+      "03460720725",
+      "03460720629",
+      "+4915750121644"
+    ],
+    "scraped_at": "2026-10-12T10:23:24.154Z",
+    "gewerk": "zimmerer",
+    "stadt": "Kamen"
+  }
+]

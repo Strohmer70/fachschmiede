@@ -1,0 +1,44 @@
+[
+  {
+    "firma": "Malermeister Fischer in Herne",
+    "website": "https://malermeisterfischer.de/",
+    "emails": [
+      "info@malermeisterfischer.de"
+    ],
+    "phones": [
+      "0232368383",
+      "0831707177607",
+      "0260728082232"
+    ],
+    "scraped_at": "2026-10-12T10:04:45.724Z",
+    "gewerk": "maler",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Fischer",
+    "website": "https://privat.fischer-malerbetrieb.de/",
+    "emails": [
+      "info@fischer-malerbetrieb.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T10:05:02.761Z",
+    "gewerk": "maler",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Maler und Glaser Meißner in Herne",
+    "website": "https://www.maler-und-glaser-meissner.de/",
+    "emails": [
+      "info@maler-und-glaser-meissner.de",
+      "malerbetrieb-meissner@t-online.de"
+    ],
+    "phones": [
+      "0232570238",
+      "010101179725",
+      "010101243635"
+    ],
+    "scraped_at": "2026-10-12T10:05:06.961Z",
+    "gewerk": "maler",
+    "stadt": "Herne"
+  }
+]

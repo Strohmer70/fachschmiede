@@ -1,0 +1,78 @@
+[
+  {
+    "firma": "Scherwat Fachmarkt für Dach, Wand &amp; Innenausbau",
+    "website": "https://scherwat.de/handwerksbetriebe/tobias-mutz-holzbau-in-sprockhoevel/",
+    "emails": [
+      "mail@scherwat.de",
+      "mail@holz-mutz.de"
+    ],
+    "phones": [
+      "023324438",
+      "+4923399118333",
+      "+4923399118334"
+    ],
+    "scraped_at": "2026-10-12T10:25:36.588Z",
+    "gewerk": "zimmerer",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Zimmerei Lüddecke e.K",
+    "website": "https://www.zmh.com/manufaktur/zimmerei-lueddecke-e-k/",
+    "emails": [
+      "mail@zimmerei-lueddecke.de",
+      "info@zmh.com"
+    ],
+    "phones": [
+      "02339120390",
+      "07919494740"
+    ],
+    "scraped_at": "2026-10-12T10:25:41.474Z",
+    "gewerk": "zimmerer",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Zimmerei und Dachdeckerei in NRW",
+    "website": "https://www.bedachungen.nrw/",
+    "emails": [
+      "info@bau-venn.de"
+    ],
+    "phones": [
+      "02339922001",
+      "01601141919"
+    ],
+    "scraped_at": "2026-10-12T10:25:45.389Z",
+    "gewerk": "zimmerer",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Tobias Mutz Holzbau",
+    "website": "https://www.holz-mutz.de/",
+    "emails": [
+      "mail@holz-mutz.de"
+    ],
+    "phones": [
+      "00492339118333",
+      "023399118333",
+      "0492339118333"
+    ],
+    "scraped_at": "2026-10-12T10:25:51.308Z",
+    "gewerk": "zimmerer",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Die Holzbauprofis",
+    "website": "https://die-holzbauprofis.de/unternehmen/",
+    "emails": [
+      "info@die-holzbauprofis.de",
+      "info@emarket-consulting.com"
+    ],
+    "phones": [
+      "+492339120390",
+      "02339120390",
+      "0379142761"
+    ],
+    "scraped_at": "2026-10-12T10:25:57.581Z",
+    "gewerk": "zimmerer",
+    "stadt": "Sprockhövel"
+  }
+]

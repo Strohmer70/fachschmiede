@@ -1,0 +1,77 @@
+[
+  {
+    "firma": "Maler Iserlohn",
+    "website": "https://www.maler-becker-gmbh.de/",
+    "emails": [
+      "info@maler-becker-gmbh.de",
+      "nfo@maler-becker-gmbh.de"
+    ],
+    "phones": [
+      "023718327703",
+      "023718327704",
+      "01714721966"
+    ],
+    "scraped_at": "2026-10-12T10:06:07.977Z",
+    "gewerk": "maler",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Home",
+    "website": "https://maler-seidenzahl.de/",
+    "emails": [
+      "info@maler-seidenzahl.de"
+    ],
+    "phones": [
+      "+4915175071551",
+      "0921769040077",
+      "0250902093143"
+    ],
+    "scraped_at": "2026-10-12T10:06:12.906Z",
+    "gewerk": "maler",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Malermeister Blumenberg",
+    "website": "https://www.malermeister-blumenberg.de/",
+    "emails": [
+      "frank.blumenberg@web.de"
+    ],
+    "phones": [
+      "015253643185",
+      "0805845355",
+      "0454545454545454"
+    ],
+    "scraped_at": "2026-10-12T10:06:16.704Z",
+    "gewerk": "maler",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Alfred Kemper Malerbetrieb",
+    "website": "https://www.kemper-malerbetrieb.de/",
+    "emails": [
+      "info@kemper-malerbetrieb.de"
+    ],
+    "phones": [
+      "+4917623377130",
+      "+4923713513721"
+    ],
+    "scraped_at": "2026-10-12T10:06:21.630Z",
+    "gewerk": "maler",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Bernhard Zimmermann",
+    "website": "https://www.malermeisterbetrieb-zimmermann.de/",
+    "emails": [
+      "malermeister-b.zimmermann@t-online.de"
+    ],
+    "phones": [
+      "0881686178850",
+      "0251106084246",
+      "+4923718328926"
+    ],
+    "scraped_at": "2026-10-12T10:06:27.332Z",
+    "gewerk": "maler",
+    "stadt": "Iserlohn"
+  }
+]

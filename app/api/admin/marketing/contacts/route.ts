@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { checkAdminAuth } from '@/lib/admin-auth'
 
 export async function GET(request: Request) {
+  if (!checkAdminAuth(request)) {
+    return NextResponse.json({ error: 'Nicht autorisiert' }, { status: 401 })
+  }
   try {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')

@@ -1,0 +1,69 @@
+[
+  {
+    "firma": "Dachdecker Herne",
+    "website": "https://dachdecker-herne.com/",
+    "emails": [
+      "kram@herne-dachdecker.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T09:27:18.944Z",
+    "gewerk": "dachdecker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Dachdecker Herne",
+    "website": "https://www.rothoefer-dach.de/",
+    "emails": [
+      "info@rothoefer-dach.de"
+    ],
+    "phones": [
+      "+4917623534354",
+      "021162831229140",
+      "0260725211217"
+    ],
+    "scraped_at": "2026-10-12T09:27:34.664Z",
+    "gewerk": "dachdecker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Winter + Sohn GmbH",
+    "website": "https://www.dachdecker-winter.de/",
+    "emails": [
+      "info@dachdecker-winter.de"
+    ],
+    "phones": [
+      "0232550123",
+      "03899999999",
+      "0347462997"
+    ],
+    "scraped_at": "2026-10-12T09:27:39.808Z",
+    "gewerk": "dachdecker",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Die Besten der Stadt",
+    "website": "https://www.diebestenderstadt.de/herne/beste-dachdecker-in-herne",
+    "emails": [
+      "info@aw-bedachungen.de",
+      "info@balci-dach.de",
+      "info@bodo-hahn.de",
+      "info@dach-fassade.de",
+      "info@diekmann-dach.de",
+      "b.kortebusch@web.de",
+      "info@bedachungen-hellrung.de",
+      "post@dachdecker-simski.de",
+      "halle@verkehrsschulen.de",
+      "info@klute-bedachungen.de",
+      "info@rothoefer-dach.de",
+      "kram@herne-dachdecker.de"
+    ],
+    "phones": [
+      "+4923239999999",
+      "+492323123456",
+      "+49232312345"
+    ],
+    "scraped_at": "2026-10-12T09:27:44.408Z",
+    "gewerk": "dachdecker",
+    "stadt": "Herne"
+  }
+]

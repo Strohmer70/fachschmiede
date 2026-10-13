@@ -1,0 +1,47 @@
+[
+  {
+    "firma": "Zimmerei Zimmermann GmbH",
+    "website": "https://www.wr.de/unternehmen/zimmerei-zimmermann-gmbh-88497",
+    "emails": [
+      "kunden@smartico.one",
+      "info@zimmerei-zimmermann.de",
+      "office@cranfordschool.co.uk"
+    ],
+    "phones": [
+      "+49234471241",
+      "0814438169",
+      "0814438188"
+    ],
+    "scraped_at": "2026-10-12T10:14:20.076Z",
+    "gewerk": "zimmerer",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Suche Handwerk",
+    "website": "https://suche-handwerk.de/betrieb/zimmerei-zimmermann-gmbh-in-bochum-ihr-experte-fuer-holzbau/",
+    "emails": [
+      "info@buske-consulting.de"
+    ],
+    "phones": [
+      "022419558490",
+      "022419558499"
+    ],
+    "scraped_at": "2026-10-12T10:14:33.839Z",
+    "gewerk": "zimmerer",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "BauGuru24",
+    "website": "https://www.bauguru24.de/handwerker/bochum/zimmerei-holzbau",
+    "emails": [
+      "info@bauguru24.de"
+    ],
+    "phones": [
+      "+495731156615",
+      "05731156615"
+    ],
+    "scraped_at": "2026-10-12T10:14:38.617Z",
+    "gewerk": "zimmerer",
+    "stadt": "Bochum"
+  }
+]

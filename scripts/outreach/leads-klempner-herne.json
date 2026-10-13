@@ -1,0 +1,76 @@
+[
+  {
+    "firma": "SHR Sanitär",
+    "website": "https://shr-herne.de/",
+    "emails": [
+      "info@shr-herne.de"
+    ],
+    "phones": [
+      "+4923239452333",
+      "023239452333",
+      "0800895334"
+    ],
+    "scraped_at": "2026-10-12T09:50:46.173Z",
+    "gewerk": "klempner",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Ringer Wasser",
+    "website": "https://ringer-shk.com/",
+    "emails": [
+      "info@ringer-shk.de"
+    ],
+    "phones": [
+      "023619916690",
+      "+4923619916690"
+    ],
+    "scraped_at": "2026-10-12T09:50:50.578Z",
+    "gewerk": "klempner",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "MGHI GmbH &#8212; Heizung &#183; Sanit&#228;r &#183; Klima",
+    "website": "https://mghi.de/",
+    "emails": [
+      "info@mghi.de"
+    ],
+    "phones": [
+      "+4923239181941",
+      "023239181941",
+      "+491771544135"
+    ],
+    "scraped_at": "2026-10-12T09:50:55.322Z",
+    "gewerk": "klempner",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "SHK Pohl",
+    "website": "https://shk-pohl.de/heizung-sanitaer-herne/",
+    "emails": [
+      "info@promonexus.de"
+    ],
+    "phones": [
+      "01781202882",
+      "015777406869",
+      "01108399300"
+    ],
+    "scraped_at": "2026-10-12T09:51:13.231Z",
+    "gewerk": "klempner",
+    "stadt": "Herne"
+  },
+  {
+    "firma": "Ihr Heizungstechniker in",
+    "website": "https://www.schluetergmbh.com/",
+    "emails": [
+      "info@schluetergmbh.com"
+    ],
+    "phones": [
+      "096845451920",
+      "02323961796",
+      "010101357537"
+    ],
+    "scraped_at": "2026-10-12T09:51:17.576Z",
+    "gewerk": "klempner",
+    "stadt": "Herne"
+  }
+]

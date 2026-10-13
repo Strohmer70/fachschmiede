@@ -1,0 +1,26 @@
+[
+  {
+    "firma": "Dachdecker in Gevelsberg",
+    "website": "https://www.dachdecker-betriebe.de/Dachdecker/gevelsberg",
+    "emails": [
+      "kontakt@123media.site"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T09:25:31.937Z",
+    "gewerk": "dachdecker",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "Top Dachdecker in Gevelsberg",
+    "website": "https://suchehandwerker.de/dachdeckerarbeit/gevelsberg/",
+    "emails": [
+      "info@suchehandwerker.de"
+    ],
+    "phones": [
+      "09329390868"
+    ],
+    "scraped_at": "2026-10-12T09:25:58.642Z",
+    "gewerk": "dachdecker",
+    "stadt": "Gevelsberg"
+  }
+]

@@ -1,0 +1,64 @@
+[
+  {
+    "firma": "Hagemann",
+    "website": "https://www.hagemann-shk.de/",
+    "emails": [
+      "info@hagemann-shk.de"
+    ],
+    "phones": [
+      "023328438899",
+      "065714285714286",
+      "0956979804"
+    ],
+    "scraped_at": "2026-10-12T09:48:52.003Z",
+    "gewerk": "klempner",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "SHK Pohl",
+    "website": "https://shk-pohl.de/heizung-sanitaer-gevelsberg/",
+    "emails": [
+      "info@promonexus.de"
+    ],
+    "phones": [
+      "01781202882",
+      "015777406869",
+      "01108399300"
+    ],
+    "scraped_at": "2026-10-12T09:48:57.069Z",
+    "gewerk": "klempner",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "Schönebeck & Sohn Gesellschaft mit beschränkter Haftung",
+    "website": "https://www.schoenebeckundsohn.de/",
+    "emails": [
+      "info@schoenebeckundsohn.de",
+      "esnuneeodboi@ckoendnfhh.sc",
+      "febdsdoc@nsihenko.eucnnhoe"
+    ],
+    "phones": [
+      "023322675",
+      "092026192047",
+      "08102026173441"
+    ],
+    "scraped_at": "2026-10-12T09:49:07.148Z",
+    "gewerk": "klempner",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "My Site 12",
+    "website": "https://www.dc-heizung-sanitaer.de/",
+    "emails": [
+      "info@dc-heizung-sanitaer.de"
+    ],
+    "phones": [
+      "023329067580",
+      "076475383039",
+      "05339197919052"
+    ],
+    "scraped_at": "2026-10-12T09:49:21.073Z",
+    "gewerk": "klempner",
+    "stadt": "Gevelsberg"
+  }
+]

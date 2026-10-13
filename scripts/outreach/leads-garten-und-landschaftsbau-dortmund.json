@@ -1,0 +1,89 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-dortmund/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:29:49.998Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Garten- und Landschaftsbau Schlüter",
+    "website": "https://www.schlueter-galabau.de/",
+    "emails": [
+      "info@schlueter-galabau.de"
+    ],
+    "phones": [
+      "023197100520",
+      "023197100432",
+      "033621576854"
+    ],
+    "scraped_at": "2026-10-12T10:29:54.758Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Fürst Garten- &amp; Landschaftsbau",
+    "website": "https://fuerst-galabau.de/",
+    "emails": [
+      "info@fuerst-galabau.de"
+    ],
+    "phones": [
+      "0231633181",
+      "01636676451"
+    ],
+    "scraped_at": "2026-10-12T10:30:01.631Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Garten- und Landschaftsbau Weißner | Dortmund",
+    "website": "https://www.weissner-gmbh.de/",
+    "emails": [
+      "info@weissner-gmbh.de"
+    ],
+    "phones": [
+      "0231675423",
+      "+49231675423"
+    ],
+    "scraped_at": "2026-10-12T10:30:07.001Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Garten",
+    "website": "https://www.querbeet-dortmund.de/",
+    "emails": [
+      "mail@querbeet-dortmund.de"
+    ],
+    "phones": [
+      "+4923198683868",
+      "+491608461886",
+      "+49231332996"
+    ],
+    "scraped_at": "2026-10-12T10:30:11.023Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Backhauß GmbH",
+    "website": "https://backhauss.de/",
+    "emails": [
+      "info@backhauss.de"
+    ],
+    "phones": [
+      "03602982626",
+      "+49231980600",
+      "0231980600"
+    ],
+    "scraped_at": "2026-10-12T10:30:16.959Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Dortmund"
+  }
+]

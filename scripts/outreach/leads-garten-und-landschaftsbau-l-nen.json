@@ -1,0 +1,75 @@
+[
+  {
+    "firma": "baasner-galabau.de",
+    "website": "https://baasner-galabau.de/",
+    "emails": [
+      "info@baasner-galabau.de"
+    ],
+    "phones": [
+      "+49230654069",
+      "043124051612",
+      "0257911536"
+    ],
+    "scraped_at": "2026-10-12T10:36:55.536Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-l%C3%BCnen/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:37:01.116Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-luenen/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:37:06.692Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Langmann Garten",
+    "website": "https://www.langmann-gaerten.de/",
+    "emails": [
+      "info@langmann-gaerten.de"
+    ],
+    "phones": [
+      "02306497873",
+      "010101123578",
+      "010101437162"
+    ],
+    "scraped_at": "2026-10-12T10:37:11.234Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Petry Garten",
+    "website": "https://gaerten-petry.de/",
+    "emails": [
+      "info@petry-galabau.de",
+      "info@gaerten-petry.de"
+    ],
+    "phones": [
+      "0200831124332",
+      "0230614557"
+    ],
+    "scraped_at": "2026-10-12T10:37:16.263Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Lünen"
+  }
+]

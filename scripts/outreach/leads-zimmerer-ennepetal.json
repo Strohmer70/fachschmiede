@@ -1,0 +1,32 @@
+[
+  {
+    "firma": "Zimmerei Roy UG",
+    "website": "https://www.zimmerei-roy.de/",
+    "emails": [
+      "orders@mywebsite-now.com",
+      "info@zimmerei-roy.de"
+    ],
+    "phones": [
+      "+4917660034601",
+      "0000000",
+      "0903884444"
+    ],
+    "scraped_at": "2026-10-12T10:16:23.462Z",
+    "gewerk": "zimmerer",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Auftra",
+    "website": "https://auftra.de/handwerker/zimmerer/ennepetal",
+    "emails": [
+      "ihre@email.de",
+      "support@auftra.de"
+    ],
+    "phones": [
+      "+4915772016906"
+    ],
+    "scraped_at": "2026-10-12T10:16:55.498Z",
+    "gewerk": "zimmerer",
+    "stadt": "Ennepetal"
+  }
+]

@@ -1,0 +1,87 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-hagen/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:32:21.215Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Wolfgang Hohmann Garten- und Landschaftsbau",
+    "website": "https://www.galabau-hagen.de/",
+    "emails": [
+      "hohmann@galabau-hagen.de"
+    ],
+    "phones": [
+      "023314835321",
+      "015228824882",
+      "017664474245"
+    ],
+    "scraped_at": "2026-10-12T10:32:25.819Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Garten",
+    "website": "https://www.galabau-roetz.de/",
+    "emails": [
+      "info@galabau-roetz.de"
+    ],
+    "phones": [
+      "0409145206",
+      "02337474533",
+      "04308347312"
+    ],
+    "scraped_at": "2026-10-12T10:32:29.304Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "demo-galabau.wmf-goe.de",
+    "website": "https://galabau-dannemann.de/garten-und-landschaftsbau-hagen/",
+    "emails": [
+      "info@galabau-dannemann.de"
+    ],
+    "phones": [
+      "+4923399290329",
+      "023399290329",
+      "084223742271"
+    ],
+    "scraped_at": "2026-10-12T10:32:33.845Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Galabau Wiecken",
+    "website": "http://www.galabau-wiecken.de/",
+    "emails": [
+      "info@galabau-wiecken.de"
+    ],
+    "phones": [
+      "016096209396"
+    ],
+    "scraped_at": "2026-10-12T10:32:37.444Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Garten",
+    "website": "https://www.bartos-galabau.de/",
+    "emails": [
+      "info@bartos-galabau.de"
+    ],
+    "phones": [
+      "023313567950"
+    ],
+    "scraped_at": "2026-10-12T10:32:42.282Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Hagen"
+  }
+]

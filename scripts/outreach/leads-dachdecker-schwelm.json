@@ -1,0 +1,62 @@
+[
+  {
+    "firma": "Startseite",
+    "website": "https://www.dachdecker-schwelm.de/",
+    "emails": [
+      "info@dachdecker-schwelm.de",
+      "kontakt@kranservice-schwelm.de"
+    ],
+    "phones": [
+      "023364427920",
+      "023364427918"
+    ],
+    "scraped_at": "2026-10-12T09:30:39.836Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "MT Dachbau",
+    "website": "https://mt-dachbau.de/",
+    "emails": [
+      "info@mt-dachbau.de",
+      "creditcard@2x.png",
+      "email-icon_blue@300x.png",
+      "telephone-icon_blue@300x-1.png",
+      "telephone-icon_blue@300x-1-150x150.png"
+    ],
+    "phones": [
+      "+4923364284992"
+    ],
+    "scraped_at": "2026-10-12T09:30:44.042Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Dachdeckerei",
+    "website": "https://www.dachdecker-schwelm.de/dachdeckerei/",
+    "emails": [
+      "info@dachdecker-schwelm.de",
+      "kontakt@kranservice-schwelm.de"
+    ],
+    "phones": [
+      "023364427920",
+      "023364427918"
+    ],
+    "scraped_at": "2026-10-12T09:30:50.414Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwelm"
+  },
+  {
+    "firma": "Dachdecker Schwelm — 24/7 Notdienst",
+    "website": "https://ortsrank.com/dachdecker/schwelm",
+    "emails": [
+      "ihre@email.de"
+    ],
+    "phones": [
+      "+492122234567"
+    ],
+    "scraped_at": "2026-10-12T09:31:10.737Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwelm"
+  }
+]

@@ -1,0 +1,76 @@
+[
+  {
+    "firma": "Dachdeckermeister Gregor Weigelt",
+    "website": "https://dachdecker-weigelt.de/",
+    "emails": [
+      "info@dachdecker-weigelt.de",
+      "weigelt-bedachungen@t-online.de"
+    ],
+    "phones": [
+      "0230473579",
+      "0230473589",
+      "0260977749"
+    ],
+    "scraped_at": "2026-10-12T09:31:23.783Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "CReativesDAch",
+    "website": "https://www.credach.de/",
+    "emails": [
+      "info@credach.de",
+      "beispiel@email.com"
+    ],
+    "phones": [
+      "02233374943",
+      "056396484375",
+      "025641025642"
+    ],
+    "scraped_at": "2026-10-12T09:31:49.928Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Dachdeckermeister A. Eisleben",
+    "website": "https://eisleben-bedachungen.de/",
+    "emails": [
+      "info@eisleben-bedachungen.de"
+    ],
+    "phones": [
+      "0752734583",
+      "02304777544",
+      "01752055477"
+    ],
+    "scraped_at": "2026-10-12T09:31:53.712Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Meister Radar",
+    "website": "https://www.meister-radar.de/search/dachdecker/schwerte",
+    "emails": [
+      "info@dach-doerr.de",
+      "db@bedachungen-boecker.de",
+      "info@hoffmann-freund.de",
+      "info@flueshoeh-dach.de",
+      "info@bedachung-berkemeyer.de",
+      "info@bania-bedachungen.de",
+      "dichtesdach@t-online.de",
+      "info@credach.de",
+      "info@gg-bedachungen.de",
+      "dachdecker@ergste.de",
+      "buero@mittelstaedt-daecher.de",
+      "info@eisleben-bedachungen.de",
+      "info@meister-radar.de"
+    ],
+    "phones": [
+      "0491946425",
+      "+4923313060408",
+      "06699999999"
+    ],
+    "scraped_at": "2026-10-12T09:31:58.234Z",
+    "gewerk": "dachdecker",
+    "stadt": "Schwerte"
+  }
+]

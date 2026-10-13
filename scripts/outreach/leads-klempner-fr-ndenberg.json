@@ -1,0 +1,48 @@
+[
+  {
+    "firma": "Klempner Brenner",
+    "website": "https://klempner-brenner.de/klempner/froendenberg-ruhr/",
+    "emails": [
+      "info@klempner-brenner.de"
+    ],
+    "phones": [
+      "+4915257476798",
+      "015257476798"
+    ],
+    "scraped_at": "2026-10-12T09:48:14.220Z",
+    "gewerk": "klempner",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "David Weßeling Heizung Sanitär",
+    "website": "https://www.haustechnikwesseling.de/",
+    "emails": [
+      "info@haustechnikwesseling.de",
+      "hsfs@cgiwhkeanniduseot.eienl",
+      "iaeshke@nn.hseniwclduotgiesf"
+    ],
+    "phones": [
+      "023039469920",
+      "092026230826",
+      "08102026205334"
+    ],
+    "scraped_at": "2026-10-12T09:48:23.157Z",
+    "gewerk": "klempner",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "Haustechnik NEUROTH GmbH",
+    "website": "https://www.haustechnik-neuroth.de/",
+    "emails": [
+      "info@haustechnik-neuroth.de"
+    ],
+    "phones": [
+      "0237812010",
+      "092026195923",
+      "071582623358"
+    ],
+    "scraped_at": "2026-10-12T09:48:27.639Z",
+    "gewerk": "klempner",
+    "stadt": "Fröndenberg"
+  }
+]

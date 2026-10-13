@@ -1,0 +1,72 @@
+[
+  {
+    "firma": "Malerbetrieb Vonnemann - Ihr Malermeister in Hattingen",
+    "website": "https://malerbetrieb-vonnemann.de/",
+    "emails": [
+      "info@malerbetrieb-vonnemann.de"
+    ],
+    "phones": [
+      "00491734090066",
+      "004923248690066",
+      "0491734090066"
+    ],
+    "scraped_at": "2026-10-12T10:04:02.370Z",
+    "gewerk": "maler",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Malermeister Schmitt | Malerbetrieb aus Hattingen",
+    "website": "https://www.raumharmonie-schmitt.de/",
+    "emails": [
+      "ms@raumharmonie-schmitt.de"
+    ],
+    "phones": [
+      "02324597407",
+      "016097582507",
+      "084223742271"
+    ],
+    "scraped_at": "2026-10-12T10:04:05.996Z",
+    "gewerk": "maler",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Malermeister Kohlmann Hattingen",
+    "website": "https://maler-kohlmann.de/",
+    "emails": [
+      "malerkohlmann@t-online.de"
+    ],
+    "phones": [
+      "01712771361"
+    ],
+    "scraped_at": "2026-10-12T10:04:10.373Z",
+    "gewerk": "maler",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Malermeisterfachbetrieb Fiedler",
+    "website": "https://fiedler-ha.de/",
+    "emails": [
+      "fiedler-ha@gmx.de"
+    ],
+    "phones": [
+      "+491722765444",
+      "+4923243912447"
+    ],
+    "scraped_at": "2026-10-12T10:04:16.490Z",
+    "gewerk": "maler",
+    "stadt": "Hattingen"
+  },
+  {
+    "firma": "Malerbetrieb Mellech",
+    "website": "https://www.malerbetriebmellech.de/stadt/hattingen/",
+    "emails": [
+      "info@malerbetriebmellech.de"
+    ],
+    "phones": [
+      "0391625328767858"
+    ],
+    "scraped_at": "2026-10-12T10:04:33.126Z",
+    "gewerk": "maler",
+    "stadt": "Hattingen"
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "firma": "Dachdecker Kappe",
+    "website": "https://dachdeckerkappe.de/",
+    "emails": [
+      "info@dachdeckerkappe.de"
+    ],
+    "phones": [
+      "02333839082"
+    ],
+    "scraped_at": "2026-10-12T09:24:17.326Z",
+    "gewerk": "dachdecker",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Dachdecker in Ennepetal",
+    "website": "https://www.dachdecker-betriebe.de/Dachdecker/ennepetal",
+    "emails": [
+      "kontakt@123media.site"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T09:24:22.698Z",
+    "gewerk": "dachdecker",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Ihr Dachdecker in Ennepetal",
+    "website": "http://www.dachdecker-ischen.de/",
+    "emails": [
+      "info@ddm-ischen.de"
+    ],
+    "phones": [
+      "+492333602129",
+      "09352517984",
+      "02333602129"
+    ],
+    "scraped_at": "2026-10-12T09:24:26.532Z",
+    "gewerk": "dachdecker",
+    "stadt": "Ennepetal"
+  },
+  {
+    "firma": "Profimap",
+    "website": "https://profimap.de/dachdecker/ennepetal/",
+    "emails": [
+      "info@profimap.de"
+    ],
+    "phones": [
+      "+491732443860",
+      "+4923314890703",
+      "0399999995"
+    ],
+    "scraped_at": "2026-10-12T09:24:30.995Z",
+    "gewerk": "dachdecker",
+    "stadt": "Ennepetal"
+  }
+]

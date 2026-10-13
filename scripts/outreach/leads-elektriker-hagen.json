@@ -1,0 +1,61 @@
+[
+  {
+    "firma": "Knoop Elektrotechnik - Hagen",
+    "website": "https://elektrotechnik-knoop.de/",
+    "emails": [
+      "buero@elektrotechnik-knoop.de"
+    ],
+    "phones": [
+      "02331362482",
+      "02331362483",
+      "0611078758847"
+    ],
+    "scraped_at": "2026-10-12T09:38:04.139Z",
+    "gewerk": "elektriker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Wilfried Jeschke Elektroinstallationen » Elektriker in Hagen",
+    "website": "https://www.elektriker.org/hagen/wilfried-jeschke-elektroinstallationen-aULwJT",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "02331305657"
+    ],
+    "scraped_at": "2026-10-12T09:38:07.929Z",
+    "gewerk": "elektriker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Elektro Heinrich Hillen eK",
+    "website": "https://elektrohillen.de/",
+    "emails": [
+      "info@elektrohillen.de"
+    ],
+    "phones": [
+      "0260120582",
+      "0221220211117"
+    ],
+    "scraped_at": "2026-10-12T09:38:25.771Z",
+    "gewerk": "elektriker",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Elektro Böhme",
+    "website": "https://www.boehme-elektro.de/",
+    "emails": [
+      "service@boehme-elektro.de"
+    ],
+    "phones": [
+      "02331788060",
+      "01725838544",
+      "0419877814768"
+    ],
+    "scraped_at": "2026-10-12T09:38:34.364Z",
+    "gewerk": "elektriker",
+    "stadt": "Hagen"
+  }
+]

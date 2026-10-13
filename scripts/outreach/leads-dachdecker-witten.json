@@ -1,0 +1,86 @@
+[
+  {
+    "firma": "Dachdecker Witten",
+    "website": "https://www.dachdecker-witten.de/",
+    "emails": [
+      "info@dachdecker-witten.de"
+    ],
+    "phones": [
+      "0230285373"
+    ],
+    "scraped_at": "2026-10-12T09:34:09.683Z",
+    "gewerk": "dachdecker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Bedachungen",
+    "website": "https://www.dachdecker-rauer.de/",
+    "emails": [
+      "dachdeckerbetrieb-a.rauer@t-online.de"
+    ],
+    "phones": [
+      "013356631920",
+      "010101367977",
+      "010101590675"
+    ],
+    "scraped_at": "2026-10-12T09:34:14.272Z",
+    "gewerk": "dachdecker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "duerscheidt.de",
+    "website": "https://duerscheidt.de/",
+    "emails": [
+      "kontakt@duerscheidt.de"
+    ],
+    "phones": [
+      "0230252041"
+    ],
+    "scraped_at": "2026-10-12T09:34:19.256Z",
+    "gewerk": "dachdecker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Die Besten der Stadt",
+    "website": "https://www.diebestenderstadt.de/witten/beste-dachdecker-in-witten",
+    "emails": [
+      "info@bedachungen-kreutzer.de",
+      "info@andre-rauer.de",
+      "info@burbaum-bedachungen.de",
+      "info@amling-bedachungen.de",
+      "info@dach-wand.de",
+      "info@harprecht.de",
+      "info@mf-bedachung.de",
+      "kontakt@wupper-dach.de",
+      "ingoschultzwitten@web.de",
+      "info@behrens-bitter-bedachungen.de",
+      "team@dachdecker-goebel.com",
+      "info@dachkonzept-ruhr.de",
+      "dachdecker-team-klingenhagen@t-online.de",
+      "moewis@live.de"
+    ],
+    "phones": [
+      "+4923029876543",
+      "+492302123456",
+      "+4923029123456"
+    ],
+    "scraped_at": "2026-10-12T09:34:24.074Z",
+    "gewerk": "dachdecker",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Dachdeckerbetrieb C. Jannen &amp; M. Giersbach",
+    "website": "https://www.dachjg.de/",
+    "emails": [
+      "info@dachjg.de"
+    ],
+    "phones": [
+      "023022032644",
+      "023022032645",
+      "01703107825"
+    ],
+    "scraped_at": "2026-10-12T09:34:30.936Z",
+    "gewerk": "dachdecker",
+    "stadt": "Witten"
+  }
+]

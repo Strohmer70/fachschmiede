@@ -1,0 +1,101 @@
+[
+  {
+    "firma": "SHK Pohl",
+    "website": "https://shk-pohl.de/heizung-sanitaer-bochum/",
+    "emails": [
+      "info@promonexus.de"
+    ],
+    "phones": [
+      "01781202882",
+      "015777406869",
+      "01108399300"
+    ],
+    "scraped_at": "2026-10-12T09:45:30.984Z",
+    "gewerk": "klempner",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Kaisler Sanitär & Heizung",
+    "website": "https://www.shk-kaisler.de/",
+    "emails": [
+      "shk-kaisler@t-online.de",
+      "a-@insieknlt-.shkredleo",
+      "e@nisokth.rleas"
+    ],
+    "phones": [
+      "02327994919",
+      "092026200316",
+      "08102026181104"
+    ],
+    "scraped_at": "2026-10-12T09:45:36.664Z",
+    "gewerk": "klempner",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Tokul Haustechnik",
+    "website": "https://tokulhaustechnik.de/heizung-sanitar/",
+    "emails": [
+      "info@tokulhaustechnik.de",
+      "name@beispiel.de"
+    ],
+    "phones": [
+      "+4923496643792",
+      "+4915255628177",
+      "023496643792"
+    ],
+    "scraped_at": "2026-10-12T09:45:40.430Z",
+    "gewerk": "klempner",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Demolli GmbH Bochum – Badsanierung, Heizung &amp; Haustechnik",
+    "website": "https://demolli-shk.de/",
+    "emails": [
+      "info@demolli.gmbh",
+      "info@hwk-do.de",
+      "info@schlichtungsstelle-bgg.de",
+      "u003einfo@schlichtungsstelle-bgg.de",
+      "christiane.mau@agentur-id.de",
+      "poststelle@ldi.nrw.de",
+      "u003epoststelle@ldi.nrw.de",
+      "web@agentur-id.de",
+      "info@viessmann.com",
+      "u003einfo@viessmann.com",
+      "info@meister1.de",
+      "u003einfo@meister1.de",
+      "lukas.brinkmann@gc-gruppe.de",
+      "info@agentur-id.de",
+      "info@immersight.de",
+      "legal@vimeo.com",
+      "info@klimarando.de",
+      "u003email@shk-info.de",
+      "support@digital-ateam.de",
+      "thomas.ries@gc-gruppe.de",
+      "info@cituro.com",
+      "u003einfo@cituro.com"
+    ],
+    "phones": [
+      "023454441009",
+      "022552104763",
+      "0662738818"
+    ],
+    "scraped_at": "2026-10-12T09:45:45.442Z",
+    "gewerk": "klempner",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "anro Sanitär Heizung Lüftung GmbH | Bochum",
+    "website": "https://www.anro-shk.de/",
+    "emails": [
+      "info@anro-shk.de"
+    ],
+    "phones": [
+      "0234579460",
+      "092026220114",
+      "02345794660"
+    ],
+    "scraped_at": "2026-10-12T09:45:50.813Z",
+    "gewerk": "klempner",
+    "stadt": "Bochum"
+  }
+]

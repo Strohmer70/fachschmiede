@@ -1,0 +1,45 @@
+[
+  {
+    "firma": "Klempner für Sprockhövel - Ihr Fachmann für Heizung und Sanitär",
+    "website": "https://www.klempner-vorort.de/heizung-sanitaer-sprockhoevel/",
+    "emails": [
+      "info@klempner-vorort.de"
+    ],
+    "phones": [
+      "015161133280"
+    ],
+    "scraped_at": "2026-10-12T09:55:21.593Z",
+    "gewerk": "klempner",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "SHK Pohl",
+    "website": "https://shk-pohl.de/heizung-sanitaer-sprockhoevel/",
+    "emails": [
+      "info@promonexus.de"
+    ],
+    "phones": [
+      "01781202882",
+      "015777406869",
+      "01108399300"
+    ],
+    "scraped_at": "2026-10-12T09:55:28.897Z",
+    "gewerk": "klempner",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Klempner Sprockhövel",
+    "website": "https://sani-neumann.de/klempner/sprockhoevel/",
+    "emails": [
+      "ihre-mail@beispiel.de"
+    ],
+    "phones": [
+      "+4915257466282",
+      "015257466282",
+      "026363993981218"
+    ],
+    "scraped_at": "2026-10-12T09:55:49.885Z",
+    "gewerk": "klempner",
+    "stadt": "Sprockhövel"
+  }
+]

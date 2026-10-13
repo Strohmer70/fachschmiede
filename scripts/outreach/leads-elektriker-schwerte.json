@@ -1,0 +1,47 @@
+[
+  {
+    "firma": "Elektriker in Schwerte » Über 1060 Top Fachbetriebe",
+    "website": "https://www.elektriker.org/schwerte",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "+4923389158260"
+    ],
+    "scraped_at": "2026-10-12T09:42:16.825Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "Elektriker Neumann",
+    "website": "https://elektrohilfe-neumann.de/elektriker/schwerte/schwerte/",
+    "emails": [
+      "ihre@email.de"
+    ],
+    "phones": [
+      "015257466282",
+      "+4915257466282",
+      "04818263522417"
+    ],
+    "scraped_at": "2026-10-12T09:42:35.310Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwerte"
+  },
+  {
+    "firma": "DC-Elektrotechnik GmbH",
+    "website": "https://dc-elektrotechnik.de/",
+    "emails": [
+      "info@dc-elektrotechnik.de"
+    ],
+    "phones": [
+      "+4923049747301",
+      "023049747301",
+      "084223742271"
+    ],
+    "scraped_at": "2026-10-12T09:42:41.122Z",
+    "gewerk": "elektriker",
+    "stadt": "Schwerte"
+  }
+]

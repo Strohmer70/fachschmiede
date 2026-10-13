@@ -1,0 +1,78 @@
+[
+  {
+    "firma": "GaLaBau",
+    "website": "https://www.galabau-gruppe.de/gartenbau-bochum/",
+    "emails": [
+      "info@galabau-gruppe.de"
+    ],
+    "phones": [
+      "+4923049799546",
+      "+4932121270195"
+    ],
+    "scraped_at": "2026-10-12T10:28:35.262Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Gartenbau – Landschaftsbau | Galabau Menke | Bochum, Herne, Witten",
+    "website": "https://www.menke-galabau.de/",
+    "emails": [
+      "info@menke-galabau.de",
+      "//info@menke-galabau.de"
+    ],
+    "phones": [
+      "0234351057",
+      "03355712397",
+      "03355712397300"
+    ],
+    "scraped_at": "2026-10-12T10:28:41.346Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "OM Galabau GmbH",
+    "website": "https://om-galabau.de/",
+    "emails": [
+      "kontakt@om-galabau.de"
+    ],
+    "phones": [
+      "01731777655",
+      "0210310360",
+      "0210361360"
+    ],
+    "scraped_at": "2026-10-12T10:28:59.065Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Gerhard Pöhler Garten",
+    "website": "https://www.galabau-gerhard-poehler.de/",
+    "emails": [
+      "info@galabau-gerhard-poehler.de"
+    ],
+    "phones": [
+      "01776366749",
+      "017631288162",
+      "02346236153"
+    ],
+    "scraped_at": "2026-10-12T10:29:03.148Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "L&amp;O Gartenbau",
+    "website": "https://www.lo-gartenbau.de/",
+    "emails": [
+      "kontakt@lo-gartenbau.de",
+      "beispiel@email.com"
+    ],
+    "phones": [
+      "015750400852",
+      "02233374943",
+      "0543613260724"
+    ],
+    "scraped_at": "2026-10-12T10:29:07.072Z",
+    "gewerk": "garten-und-landschaftsbau",
+    "stadt": "Bochum"
+  }
+]

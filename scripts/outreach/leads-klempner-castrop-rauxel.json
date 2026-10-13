@@ -1,0 +1,63 @@
+[
+  {
+    "firma": "RuhrTherm&#x20;SHK",
+    "website": "https://ruhrtherm-shk.de/",
+    "emails": [
+      "info@ruhrtherm-shk.de"
+    ],
+    "phones": [
+      "+491729569274",
+      "0250752407",
+      "0196078431372549"
+    ],
+    "scraped_at": "2026-10-12T09:46:05.458Z",
+    "gewerk": "klempner",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "RuhrTherm&#x20;SHK",
+    "website": "https://ruhrtherm-shk.de/klempner-castrop-rauxel",
+    "emails": [
+      "info@ruhrtherm-shk.de"
+    ],
+    "phones": [
+      "+491729569274",
+      "0746678392",
+      "0196078431372549"
+    ],
+    "scraped_at": "2026-10-12T09:46:09.160Z",
+    "gewerk": "klempner",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "Robin Melzner Sanitär",
+    "website": "https://melzner-shk.de/",
+    "emails": [
+      "info@melzner-shk.de",
+      "service@w4pro.de"
+    ],
+    "phones": [
+      "+492305890012",
+      "08713087564",
+      "02305890012"
+    ],
+    "scraped_at": "2026-10-12T09:46:21.366Z",
+    "gewerk": "klempner",
+    "stadt": "Castrop-Rauxel"
+  },
+  {
+    "firma": "SHK D. Frommer",
+    "website": "https://www.shkdfrommer.de/",
+    "emails": [
+      "dennisfrommershk@gmail.com"
+    ],
+    "phones": [
+      "02367620",
+      "023059677741",
+      "092026204837"
+    ],
+    "scraped_at": "2026-10-12T09:46:28.176Z",
+    "gewerk": "klempner",
+    "stadt": "Castrop-Rauxel"
+  }
+]

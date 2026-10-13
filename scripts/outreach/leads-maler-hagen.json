@@ -1,0 +1,44 @@
+[
+  {
+    "firma": "Malermeister Paul Martin Werner",
+    "website": "https://www.maler-werner-hagen.de/",
+    "emails": [
+      "malermeister.pm.werner@gmail.com"
+    ],
+    "phones": [
+      "0233144148",
+      "01732978230"
+    ],
+    "scraped_at": "2026-10-12T10:03:13.758Z",
+    "gewerk": "maler",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Maler in Hagen für Fassaden, Schimmelsanierung sowie Wärmedämmung uvm.",
+    "website": "https://www.stegemann-malermeister.de/",
+    "emails": [
+      "kontakt@stegemann-malermeister.de"
+    ],
+    "phones": [
+      "0951769040097",
+      "0260511074706",
+      "+492331900667"
+    ],
+    "scraped_at": "2026-10-12T10:03:19.622Z",
+    "gewerk": "maler",
+    "stadt": "Hagen"
+  },
+  {
+    "firma": "Malerbetrieb Mellech",
+    "website": "https://www.malerbetriebmellech.de/stadt/hagen/",
+    "emails": [
+      "info@malerbetriebmellech.de"
+    ],
+    "phones": [
+      "0391625328767858"
+    ],
+    "scraped_at": "2026-10-12T10:03:55.955Z",
+    "gewerk": "maler",
+    "stadt": "Hagen"
+  }
+]

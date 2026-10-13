@@ -1,0 +1,44 @@
+[
+  {
+    "firma": "Dietz Bedachung",
+    "website": "https://dietz-bedachung.de/",
+    "emails": [
+      "info@dietz-bedachung.de"
+    ],
+    "phones": [
+      "+4923079168433",
+      "0228692330",
+      "023079168433"
+    ],
+    "scraped_at": "2026-10-12T09:29:27.693Z",
+    "gewerk": "dachdecker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Pohl Bedachungen",
+    "website": "https://dachdecker-pohl.de/",
+    "emails": [
+      "anfragen@pohlbedachungen-kamen.de"
+    ],
+    "phones": [
+      "+4917697793978"
+    ],
+    "scraped_at": "2026-10-12T09:29:33.110Z",
+    "gewerk": "dachdecker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "TOP DACH SERVICE",
+    "website": "https://topdach-service.de/standorte/kamen",
+    "emails": [
+      "bauservice443@yahoo.com"
+    ],
+    "phones": [
+      "+491786001652",
+      "01786001652"
+    ],
+    "scraped_at": "2026-10-12T09:29:47.987Z",
+    "gewerk": "dachdecker",
+    "stadt": "Kamen"
+  }
+]

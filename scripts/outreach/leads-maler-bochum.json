@@ -1,0 +1,76 @@
+[
+  {
+    "firma": "Malermeister Ochs",
+    "website": "https://www.malermeister-ochs.de/",
+    "emails": [
+      "info@malermeisterbetrieb-ochs.de"
+    ],
+    "phones": [
+      "0861686178854"
+    ],
+    "scraped_at": "2026-10-12T09:58:51.345Z",
+    "gewerk": "maler",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Malerbetrieb Heibrok",
+    "website": "https://karl-heibrok.de/",
+    "emails": [
+      "info@karl-heibrok.de"
+    ],
+    "phones": [
+      "+49234531215",
+      "0234531215"
+    ],
+    "scraped_at": "2026-10-12T09:59:05.938Z",
+    "gewerk": "maler",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Malermeister Manuel Illerhaus GmbH | Ihr Maler in Bochum, Witten &amp; Sprockhövel",
+    "website": "https://malermeister-illerhaus.de/",
+    "emails": [
+      "manuel@illerhaus.info",
+      "dpo-google@google.com",
+      "msft@microsoft.com"
+    ],
+    "phones": [
+      "+4923432459615",
+      "023432459615",
+      "+491806672255"
+    ],
+    "scraped_at": "2026-10-12T09:59:10.997Z",
+    "gewerk": "maler",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Herzlich Willkommen",
+    "website": "https://www.malermeister-siegmund.de/",
+    "emails": [
+      "wmc.siegmund@t-online.de"
+    ],
+    "phones": [
+      "0234351335",
+      "0931769040122",
+      "0250423065808"
+    ],
+    "scraped_at": "2026-10-12T09:59:15.480Z",
+    "gewerk": "maler",
+    "stadt": "Bochum"
+  },
+  {
+    "firma": "Hochwertige Malerarbeiten",
+    "website": "https://www.huerst-maler.de/",
+    "emails": [
+      "huerst-malerbetrieb@vodafone.de"
+    ],
+    "phones": [
+      "010101318957",
+      "010101714308",
+      "01010172415"
+    ],
+    "scraped_at": "2026-10-12T09:59:19.320Z",
+    "gewerk": "maler",
+    "stadt": "Bochum"
+  }
+]

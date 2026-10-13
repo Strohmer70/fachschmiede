@@ -1,0 +1,41 @@
+[
+  {
+    "firma": "Wolff &amp; Becker GbR",
+    "website": "https://www.diedachdecker-wetter.de/",
+    "emails": [
+      "info@wubddm.de"
+    ],
+    "phones": [
+      "0893208208",
+      "05019186191191",
+      "02415832267"
+    ],
+    "scraped_at": "2026-10-12T09:33:24.480Z",
+    "gewerk": "dachdecker",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "RUHRDACH",
+    "website": "https://www.ruhrdach.de/",
+    "emails": [
+      "info@ruhrdach.de"
+    ],
+    "phones": [
+      "023359706425"
+    ],
+    "scraped_at": "2026-10-12T09:33:28.773Z",
+    "gewerk": "dachdecker",
+    "stadt": "Wetter (Ruhr)"
+  },
+  {
+    "firma": "Dachdecker Bock",
+    "website": "https://dev.dachdecker-bock.de/",
+    "emails": [
+      "mail@dachdecker-bock.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T09:34:01.407Z",
+    "gewerk": "dachdecker",
+    "stadt": "Wetter (Ruhr)"
+  }
+]

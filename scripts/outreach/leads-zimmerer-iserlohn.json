@@ -1,0 +1,31 @@
+[
+  {
+    "firma": "Holz &amp; Mehr",
+    "website": "https://www.holzundmehr.net/",
+    "emails": [
+      "info@holzundmehr.net"
+    ],
+    "phones": [
+      "+492374509697",
+      "+492374509695"
+    ],
+    "scraped_at": "2026-10-12T10:22:37.820Z",
+    "gewerk": "zimmerer",
+    "stadt": "Iserlohn"
+  },
+  {
+    "firma": "Geitmann Holzbau",
+    "website": "http://geitmann-holzbau.de/",
+    "emails": [
+      "info@geitmann-holzbau.de"
+    ],
+    "phones": [
+      "023741673788",
+      "023741673789",
+      "01714829770"
+    ],
+    "scraped_at": "2026-10-12T10:22:46.650Z",
+    "gewerk": "zimmerer",
+    "stadt": "Iserlohn"
+  }
+]

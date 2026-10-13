@@ -1,0 +1,76 @@
+[
+  {
+    "firma": "Malerfachbetrieb",
+    "website": "https://www.ms-farbprofi.de/",
+    "emails": [
+      "info@ms-farbprofi.de"
+    ],
+    "phones": [
+      "+491738526085",
+      "+4923069430986",
+      "0568561873"
+    ],
+    "scraped_at": "2026-10-12T10:08:27.523Z",
+    "gewerk": "maler",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Daniel Otero Malermeister in Lünen",
+    "website": "https://www.malermeister-otero.de/",
+    "emails": [
+      "malermeister-d.otero@online.de",
+      "info@malermeister-otero.de"
+    ],
+    "phones": [
+      "0951769040097",
+      "0210429102939"
+    ],
+    "scraped_at": "2026-10-12T10:08:33.874Z",
+    "gewerk": "maler",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Maler Neumann",
+    "website": "https://www.maler-neumann.de/",
+    "emails": [
+      "info@maler-neumann.de"
+    ],
+    "phones": [
+      "02318770420"
+    ],
+    "scraped_at": "2026-10-12T10:08:45.589Z",
+    "gewerk": "maler",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Malerbetrieb David Dahl",
+    "website": "https://www.maler-david-dahl.de/",
+    "emails": [
+      "info@maler-david-dahl.de"
+    ],
+    "phones": [
+      "+4923147423880",
+      "06348913877",
+      "0507259859"
+    ],
+    "scraped_at": "2026-10-12T10:08:52.687Z",
+    "gewerk": "maler",
+    "stadt": "Lünen"
+  },
+  {
+    "firma": "Schulz - Malermeister",
+    "website": "https://www.schulz-mala.de/",
+    "emails": [
+      "info@schulz-mala.de",
+      "admin@mifis.de"
+    ],
+    "phones": [
+      "04790931768799",
+      "07395448124",
+      "02511127874"
+    ],
+    "scraped_at": "2026-10-12T10:08:57.946Z",
+    "gewerk": "maler",
+    "stadt": "Lünen"
+  }
+]

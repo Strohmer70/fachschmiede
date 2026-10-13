@@ -1,0 +1,92 @@
+[
+  {
+    "firma": "Elektriker in Kamen » Über 820 Top Fachbetriebe",
+    "website": "https://www.elektriker.org/kamen",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "+4917624366103"
+    ],
+    "scraped_at": "2026-10-12T09:40:50.228Z",
+    "gewerk": "elektriker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "SKE GmbH",
+    "website": "https://www.sk-elektro.com/",
+    "emails": [
+      "info@sk-elektro.com"
+    ],
+    "phones": [
+      "+4923075000408",
+      "023075000408",
+      "09355025940"
+    ],
+    "scraped_at": "2026-10-12T09:40:55.586Z",
+    "gewerk": "elektriker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Dirk Jäger Elektroinstallationen » Top Elektriker in Kamen",
+    "website": "https://www.elektriker.org/kamen/dirk-jaeger-elektroinstallationen-aULwP0",
+    "emails": [
+      "info@elektriker.org"
+    ],
+    "phones": [
+      "+4991198103229",
+      "+49911340983283",
+      "0230771069"
+    ],
+    "scraped_at": "2026-10-12T09:40:59.292Z",
+    "gewerk": "elektriker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "EB Elektrotechnik Dortmund",
+    "website": "https://ebelektrotechnik.de/elektriker/kamen/",
+    "emails": [
+      "info@ebelektrotechnik.de",
+      "max@beispiel.de"
+    ],
+    "phones": [
+      "015566034036",
+      "0423250495",
+      "+4915566034036"
+    ],
+    "scraped_at": "2026-10-12T09:41:04.250Z",
+    "gewerk": "elektriker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Elektrobetrieb Weimann",
+    "website": "https://elektrobetrieb-weimann.de/kamen/",
+    "emails": [
+      "kontakt@elektrobetrieb-weimann.de"
+    ],
+    "phones": [
+      "+491743523228",
+      "01743523228"
+    ],
+    "scraped_at": "2026-10-12T09:41:08.423Z",
+    "gewerk": "elektriker",
+    "stadt": "Kamen"
+  },
+  {
+    "firma": "Elektriker Neumann",
+    "website": "https://elektrohilfe-neumann.de/elektriker/kamen/kamen/",
+    "emails": [
+      "ihre@email.de"
+    ],
+    "phones": [
+      "015257466282",
+      "+4915257466282",
+      "04818263522417"
+    ],
+    "scraped_at": "2026-10-12T09:41:11.263Z",
+    "gewerk": "elektriker",
+    "stadt": "Kamen"
+  }
+]

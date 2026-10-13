@@ -1,0 +1,77 @@
+[
+  {
+    "firma": "Malermeister Thomas Penker in Sprockhövel",
+    "website": "https://malermeister-penker.de/",
+    "emails": [
+      "info@malermeister-penker.de"
+    ],
+    "phones": [
+      "0250929085252",
+      "02027699148",
+      "01715766042"
+    ],
+    "scraped_at": "2026-10-12T10:10:33.802Z",
+    "gewerk": "maler",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Malermeister Thomas Greskowiak",
+    "website": "https://www.malermeister-greskowiak.de/",
+    "emails": [
+      "info@malermeister-greskowiak.de"
+    ],
+    "phones": [
+      "02102039620768",
+      "02102039620300",
+      "02102039620"
+    ],
+    "scraped_at": "2026-10-12T10:10:39.061Z",
+    "gewerk": "maler",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Malerfachbetrieb Sascha Krusche",
+    "website": "https://www.maler-krusche.de/",
+    "emails": [
+      "office@maler-krusche.de"
+    ],
+    "phones": [
+      "+4923399114711",
+      "+4915156281464",
+      "0311011968"
+    ],
+    "scraped_at": "2026-10-12T10:10:43.380Z",
+    "gewerk": "maler",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Malermeister Manuel Illerhaus GmbH | Ihr Maler in Bochum, Witten &amp; Sprockhövel",
+    "website": "https://malermeister-illerhaus.de/standorte/sprockhoevel/",
+    "emails": [
+      "manuel@illerhaus.info",
+      "dpo-google@google.com",
+      "msft@microsoft.com"
+    ],
+    "phones": [
+      "+4923432459615",
+      "023432459615",
+      "+491806672255"
+    ],
+    "scraped_at": "2026-10-12T10:10:47.610Z",
+    "gewerk": "maler",
+    "stadt": "Sprockhövel"
+  },
+  {
+    "firma": "Malerbetrieb Mellech",
+    "website": "https://www.malerbetriebmellech.de/stadt/sprockhoevel/",
+    "emails": [
+      "info@malerbetriebmellech.de"
+    ],
+    "phones": [
+      "0391625328767858"
+    ],
+    "scraped_at": "2026-10-12T10:10:52.417Z",
+    "gewerk": "maler",
+    "stadt": "Sprockhövel"
+  }
+]

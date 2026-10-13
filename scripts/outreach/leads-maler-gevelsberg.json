@@ -1,0 +1,58 @@
+[
+  {
+    "firma": "Malerbetrieb Nikola in Gevelsberg",
+    "website": "http://www.malermeister-nikola.de/",
+    "emails": [
+      "info@malerbetrieb-nikola.de",
+      "info@malermeister-nikola.de"
+    ],
+    "phones": [],
+    "scraped_at": "2026-10-12T10:02:51.572Z",
+    "gewerk": "maler",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "Malerbetrieb Lunau",
+    "website": "https://www.maler-lunau.de/",
+    "emails": [
+      "s.wiggershaus77@gmail.com",
+      "info@maler-lunau.de"
+    ],
+    "phones": [
+      "0941769040093",
+      "0200810112346",
+      "+4923329538102"
+    ],
+    "scraped_at": "2026-10-12T10:02:56.599Z",
+    "gewerk": "maler",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "Hans",
+    "website": "http://www.malermeister-roland.de/kontakt.html",
+    "emails": [
+      "info@malermeister-roland.de"
+    ],
+    "phones": [
+      "01722729678"
+    ],
+    "scraped_at": "2026-10-12T10:03:01.071Z",
+    "gewerk": "maler",
+    "stadt": "Gevelsberg"
+  },
+  {
+    "firma": "Villani &#8211; Malermeister &#8211; Creativ Design",
+    "website": "https://villani-design.de/",
+    "emails": [
+      "info@villani-design.de"
+    ],
+    "phones": [
+      "02332664711",
+      "01732891002",
+      "053778879165"
+    ],
+    "scraped_at": "2026-10-12T10:03:06.357Z",
+    "gewerk": "maler",
+    "stadt": "Gevelsberg"
+  }
+]

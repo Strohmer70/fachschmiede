@@ -1,0 +1,57 @@
+[
+  {
+    "firma": "Über uns",
+    "website": "https://www.dachdeckermeister-moeller.de/ueber-uns/",
+    "emails": [
+      "info@dachdeckermeister-moeller.de"
+    ],
+    "phones": [
+      "+4923739170731"
+    ],
+    "scraped_at": "2026-10-12T09:24:49.450Z",
+    "gewerk": "dachdecker",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "Startseite",
+    "website": "https://www.dachdeckermeister-moeller.de/",
+    "emails": [
+      "info@dachdeckermeister-moeller.de"
+    ],
+    "phones": [
+      "+4923739170731"
+    ],
+    "scraped_at": "2026-10-12T09:25:06.209Z",
+    "gewerk": "dachdecker",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "VOIGT UND POTT / Bauplanung, Zimmerei, Dachdeckerei, Stahlbau",
+    "website": "https://www.voigtundpott.de/",
+    "emails": [
+      "mail@voigtundpott.de"
+    ],
+    "phones": [
+      "023733977940",
+      "023733977942"
+    ],
+    "scraped_at": "2026-10-12T09:25:10.631Z",
+    "gewerk": "dachdecker",
+    "stadt": "Fröndenberg"
+  },
+  {
+    "firma": "Wimper Bedachung",
+    "website": "https://wimper-bedachung.de/",
+    "emails": [
+      "info@wimper-bedachung.de",
+      "max@beispiel.de"
+    ],
+    "phones": [
+      "+49015120291217",
+      "015120291217"
+    ],
+    "scraped_at": "2026-10-12T09:25:14.416Z",
+    "gewerk": "dachdecker",
+    "stadt": "Fröndenberg"
+  }
+]

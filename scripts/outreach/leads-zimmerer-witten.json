@@ -1,0 +1,72 @@
+[
+  {
+    "firma": "Herzlich Willkommen bei der Zimmerei Klinkowski! ​",
+    "website": "https://zimmerei-klinkowski.de/",
+    "emails": [
+      "info@zimmerei-klinkowski.de"
+    ],
+    "phones": [
+      "023021799591"
+    ],
+    "scraped_at": "2026-10-12T10:27:30.276Z",
+    "gewerk": "zimmerer",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "anyhelpnow",
+    "website": "https://anyhelpnow.com/handwerk/zimmerei/witten",
+    "emails": [
+      "info@anyhelpnow.com"
+    ],
+    "phones": [
+      "0387426610720",
+      "0812649314",
+      "0693240166"
+    ],
+    "scraped_at": "2026-10-12T10:27:34.379Z",
+    "gewerk": "zimmerer",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "wite Holzbau",
+    "website": "https://www.wite-holzbau.de/",
+    "emails": [
+      "info@wite-holzbau.de"
+    ],
+    "phones": [
+      "015158535507",
+      "0891769040062",
+      "0240327182754"
+    ],
+    "scraped_at": "2026-10-12T10:27:40.089Z",
+    "gewerk": "zimmerer",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Mein Bauernhof",
+    "website": "https://suchehandwerker.de/betrieb/ditges-und-klingenhagen-gbr-zimmerei-holzbau-207558/",
+    "emails": [
+      "info@suchehandwerker.de"
+    ],
+    "phones": [
+      "+4923022050876"
+    ],
+    "scraped_at": "2026-10-12T10:27:45.661Z",
+    "gewerk": "zimmerer",
+    "stadt": "Witten"
+  },
+  {
+    "firma": "Thomas Tüttemann Witten",
+    "website": "https://www.provenexpert.com/de-de/thomas-tuettemann-witten/",
+    "emails": [
+      "info@zimmerei-tuettemann.de",
+      "support@provenexpert.com"
+    ],
+    "phones": [
+      "05561976105"
+    ],
+    "scraped_at": "2026-10-12T10:27:54.468Z",
+    "gewerk": "zimmerer",
+    "stadt": "Witten"
+  }
+]

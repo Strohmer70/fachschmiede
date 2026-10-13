@@ -1,0 +1,80 @@
+[
+  {
+    "firma": "Maler Timmerbrink | Ihr Malermeister in Dortmund",
+    "website": "https://timmerbrink.com/",
+    "emails": [
+      "info@timmerbrink.com",
+      "dpo-google@google.com",
+      "msft@microsoft.com"
+    ],
+    "phones": [
+      "0231524850",
+      "+49231524850",
+      "+491806672255"
+    ],
+    "scraped_at": "2026-10-12T09:59:58.377Z",
+    "gewerk": "maler",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Maler Dortmund Malermeister Malerbetrieb Schulte GmbH - Malerbetrieb W. Schulte GmbH",
+    "website": "https://www.maler-schultegmbh.de/",
+    "emails": [
+      "info@maler-schultegmbh.de"
+    ],
+    "phones": [
+      "+490231",
+      "0211102799942007",
+      "0211107268824999"
+    ],
+    "scraped_at": "2026-10-12T10:00:05.187Z",
+    "gewerk": "maler",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Maler Stefan Beckmann",
+    "website": "https://www.maler-stefanbeckmann.de/",
+    "emails": [
+      "hallo@malermeister-stefanbeckmann.de",
+      "kontakt@maler-stefanbeckmann.de"
+    ],
+    "phones": [
+      "01751701558",
+      "08083799999999",
+      "076475383039"
+    ],
+    "scraped_at": "2026-10-12T10:00:09.497Z",
+    "gewerk": "maler",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Malermeisterbetrieb Münchhoff",
+    "website": "https://farbigeaussichten.de/",
+    "emails": [
+      "meisterbetriebmuenchhoff@gmail.com",
+      "dpo-google@google.com"
+    ],
+    "phones": [
+      "+4915771825146",
+      "0561797752809"
+    ],
+    "scraped_at": "2026-10-12T10:00:13.399Z",
+    "gewerk": "maler",
+    "stadt": "Dortmund"
+  },
+  {
+    "firma": "Malermeister Wuttke in Dortmund",
+    "website": "https://malermeisterwuttke.de/",
+    "emails": [
+      "info@malermeisterwuttke.de"
+    ],
+    "phones": [
+      "+4915906760624",
+      "0921769040077",
+      "0210727103621"
+    ],
+    "scraped_at": "2026-10-12T10:00:30.673Z",
+    "gewerk": "maler",
+    "stadt": "Dortmund"
+  }
+]
