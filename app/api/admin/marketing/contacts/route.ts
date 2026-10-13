@@ -73,16 +73,43 @@ export async function PATCH(request: Request) {
   try {
     const body = await request.json()
     const id = String(body.id || '')
-    const status = String(body.status || '')
-    if (!id || !ALLOWED_STATUS.includes(status)) {
-      return NextResponse.json({ error: 'id oder ungültiger status (erlaubt: ' + ALLOWED_STATUS.join(', ') + ')' }, { status: 400 })
+    if (!id) return NextResponse.json({ error: 'id fehlt' }, { status: 400 })
+
+    // Bisheriges Verhalten: Status-Update {id, status}
+    if (body.status) {
+      const status = String(body.status || '')
+      if (!ALLOWED_STATUS.includes(status)) {
+        return NextResponse.json({ error: 'id oder ungültiger status (erlaubt: ' + ALLOWED_STATUS.join(', ') + ')' }, { status: 400 })
+      }
+      const { error } = await supabaseAdmin
+        .from('marketing_contacts')
+        .update({ status })
+        .eq('id', id)
+      if (error) throw error
+      return NextResponse.json({ success: true })
     }
+
+    // NEU: manuelle Feldpflege {id, email?, address?, company_name?, city?, website?, trade?}
+    const upd: any = {}
+    if ('email' in body) {
+      const e = String(body.email || '').trim().toLowerCase()
+      if (e && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) {
+        return NextResponse.json({ error: 'Ungültige E-Mail-Adresse' }, { status: 400 })
+      }
+      upd.email = e || null
+    }
+    if ('address' in body) upd.address = String(body.address || '').trim() || null
+    if ('company_name' in body) upd.company_name = String(body.company_name || '').trim()
+    if ('city' in body) upd.city = String(body.city || '').trim()
+    if ('website' in body) upd.website = String(body.website || '').trim() || null
+    if ('trade' in body) upd.trade = String(body.trade || '').trim()
+    if (!Object.keys(upd).length) return NextResponse.json({ error: 'Nichts zu ändern' }, { status: 400 })
     const { error } = await supabaseAdmin
       .from('marketing_contacts')
-      .update({ status })
+      .update(upd)
       .eq('id', id)
     if (error) throw error
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, updated: upd })
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Internal error' }, { status: 500 })
   }

@@ -1949,6 +1949,7 @@ function renderProspects() {
             + Object.entries(MK_STATUS_LABEL).filter(([k]) => !['sent','print_sent'].includes(k)).map(([k, l]) =>
                 `<option value="${k}" ${p.status === k ? 'selected' : ''}>${l}</option>`).join('')
             + `</select>`}</td>
+        <td class="px-4 py-3 text-right whitespace-nowrap"><button onclick="editContact('${p.id}')" title="Daten manuell nachtragen (E-Mail/Adresse recherchiert?)" class="text-lg opacity-60 hover:opacity-100 transition">✏️</button></td>
       </tr>`;
     }).join('');
   }
@@ -2210,6 +2211,55 @@ function switchChannel(ch){
   document.getElementById('printFlow').classList.toggle('hidden', mail);
   document.getElementById('campaignHistory').classList.toggle('hidden', false);
 }
+// ═══ KONTAKT MANUELL PFLEGEN ═══
+let editContactId = null;
+function editContact(id) {
+  const p = prospects.find(x => x.id === id);
+  if (!p) return;
+  editContactId = id;
+  document.getElementById('ecCompany').value = p.company_name || '';
+  document.getElementById('ecEmail').value = p.email || '';
+  document.getElementById('ecAddress').value = p.address || '';
+  document.getElementById('ecCity').value = p.city || '';
+  document.getElementById('ecWebsite').value = p.website || '';
+  document.getElementById('ecTrade').value = p.trade || '';
+  document.getElementById('ecModal').classList.remove('hidden');
+}
+function closeEditContact() {
+  editContactId = null;
+  document.getElementById('ecModal').classList.add('hidden');
+}
+async function saveContact() {
+  if (!editContactId) return;
+  const email = document.getElementById('ecEmail').value.trim();
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    showToast('⚠️ E-Mail sieht ungültig aus — bitte prüfen.'); return;
+  }
+  const btn = document.getElementById('ecSave');
+  btn.disabled = true; btn.textContent = 'Speichere …';
+  try {
+    await mktApi('/contacts/', {
+      method: 'PATCH',
+      body: JSON.stringify({
+        id: editContactId,
+        company_name: document.getElementById('ecCompany').value,
+        email,
+        address: document.getElementById('ecAddress').value,
+        city: document.getElementById('ecCity').value,
+        website: document.getElementById('ecWebsite').value,
+        trade: document.getElementById('ecTrade').value,
+      }),
+    });
+    showToast(email ? '✅ Gespeichert — Kontakt ist jetzt mailfähig!' : '✅ Gespeichert!');
+    closeEditContact();
+    await loadContacts();
+  } catch (e) {
+    showToast('❌ Speichern fehlgeschlagen: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Speichern';
+  }
+}
+
 // ═══════════ PRINT: Prospekt-Versand (ECHT — gleiche DB wie E-Mail) ═══════════
 let printIdx = 0;
 let printSel = new Set();
@@ -2962,5 +3012,34 @@ function remindInvoice(btn){
 // Admin-Dashboard wird durch admin.js mit echten Daten verbunden
 </script>
 <script src="/admin.js?v=17"></script>
+<div id="ecModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-ink-900/60 backdrop-blur-sm p-4 md:p-8">
+  <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-2xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-extrabold text-lg text-ink-900">✏️ Kontakt pflegen</h3>
+      <button onclick="closeEditContact()" class="text-ink-400 hover:text-ink-700 text-2xl leading-none">&times;</button>
+    </div>
+    <p class="text-xs text-ink-500 mb-4">Manuell recherchierte Daten nachtragen. Mit E-Mail ist der Kontakt sofort mailfähig — mit Straße + PLZ auch druckfähig.</p>
+    <div class="space-y-3">
+      <div><label class="block text-xs font-bold text-ink-700 mb-1">Firmenname</label>
+        <input id="ecCompany" class="w-full rounded-lg border border-ink-200 px-3 py-2 text-sm"></div>
+      <div><label class="block text-xs font-bold text-ink-700 mb-1">E-Mail <span class="text-ink-400 font-normal">(leer = nur Print)</span></label>
+        <input id="ecEmail" type="email" placeholder="info@beispiel.de" class="w-full rounded-lg border border-ink-200 px-3 py-2 text-sm"></div>
+      <div><label class="block text-xs font-bold text-ink-700 mb-1">Postadresse <span class="text-ink-400 font-normal">(Straße Nr, PLZ Ort)</span></label>
+        <input id="ecAddress" placeholder="Musterstraße 12, 58706 Musterstadt" class="w-full rounded-lg border border-ink-200 px-3 py-2 text-sm"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="block text-xs font-bold text-ink-700 mb-1">Stadt</label>
+          <input id="ecCity" class="w-full rounded-lg border border-ink-200 px-3 py-2 text-sm"></div>
+        <div><label class="block text-xs font-bold text-ink-700 mb-1">Gewerk</label>
+          <input id="ecTrade" class="w-full rounded-lg border border-ink-200 px-3 py-2 text-sm"></div>
+      </div>
+      <div><label class="block text-xs font-bold text-ink-700 mb-1">Website</label>
+        <input id="ecWebsite" class="w-full rounded-lg border border-ink-200 px-3 py-2 text-sm"></div>
+    </div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="saveContact()" id="ecSave" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-xl transition">Speichern</button>
+      <button onclick="closeEditContact()" class="px-5 bg-ink-100 hover:bg-ink-200 text-ink-700 font-bold text-sm py-3 rounded-xl transition">Abbrechen</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
