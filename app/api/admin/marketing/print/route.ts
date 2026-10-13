@@ -50,7 +50,7 @@ const PRICE = 99 // €/Monat — einheitlicher Tarif (vgl. Salespages dynPrice)
 
 // Stadt-Slug aus der System-Config (SSOT) — berlin-spandau statt "spandau"!
 let citiesCache: { name: string; slug: string }[] | null = null
-async function resolveCitySlug(name: string): Promise<string> {
+async function resolveCity(name: string): Promise<{ name: string; slug: string }> {
   if (!citiesCache) {
     try {
       const mod = await import('@/config/system-config.js')
@@ -60,13 +60,16 @@ async function resolveCitySlug(name: string): Promise<string> {
     }
   }
   const hit = citiesCache.find((c) => c.name.toLowerCase() === name.toLowerCase())
-  if (hit?.slug) return hit.slug
-  return name
-    .toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-    .replace(/[()]/g, ' ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  if (hit) return hit
+  return {
+    name: name.replace(/\b\w/g, (ch) => ch.toUpperCase()), // Pascal-Case-Fallback
+    slug: name
+      .toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[()]/g, ' ')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, ''),
+  }
 }
 
 const esc = (s: string) =>
@@ -93,15 +96,17 @@ export async function POST(request: Request) {
     const letters = []
     for (const c of withAddr) {
       const tradeLabel = TRADE_LABELS[c.trade] || c.trade
-      const url = `https://www.fachschmiede.de/${c.trade}/${await resolveCitySlug(c.city)}/`
-      const subject = `Ihre ${tradeLabel}-Website für ${c.city} – noch frei`
+      const cityInfo = await resolveCity(c.city)
+      const cityName: string = cityInfo.name
+      const url = `https://www.fachschmiede.de/${c.trade}/${cityInfo.slug}/`
+      const subject = `Ihre ${tradeLabel}-Website für ${cityName} – noch frei`
       const text = `Sehr geehrte Damen und Herren,
 
-wenn Kunden in ${c.city} nach „${tradeLabel}“ googeln, finden sie
+wenn Kunden in ${cityName} nach „${tradeLabel}“ googeln, finden sie
 Verzeichnisse und Portale – kaum einen lokalen Betrieb.
 
 Wir haben dafür etwas gebaut: eine fertige Website für ${tradeLabel}
-in ${c.city}. Kein Projekt, keine Agentur – sofort startklar.
+in ${cityName}. Kein Projekt, keine Agentur – sofort startklar.
 
 Auf der beiliegenden ersten Seite sehen Sie den kompletten Aufbau als
 echten Screenshot – und Ihr Dashboard, mit dem Sie Name, Fotos,
@@ -128,7 +133,7 @@ PS: Dieser Brief erreicht ${c.company_name}, weil Ihr Betrieb in
 ${c.city} öffentlich gelistet ist. Kein Verteiler. Wenn Sie keine
 Werbung mehr wünschen, genügt ein kurzer Hinweis – wir streichen
 Sie sofort und dauerhaft.`
-      letters.push({ id: c.id, to: c.company_name, address: c.address, subject, body: text, url, trade: c.trade, city: c.city })
+      letters.push({ id: c.id, to: c.company_name, address: c.address, subject, body: text, url, trade: c.trade, city: cityName })
     }
 
     const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
