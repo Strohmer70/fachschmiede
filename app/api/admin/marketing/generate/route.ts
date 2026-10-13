@@ -18,10 +18,9 @@ const TRADE_LABELS: Record<string, string> = {
   'garten-und-landschaftsbau': 'Garten- und Landschaftsbau',
 }
 
-// muss zu app/sitemap.ts CITIES + public/stadt-*.html-Slugs passen!
-// Stadt-Slug aus der System-Config (SSOT) — z. B. "Spandau" → berlin-spandau!
+// Stadt aus der System-Config (SSOT) — kanonischer Name + Slug ("Spandau" → Berlin-Spandau/berlin-spandau!)
 let citiesCache: { name: string; slug: string }[] | null = null
-async function resolveCitySlug(name: string): Promise<string> {
+async function resolveCity(name: string): Promise<{ name: string; slug: string }> {
   if (!citiesCache) {
     try {
       const mod = await import('@/config/system-config.js')
@@ -31,27 +30,30 @@ async function resolveCitySlug(name: string): Promise<string> {
     }
   }
   const hit = citiesCache.find((c) => c.name.toLowerCase() === name.toLowerCase())
-  if (hit?.slug) return hit.slug
-  return name
-    .toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-    .replace(/[()]/g, ' ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  if (hit) return hit
+  return {
+    name: name.replace(/\b\w/g, (ch) => ch.toUpperCase()),
+    slug: name
+      .toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[()]/g, ' ')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, ''),
+  }
 }
 
 
-function buildMail(company: string, trade: string, city: string, citySlug: string) {
+function buildMail(company: string, trade: string, cityName: string, citySlug: string) {
   const tradeLabel = TRADE_LABELS[trade] || trade
   const url = `https://www.fachschmiede.de/${trade}/${citySlug}/`
-  const subject = `${city}: Ihre ${tradeLabel}-Website ist noch frei`
+  const subject = `${cityName}: Ihre ${tradeLabel}-Website ist noch frei`
   const body = `Guten Tag,
 
-wenn jemand in ${city} nach „${tradeLabel}" googelt, landet man auf
+wenn jemand in ${cityName} nach „${tradeLabel}" googelt, landet man auf
 Verzeichnissen und Portalen — nicht bei einem lokalen Betrieb.
 
 Wir haben dafür etwas gebaut: eine fertige Website für ${tradeLabel}
-in ${city}. Keine Agentur, kein Projekt — sofort startklar.
+in ${cityName}. Keine Agentur, kein Projekt — sofort startklar.
 
 Hier die Demo (1 Minute):
 ${url}
@@ -61,7 +63,9 @@ Im Preis: komplette Pflege, Updates, Ihre Firma drauf.
 
 Wichtig: Wir vermieten jede Seite nur an EINEN Betrieb pro Stadt.
 
-Interessiert? Antworten Sie einfach auf diese Mail.
+Mieten Sie einfach online: Demo öffnen, mit Ihren Daten starten und
+14 Tage kostenlos testen — ganz ohne Anruf, ohne Verkaufstermin.
+Oder antworten Sie einfach auf diese Mail.
 
 Mit freundlichen Grüßen
 Finn — fachschmiede.de
@@ -69,7 +73,7 @@ Finn — fachschmiede.de
 
 ---
 Impressum: https://www.fachschmiede.de/impressum/
-Sie erhalten diese Mail, weil Ihr Betrieb in ${city} öffentlich
+Sie erhalten diese Mail, weil ${company} in ${cityName} öffentlich
 im Impressum gelistet ist. Kein Verteiler. Wenn Sie keine
 Nachrichten mehr wünschen: kurze Antwort „Stopp" genügt.`
   return { subject, body }
@@ -100,7 +104,8 @@ export async function POST(request: Request) {
     for (const c of contacts) {
       // UWG-Sicherheit: Stopp/Antwort/Bounce/Gesendet → NIEMALS neu anschreiben
       if (c.sent_at || ['stopp', 'replied', 'bounced', 'sent'].includes(c.status)) continue
-      const mail = buildMail(c.company_name, c.trade, c.city, await resolveCitySlug(c.city))
+      const cityInfo = await resolveCity(c.city)
+      const mail = buildMail(c.company_name, c.trade, cityInfo.name, cityInfo.slug)
       const { error: upErr } = await supabaseAdmin
         .from('marketing_contacts')
         .update({ mail_subject: mail.subject, mail_body: mail.body, status: 'draft' })
