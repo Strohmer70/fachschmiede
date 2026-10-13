@@ -553,8 +553,8 @@ export default function TradeOverviewPage({ params }: PageProps) {
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li><Link href="/" className="text-ink-400 hover:text-brand-400 transition">Startseite</Link></li>
                 <li><Link href="/fuer-dienstleister/" className="text-ink-400 hover:text-brand-400 transition">Für Handwerker</Link></li>
-                <li><Link href="/impressum" className="text-ink-400 hover:text-brand-400 transition">Impressum</Link></li>
-                <li><Link href="/datenschutz" className="text-ink-400 hover:text-brand-400 transition">Datenschutzerklärung</Link></li>
+                <li><Link href="/impressum/" className="text-ink-400 hover:text-brand-400 transition">Impressum</Link></li>
+                <li><Link href="/datenschutz/" className="text-ink-400 hover:text-brand-400 transition">Datenschutzerklärung</Link></li>
               </ul>
             </div>
           </div>

@@ -123,8 +123,7 @@ const nextConfig = {
         // Portal-Startseite (NEU: React-Portal unter app/page.tsx)
         { source: '/fuer-dienstleister/', destination: '/fuer-dienstleister.html' },
         
-        // Gewerk-Salespages — ENTFERNT, damit [trade]/page.tsx Übersichtsseiten greifen
-        // Sales-Seiten sind direkt unter /sales-*.html erreichbar
+        // Salespages (statisch, zusaetzlich zu obigen sauberen URLs)
         
         // Statische Seiten
         { source: '/impressum/', destination: '/impressum.html' },
@@ -136,8 +135,20 @@ const nextConfig = {
         { source: '/ratgeber/', destination: '/ratgeber.html' },
         { source: '/ratgeber-elektriker/', destination: '/ratgeber-elektriker.html' },
         { source: '/ratgeber-shk/', destination: '/ratgeber-klempner.html' },
+        { source: '/ratgeber-klempner/', destination: '/ratgeber-klempner.html' },
         { source: '/ratgeber-zimmerer/', destination: '/ratgeber-zimmerer.html' },
         { source: '/ratgeber-maler/', destination: '/ratgeber-maler.html' },
+        
+        // Mietbedingungen (Fix: /mietbedingungen war 404!)
+        { source: '/mietbedingungen/', destination: '/mietbedingungen.html' },
+        
+        // Salespages unter sauberen URLs (Fix: /sales-* war 308→404!)
+        { source: '/sales-dachdecker/', destination: '/sales-dachdecker.html' },
+        { source: '/sales-elektriker/', destination: '/sales-elektriker.html' },
+        { source: '/sales-garten-und-landschaftsbau/', destination: '/sales-garten-und-landschaftsbau.html' },
+        { source: '/sales-klempner/', destination: '/sales-klempner.html' },
+        { source: '/sales-maler/', destination: '/sales-maler.html' },
+        { source: '/sales-zimmerer/', destination: '/sales-zimmerer.html' },
         
         // Artikel (Blogposts)
         { source: '/artikel-5-anzeichen-dachsanierung/', destination: '/artikel-5-anzeichen-dachsanierung.html' },

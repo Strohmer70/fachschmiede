@@ -527,8 +527,8 @@ export default async function LandingPage({ params }: PageProps) {
               <li><a href={`/sales-${cleanTrade}.html?stadt=${cleanCity}`} className="hover:text-brand-400 transition">Diese Seite mieten</a></li>
               <li><Link href={`/${cleanTrade}/${cleanCity}/blog/`} className="hover:text-brand-400 transition">Ratgeber</Link></li>
               <li><a href="#kontakt" className="hover:text-brand-400 transition">Kontakt</a></li>
-              <li><Link href="/impressum" className="hover:text-brand-400 transition">Impressum</Link></li>
-              <li><Link href="/datenschutz" className="hover:text-brand-400 transition">Datenschutzerklärung</Link></li>
+              <li><Link href="/impressum/" className="hover:text-brand-400 transition">Impressum</Link></li>
+              <li><Link href="/datenschutz/" className="hover:text-brand-400 transition">Datenschutzerklärung</Link></li>
             </ul>
           </div>
         </div>

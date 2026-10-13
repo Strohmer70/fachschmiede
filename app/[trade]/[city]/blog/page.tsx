@@ -160,8 +160,8 @@ export default function BlogOverviewPage({ params }: PageProps) {
             <div>
               <h4 className="font-semibold text-white mb-3">Rechtliches</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/impressum" className="hover:text-accent-400 transition">Impressum</Link></li>
-                <li><Link href="/datenschutz" className="hover:text-accent-400 transition">Datenschutz</Link></li>
+                <li><Link href="/impressum/" className="hover:text-accent-400 transition">Impressum</Link></li>
+                <li><Link href="/datenschutz/" className="hover:text-accent-400 transition">Datenschutz</Link></li>
               </ul>
             </div>
           </div>
