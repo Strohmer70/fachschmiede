@@ -54,6 +54,9 @@ const BAD_NAME_PATTERNS = [
   /demo/i,
   /fachbetrieb/i,
   /24\s*\/\s*7/i,          // '24/7 Notdienst' = SEO-Spam-Signatur
+  /einkauf/i,                       // Einkaufsverbände (keine Endkunden-Betriebe)
+  /fachmarkt/i,                     // Baumarkt-/Fachmarkt-Ketten
+  /verbund|genossenschaft|einkaufsverband/i,
 ]
 
 const BAD_EMAIL_PATTERNS = [/^ihre@email/i, /example\.(com|de)/i, /@(wixpress|wordpress)\./i, /^test@/i]
@@ -67,6 +70,21 @@ function looksLikeJunk(row: { company_name: string; email?: string | null; websi
   if (PORTAL_DOMAINS.some((d) => dom.includes(d))) return 'Portal-/Agentur-Domain'
   if (row.email && BAD_EMAIL_PATTERNS.some((r) => r.test(row.email!))) return 'Platzhalter-E-Mail'
   return null
+}
+
+// ── Settings: API-Keys serverseitig aus Supabase (privat, service_role only) ──
+async function getSetting(key: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('app_settings')
+      .select('value')
+      .eq('key', key)
+      .single()
+    if (error || !data) return null
+    return String(data.value)
+  } catch {
+    return null
+  }
 }
 
 // ── Google Places (New) ──
@@ -296,7 +314,7 @@ export async function GET(request: Request) {
     }
 
     // ── Engine wählen ──
-    const placesKey = process.env.GOOGLE_PLACES_API_KEY
+    const placesKey = process.env.GOOGLE_PLACES_API_KEY || (await getSetting('GOOGLE_PLACES_API_KEY'))
     let engineResult: { rows: any[]; error?: string }
     let engineName: string
     if (placesKey) {
