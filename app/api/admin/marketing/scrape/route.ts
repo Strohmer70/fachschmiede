@@ -254,7 +254,7 @@ async function enrichContacts(gewerk: string, stadt: string): Promise<{ enriched
     .select('id, website, email')
     .eq('trade', gewerk)
     .eq('city', stadt)
-    .is('address', null)
+    .is('email', null) // Places liefert keine E-Mails → Enrich pflegt sie nach
     .not('website', 'is', null)
     .limit(6)
   const list = (targets || []).filter((c: any) => !PORTAL_DOMAINS.some((b) => (c.website || '').includes(b)))
