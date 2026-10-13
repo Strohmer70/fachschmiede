@@ -1844,13 +1844,14 @@ function saveRechtliches(){
 let prospects = [];   // Kontakte aus DB
 let drafts = [];      // generierte Entwürfe [{id,to,name,subject,body}]
 
-const MK_STATUS_LABEL = { neu: 'neu', draft: 'Entwurf', sent: 'gesendet', replied: 'Antwort', stopped: 'Stopp' };
+const MK_STATUS_LABEL = { neu: 'neu', draft: 'Entwurf', sent: 'gesendet', replied: 'Antwort', stopp: 'Stopp', print_sent: 'Prospekt' };
 const MK_STATUS_CLASS = {
   neu: 'text-brand-700 bg-brand-50',
   draft: 'text-amber-700 bg-amber-50',
   sent: 'text-ink-500 bg-ink-100',
   replied: 'text-green-700 bg-green-100',
-  stopped: 'text-red-600 bg-red-50',
+  stopp: 'text-red-600 bg-red-50',
+  print_sent: 'text-violet-700 bg-violet-50',
 };
 const MK_DAILY_LIMIT = 20;
 
@@ -1926,16 +1927,21 @@ function renderProspects() {
   if (!list.length) {
     tb.innerHTML = '<tr><td colspan="5" class="px-4 py-10 text-center text-sm text-ink-400 italic">Keine Kontakte für diesen Filter. Scraper läuft über Finn — neue Leads erscheinen automatisch hier.</td></tr>';
   } else {
-    const order = { neu: 0, draft: 1, replied: 2, sent: 3, stopped: 4 };
+    const order = { neu: 0, draft: 1, replied: 2, sent: 3, print_sent: 4, stopp: 5 };
     tb.innerHTML = [...list].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9)).map(p => {
-      const disabled = p.status === 'sent' || p.status === 'stopped';
+      const disabled = p.status === 'sent' || p.status === 'stopp' || p.status === 'print_sent';
       return `
       <tr class="hover:bg-ink-50 ${disabled ? 'opacity-50' : ''}">
         <td class="px-4 py-3"><input type="checkbox" class="prospect-check" ${p.sel && !disabled ? 'checked' : ''} ${disabled ? 'disabled' : ''} onchange="toggleProspect('${p.id}', this.checked)"></td>
         <td class="px-4 py-3 font-bold text-ink-900">${mktEscape(p.company_name)}</td>
         <td class="px-4 py-3 text-ink-500 font-mono text-xs">${mktEscape(p.email)}</td>
         <td class="px-4 py-3 text-ink-500 text-xs">${mktEscape(p.city)}</td>
-        <td class="px-4 py-3"><span class="${MK_STATUS_CLASS[p.status] || 'text-ink-500 bg-ink-100'} text-xs font-bold px-2 py-1 rounded-full">${MK_STATUS_LABEL[p.status] || mktEscape(p.status)}</span></td>
+        <td class="px-4 py-3">${disabled
+          ? `<span class="${MK_STATUS_CLASS[p.status] || 'text-ink-500 bg-ink-100'} text-xs font-bold px-2 py-1 rounded-full">${MK_STATUS_LABEL[p.status] || mktEscape(p.status)}</span>`
+          : `<select onchange="setContactStatus('${p.id}', this.value)" class="text-xs font-bold rounded-full border-0 cursor-pointer ${MK_STATUS_CLASS[p.status] || 'text-ink-500 bg-ink-100'} px-2 py-1">`
+            + Object.entries(MK_STATUS_LABEL).filter(([k]) => !['sent','print_sent'].includes(k)).map(([k, l]) =>
+                `<option value="${k}" ${p.status === k ? 'selected' : ''}>${l}</option>`).join('')
+            + `</select>`}</td>
       </tr>`;
     }).join('');
   }
@@ -1948,17 +1954,28 @@ function toggleProspect(id, val) {
   updateSelCount();
 }
 function toggleAllProspects() {
-  const list = getFilteredProspects().filter(p => p.status !== 'sent' && p.status !== 'stopped');
+  const list = getFilteredProspects().filter(p => !['sent','stopp','print_sent'].includes(p.status));
   const allSel = list.length > 0 && list.every(p => p.sel);
   list.forEach(p => p.sel = !allSel);
   renderProspects();
 }
 function updateSelCount() {
-  const n = getFilteredProspects().filter(p => p.sel && p.status !== 'sent' && p.status !== 'stopped').length;
+  const n = getFilteredProspects().filter(p => p.sel && !['sent','stopp','print_sent'].includes(p.status)).length;
   document.getElementById('selCount').textContent = n;
 }
 
-// ECHTER Server-Scraper: Suchmaschine + Impressum-Crawl (bis ~60 s)
+// Kontakt-Status setzen (UWG-Stopp: 'stopp' ist Backend-seitig hart ausgeschlossen)
+async function setContactStatus(id, status) {
+  try {
+    const r = await mktApi('/contacts/', { method: 'PATCH', body: JSON.stringify({ id, status }) });
+    const d = await r.json();
+    if (!r.ok || !d.success) { showToast('Fehler: ' + (d.error || r.status)); return; }
+    showToast(status === 'stopp' ? '\u{1F6D1} Kontakt blockiert — wird nie wieder angemailt' : '\u2705 Status: ' + status);
+    loadContacts();
+  } catch (e) { showToast('Fehler: ' + e.message); }
+}
+
+// ECHTER Server-Scraper: OpenStreetMap + Impressum-Enrich (bis ~60 s)
 async function startScrape() {
   const g = document.getElementById('scrapeGewerk')?.value || 'dachdecker';
   const sEl = document.getElementById('scrapeStadt');
@@ -2578,6 +2595,8 @@ function doReset(){
   const card = resetTarget;
   const stadt = card.querySelector('.font-black').textContent;
   card.dataset.status = 'frei';
+  // Trade-Pfad-Map für Demo-Karte (sonst ReferenceError: P_TPATH undefined)
+  const P_TPATH = { 'Dachdecker':'dachdecker','Elektro':'elektriker','SHK':'klempner','Zimmerer':'zimmerer','Maler':'maler','Garten':'garten-und-landschaftsbau' };
   card.className = 'stadt-card bg-white rounded-2xl border-2 border-green-200 p-5';
   const badge = card.querySelector('.rounded-full');
   badge.className = 'bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full';
@@ -2593,14 +2612,7 @@ function doReset(){
 
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-// 2026-10-05: Keine Adressdatenbank angebunden → ehrlicher Leer-Zustand statt Phantasie-Firmen.
-if(document.getElementById('printList')){ finishPrintScrapeInit(); }
-function finishPrintScrapeInit(){
-  printPros = [];
-  renderPrintList();
-  const meta = document.getElementById('pResultMeta');
-  if(meta) meta.innerHTML = '<strong class="text-ink-800">Kein Adressdatenbank-Anbieter angebunden.</strong> Print-Versand folgt, sobald eine echte Quelle (Gelbe Seiten / 11880) angebunden ist.';
-}
+// Print-Liste wird vom echten Marketing-Script (loadContacts) gerendert — kein Demo-Init nötig.
 // Marketing: initiale Kontaktliste laden
 if(document.getElementById('prospectList')){ finishScrapeSilent(); }
 function finishScrapeSilent(){

@@ -63,3 +63,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }
 }
+
+// PATCH /api/admin/marketing/contacts/ — Kontakt-Status setzen (z.B. UWG-Stopp nach Antwort)
+const ALLOWED_STATUS = ['neu', 'draft', 'sent', 'replied', 'stopp', 'print_sent']
+export async function PATCH(request: Request) {
+  if (!checkAdminAuth(request)) {
+    return NextResponse.json({ error: 'Nicht autorisiert' }, { status: 401 })
+  }
+  try {
+    const body = await request.json()
+    const id = String(body.id || '')
+    const status = String(body.status || '')
+    if (!id || !ALLOWED_STATUS.includes(status)) {
+      return NextResponse.json({ error: 'id oder ungültiger status (erlaubt: ' + ALLOWED_STATUS.join(', ') + ')' }, { status: 400 })
+    }
+    const { error } = await supabaseAdmin
+      .from('marketing_contacts')
+      .update({ status })
+      .eq('id', id)
+    if (error) throw error
+    return NextResponse.json({ success: true })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Internal error' }, { status: 500 })
+  }
+}

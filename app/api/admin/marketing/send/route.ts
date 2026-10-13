@@ -59,11 +59,12 @@ export async function POST(request: Request) {
       // Kontakt laden + Doppelschutz (bereits versendet?)
       const { data: c } = await supabaseAdmin
         .from('marketing_contacts')
-        .select('id, email, company_name, trade, city, sent_at')
+        .select('id, email, company_name, trade, city, sent_at, status')
         .eq('id', d.id)
         .single()
-      if (!c || c.sent_at) {
-        results.push({ id: d.id, ok: false, error: !c ? 'Kontakt nicht gefunden' : 'Bereits versendet' })
+      // UWG: nur echte Entwürfe versenden; Stopp/Antwort/Sonstiges wird hart blockiert
+      if (!c || c.sent_at || c.status !== 'draft') {
+        results.push({ id: d.id, ok: false, error: !c ? 'Kontakt nicht gefunden' : c.sent_at ? 'Bereits versendet' : 'Kein Entwurf (Status: ' + c.status + ')' })
         continue
       }
       firstTrade = firstTrade || c.trade

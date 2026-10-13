@@ -98,7 +98,8 @@ export async function POST(request: Request) {
 
     const drafts = []
     for (const c of contacts) {
-      if (c.sent_at) continue // bereits versendet → nie doppelt mailen!
+      // UWG-Sicherheit: Stopp/Antwort/Bounce/Gesendet → NIEMALS neu anschreiben
+      if (c.sent_at || ['stopp', 'replied', 'bounced', 'sent'].includes(c.status)) continue
       const mail = buildMail(c.company_name, c.trade, c.city, await resolveCitySlug(c.city))
       const { error: upErr } = await supabaseAdmin
         .from('marketing_contacts')
