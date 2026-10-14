@@ -9,14 +9,16 @@ export async function GET(req: Request) {
   const url = new URL(req.url)
   if (url.searchParams.get('whoami')) {
     try {
-      const { getPayPalConfig, ppApi } = await import('@/lib/paypal')
+      const { getPayPalConfig, ppApi, ppClientId } = await import('@/lib/paypal')
       const cfg = await getPayPalConfig()
       if (!cfg) return NextResponse.json({ error: 'paypal not configured' }, { status: 503 })
       const info = await ppApi(cfg, '/v1/identity/oauth2/userinfo?schema=paypalv1.1')
+      const cid = ppClientId(cfg)
       return NextResponse.json({
         success: true,
         mode: cfg.mode,
         account: info,
+        client_id_fingerprint: cid ? cid.slice(0, 10) + '…(' + cid.length + ' Zeichen)' : 'FEHLT',
       })
     } catch (e: any) {
       return NextResponse.json({ success: false, error: String(e?.message || e).slice(0, 400) }, { status: 500 })
