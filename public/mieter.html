@@ -110,14 +110,16 @@ tailwind.config = {
     <div class="bg-white rounded-2xl border border-ink-200 p-6">
       <h2 class="font-bold text-ink-900">Vertrag &amp; Abrechnung</h2>
       <ul class="mt-4 space-y-2.5 text-sm text-ink-600">
-        <li class="flex justify-between"><span>Tarif</span><strong id="mTarif" class="text-ink-900">189 €/Monat</strong></li>
-        <li class="flex justify-between"><span>Nächste Abbuchung</span><strong id="mNextPay" class="text-ink-900">-</strong></li>
-        <li class="flex justify-between"><span>Zahlungsmethode</span><strong class="text-ink-900">🔒 via Stripe</strong></li>
+        <li class="flex justify-between"><span>Tarif</span><strong id="mTarif" class="text-ink-900">–</strong></li>
+        <li class="flex justify-between"><span>Nächste Abbuchung</span><strong id="mNextPay" class="text-ink-900">–</strong></li>
+        <li class="flex justify-between"><span>Zahlungsmethode</span><strong id="mMethod" class="text-ink-900">–</strong></li>
         <li class="flex justify-between"><span>Laufzeit</span><strong class="text-ink-900">monatlich kündbar</strong></li>
         <li class="flex justify-between"><span>Status</span><span id="mStatus" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">Aktiv</span></li>
       </ul>
       <button id="mActivateBtn" onclick="activateMiete()" class="hidden mt-5 w-full bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2.5 rounded-lg transition">Jetzt mieten &amp; aktivieren</button>
       <button id="portalBtn" onclick="openBillingPortal()" class="mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition">💳 Zahlung &amp; Abo verwalten</button>
+      <a id="paypalManageBtn" href="https://www.paypal.com/myaccount/autopay" target="_blank" rel="noopener" class="hidden mt-2.5 w-full bg-white border border-ink-300 hover:bg-ink-50 text-ink-600 text-sm font-bold py-2.5 rounded-lg transition text-center block">🔵 Abo im PayPal-Konto verwalten</a>
+      <button id="cancelBtn" onclick="cancelContract()" class="hidden mt-2.5 w-full bg-white border border-red-200 hover:bg-red-50 text-red-600 text-sm font-bold py-2.5 rounded-lg transition">✕ Vertrag kündigen</button>
       <button id="mResetBtn" onclick="resetDemoMiete()" class="hidden mt-2.5 w-full bg-white border border-dashed border-ink-300 hover:bg-ink-50 text-ink-400 text-xs font-bold py-2 rounded-lg transition">Demo-Miete zurücksetzen (Standardansicht)</button>
     </div>
   </div>
@@ -713,9 +715,67 @@ async function loadDashboard(){
       statusEl.textContent=m[0];statusEl.className=m[1]+' text-xs font-bold px-2 py-0.5 rounded-full';
     }
     loadStats();
+    loadContract();
   }catch(e){console.error('loadDashboard',e);}
 }
 function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+// ── VERTRAG & ABRECHNUNG: echte Daten vom Server (Preis/Provider/Trial aus Live-API) ──
+async function loadContract(){
+  try{
+    var res=await fetch('/api/tenant/contract/',{headers:{'Authorization':'Bearer '+localStorage.getItem('fs_token')}});
+    if(!res.ok) return;
+    var c=await res.json();
+    if(!c.success) return;
+    var priceStr=(c.price_monthly!=null? c.price_monthly : 99)+' €/Monat';
+    function fmtD(iso){ if(!iso) return '–'; try{ return new Date(iso).toLocaleDateString('de-DE'); }catch(e){ return '–'; } }
+    var tarif=document.getElementById('mTarif');
+    var next=document.getElementById('mNextPay');
+    var meth=document.getElementById('mMethod');
+    var portal=document.getElementById('portalBtn');
+    var ppBtn=document.getElementById('paypalManageBtn');
+    var cBtn=document.getElementById('cancelBtn');
+    if(c.status==='trialing'){
+      if(tarif) tarif.textContent='Testphase · danach '+priceStr;
+      var te=fmtD(c.trial_ends_at);
+      if(next) next.textContent= te!=='–' ? 'erst ab '+te : 'erst nach Testphase';
+      if(cBtn) cBtn.textContent='✕ Testphase kündigen (kostenlos)';
+    } else if(c.status==='active'||c.status==='past_due'){
+      if(tarif) tarif.textContent=priceStr;
+      if(next) next.textContent=fmtD(c.next_billing_at);
+    } else if(c.status==='cancelled'){
+      if(tarif) tarif.textContent=priceStr;
+      if(next) next.textContent='–';
+    }
+    if(meth) meth.textContent= c.provider==='paypal' ? '🔵 via PayPal' : (c.provider==='stripe' ? '🔒 via Stripe' : '–');
+    if(c.provider==='paypal'){
+      if(portal) portal.classList.add('hidden');
+      if(ppBtn) ppBtn.classList.remove('hidden');
+    } else {
+      if(portal) portal.classList.remove('hidden');
+      if(ppBtn) ppBtn.classList.add('hidden');
+    }
+    if(cBtn){
+      if(c.status==='trialing'||c.status==='active'||c.status==='past_due') cBtn.classList.remove('hidden');
+      else cBtn.classList.add('hidden');
+    }
+  }catch(e){console.error('loadContract',e);}
+}
+async function cancelContract(){
+  if(!confirm('Wirklich kündigen? Die Seite geht sofort zurück in den freien Pool.')) return;
+  var btn=document.getElementById('cancelBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Kündige...';}
+  try{
+    var res=await fetch('/api/tenant/cancel/',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('fs_token')},body:JSON.stringify({reason:'Mieter-Dashboard'})});
+    var d=await res.json().catch(function(){return{}});
+    if(res.ok){
+      showToast('✓ Gekündigt. Die Bestätigungs-E-Mail ist unterwegs.');
+      setTimeout(function(){ location.reload(); },1800);
+    } else {
+      showToast(d.error||'Kündigung fehlgeschlagen – bitte erneut versuchen.');
+      if(btn){btn.disabled=false;btn.textContent='✕ Vertrag kündigen';}
+    }
+  }catch(e){showToast('Netzwerkfehler – bitte erneut versuchen.');if(btn){btn.disabled=false;btn.textContent='✕ Vertrag kündigen';}}
+}
 async function openBillingPortal(){
   var btn=document.getElementById('portalBtn');
   if(btn){btn.disabled=true;btn.textContent='⏳ Portal wird geöffnet...';}
@@ -865,7 +925,7 @@ function logout(){
   if(m.firma) document.getElementById('mFirmenname').textContent = m.firma;
   document.getElementById('mSub').innerHTML = (m.domain || 'fachschmiede.de/ihre-stadt/');
   if(m.domain){var _vs0=document.getElementById('viewSiteBtn');if(_vs0){var _mm=m.domain.match(/fachschmiede\.de(\/[^\s]*)/);if(_mm)_vs0.href=_mm[1];}}
-  document.getElementById('mTarif').textContent = '189 €/Monat';
+  document.getElementById('mTarif').textContent = '99 €/Monat';
   if(m.farbe){
     var st = document.createElement('style');
     st.textContent = '.bg-brand-600{background:' + m.farbe + ' !important}'
@@ -885,7 +945,7 @@ function logout(){
     var days = Math.max(0, Math.ceil((new Date(m.testEnde).getTime() - Date.now())/86400000));
     var endeStr = new Date(m.testEnde).toLocaleDateString('de-DE');
     document.getElementById('mSub').innerHTML += ' · <span class="font-bold text-amber-600">Testphase</span>';
-    document.getElementById('mTarif').textContent = 'Testphase · danach 189 €/Monat';
+    document.getElementById('mTarif').textContent = 'Testphase · danach 99 €/Monat';
     var np = document.getElementById('mNextPay');
     if(np) np.textContent = 'erst nach Testphase (' + endeStr + ')';
     var stEl = document.getElementById('mStatus');

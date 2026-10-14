@@ -9,6 +9,8 @@ export default function ErfolgPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'pending' | 'error'>('loading')
   const [slug, setSlug] = useState('')
   const [dashMail, setDashMail] = useState('')
+  const [isTrial, setIsTrial] = useState(false)
+  const [trialEnd, setTrialEnd] = useState('')
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -27,7 +29,15 @@ export default function ErfolgPage() {
       try {
         const r = await fetch(`/api/payment-status/?slug=${encodeURIComponent(s)}`, { cache: 'no-store' })
         const d = await r.json()
-        if (d.rented) { setStatus('success'); return true }
+        if (d.rented) {
+          if (d.trialing) {
+            setIsTrial(true)
+            if (d.trial_ends_at) {
+              setTrialEnd(new Date(d.trial_ends_at).toLocaleDateString('de-DE'))
+            }
+          }
+          setStatus('success'); return true
+        }
       } catch { /* transient — weiter pollen */ }
       attempts++
       if (attempts >= 15) { setStatus('pending'); return true } // bezahlt, Einrichtung läuft — kein Fehler!
@@ -65,10 +75,32 @@ export default function ErfolgPage() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
           <div className="text-6xl mb-4">⏳</div>
-          <h1 className="text-2xl font-black text-slate-900 mb-2">Zahlung eingegangen!</h1>
+          <h1 className="text-2xl font-black text-slate-900 mb-2">{isTrial ? 'Testphase wird eingerichtet!' : 'Zahlung eingegangen!'}</h1>
           <p className="text-slate-600 mb-2">Deine Seite <strong>{slug}</strong> wird gerade eingerichtet — das dauert maximal 1–2 Minuten.</p>
           <p className="text-sm text-slate-500 mb-6">Deine Zugangsdaten kommen automatisch per E-Mail.</p>
           <Link href="/mieter.html" className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition">Zum Dashboard →</Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (isTrial) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="text-6xl mb-4">🎉</div>
+          <h1 className="text-2xl font-black text-slate-900 mb-2">Testphase gestartet!</h1>
+          <p className="text-slate-600 mb-4">
+            Deine Seite <strong className="text-blue-700">{slug}</strong> ist jetzt 14 Tage kostenlos live.
+            {trialEnd ? <> Die Testphase läuft bis <strong>{trialEnd}</strong>.</> : null} Danach startet die Miete — du wirst vorher erinnert und kannst jederzeit kündigen.
+          </p>
+          <p className="text-sm text-slate-500 mb-6">Es wird jetzt <strong className="text-slate-700">nichts</strong> abgebucht. Deine Zugangsdaten sind unterwegs.</p>
+          <div className="space-y-3">
+            <Link href="/mieter.html" className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition">
+              Zum Dashboard – Seite anpassen →
+            </Link>
+            <p className="text-xs text-slate-400">Login: {dashMail || 'deine E-Mail'} + dein gewähltes Passwort</p>
+          </div>
         </div>
       </div>
     )

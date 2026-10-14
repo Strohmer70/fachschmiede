@@ -75,9 +75,23 @@ export async function POST(request: Request) {
   try {
     switch (eventType) {
       case 'BILLING.SUBSCRIPTION.ACTIVATED': {
-        // Seite zuweisen + Customization aktivieren (gleiche Logik wie Stripe checkout.session.completed)
+        // Trial erkennen: plan_id gegen bekannte Trial-Pläne prüfen (statisch + dynamisch)
+        let isTrial = false
+        try {
+          const { getPayPalConfig } = await import('@/lib/paypal')
+          const cfg = await getPayPalConfig()
+          const planId = res.plan_id || ''
+          if (cfg && planId) {
+            const known = [cfg.modes?.[cfg.mode]?.plans?.trial]
+            for (const byPrice of Object.values((cfg as any).plans_by_price || {})) {
+              const t = (byPrice as any)?.trial?.[cfg.mode]
+              if (t) known.push(t)
+            }
+            isTrial = known.filter(Boolean).includes(planId)
+          }
+        } catch { /* Trial-Check best-effort */ }
         if (tenantId) {
-          await supabaseAdmin.from('tenants').update({ subscription_status: 'active' }).eq('id', tenantId)
+          await supabaseAdmin.from('tenants').update({ subscription_status: isTrial ? 'trialing' : 'active' }).eq('id', tenantId)
         }
         let pid = landingPageId || ''
         if (!pid && slug) {
@@ -94,7 +108,7 @@ export async function POST(request: Request) {
             .eq('id', pid)
           await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', pid)
         }
-        console.log('[paypal-webhook] AKTIVIERT:', { pid, tenantId, paypalSubId })
+        console.log('[paypal-webhook] AKTIVIERT:', { pid, tenantId, paypalSubId, isTrial })
         break
       }
 
