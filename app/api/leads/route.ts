@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
           supabaseAdmin.from('cities').select('name').eq('slug', city).maybeSingle(),
           supabaseAdmin.from('trades').select('label, name').eq('slug', trade).maybeSingle(),
         ])
-        if (tenant?.email && tenant.subscription_status === 'active') {
+        if (tenant?.email && ['active', 'trialing'].includes(tenant.subscription_status || '')) {
           await sendMail({
             to: tenant.email,
             ...leadMailToTenant({

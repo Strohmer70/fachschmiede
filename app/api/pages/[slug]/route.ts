@@ -51,7 +51,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
         .maybeSingle(),
     ])
 
-    if (!tenant || tenant.subscription_status !== 'active' || !cust || !cust.is_active) {
+    if (!tenant || !['active', 'trialing'].includes(tenant.subscription_status || '') || !cust || !cust.is_active) {
       return json({ rented: false, reason: 'tenant/cust' })
     }
 

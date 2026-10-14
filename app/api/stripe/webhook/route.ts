@@ -49,7 +49,11 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         // Zahlung/Trial gestartet → Seite zuweisen + Customization aktivieren
         if (tenant_id) {
-          await supabaseAdmin.from('tenants').update({ subscription_status: 'active' }).eq('id', tenant_id)
+          // 2026-10-14: Trial nicht überschreiben — subscription.updated liefert den exakten Status
+          const { data: curT } = await supabaseAdmin.from('tenants').select('subscription_status').eq('id', tenant_id).maybeSingle()
+          if (curT?.subscription_status !== 'trialing') {
+            await supabaseAdmin.from('tenants').update({ subscription_status: 'active' }).eq('id', tenant_id)
+          }
         }
         if (landing_page_id && tenant_id) {
           await supabaseAdmin
@@ -69,7 +73,7 @@ export async function POST(request: Request) {
       case 'customer.subscription.updated': {
         const sub = event.data.object
         const statusMap: Record<string, string> = {
-          active: 'active', trialing: 'active', past_due: 'past_due',
+          active: 'active', trialing: 'trialing', past_due: 'past_due',
           canceled: 'cancelled', incomplete_expired: 'cancelled', unpaid: 'cancelled',
         }
         const newStatus = statusMap[sub.status] || 'inactive'
@@ -77,7 +81,7 @@ export async function POST(request: Request) {
           await supabaseAdmin.from('tenants').update({ subscription_status: newStatus, stripe_subscription_id: sub.id }).eq('id', tenant_id)
         }
         // AKTIVIEREN: active/trialing → Seite vermietet (robust per meta.landing_page_id → meta.slug → tenant-customization)
-        if (newStatus === 'active') {
+        if (newStatus === 'active' || newStatus === 'trialing') {
           let pid = landing_page_id || ''
           if (!pid && meta.slug) {
             const { data: lp } = await supabaseAdmin.from('landing_pages').select('id').eq('slug', meta.slug).maybeSingle()

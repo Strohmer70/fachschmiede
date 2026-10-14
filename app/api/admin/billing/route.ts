@@ -43,7 +43,7 @@ export async function GET() {
     // gespeicherter ID waren vorher ewig "live" → Phantom-Umsatz)
     // 2026-10-07: PayPal-Mieter zählen genauso (stripe_subscription_id ODER paypal_subscription_id)
     const hasLiveSub = (t: any) =>
-      (t.stripe_subscription_id || t.paypal_subscription_id) && t.subscription_status === 'active'
+      (t.stripe_subscription_id || t.paypal_subscription_id) && ['active', 'trialing'].includes(t.subscription_status || '')
     const tenantsWithPages = (tenants || []).map(t => ({
       ...t,
       is_test: !hasLiveSub(t),

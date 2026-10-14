@@ -145,8 +145,20 @@ export async function POST(request: Request) {
         break
       }
 
+      case 'PAYMENT.CAPTURE.COMPLETED': {
+        // Trial → bezahlt: Erste echte Zahlung ist reingekommen → Status hochstufen
+        if (tenantId) {
+          const { data: t0 } = await supabaseAdmin.from('tenants').select('subscription_status').eq('id', tenantId).maybeSingle()
+          if (t0?.subscription_status === 'trialing') {
+            await supabaseAdmin.from('tenants').update({ subscription_status: 'active' }).eq('id', tenantId)
+            console.log('[paypal-webhook] TRIAL→AKTIV (erste Zahlung):', { tenantId, paypalSubId })
+          }
+        }
+        break
+      }
+
       default:
-        // PAYMENT.CAPTURE.COMPLETED etc. — ignorieren (Aktivierung läuft über SUBSCRIPTION.ACTIVATED)
+        // Weitere PAYMENT-Events — ignorieren (Aktivierung läuft über SUBSCRIPTION.ACTIVATED)
         break
     }
   } catch (err: any) {
