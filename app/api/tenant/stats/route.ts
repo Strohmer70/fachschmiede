@@ -29,15 +29,16 @@ export async function GET(request: Request) {
   const auth = await authTenant(request)
   if ('error' in auth) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-  // ── Mietseite des Tenants (für Besucher-Zuordnung) ──
+  // ── Mietseite des Tenants (für Besucher-Zuordnung + Google-Position) ──
   const { data: cust } = await supabaseAdmin
     .from('page_customizations')
-    .select('landing_page:landing_pages(slug)')
+    .select('landing_page:landing_pages(id, slug)')
     .eq('tenant_id', auth.tenantId)
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle()
   const slug = (cust as any)?.landing_page?.slug || null
+  const landingPageId = (cust as any)?.landing_page?.id || null
 
   const sinceIso = new Date(Date.now() - THIRTY_DAYS_MS).toISOString()
   const sinceDay = sinceIso.slice(0, 10)
@@ -85,5 +86,20 @@ export async function GET(request: Request) {
     console.error('[tenant/stats] recent leads failed:', e)
   }
 
-  return NextResponse.json({ ok: true, leads_30d: leads30, visitors_30d: visitors30, recent_leads: recent })
+  // ── Google-Position (Search Console, täglicher Sync) ──
+  let googlePosition: { keyword: string; position: number | null; clicks_30d: number; impressions_30d: number; checked_at: string | null } | null = null
+  if (landingPageId) {
+    try {
+      const { data: pos } = await supabaseAdmin
+        .from('page_positions')
+        .select('keyword, position, clicks_30d, impressions_30d, checked_at')
+        .eq('landing_page_id', landingPageId)
+        .maybeSingle()
+      if (pos) googlePosition = pos as any
+    } catch (e) {
+      console.error('[tenant/stats] google position failed:', e)
+    }
+  }
+
+  return NextResponse.json({ ok: true, leads_30d: leads30, visitors_30d: visitors30, recent_leads: recent, google_position: googlePosition })
 }

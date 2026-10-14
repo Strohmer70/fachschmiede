@@ -1,0 +1,22 @@
+# Täglicher Google-Position-Sync (Search Console → Mieter-Dashboard)
+# Auth: Bearer-Secret aus GitHub-Repo-Secret GSC_SYNC_SECRET
+# (gleicher Wert liegt in Supabase platform_settings.gsc_sync_secret)
+name: GSC Position Sync
+
+on:
+  schedule:
+    - cron: '23 3 * * *'   # 05:23 MESZ — Off-Peak
+  workflow_dispatch:        # manuell startbar
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync auslösen
+        run: |
+          HTTP=$(curl -s -o /tmp/gsc-sync.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GSC_SYNC_SECRET }}" \
+            https://www.fachschmiede.de/api/cron/gsc-sync)
+          echo "HTTP $HTTP"
+          cat /tmp/gsc-sync.json
+          test "$HTTP" = "200"

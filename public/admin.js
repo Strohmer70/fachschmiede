@@ -2338,7 +2338,7 @@ const _origShowView = showView;
 showView = function(id, el) {
   _origShowView(id, el);
   if (id === 'rechtliches') { loadLegal(); setupLegalAutosave(); }
-  if (id === 'einstellungen') { loadSettings(); }
+  if (id === 'einstellungen') { loadSettings(); gscLoadStatus(); }
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2618,3 +2618,117 @@ window.openModal = function(id) {
     nbUpdatePreview();
   }
 };
+
+// ═══════════════════════════════════════════════════════════════════
+// GOOGLE SEARCH CONSOLE (2026-10-14) — Setup + Sync für Mieter-Google-Position
+// Karte: admin.html → Einstellungen → "Google Search Console" (#google)
+// ═══════════════════════════════════════════════════════════════════
+async function gscLoadStatus() {
+  const badge = document.getElementById('gscBadge');
+  const body = document.getElementById('gscBody');
+  if (!badge || !body) return;
+  try {
+    const res = await fetch('/api/admin/gsc', { headers: { 'Authorization': 'Bearer ' + adminToken } });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || res.status);
+    gscRender(d);
+  } catch (e) {
+    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 shrink-0';
+    badge.textContent = 'Fehler';
+    body.innerHTML = '<p class="text-xs text-red-600">Status konnte nicht geladen werden: ' + (e.message || e) + '</p>';
+  }
+}
+
+function gscRender(d) {
+  const badge = document.getElementById('gscBadge');
+  const body = document.getElementById('gscBody');
+  if (!badge || !body) return;
+  if (d.connected) {
+    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700 shrink-0';
+    badge.textContent = '✓ verbunden';
+    body.innerHTML =
+      '<div class="bg-ink-50 border border-ink-200 rounded-xl p-4">' +
+        '<p class="font-bold text-sm text-ink-900">Property: <span class="text-brand-600">' + (d.property || '—') + '</span></p>' +
+        '<p class="text-xs text-ink-500 mt-1">Client: ' + (d.client_id_preview || '—') + ' · automatischer Sync täglich früh (alle vermieteten Seiten)</p>' +
+      '</div>' +
+      '<div class="flex flex-wrap gap-2">' +
+        '<button onclick="gscSyncNow()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2 rounded-lg">↻ Jetzt synchronisieren</button>' +
+        '<button onclick="gscDisconnect()" class="border border-ink-200 text-ink-600 text-sm font-bold px-4 py-2 rounded-lg hover:bg-ink-50">Verbindung trennen</button>' +
+      '</div>' +
+      '<p id="gscSyncResult" class="text-xs text-ink-500"></p>';
+  } else if (d.has_client) {
+    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 shrink-0';
+    badge.textContent = 'Schritt 2 offen';
+    body.innerHTML =
+      '<div class="bg-amber-50 border border-amber-200 rounded-xl p-4">' +
+        '<p class="text-sm font-bold text-amber-800">Schritt 2: Google-Konto autorisieren</p>' +
+        '<p class="text-xs text-amber-700 mt-1">Weiterleitung zu Google — dort mit dem Konto einloggen, das die Search Console von fachschmiede.de besitzt. Danach landest du automatisch wieder hier.</p>' +
+      '</div>' +
+      '<button onclick="gscConnectGoogle()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2 rounded-lg">Mit Google verbinden →</button>';
+  } else {
+    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-100 text-ink-500 shrink-0';
+    badge.textContent = 'nicht eingerichtet';
+    body.innerHTML =
+      '<div class="bg-ink-50 border border-ink-200 rounded-xl p-4 space-y-2">' +
+        '<p class="text-sm font-bold text-ink-900">Schritt 1: OAuth-Client anlegen (einmalig, ~5 Min.)</p>' +
+        '<ol class="text-xs text-ink-600 list-decimal ml-4 space-y-1">' +
+          '<li>Google-Projekt öffnen: <a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/credentials?project=academic-era-511510" target="_blank" rel="noopener">Anmeldedaten → + Anmeldedaten erstellen → OAuth-Client-ID</a> (Anwendungstyp: <strong>Webanwendung</strong>)</li>' +
+          '<li>Autorisierte Weiterleitungs-URI: <code class="bg-white px-1 rounded break-all">https://www.fachschmiede.de/api/admin/gsc/callback</code></li>' +
+          '<li><a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/library/webmaster.googleapis.com?project=academic-era-511510" target="_blank" rel="noopener">Search Console API aktivieren</a> (ein Klick)</li>' +
+          '<li>Client-ID + Client-Secret unten eintragen</li>' +
+        '</ol>' +
+      '</div>' +
+      '<input id="gscClientId" type="text" placeholder="Client-ID (…apps.googleusercontent.com)" class="w-full text-sm rounded-lg border border-ink-200 px-3 py-2">' +
+      '<input id="gscClientSecret" type="text" placeholder="Client-Secret (GOCSPX-…)" class="w-full text-sm rounded-lg border border-ink-200 px-3 py-2">' +
+      '<button onclick="gscSaveClient()" class="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-4 py-2 rounded-lg">Speichern &amp; weiter</button>' +
+      '<p id="gscMsg" class="text-xs text-ink-500"></p>';
+  }
+}
+
+async function gscSaveClient() {
+  const id = (document.getElementById('gscClientId')?.value || '').trim();
+  const sec = (document.getElementById('gscClientSecret')?.value || '').trim();
+  const msg = document.getElementById('gscMsg');
+  if (!id || !sec) { if (msg) msg.textContent = 'Bitte beide Felder ausfüllen.'; return; }
+  if (msg) msg.textContent = 'Speichere…';
+  try {
+    const res = await fetch('/api/admin/gsc', { method: 'POST', headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'save-client', client_id: id, client_secret: sec }) });
+    const d = await res.json();
+    if (d.ok) { gscLoadStatus(); showToast('✓ Google-Client gespeichert — jetzt verbinden!'); }
+    else if (msg) msg.textContent = 'Fehler: ' + (d.error || res.status);
+  } catch (e) { if (msg) msg.textContent = 'Fehler: ' + e.message; }
+}
+
+function gscConnectGoogle() {
+  window.location.href = '/api/admin/gsc/connect?token=' + encodeURIComponent(adminToken || '');
+}
+
+async function gscSyncNow() {
+  const r = document.getElementById('gscSyncResult');
+  if (r) r.textContent = 'Sync läuft… (kann 1–2 Minuten dauern)';
+  try {
+    const res = await fetch('/api/cron/gsc-sync', { headers: { 'Authorization': 'Bearer ' + adminToken } });
+    const d = await res.json();
+    if (!r) return;
+    if (d.skipped) r.textContent = 'Übersprungen: ' + d.reason;
+    else if (d.ok) r.textContent = '✓ ' + d.updated + '/' + d.total + ' Seiten aktualisiert' + ((d.failures || []).length ? ' · ' + d.failures.length + ' Fehler (Details: Server-Log)' : '');
+    else r.textContent = 'Fehler: ' + (d.error || res.status);
+  } catch (e) { if (r) r.textContent = 'Fehler: ' + e.message; }
+}
+
+async function gscDisconnect() {
+  if (!confirm('Search-Console-Verbindung wirklich trennen? Die Mieter-Dashboards zeigen dann wieder „–“.')) return;
+  await fetch('/api/admin/gsc', { method: 'POST', headers: { 'Authorization': 'Bearer ' + adminToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'disconnect' }) });
+  gscLoadStatus();
+  showToast('Verbindung getrennt.');
+}
+
+// OAuth-Callback-Redirect auswerten (?gsc=connected|error)
+(function gscHandleCallbackParams() {
+  const params = new URLSearchParams(location.search);
+  const gsc = params.get('gsc');
+  if (!gsc) return;
+  if (gsc === 'connected') showToast('✓ Google verbunden: ' + (params.get('property') || 'fachschmiede.de'));
+  else showToast('✗ Google-Verbindung fehlgeschlagen: ' + (params.get('msg') || 'unbekannter Fehler'));
+  history.replaceState(null, '', location.pathname + '#google');
+})();
