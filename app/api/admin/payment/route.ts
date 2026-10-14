@@ -5,8 +5,24 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export async function GET(req: Request) {
-  // Optional: ?subId=I-xxx → echten PayPal-Subscription-Status abfragen (Diagnose)
+  // Optional: ?whoami=1 → PayPal-Konto-Identität des verbundenen Händlerkontos (read-only)
   const url = new URL(req.url)
+  if (url.searchParams.get('whoami')) {
+    try {
+      const { getPayPalConfig, ppApi } = await import('@/lib/paypal')
+      const cfg = await getPayPalConfig()
+      if (!cfg) return NextResponse.json({ error: 'paypal not configured' }, { status: 503 })
+      const info = await ppApi(cfg, '/v1/identity/oauth2/userinfo?schema=paypalv1.1')
+      return NextResponse.json({
+        success: true,
+        mode: cfg.mode,
+        account: info,
+      })
+    } catch (e: any) {
+      return NextResponse.json({ success: false, error: String(e?.message || e).slice(0, 400) }, { status: 500 })
+    }
+  }
+  // Optional: ?subId=I-xxx → echten PayPal-Subscription-Status abfragen (Diagnose)
   const subId = url.searchParams.get('subId') || ''
   if (subId) {
     try {
