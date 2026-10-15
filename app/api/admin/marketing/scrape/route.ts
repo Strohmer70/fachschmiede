@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
-export const maxDuration = 60
+export const maxDuration = 300
 
 // ─── GET /api/admin/marketing/scrape/ ───────────────────────────
 // Scraping-Engine mit QUALITÄTS-Garantie:
@@ -195,6 +195,64 @@ async function osmScrape(gewerk: string, stadt: string): Promise<{ rows: any[]; 
   return { rows }
 }
 
+// ── Das Örtliche (Branchenbuch — Dieter 2026-10-15: 'Gelbe Seiten mitscrapen') ──
+// Gelbe Seiten + 11880 blocken Server-IPs hart; Das Örtliche (gleicher Konzern!)
+// liefert 200 + volle Treffer. Listing: Name/Adresse/Tel; Website holt Detail-Crawl.
+const DAESE_LABELS: Record<string, string> = {
+  dachdecker: 'Dachdecker',
+  elektriker: 'Elektriker',
+  klempner: 'Klempner',
+  maler: 'Maler',
+  zimmerer: 'Zimmerei',
+  'garten-und-landschaftsbau': 'Gartenbau',
+}
+
+async function daeseScrape(gewerk: string, stadt: string): Promise<{ rows: any[]; error?: string }> {
+  const label = DAESE_LABELS[gewerk]
+  if (!label) return { rows: [], error: 'Unbekanntes Gewerk' }
+  const listUrl = `https://www.dasoertliche.de/Themen/${encodeURIComponent(label)}/${encodeURIComponent(stadt)}.html`
+  const html = await fetchWithTimeout(listUrl, 12000)
+  if (!html) return { rows: [], error: 'Das Örtliche nicht erreichbar — bitte später erneut.' }
+  // Treffer-Blöcke: <div class="hit " id="entry_N" …
+  const blocks = html.split('class="hit "').slice(1, 21) // max. 20
+  const entries: any[] = []
+  for (const b of blocks) {
+    const name = b.match(/hitlnk_name[\s\S]{0,80}?>\s*([^<]+?)\s*</)?.[1]?.trim() || null
+    if (!name || name.length < 3) continue
+    const detail = b.match(/<a href="(https:\/\/www\.dasoertliche\.de\/Themen\/[^"]+)"/)?.[1] || null
+    const addrRaw = b.match(/<address>([\s\S]*?)<\/address>/)?.[1] || ''
+    const addr = addrRaw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || null
+    const tel = b.match(/Tel\.\s*([\d\s/()-]{6,22}\d)/)?.[1]?.trim() || null
+    entries.push({ name, detail, addr, tel })
+  }
+  // Detailseiten parallel crawlen → echte Website (href="…" class="www")
+  const queue = [...entries]
+  const worker = async (): Promise<void> => {
+    while (queue.length) {
+      const e = queue.shift()!
+      if (!e.detail) continue
+      const d = await fetchWithTimeout(e.detail, 9000)
+      const site = d?.match(/href="(https?:\/\/[^"]+)"\s+class="www"/)?.[1]
+        || d?.match(/class="www"[^>]*>|href="(https?:\/\/[^"]+)"\s+target="_blank"/)?.[1]
+        || null
+      e.website = site && !PORTAL_DOMAINS.some((p) => site.includes(p)) ? site : null
+    }
+  }
+  await Promise.all(Array.from({ length: 6 }, () => worker()))
+  return {
+    rows: entries.map((e) => ({
+      company_name: String(e.name).slice(0, 120),
+      trade: gewerk,
+      city: stadt,
+      email: null,
+      phone: e.tel || null,
+      website: e.website || null,
+      address: e.addr || null,
+      source: 'Das Örtliche',
+    })),
+  }
+}
+
 // ── Enrich: Website + Impressum bestehender Kontakte crawlen ──
 async function fetchWithTimeout(url: string, ms = 5000): Promise<string | null> {
   try {
@@ -308,6 +366,7 @@ export async function GET(request: Request) {
     const gewerk = searchParams.get('gewerk') || 'dachdecker'
     const stadt = searchParams.get('stadt') || 'Hattingen'
     const doEnrich = searchParams.get('enrich') === '1'
+    const engineParam = searchParams.get('engine') || 'auto' // auto|places|osm|daese
 
     if (!TRADE_LABELS[gewerk]) {
       return NextResponse.json({ error: 'Unbekanntes Gewerk' }, { status: 400 })
@@ -317,7 +376,10 @@ export async function GET(request: Request) {
     const placesKey = process.env.GOOGLE_PLACES_API_KEY || (await getSetting('GOOGLE_PLACES_API_KEY'))
     let engineResult: { rows: any[]; error?: string }
     let engineName: string
-    if (placesKey) {
+    if (engineParam === 'daese') {
+      engineResult = await daeseScrape(gewerk, stadt)
+      engineName = 'Das Örtliche'
+    } else if (placesKey) {
       engineResult = await placesScrape(gewerk, stadt, placesKey)
       engineName = 'Google Places'
     } else {
@@ -361,9 +423,9 @@ export async function GET(request: Request) {
       contacts.push(newRow)
     }
 
-    // ── Enrich ──
+    // ── Enrich (nur Places/OSM — daese-Daten kommen schon mit Website, recover-Loop holt Mails) ──
     let enrichResult = { enriched: 0, failed: 0 }
-    if (doEnrich) {
+    if (doEnrich && engineName !== 'Das Örtliche') {
       enrichResult = await enrichContacts(gewerk, stadt)
     }
 

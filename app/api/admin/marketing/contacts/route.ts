@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
     let query = supabaseAdmin
       .from('marketing_contacts')
-      .select('*')
+      .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })
 
     if (status) query = query.eq('status', status)
@@ -25,13 +25,14 @@ export async function GET(request: Request) {
       query = query.or(`company_name.ilike.%${search}%,email.ilike.%${search}%,city.ilike.%${search}%`)
     }
 
-    const { data, error } = await query
+    const { data, error, count } = await query
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, contacts: data || [] })
+    // PostgREST liefert max. 1000 Zeilen → total zeigt die echten Gesamtzahl (Stat-Karte!)
+    return NextResponse.json({ success: true, contacts: data || [], total: count ?? (data || []).length })
   } catch (error: any) {
     console.error('Marketing contacts GET error:', error)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })

@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { checkAdminAuth } from '@/lib/admin-auth'
 
-export const maxDuration = 60
+export const maxDuration = 300
 
 // ═══════════════════════════════════════════════════════════════
 // POST /api/admin/marketing/recover-emails/
 // Findet fehlende E-Mails: crawlt Homepage + /impressum + /kontakt
 // von Kontakten MIT Website aber OHNE E-Mail, extrahiert Adressen.
-// Batched wegen 60 s Serverless-Limit; Pfade pro Betrieb PARALLEL.
+// BULK-MODUS (Dieter 2026-10-15): 300 s Runtime, 10 parallele Worker,
+// bis zu ~400 Kontakte pro Lauf. Frontend ruft automatisch nach bis alle durch.
 // ═══════════════════════════════════════════════════════════════
 
 const JUNK = /(\.png|\.jpe?g|\.gif|\.webp|\.svg|@2x|@3x|example\.com|sentry|wixpress|@wix|fonts\.|unsplash|placeholder|no-?reply@|noreply@)/i
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
   }
   try {
     const body = await request.json().catch(() => ({}))
-    const limit = Math.min(Number(body?.limit) || 15, 20)
+    const limit = Math.min(Number(body?.limit) || 400, 500)
 
     const { data: contacts, error } = await supabaseAdmin
       .from('marketing_contacts')
@@ -73,37 +74,42 @@ export async function POST(request: Request) {
       .not('website', 'is', null)
       .limit(limit)
     if (error) throw error
+    // Wie viele sind GESAMT noch offen (für Frontend-Fortschritt)
+    const { count: remaining } = await supabaseAdmin
+      .from('marketing_contacts')
+      .select('*', { count: 'exact', head: true })
+      .is('email', null)
+      .not('website', 'is', null)
     if (!contacts?.length) {
-      return NextResponse.json({ success: true, scanned: 0, recovered: 0, message: 'Nichts zu prüfen — alle Kontakte mit Website haben eine E-Mail.' })
+      return NextResponse.json({ success: true, scanned: 0, recovered: 0, remaining: remaining || 0, message: 'Nichts zu prüfen — alle Kontakte mit Website haben eine E-Mail.' })
     }
 
     let recovered = 0
     const start = Date.now()
-    const results: { company: string; email: string | null; timedOut?: boolean }[] = []
-    for (const c of contacts) {
-      // Serverless-Hardlimit 60 s → vor 48 s sauber aufhören (Teilergebnisse bleiben gespeichert)
-      let timedOutContact = false
-      if (Date.now() - start > 48000) timedOutContact = true
-      if (timedOutContact) {
-        results.push({ company: c.company_name, email: null, timedOut: true })
-        continue
+    // 10 parallele Worker — jeder nimmt aus der Queue, bis leer oder 280 s erreicht
+    const queue = [...contacts]
+    const worker = async (): Promise<void> => {
+      while (queue.length && Date.now() - start < 280000) {
+        const c = queue.shift()!
+        const emails = await crawlEmails(c.website)
+        const best = emails[0] || null
+        if (best) {
+          await supabaseAdmin.from('marketing_contacts').update({ email: best }).eq('id', c.id)
+          recovered++
+        }
       }
-      const emails = await crawlEmails(c.website)
-      const best = emails[0] || null
-      if (best) {
-        await supabaseAdmin.from('marketing_contacts').update({ email: best }).eq('id', c.id)
-        recovered++
-      }
-      results.push({ company: c.company_name, email: best, timedOut: false })
     }
+    await Promise.all(Array.from({ length: 10 }, () => worker()))
 
-    const timedOut = results.filter(r => r.timedOut).length
+    const done = recovered
+    const abortedEarly = queue.length > 0
     return NextResponse.json({
       success: true,
-      scanned: contacts.length,
-      recovered,
-      skippedSlow: timedOut,
-      results,
+      scanned: contacts.length - queue.length,
+      recovered: done,
+      remaining: Math.max((remaining || 0) - (contacts.length - queue.length), 0),
+      abortedEarly,
+      results: [], // kompakt — UI nutzt nur Zähler
     })
   } catch (error: any) {
     console.error('Recover emails error:', error)

@@ -971,8 +971,8 @@ tailwind.config = {
               <div>
                 <label class="block text-sm font-bold text-ink-800 mb-1.5">Quelle</label>
                 <div class="flex flex-wrap gap-2">
-                  <span class="toggle-chip on cursor-default">✓ Google Maps / OpenStreetMap + Impressum-Crawl</span>
-                  <span class="toggle-chip cursor-default opacity-50" title="Geplant — noch nicht implementiert">Branchenverzeichnisse · folgt</span>
+                  <span id="engineChip_auto" class="toggle-chip on cursor-pointer" onclick="setMktEngine('auto')" title="Google Places API (wenn Key vorhanden), sonst OpenStreetMap">✓ Google Maps / OSM + Impressum-Crawl</span>
+                  <span id="engineChip_daese" class="toggle-chip cursor-pointer" onclick="setMktEngine('daese')" title="Branchenbuch-Crawler: Listing + Detailseiten (Name, Adresse, Tel, Website). Gelbe Seiten selbst blockt Server — Das Örtliche gehört zum selben Konzern!">📒 Das Örtliche (Branchenbuch)</span>
                   <span class="toggle-chip cursor-default opacity-50" title="Geplant — noch nicht implementiert">Innungslisten · folgt</span>
                   <span class="toggle-chip cursor-default opacity-50" title="Geplant — noch nicht implementiert">Handwerkskammer · folgt</span>
                 </div>
@@ -982,7 +982,7 @@ tailwind.config = {
               </div>
               <button id="scrapeBtn" onclick="startScrape()" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold py-3 rounded-xl transition">🕷 Scrape starten</button>
               <button onclick="recoverEmails()" id="recoverBtn" class="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-3 rounded-xl transition">📧 Fehlende E-Mails nachscrapen (<span id="recoverCount">…</span>)</button>
-              <p class="mt-1.5 text-[11px] text-ink-400 leading-relaxed">Crawlt Homepage + Impressum + Kontaktseite aller Betriebe ohne E-Mail — und ergänzt sie automatisch. Mehrfach klickbar, bis alle vollständig sind.</p>
+              <p class="mt-1.5 text-[11px] text-ink-400 leading-relaxed">Crawlt Homepage + Impressum + Kontaktseite aller Betriebe ohne E-Mail — und ergänzt sie automatisch. <strong class="text-ink-600">Ein Klick prüft bis zu 400 Betriebe</strong> und läuft selbstständig bis alle durch sind.</p>
               <div id="scrapeProgress" class="hidden">
                 <div class="flex justify-between text-xs font-bold text-ink-600 mb-1"><span id="scrapeStep">Suche läuft …</span><span id="scrapePct">0 %</span></div>
                 <div class="w-full bg-ink-100 rounded-full h-2"><div id="scrapeBar" class="bg-brand-600 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
@@ -1921,6 +1921,7 @@ function updateQuotaBadge(sentToday) {
 
 async function loadContacts() {
   const data = await mktApi('/contacts/');
+  window._mktTotal = data.total || (data.contacts || []).length; // echte Gesamtzahl (API liefert max 1000 Zeilen)
   prospects = (data.contacts || []).map(c => ({ ...c, sel: c.status === 'neu' }));
   renderProspects();
   const neu = prospects.filter(p => p.status === 'neu').length;
@@ -1928,7 +1929,7 @@ async function loadContacts() {
   const metaEl = document.getElementById('scrapeResultMeta');
   const noMail = prospects.filter(p => !p.email).length;
   if (metaEl) metaEl.innerHTML =
-    `<strong class="text-ink-800">${prospects.length} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf · ${prospects.filter(p => p.address).length} mit Postadresse · <span class="text-amber-600 font-bold">${noMail} ohne E-Mail</span>${noMail ? ' → <button onclick="recoverEmails()" class="underline font-bold">nachscrapen</button>' : ''}`;
+    `<strong class="text-ink-800">${prospects.length}${window._mktTotal && window._mktTotal !== prospects.length ? ' von ' + window._mktTotal.toLocaleString('de-DE') : ''} Kontakte</strong> in der Datenbank · ${neu} neu · ${draft} mit Entwurf · ${prospects.filter(p => p.address).length} mit Postadresse · <span class="text-amber-600 font-bold">${noMail} ohne E-Mail</span>${noMail ? ' → <button onclick="recoverEmails()" class="underline font-bold">nachscrapen</button>' : ''}`;
   updateRecoverCount();
   if (typeof renderPrintList === 'function') renderPrintList();
 }
@@ -2002,26 +2003,41 @@ async function setContactStatus(id, status) {
 }
 
 // ECHTER Server-Scraper: OpenStreetMap + Impressum-Enrich (bis ~60 s)
+async function setMktEngine(engine) {
+  window._mktEngine = engine;
+  ['auto', 'daese'].forEach((e) => {
+    const chip = document.getElementById('engineChip_' + e);
+    if (chip) chip.classList.toggle('on', e === engine);
+  });
+  const hint = document.getElementById('scrapeHint');
+  if (hint) {
+    hint.innerHTML = engine === 'daese'
+      ? '📒 <strong>Das Örtliche</strong>: crawlt bis zu 20 Betriebe pro Durchlauf (Name, Adresse, Telefon, Website). E-Mails holt der Nachscrape-Button danach aus den Impressums.'
+      : '💡 Wähle Gewerk und Stadt aus, um öffentlich gelistete Betriebe zu finden. Du brauchst dafür eine <strong>Google Places API</strong>.';
+  }
+}
+
 async function startScrape() {
   const g = document.getElementById('scrapeGewerk')?.value || 'dachdecker';
   const sEl = document.getElementById('scrapeStadt');
   const s = (sEl && sEl.value) ? sEl.value : 'Hattingen';
+  const engine = window._mktEngine || 'auto';
   const btn = document.getElementById('scrapeBtn');
   const prog = document.getElementById('scrapeProgress');
   btn.disabled = true; btn.textContent = '⏳ Scraper läuft …';
   if (prog) {
     prog.classList.remove('hidden');
     const step = document.getElementById('scrapeStep');
-    if (step) step.textContent = `Suche "${g}" in ${s} · Impressum-Crawl läuft … (bis 60 s)`;
+    if (step) step.textContent = `Suche "${g}" in ${s} · ${engine === 'daese' ? 'Das Örtliche + Detail-Crawl' : 'Impressum-Crawl'} läuft …`;
     const bar = document.getElementById('scrapeBar'); if (bar) bar.style.width = '75%';
     const pct = document.getElementById('scrapePct'); if (pct) pct.textContent = '75 %';
   }
   try {
-    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&enrich=1`);
+    const data = await mktApi(`/scrape/?gewerk=${encodeURIComponent(g)}&stadt=${encodeURIComponent(s)}&enrich=1&engine=${engine}`);
     const bar = document.getElementById('scrapeBar'); if (bar) bar.style.width = '100%';
     const pct = document.getElementById('scrapePct'); if (pct) pct.textContent = '100 %';
     if (data.warning) showToast('⚠️ ' + data.warning);
-    else showToast(`✅ ${data.inserted} neue Betriebe (OSM) · ${data.skipped} übersprungen` + (data.enrich ? ` · ${data.enrich.enriched} Adressen nachgepflegt` : ''));
+    else showToast(`✅ ${data.engine}: ${data.inserted} neue Betriebe · ${data.skipped} Duplikate · ${data.rejected} aussortiert` + (data.enrich && data.enrich.enriched ? ` · ${data.enrich.enriched} Mails nachgepflegt` : ''));
     await loadContacts();
   } catch (e) {
     showToast('❌ Scrape fehlgeschlagen: ' + e.message);
@@ -2033,18 +2049,30 @@ async function startScrape() {
 
 async function recoverEmails() {
   const btn = document.getElementById('recoverBtn');
-  btn.disabled = true; btn.textContent = '⏳ Crawle Websites … (bis 60 s)';
+  btn.disabled = true;
+  let totalScanned = 0, totalRecovered = 0;
   try {
-    const data = await mktApi('/recover-emails/', { method: 'POST', body: JSON.stringify({ limit: 30 }) });
-    showToast(data.recovered
-      ? `📧 ${data.recovered} von ${data.scanned} E-Mails gefunden & gespeichert!`
-      : `📧 ${data.scanned} Websites geprüt — keine E-Mail gefunden (oder schon alle vollständig).`);
-    await loadContacts();
+    // AUTO-CONTINUE: wiederholt bis alle durch (oder Server meldet nichts mehr)
+    while (true) {
+      btn.textContent = `⏳ Crawle … ${totalScanned} geprüft · ${totalRecovered} gefunden`;
+      const data = await mktApi('/recover-emails/', { method: 'POST', body: JSON.stringify({ limit: 400 }) });
+      totalScanned += data.scanned || 0;
+      totalRecovered += data.recovered || 0;
+      await loadContacts();
+      await updateRecoverCount();
+      if (!data.remaining || data.remaining <= 0) break;
+      if (!(data.scanned || 0)) break; // Sicherheitsbremse
+      await new Promise((r) => setTimeout(r, 800));
+    }
+    showToast(totalRecovered
+      ? `📧 FERTIG! ${totalRecovered} E-Mails aus ${totalScanned} geprüften Websites gerettet 🎉`
+      : `📧 ${totalScanned} Websites geprüft — keine E-Mail gefunden (Print-only oder keine Impressums-Mail).`);
   } catch (e) {
-    showToast('❌ Nachscrapen fehlgeschlagen: ' + e.message);
+    showToast('❌ Nachscrapen unterbrochen: ' + e.message + ` — Stand: ${totalScanned} geprüft, ${totalRecovered} gefunden. Einfach erneut klicken.`);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '📧 Fehlende E-Mails nachscrapen (<span id="recoverCount">…</span>)';
+    updateRecoverCount();
   }
 }
 
