@@ -20,6 +20,8 @@ const {
   getArticleTopics,
   getTradeEmoji,
 } = require('../config/system-config.js');
+// 2026-10-15: Stadt-Link-Boxen für interne Verlinkung (Ziel-Keywords stärken)
+const { cityLinksBlock } = require('./lib/city-links');
 
 // ─── KONFIGURATION ──────────────────────────────────────────────────
 
@@ -206,6 +208,7 @@ ${faqHTML}
 <h3>Benötigen Sie einen ${tradeName} in ${cityName}?</h3>
 <a href="/${tradeSlug}/${citySlug}/#kontakt" class="cta-button">${ctaText}</a>
 </div>
+${cityLinksBlock(tradeSlug)}
 </article>
 <a href="/${tradeSlug}/${citySlug}/" class="back-link">← Zurück zu ${tradeName} ${cityName}</a>
 </div>
