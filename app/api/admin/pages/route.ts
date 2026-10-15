@@ -121,7 +121,18 @@ export async function GET(request: Request) {
       .select('id, slug, title, status, monthly_price, rented_by, created_at, page_views, trade:trades(name, slug), city:cities(name, slug, state)')
       .order('created_at', { ascending: false })
     if (error) throw error
-    return NextResponse.json({ success: true, pages })
+    // Google-Positionen (GSC-Sync) in einem Rutsch dazujoinen
+    const ids = (pages || []).map((p: any) => p.id)
+    const posMap: Record<string, any> = {}
+    if (ids.length) {
+      const { data: posRows } = await supabaseAdmin
+        .from('page_positions')
+        .select('landing_page_id, keyword, position, clicks_30d, impressions_30d, checked_at')
+        .in('landing_page_id', ids)
+      for (const r of posRows || []) posMap[(r as any).landing_page_id] = r
+    }
+    const pagesWithPos = (pages || []).map((p: any) => ({ ...p, google_position: posMap[p.id] || null }))
+    return NextResponse.json({ success: true, pages: pagesWithPos })
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }

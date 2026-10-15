@@ -30,11 +30,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true, skipped: true, reason: 'GSC nicht verbunden' })
   }
 
-  // Vermietete Seiten mit Trade-/City-Slug für Public-URL
+  // ALLE Seiten (frei + vermietet) — Admin will das volle Ranking-Bild,
+  // auch freie Seiten mit guter Position sind Verkaufsargumente!
   const { data: pages, error } = await supabaseAdmin
     .from('landing_pages')
     .select('id, slug, status, trade:trades(slug), city:cities(slug)')
-    .eq('status', 'rented')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   const list: any[] = (pages || []).filter((p: any) => p?.trade?.slug && p?.city?.slug)
 

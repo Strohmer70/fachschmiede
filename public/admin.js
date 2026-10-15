@@ -444,6 +444,18 @@ function statusBadgeOf(p) {
       ? '<span class="bg-ink-100 text-ink-500 text-xs font-bold px-2 py-0.5 rounded-full">🔒 vermietet</span>'
       : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">✅ frei</span>');
 }
+// Google-Positions-Badge aus p.google_position (GSC-Sync, 30 Tage)
+function posBadgeOf(p) {
+  const g = p.google_position;
+  if (!g || g.position == null) return '';
+  const pos = g.position;
+  const cls = pos <= 10 ? 'bg-green-100 text-green-700 border-green-200'
+    : pos <= 30 ? 'bg-amber-100 text-amber-700 border-amber-200'
+    : 'bg-ink-100 text-ink-500 border-ink-200';
+  const tip = `Top-Keyword: ${g.keyword || '—'} · ${g.clicks_30d || 0} Klicks / ${g.impressions_30d || 0} Impressionen (30 Tage)` +
+    (g.checked_at ? ` · Stand: ${formatDate(g.checked_at)}` : '');
+  return `<span class="text-[11px] font-black px-2 py-0.5 rounded-full border ${cls}" title="${tip}">#${pos}</span>`;
+}
 
 function renderWebsitesView(pages, pagination) {
   __websitePages = pages || [];
@@ -537,7 +549,7 @@ function renderWebsitesTable() {
         return `<tr class="hidden bg-ink-50/60" data-gsub="${cs}">
           <td class="px-6 py-2.5"></td>
           <td class="px-2 py-2.5 text-sm text-ink-800" colspan="2">${tradeEmojiOf(p.trade?.name)} ${p.trade?.name || '-'} · ${p.slug}</td>
-          <td class="px-4 py-2.5">${statusBadgeOf(p)}</td>
+          <td class="px-4 py-2.5">${statusBadgeOf(p)} ${posBadgeOf(p)}</td>
           <td class="px-4 py-2.5 text-xs text-ink-500" colspan="2">Erstellt: ${formatDate(p.created_at)} · ${p.page_views || 0} Aufrufe</td>
           <td class="px-4 py-2.5 text-right whitespace-nowrap">
             <a href="${url}" target="_blank" onclick="event.stopPropagation()" class="text-xs font-bold text-brand-600 border border-brand-200 rounded-lg px-2.5 py-1.5 hover:bg-brand-50 transition inline-block">Ansehen ↗</a>
@@ -556,7 +568,7 @@ window.toggleCityGroup = function(slug) {
 
 // CSV-Export der gefilterten Daten
 window.exportWebsiteCsv = function() {
-  const rows = [['Stadt', 'Stadtteil-von', 'Gewerk', 'Slug', 'Status', 'URL', 'Aufrufe', 'Erstellt']];
+  const rows = [['Stadt', 'Stadtteil-von', 'Gewerk', 'Slug', 'Status', 'Position', 'Top-Keyword', 'Klicks 30d', 'Impressionen 30d', 'URL', 'Aufrufe', 'Erstellt']];
   const q = (document.getElementById('websiteSearch')?.value || '').trim().toLowerCase();
   for (const p of __websitePages) {
     if (currentGewerkFilter && p.trade?.name !== currentGewerkFilter) continue;
@@ -564,6 +576,8 @@ window.exportWebsiteCsv = function() {
     if (q && !(p.city?.name || '').toLowerCase().includes(q) && !(p.trade?.name || '').toLowerCase().includes(q) && !p.slug.toLowerCase().includes(q)) continue;
     rows.push([
       p.city?.name || '', p.city?.state || '', p.trade?.name || '', p.slug, statusKeyOf(p),
+      p.google_position?.position ?? '', p.google_position?.keyword || '',
+      p.google_position?.clicks_30d ?? '', p.google_position?.impressions_30d ?? '',
       'https://www.fachschmiede.de' + getStaticFileUrl(p.trade?.slug, p.city?.slug),
       p.page_views || 0, (p.created_at || '').slice(0, 10),
     ]);
