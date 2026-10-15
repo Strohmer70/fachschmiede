@@ -2671,10 +2671,13 @@ function gscRender(d) {
     body.innerHTML =
       '<div class="bg-ink-50 border border-ink-200 rounded-xl p-4 space-y-2">' +
         '<p class="text-sm font-bold text-ink-900">Schritt 1: OAuth-Client anlegen (einmalig, ~5 Min.)</p>' +
+        '<p class="text-[11px] text-ink-500">Wichtig: In <strong>deinem eigenen Google-Konto</strong> arbeiten — das Projekt vom Places-Key gehört nicht dir und funktioniert hier nicht.</p>' +
         '<ol class="text-xs text-ink-600 list-decimal ml-4 space-y-1">' +
-          '<li>Google-Projekt öffnen: <a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/credentials?project=academic-era-511510" target="_blank" rel="noopener">Anmeldedaten → + Anmeldedaten erstellen → OAuth-Client-ID</a> (Anwendungstyp: <strong>Webanwendung</strong>)</li>' +
+          '<li><a class="text-brand-600 font-bold" href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">Neues Projekt erstellen</a> (Name: <code class="bg-white px-1 rounded">fachschmiede</code>) — oder oben rechts ein bestehendes eigenes Projekt wählen. <strong>KEIN Billing nötig.</strong></li>' +
+          '<li><a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/credentials/consent" target="_blank" rel="noopener">OAuth-Zustimmungsbildschirm</a>: Extern → App-Name „fachschmiede", Support-E-Mail = deine → <strong>Scope <code class="bg-white px-1 rounded">webmasters.readonly</code> hinzufügen</strong> → <strong>deine E-Mail als Testnutzer eintragen</strong> (Pflicht, sonst blockt Google!) → zurück zur Übersicht</li>' +
+          '<li><a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Anmeldedaten → + Anmeldedaten erstellen → OAuth-Client-ID</a> (Anwendungstyp: <strong>Webanwendung</strong>)</li>' +
           '<li>Autorisierte Weiterleitungs-URI: <code class="bg-white px-1 rounded break-all">https://www.fachschmiede.de/api/admin/gsc/callback</code></li>' +
-          '<li><a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/library/webmaster.googleapis.com?project=academic-era-511510" target="_blank" rel="noopener">Search Console API aktivieren</a> (ein Klick)</li>' +
+          '<li><a class="text-brand-600 font-bold" href="https://console.cloud.google.com/apis/library/webmaster.googleapis.com" target="_blank" rel="noopener">Search Console API aktivieren</a> (ein Klick)</li>' +
           '<li>Client-ID + Client-Secret unten eintragen</li>' +
         '</ol>' +
       '</div>' +
