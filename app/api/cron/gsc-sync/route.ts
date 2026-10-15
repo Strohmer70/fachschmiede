@@ -10,6 +10,17 @@ export const maxDuration = 300 // 5 Min. erlaubt (Pro-Plan-Fallback: 60s, reicht
 
 const BASE_URL = 'https://www.fachschmiede.de'
 
+// Ziel-Keywords fürs Ranking: "gewerk stadt" (Dieter 2026-10-15).
+// Suchverhalten-optimiert: zimmere matcht zimmerer+zimmerei, gartenbau = galab-Kurzform
+const TRADE_KEYWORD: Record<string, string> = {
+  dachdecker: 'dachdecker',
+  elektriker: 'elektriker',
+  klempner: 'klempner',
+  maler: 'maler',
+  zimmerer: 'zimmere',
+  'garten-und-landschaftsbau': 'gartenbau',
+}
+
 export async function GET(req: NextRequest) {
   // Auth: Bearer CRON_SECRET (Vercel-Env) ODER Bearer gsc_sync_secret (platform_settings)
   // ODER Admin-Login-Token (manueller Sync aus dem Admin-Dashboard)
@@ -34,7 +45,7 @@ export async function GET(req: NextRequest) {
   // auch freie Seiten mit guter Position sind Verkaufsargumente!
   const { data: pages, error } = await supabaseAdmin
     .from('landing_pages')
-    .select('id, slug, status, trade:trades(slug), city:cities(slug)')
+    .select('id, slug, status, trade:trades(slug, name), city:cities(slug, name)')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   const list: any[] = (pages || []).filter((p: any) => p?.trade?.slug && p?.city?.slug)
 
@@ -42,11 +53,15 @@ export async function GET(req: NextRequest) {
   const failures: { slug: string; error: string }[] = []
   for (const p of list) {
     const url = `${BASE_URL}/${p.trade.slug}/${p.city.slug}/`
+    // Haupt-Keyword "gewerk stadt" (erster Wortteil der Stadt — "Mülheim an der Ruhr" → "mülheim")
+    const tradeKw = TRADE_KEYWORD[p.trade.slug] || p.trade.slug
+    const cityKw = (p.city?.name || p.city?.slug || '').toLowerCase().split(' ')[0]
+    const mainKw = `${tradeKw} ${cityKw}`
     try {
-      const pos = await gscQueryPagePosition(cfg, url)
+      const pos = await gscQueryPagePosition(cfg, url, mainKw)
       const row = {
         landing_page_id: p.id,
-        keyword: pos?.keyword || '',
+        keyword: mainKw, // IMMER das Ziel-Keyword zeigen, auch bei 0 Impressionen
         position: pos?.position ?? null,
         clicks_30d: pos?.clicks ?? 0,
         impressions_30d: pos?.impressions ?? 0,

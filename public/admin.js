@@ -450,7 +450,8 @@ function posBadgeOf(p) {
   const g = p.google_position;
   if (!g) return '';
   if (g.position == null) {
-    return `<span class="inline-flex flex-col gap-0.5"><span class="text-[11px] font-black px-2 py-0.5 rounded-full border bg-ink-50 text-ink-400 border-ink-200 w-fit" title="In den letzten 30 Tagen keine Google-Impressionen (Search Console). N\u00E4chster Sync: heute Nacht.">–</span><span class="text-[10px] text-ink-400 leading-tight">keine Impressionen</span></span>`;
+    const kw = g.keyword ? `<span class="text-[10px] text-ink-400 leading-tight" title="Ziel-Keyword">${g.keyword}</span>` : '';
+    return `<span class="inline-flex flex-col gap-0.5" title="In den letzten 30 Tagen keine Google-Impressionen${g.keyword ? ' für \u201E' + g.keyword + '\u201C' : ''} (Search Console). N\u00E4chster Sync: heute Nacht."><span class="text-[11px] font-black px-2 py-0.5 rounded-full border bg-ink-50 text-ink-400 border-ink-200 w-fit">– keine Impr.</span>${kw}</span>`;
   }
   const pos = g.position;
   const cls = pos <= 10 ? 'bg-green-100 text-green-700 border-green-200'

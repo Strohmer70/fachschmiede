@@ -58,12 +58,16 @@ export async function gscListSites(cfg: GscConfig): Promise<{ siteUrl: string; p
 // ── Position einer einzelnen Seite (letzte 30 Tage, bester Query nach Impressionen) ──
 export async function gscQueryPagePosition(
   cfg: GscConfig,
-  pageUrl: string
-): Promise<{ keyword: string; position: number; clicks: number; impressions: number } | null> {
+  pageUrl: string,
+  mainKeyword?: string
+): Promise<{ keyword: string; position: number | null; clicks: number; impressions: number } | null> {
   const token = await gscAccessToken(cfg)
   const end = new Date()
   const start = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
   const fmt = (d: Date) => d.toISOString().slice(0, 10)
+  const filters: any[] = [{ dimension: 'page', operator: 'equals', expression: pageUrl }]
+  // Haupt-Keyword "gewerk stadt" priorisieren (Dieter 2026-10-15): nur Queries, die beides enthalten
+  if (mainKeyword) filters.push({ dimension: 'query', operator: 'contains', expression: mainKeyword })
   const res = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(cfg.property)}/searchAnalytics/query`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -71,7 +75,7 @@ export async function gscQueryPagePosition(
       startDate: fmt(start),
       endDate: fmt(end),
       dimensions: ['query'],
-      dimensionFilterGroups: [{ filters: [{ dimension: 'page', operator: 'equals', expression: pageUrl }] }],
+      dimensionFilterGroups: [{ groupType: 'and', filters }],
       rowLimit: 25,
       dataState: 'all',
     }),
@@ -79,6 +83,18 @@ export async function gscQueryPagePosition(
   const j = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error('GSC query: ' + (j.error?.message || res.status))
   const rows = j.rows || []
+  if (mainKeyword) {
+    // Impressions-gewichtete Position über ALLE Queries rund ums Haupt-Keyword
+    const imp = rows.reduce((s: number, r: any) => s + (r.impressions || 0), 0)
+    const clk = rows.reduce((s: number, r: any) => s + (r.clicks || 0), 0)
+    const pos = imp > 0 ? rows.reduce((s: number, r: any) => s + r.position * r.impressions, 0) / imp : null
+    return {
+      keyword: mainKeyword,
+      position: pos != null ? Math.round(pos * 10) / 10 : null,
+      clicks: clk,
+      impressions: imp,
+    }
+  }
   if (rows.length === 0) return null
   // Bester Keyword = meiste Impressionen
   const best = rows.reduce((a: any, b: any) => (b.impressions > a.impressions ? b : a))

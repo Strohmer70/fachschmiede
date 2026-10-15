@@ -809,7 +809,7 @@ async function loadStats(){
     }
     if(mk){
       if(gpos&&gpos.keyword){mk.textContent='für \u201E'+gpos.keyword+'\u201C';mk.title='Google-Position für "'+gpos.keyword+'"'+(gpos.checked_at?' · Stand '+new Date(gpos.checked_at).toLocaleDateString('de-DE'):'');mk.style.cursor='help';}
-      else if(gpos){mk.textContent='Noch keine Impressionen (30 Tage)';mk.title='Deine Seite wurde in den letzten 30 Tagen noch nicht bei Google ausgespielt. Der Sync l\u00E4uft t\u00E4glich.';mk.style.cursor='help';}
+      else if(gpos){mk.textContent=(gpos.keyword?'f\u00FCr \u201E'+gpos.keyword+'\u201C: ':'')+'noch keine Impressionen';mk.title='Deine Seite wurde in den letzten 30 Tagen noch nicht f\u00FCr "'+(gpos.keyword||'das Ziel-Keyword')+'" bei Google ausgespielt. Der Sync l\u00E4uft t\u00E4glich.';mk.style.cursor='help';}
       else{mk.textContent='Google-Position (folgt)';mk.title='Search-Console-Verbindung wird vom Betreiber eingerichtet';}
     }
     var tb=document.getElementById('leadsTbody');if(!tb)return;
