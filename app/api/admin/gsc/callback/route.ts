@@ -35,13 +35,17 @@ export async function GET(req: NextRequest) {
       return fail('Token-Austausch fehlgeschlagen: ' + (tok.error_description || tok.error || tokRes.status))
     }
 
+    // Refresh-Token SOFORT sichern (auch wenn Sites-Abfrage gleich fehlschlägt —
+    // sonst ist der Token weg und User muss den ganzen Consent nochmal durchlaufen!)
+    if (tok.refresh_token) await saveGscConfig({ refresh_token: tok.refresh_token })
+
     // Property automatisch wählen: Domain-Property bevorzugt, sonst www-URL-Prefix
     const probe = { ...cfg, refresh_token: tok.refresh_token || cfg.refresh_token }
     let sites: { siteUrl: string; permissionLevel: string }[] = []
     try {
       sites = await gscListSites(probe as any)
     } catch (e: any) {
-      return fail('Sites nicht lesbar (Property in GSC verifiziert?): ' + e.message)
+      return fail('Sites nicht lesbar (Search Console API aktiviert? Property in GSC verifiziert?): ' + e.message)
     }
     const domain = sites.find((s) => s.siteUrl === 'sc-domain:fachschmiede.de')
     const prefix = sites.find((s) => s.siteUrl === 'https://www.fachschmiede.de/')
