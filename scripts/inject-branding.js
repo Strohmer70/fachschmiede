@@ -22,10 +22,14 @@ const AMBOSS_MARKER = 'M4.2 6.5h15.6' // Idempotenz-Marker
 
 const FAVICON_LINKS = [
   '<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">',
+  '<link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48">',
   '<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">',
   '<link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">',
   '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
 ].join('\n  ')
+
+// V2-Upgrade: alten 4-Zeilen-Block (ohne 48er) → neuer 5-Zeilen-Block
+const OLD_FAVICON_BLOCK = /\s*<link rel="icon" href="\/favicon\.svg"[^>]*>\s*\n\s*<link rel="icon" href="\/favicon-32\.png"[^>]*>\s*\n\s*<link rel="icon" href="\/favicon-16\.png"[^>]*>\s*\n\s*<link rel="apple-touch-icon"[^>]*>/
 
 // Header-Tile: span mit bg-brand-600 + w-10 h-10 (Inhalt: Icon-SVG oder Text)
 const TILE_RE = /<span class="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white[^"]*">([\s\S]*?)<\/span>/
@@ -39,17 +43,26 @@ for (const f of files) {
   let changed = false
 
   // ── 1) Favicon-Links ──
-  if (!html.includes('favicon.svg')) {
-    if (html.includes('</title>')) {
-      html = html.replace('</title>', '</title>\n  ' + FAVICON_LINKS)
-      changed = true; favDone++
-    } else if (html.includes('</head>')) {
-      html = html.replace('</head>', '  ' + FAVICON_LINKS + '\n</head>')
+  if (html.includes('favicon-48.png')) {
+    favSkip++
+  } else if (html.includes('favicon.svg')) {
+    // V1→V2-Upgrade: alten Block durch 48er-Version ersetzen
+    if (OLD_FAVICON_BLOCK.test(html)) {
+      html = html.replace(OLD_FAVICON_BLOCK, '\n  ' + FAVICON_LINKS)
       changed = true; favDone++
     } else {
-      console.warn('  ⚠️  Kein </title>/</head> gefunden:', f)
+      console.warn('  ⚠️  favicon.svg da, aber Block nicht erkannt:', f)
+      favSkip++
     }
-  } else { favSkip++ }
+  } else if (html.includes('</title>')) {
+    html = html.replace('</title>', '</title>\n  ' + FAVICON_LINKS)
+    changed = true; favDone++
+  } else if (html.includes('</head>')) {
+    html = html.replace('</head>', '  ' + FAVICON_LINKS + '\n</head>')
+    changed = true; favDone++
+  } else {
+    console.warn('  ⚠️  Kein </title>/</head> gefunden:', f)
+  }
 
   // ── 2) Header-Tile → Amboss ──
   if (html.includes('bg-brand-600') && TILE_RE.test(html)) {
