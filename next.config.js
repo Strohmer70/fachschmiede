@@ -111,6 +111,7 @@ const nextConfig = {
       // ZWEI URLs (Duplicate Content, gesplittetes Link-Equity). Blog-URLs
       // (/gartenbau/:city/blog/...) NICHT betroffen: :city = genau ein Segment.
       { source: '/gartenbau/:city/', destination: '/garten-und-landschaftsbau/:city/', permanent: true },
+      { source: '/gartenbau/', destination: '/garten-und-landschaftsbau/', permanent: true },
     ]
   },
 
