@@ -10,6 +10,8 @@
  */
 
 // ─── Konfiguration ───────────────────────────────────────────────
+const { injectCityLinks } = require('./city-links')
+
 const TRADES = {
   dachdecker: { key: 'dach', label: 'Dachdecker', word: 'dachdecker', topic: 'die Dachpflege', articleDir: 'dachdecker' },
   elektriker: { key: 'elek', label: 'Elektriker', word: 'elektriker', topic: 'die Elektroinstallation', articleDir: 'elektriker' },
@@ -447,6 +449,11 @@ function generateCity(citySlug, opts, ctx) {
   const files = []
   const log = []
 
+  // SSOT-Update VOR der Generierung (idempotent) — die Stadt-Link-Boxen in den
+  // Blogartikeln sollen die NEUE Stadt bereits listen (inkl. Selbstverlinkung).
+  const cfgUpfront = patchSystemConfig(ctx.systemConfig, profile)
+  const updatedConfigSrc = cfgUpfront.content
+
   // 1) Stadt-Seiten + Blog für jedes Gewerk
   for (const tradeSlug of tradesWanted) {
     const trade = TRADES[tradeSlug]
@@ -469,9 +476,16 @@ function generateCity(citySlug, opts, ctx) {
     if (blogTpls.length) {
       const tplFiles = blogTpls.map(k => ({ name: k.slice(blogPrefix.length), content: ctx.templateFiles[k] }))
       for (const bf of buildBlogFiles(tplFiles, profile)) {
-        files.push({ path: `public/blog/${trade.articleDir}/${profile.slug}/${bf.name}`, content: bf.content })
+        // 2026-10-16: Stadt-Link-Box in jeden Blogartikel (Dieter: „die sollen in die
+        // Blogartikel!"). Index.html bekommt keine Box (Listen-Übersichtsseite).
+        let content = bf.content
+        if (bf.name !== 'index.html') {
+          const inj = injectCityLinks(content, tradeSlug, updatedConfigSrc)
+          if (inj.changed) content = inj.html
+        }
+        files.push({ path: `public/blog/${trade.articleDir}/${profile.slug}/${bf.name}`, content })
       }
-      log.push(`OK blog/${trade.articleDir}/${profile.slug}/ (${blogTpls.length} Dateien)`)
+      log.push(`OK blog/${trade.articleDir}/${profile.slug}/ (${blogTpls.length} Dateien, Boxen drin)`)
     }
   }
 
@@ -491,7 +505,7 @@ function generateCity(citySlug, opts, ctx) {
   }
 
   // 3) system-config.js
-  const cfg = patchSystemConfig(ctx.systemConfig, profile)
+  const cfg = cfgUpfront
   if (cfg.added) {
     files.push({ path: 'config/system-config.js', content: cfg.content })
     log.push(`OK system-config.js (+${profile.slug})`)

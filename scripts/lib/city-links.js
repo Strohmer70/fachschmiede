@@ -88,14 +88,18 @@ function hasCityLinks(html, tradeSlug) {
 }
 
 // Fügt die Box in Artikel-HTML ein (idempotent).
-// Position: vor der Abschluss-CTA (letztes bg-ink-900) — inhaltlich sinnvoll + prominent.
+// Position (erster Treffer):
+//   1) vor der Abschluss-CTA (letztes bg-ink-900) — generische /artikel-*.html
+//   2) vor </article> — Stadt-Blogartikel (blog/{trade}/{city}/*.html)
+//   3) vor </main> — letzter Fallback
 // src = optional SSOT-String (Admin-API), sonst Disk-Read (lokal/Actions).
 function injectCityLinks(html, tradeSlug, src) {
   if (hasCityLinks(html, tradeSlug)) return { html, changed: false }
   const block = cityLinksBlock(tradeSlug, src)
   let idx = html.lastIndexOf('<div class="mt-10 bg-ink-900')
-  if (idx === -1) idx = html.indexOf('</main>')
-  if (idx === -1) return { html, changed: false, error: 'Kein Anker (CTA/</main>) gefunden' }
+  if (idx === -1) { const a = html.lastIndexOf('</article>'); if (a !== -1) idx = a }
+  if (idx === -1) idx = html.lastIndexOf('</main>')
+  if (idx === -1) return { html, changed: false, error: 'Kein Anker (CTA/article/main) gefunden' }
   return { html: html.slice(0, idx) + block + html.slice(idx), changed: true }
 }
 
