@@ -512,7 +512,13 @@ function generateCity(citySlug, opts, ctx) {
       ixChanged = true
       log.push(`OK article-index.json (+${trade.articleDir}/${profile.slug}, ${tpl.length} Artikel)`)
     }
-    if (ixChanged) files.push({ path: 'lib/article-index.json', content: JSON.stringify(ix, null, 2) + '\n' })
+    if (ixChanged) {
+      const ixContent = JSON.stringify(ix, null, 2) + '\n'
+      files.push({ path: 'lib/article-index.json', content: ixContent })
+      // 2026-10-16: public/lib/ ist die vom Frontend (Admin-Blog-UI) gelesene Kopie —
+      // beide Dateien müssen synchron bleiben (sonst Drift, vgl. berlin-spandau 10/2026)
+      files.push({ path: 'public/lib/article-index.json', content: ixContent })
+    }
   }
 
   // 4) sitemap.xml neu bauen (neue Stadt-Dateien einkalkulieren)
