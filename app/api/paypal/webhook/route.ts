@@ -103,9 +103,15 @@ export async function POST(request: Request) {
           pid = cust?.landing_page_id || ''
         }
         if (pid) {
-          await supabaseAdmin.from('landing_pages')
+          // 2026-10-16: Race-Guard — nur belegen wenn noch frei (wie Stripe-Webhook)
+          const { data: claimed } = await supabaseAdmin.from('landing_pages')
             .update({ status: 'rented', rented_by: tenantId || null, rented_at: new Date().toISOString() })
             .eq('id', pid)
+            .eq('status', 'available')
+            .select('id')
+          if (!claimed?.length) {
+            console.error('[paypal-webhook] CONFLICT: Seite bereits vergeben — Zahlung manuell prüfen/refunden! tenant=', tenantId, 'page=', pid)
+          }
           await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', pid)
         }
         console.log('[paypal-webhook] AKTIVIERT:', { pid, tenantId, paypalSubId, isTrial })

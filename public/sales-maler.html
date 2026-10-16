@@ -1050,5 +1050,48 @@ if (citySearch) {
   }).catch(function(){});
 })();
 </script>
+
+<!-- ══ MIETSTATUS-LIVE (2026-10-16) — Karten/Badges/Checkout aus DB-SSOT ══ -->
+<script>
+(function(){
+  var TRADE = 'maler';
+  fetch('/api/pages/availability').then(function(r){return r.json()}).then(function(d){
+    var rented = (d.rented||[]).filter(function(s){return s.indexOf(TRADE+'-')===0});
+    if (!rented.length) return;
+    var rentedSlugs = new Set(rented.map(function(s){return s.slice(TRADE.length+1)}));
+    window.RENTED_CITY_SLUGS = rentedSlugs;
+    document.querySelectorAll('.city-card').forEach(function(card){
+      var dc = (card.getAttribute('data-city')||'').split(' ')[0];
+      if (!rentedSlugs.has(dc)) return;
+      var badge = card.querySelector('span.rounded-full.shrink-0');
+      if (badge) { badge.textContent = 'Vergeben'; badge.className = badge.className.replace(/bg-green-100 text-green-700/,'bg-gray-200 text-gray-600'); }
+      card.classList.remove('border-green-500/60');
+      card.classList.add('border-gray-300');
+      var btn = card.querySelector('button[onclick^="startOnboarding"]');
+      if (btn) { btn.disabled = true; btn.textContent = 'Bereits vergeben'; btn.className = 'flex-1 bg-gray-200 text-gray-500 font-bold py-3 rounded-xl cursor-not-allowed'; btn.removeAttribute('onclick'); }
+      var hint = card.querySelector('p.mt-3');
+      if (hint) hint.innerHTML = 'Diese Stadt ist <strong>vergeben</strong> – andere Stadt wählen.';
+    });
+    var total = document.querySelectorAll('.city-card').length;
+    var free = total - rentedSlugs.size;
+    document.querySelectorAll('*').forEach(function(el){
+      if (el.children.length > 0) return;
+      if (/\d+ von \d+ Stadt-Websites noch frei/.test(el.textContent))
+        el.textContent = el.textContent.replace(/\d+ von \d+ Stadt-Websites noch frei/, free + ' von ' + total + ' Stadt-Websites noch frei');
+      if (/\d+ von \d+ Städten frei/.test(el.textContent))
+        el.textContent = el.textContent.replace(/\d+ von \d+ Städten frei/, free + ' von ' + total + ' Städten frei');
+    });
+  }).catch(function(){});
+  var _orig = window.startOnboarding;
+  window.startOnboarding = function(city){
+    var cs = (typeof CITY_SLUGS !== 'undefined') ? CITY_SLUGS[city] : '';
+    if (cs && window.RENTED_CITY_SLUGS && window.RENTED_CITY_SLUGS.has(cs)) {
+      alert('Diese Stadt ist bereits vergeben – bitte eine andere Stadt wählen.');
+      return;
+    }
+    if (_orig) return _orig(city);
+  };
+})();
+</script>
 </body>
 </html>

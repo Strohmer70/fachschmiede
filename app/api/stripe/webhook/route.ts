@@ -56,10 +56,17 @@ export async function POST(request: Request) {
           }
         }
         if (landing_page_id && tenant_id) {
-          await supabaseAdmin
+          // 2026-10-16: Race-Guard — nur belegen wenn noch frei. Sonst hätten zwei
+          // gleichzeitige Checkouts beide bezahlt und EINER verliert Geld+Seite.
+          const { data: claimed } = await supabaseAdmin
             .from('landing_pages')
             .update({ status: 'rented', rented_by: tenant_id, rented_at: new Date().toISOString() })
             .eq('id', landing_page_id)
+            .eq('status', 'available')
+            .select('id')
+          if (!claimed?.length) {
+            console.error('[webhook] CONFLICT: Seite bereits vergeben — Zahlung manuell prüfen/refunden! tenant=', tenant_id, 'page=', landing_page_id)
+          }
           await supabaseAdmin
             .from('page_customizations')
             .update({ is_active: true })
@@ -92,7 +99,16 @@ export async function POST(request: Request) {
             pid = cust?.landing_page_id || ''
           }
           if (pid) {
-            await supabaseAdmin.from('landing_pages').update({ status: 'rented', rented_by: tenant_id || null, rented_at: new Date().toISOString() }).eq('id', pid)
+            // Race-Guard wie checkout.session.completed (nur belegen wenn noch frei)
+            const { data: claimed } = await supabaseAdmin
+              .from('landing_pages')
+              .update({ status: 'rented', rented_by: tenant_id || null, rented_at: new Date().toISOString() })
+              .eq('id', pid)
+              .eq('status', 'available')
+              .select('id')
+            if (!claimed?.length) {
+              console.error('[webhook] CONFLICT (sub.updated): Seite bereits vergeben — prüfen! tenant=', tenant_id, 'page=', pid)
+            }
             await supabaseAdmin.from('page_customizations').update({ is_active: true }).eq('landing_page_id', pid)
             console.log('[webhook] Seite aktiviert:', pid)
           }
