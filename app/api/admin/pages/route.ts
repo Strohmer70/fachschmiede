@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { checkAdminAuth } from '@/lib/admin-auth'
 // @ts-ignore — CJS-Engine (scripts/lib), allowJs aktiv
 import { generateCity, TRADES } from '../../../../scripts/lib/city-gen.js'
+import { GENERIC_ARTICLE_TRADE, injectCityLinks } from '../../../../scripts/lib/city-links.js'
 
 export const maxDuration = 60 // GitHub-Commit + Generierung brauchen Luft
 
@@ -81,6 +82,7 @@ async function buildEngineCtx(existingSlugs: string[]) {
     ...stadtTemplatePaths,
     ...blogWittenPaths,
     ...SALES_FILES.map(f => 'public/' + f),
+    ...Object.keys(GENERIC_ARTICLE_TRADE).map(f => 'public/' + f), // Stadt-Link-Boxen refresh
   ]
   const contents = await Promise.all(wanted.map(p => p.endsWith('city-extras.json')
     ? ghRaw(p).catch(() => '{}') // optionaler Override-Layer — darf fehlen
@@ -100,10 +102,15 @@ async function buildEngineCtx(existingSlugs: string[]) {
     .filter(p => /^public\/stadt-[^/]+\.html$/.test(p))
     .map(p => p.replace('public/', ''))
 
+  const genericArticles: Record<string, string> = {}
+  for (const f of Object.keys(GENERIC_ARTICLE_TRADE)) {
+    if (fileMap['public/' + f]) genericArticles[f] = fileMap['public/' + f]
+  }
+
   return {
     orteJson: fileMap['public/data/de-orte.json'],
     cityExtras: fileMap['public/data/city-extras.json'] || '{}',
-    templateFiles, salesFiles,
+    templateFiles, salesFiles, genericArticles,
     systemConfig: fileMap['config/system-config.js'],
     articleIndex: fileMap['lib/article-index.json'],
     staticPages, stadtFiles, existingSlugs, baseUrl: BASE_URL,
@@ -287,6 +294,20 @@ export async function POST(request: Request) {
         throw new Error('Landing Page ' + lp.slug + ': ' + pageError.message)
       }
       createdPages.push(lp.slug)
+    }
+
+    // ── Stadt-Link-Boxen in generischen Artikeln mitziehen (SSOT-Prinzip) ──
+    // Neue Stadt muss in ALLEN Boxen erscheinen — Boxen sind statisch gerendert.
+    // Quelle: die von generateCity AKTUALISIERTE system-config (in-memory, Vercel-sicher).
+    const updatedCfg = result.files.find(f => f.path === 'config/system-config.js')?.content
+    if (updatedCfg && engineCtx.genericArticles) {
+      let refreshed = 0
+      for (const [file, html] of Object.entries(engineCtx.genericArticles)) {
+        const cleaned = html.replace(/<!--citylinks:v1:[a-z-]+-->\s*<nav[\s\S]*?<\/nav>/, '')
+        const inj = injectCityLinks(cleaned, (GENERIC_ARTICLE_TRADE as Record<string, string>)[file], updatedCfg)
+        if (inj.changed) { result.files.push({ path: 'public/' + file, content: inj.html }); refreshed++ }
+      }
+      if (refreshed) result.log.push(`OK Stadt-Link-Boxen in ${refreshed} generischen Artikeln aktualisiert`)
     }
 
     // ── GitHub: alle Dateien in EINEM Commit → Vercel-Deploy ──

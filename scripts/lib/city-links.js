@@ -30,20 +30,23 @@ const GENERIC_ARTICLE_TRADE = {
 }
 
 let _cfg = null
-function loadConfig() {
-  if (_cfg) return _cfg
-  const src = fs.readFileSync(path.join(REPO, 'config', 'system-config.js'), 'utf8')
+// src = optionaler system-config.js Inhalt (String). Wird von der Admin-API
+// übergeben, damit Boxen auf Vercel auch ohne Dateisystem-Zugriff aus der
+// AKTUALISIERTEN SSOT gebaut werden (Disk-Read würde serverless crashen).
+function loadConfig(src) {
+  if (_cfg && !src) return _cfg
+  const source = src || fs.readFileSync(path.join(REPO, 'config', 'system-config.js'), 'utf8')
   const mod = { exports: {} }
-  new Function('module', 'exports', 'require', src)(mod, mod.exports, require)
-  _cfg = mod.exports
-  return _cfg
+  new Function('module', 'exports', 'require', source)(mod, mod.exports, require)
+  if (!src) _cfg = mod.exports
+  return mod.exports
 }
 
-function getCities() {
-  return loadConfig().getAllCities()
+function getCities(src) {
+  return loadConfig(src).getAllCities()
 }
-function getTradeName(slug) {
-  return loadConfig().getTradeName(slug)
+function getTradeName(slug, src) {
+  return loadConfig(src).getTradeName(slug)
 }
 
 // Baut die Stadt-Link-Box (ohne Marker — Marker von außen drum herum)
@@ -55,11 +58,11 @@ const TRADE_PLURAL_DATIVE = {
   'maler': 'Malern',
   'garten-und-landschaftsbau': 'Garten- und Landschaftsbauern',
 }
-function cityLinksHTML(tradeSlug) {
-  const name = getTradeName(tradeSlug) // "Dachdecker" / "Klempner / SHK"
+function cityLinksHTML(tradeSlug, src) {
+  const name = getTradeName(tradeSlug, src) // "Dachdecker" / "Klempner / SHK"
   const short = name.split(' / ')[0]   // Ankertext: "Klempner" statt "Klempner / SHK"
   const pluralDat = TRADE_PLURAL_DATIVE[tradeSlug] || `${short}n`
-  const cities = getCities()
+  const cities = getCities(src)
   const lis = cities
     .map(
       (c) =>
@@ -76,8 +79,8 @@ ${lis}
 }
 
 // Voller Block inkl. Marker (für Regex-Erkennung / idempotente Prüfung)
-function cityLinksBlock(tradeSlug) {
-  return `${MARKER(tradeSlug)}\n${cityLinksHTML(tradeSlug)}\n`
+function cityLinksBlock(tradeSlug, src) {
+  return `${MARKER(tradeSlug)}\n${cityLinksHTML(tradeSlug, src)}\n`
 }
 
 function hasCityLinks(html, tradeSlug) {
@@ -86,9 +89,10 @@ function hasCityLinks(html, tradeSlug) {
 
 // Fügt die Box in Artikel-HTML ein (idempotent).
 // Position: vor der Abschluss-CTA (letztes bg-ink-900) — inhaltlich sinnvoll + prominent.
-function injectCityLinks(html, tradeSlug) {
+// src = optional SSOT-String (Admin-API), sonst Disk-Read (lokal/Actions).
+function injectCityLinks(html, tradeSlug, src) {
   if (hasCityLinks(html, tradeSlug)) return { html, changed: false }
-  const block = cityLinksBlock(tradeSlug)
+  const block = cityLinksBlock(tradeSlug, src)
   let idx = html.lastIndexOf('<div class="mt-10 bg-ink-900')
   if (idx === -1) idx = html.indexOf('</main>')
   if (idx === -1) return { html, changed: false, error: 'Kein Anker (CTA/</main>) gefunden' }
