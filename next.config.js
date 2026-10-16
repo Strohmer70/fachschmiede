@@ -105,6 +105,15 @@ const nextConfig = {
     '/api/admin/pages': ['./config/**', './lib/article-index.json', './scripts/lib/**'],
   },
   
+  async redirects() {
+    return [
+      // 2026-10-16: Legacy-Alias als 301 — vorher Rewrite → identischer Content unter
+      // ZWEI URLs (Duplicate Content, gesplittetes Link-Equity). Blog-URLs
+      // (/gartenbau/:city/blog/...) NICHT betroffen: :city = genau ein Segment.
+      { source: '/gartenbau/:city/', destination: '/garten-und-landschaftsbau/:city/', permanent: true },
+    ]
+  },
+
   async rewrites() {
     const cityRewrites = generateCityRewrites()
     const blogRewrites = generateBlogRewrites()
@@ -116,9 +125,6 @@ const nextConfig = {
         
         // Blog-Artikel (statische HTML) - HÖCHSTE PRIORITÄT
         ...blogRewrites,
-        
-        // Legacy-Alias: alte /gartenbau/…-URLs → Garten-Seiten (früher verlinkt, sonst 404)
-        { source: '/gartenbau/:city/', destination: '/stadt-garten-:city.html' },
         
         // Portal-Startseite (NEU: React-Portal unter app/page.tsx)
         { source: '/fuer-dienstleister/', destination: '/fuer-dienstleister.html' },
