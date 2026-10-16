@@ -1078,13 +1078,16 @@ if (citySearch) {
     });
     var total = document.querySelectorAll('.city-card').length;
     var free = total - rentedSlugs.size;
-    document.querySelectorAll('*').forEach(function(el){
-      if (el.children.length > 0) return;
-      if (/\d+ von \d+ Stadt-Websites noch frei/.test(el.textContent))
-        el.textContent = el.textContent.replace(/\d+ von \d+ Stadt-Websites noch frei/, free + ' von ' + total + ' Stadt-Websites noch frei');
-      if (/\d+ von \d+ Städten frei/.test(el.textContent))
-        el.textContent = el.textContent.replace(/\d+ von \d+ Städten frei/, free + ' von ' + total + ' Städten frei');
-    });
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var tn;
+    while (tn = walker.nextNode()) {
+      var p = tn.parentElement;
+      if (!p || p.tagName === 'SCRIPT' || p.tagName === 'STYLE') continue;
+      if (/\d+ von \d+ Stadt-Websites noch frei/.test(tn.nodeValue))
+        tn.nodeValue = tn.nodeValue.replace(/\d+ von \d+ Stadt-Websites noch frei/, free + ' von ' + total + ' Stadt-Websites noch frei');
+      if (/\d+ von \d+ Städten frei/.test(tn.nodeValue))
+        tn.nodeValue = tn.nodeValue.replace(/\d+ von \d+ Städten frei/, free + ' von ' + total + ' Städten frei');
+    }
   }).catch(function(){});
   var _orig = window.startOnboarding;
   window.startOnboarding = function(city){
