@@ -47,9 +47,18 @@ function getTradeName(slug) {
 }
 
 // Baut die Stadt-Link-Box (ohne Marker — Marker von außen drum herum)
+const TRADE_PLURAL_DATIVE = {
+  'dachdecker': 'Dachdeckern',
+  'elektriker': 'Elektrikern',
+  'klempner': 'Klempnern',
+  'zimmerer': 'Zimmerern',
+  'maler': 'Malern',
+  'garten-und-landschaftsbau': 'Garten- und Landschaftsbauern',
+}
 function cityLinksHTML(tradeSlug) {
   const name = getTradeName(tradeSlug) // "Dachdecker" / "Klempner / SHK"
   const short = name.split(' / ')[0]   // Ankertext: "Klempner" statt "Klempner / SHK"
+  const pluralDat = TRADE_PLURAL_DATIVE[tradeSlug] || `${short}n`
   const cities = getCities()
   const lis = cities
     .map(
@@ -59,7 +68,7 @@ function cityLinksHTML(tradeSlug) {
     .join('\n')
   return `<nav aria-label="${name} in Ihrer Stadt" style="margin:40px 0 0;padding:28px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px">
   <h2 style="margin:0 0 6px;font-size:20px;font-weight:800;color:#0f172a">${name} in Ihrer Stadt</h2>
-  <p style="margin:0 0 16px;font-size:14px;color:#475569">Kostenlose Erstberatung &amp; Angebote von geprüften ${short.toLowerCase()}n – direkt in Ihrer Region:</p>
+  <p style="margin:0 0 16px;font-size:14px;color:#475569">Kostenlose Erstberatung &amp; Angebote von geprüften ${pluralDat} – direkt in Ihrer Region:</p>
   <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 16px">
 ${lis}
   </ul>
