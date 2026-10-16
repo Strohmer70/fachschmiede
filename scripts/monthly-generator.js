@@ -49,7 +49,7 @@ function generateArticleFromTemplate(tradeSlug, citySlug, cityName, tradeName, t
 
 Wenn Sie als Hausbesitzer in ${cityName} sich mit dem Thema ${mainKeyword} beschäftigen, stehen Sie vor einer wichtigen Entscheidung. Die Wahl des richtigen Fachbetriebs macht den Unterschied zwischen einem reibungslosen Projekt und jahrelangen Nacharbeiten.
 
-In ${cityName} und dem gesamten Ruhrgebiet gibt es spezifische Herausforderungen: Die typischen Altbauten aus den 60er und 70er Jahren erfordern besonderes Fachwissen. Ein erfahrener ${tradeName} kennt diese Eigenheiten und plant entsprechend.
+In ${cityName} und der gesamten Region gibt es spezifische Herausforderungen: Die typischen Altbauten aus den 60er und 70er Jahren erfordern besonderes Fachwissen. Ein erfahrener ${tradeName} kennt diese Eigenheiten und plant entsprechend.
 
 ## Warum ist das wichtig?
 
@@ -60,7 +60,7 @@ Die gute Nachricht: Mit der richtigen Vorbereitung und einem qualifizierten ${tr
 ## Die 5 wichtigsten Punkte
 
 ### 1. Fachgerechte Planung
-Jedes Projekt beginnt mit einer gründlichen Analyse. Ein professioneller ${tradeName} in ${cityName} erstellt zunächst ein Konzept, das Ihre spezifischen Anforderungen berücksichtigt. Dabei werden auch bauliche Gegebenheiten wie die typischen Dachformen oder Elektroinstallationen älterer Gebäude im Ruhrgebiet einbezogen.
+Jedes Projekt beginnt mit einer gründlichen Analyse. Ein professioneller ${tradeName} in ${cityName} erstellt zunächst ein Konzept, das Ihre spezifischen Anforderungen berücksichtigt. Dabei werden auch bauliche Gegebenheiten wie die typischen Dachformen oder Elektroinstallationen älterer Gebäude in der Region einbezogen.
 
 ### 2. Transparente Kostenkalkulation
 Überraschende Zusatzkosten sind der größte Stressfaktor bei Bauprojekten. Seriöse Fachbetriebe in ${cityName} erstellen daher ein detailliertes, schriftliches Angebot. Darin enthalten sind alle Leistungen, Materialien und Zeitpläne – ohne versteckte Kosten.
