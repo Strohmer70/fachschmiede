@@ -202,6 +202,7 @@ const SYSTEM_CONFIG = {
     'witten': { name: 'Witten', region: 'Nordrhein-Westfalen', slug: 'witten' },
         'berlin-spandau': { name: 'Spandau', region: '', slug: 'berlin-spandau' },
         'wuppertal': { name: 'Wuppertal', region: 'Nordrhein-Westfalen', slug: 'wuppertal' },
+        'gera': { name: 'Gera', region: 'Thüringen', slug: 'gera' },
     // NEUE STÄDTE HIER EINFÜGEN
   },
 
