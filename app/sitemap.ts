@@ -1,4 +1,10 @@
 import type { MetadataRoute } from 'next'
+import { getAllCities, getAllTrades } from '../config/system-config.js'
+
+// 2026-10-16: Städte + Gewerke DYNAMISCH aus der SSOT (config/system-config.js).
+// Vorher HARDCODED → neue Städte (z.B. via Admin-Dashboard angelegt) fehlten hier
+// FOREVER in der Sitemap. Die SSOT pflegt generateCity (city-gen.js) automatisch.
+export const revalidate = 3600
 
 // ═══════════════════════════════════════════════════════════════════
 // SITEMAP — REGELN (nach dem 13.10.2026-Desaster):
@@ -10,22 +16,6 @@ import type { MetadataRoute } from 'next'
 // ═══════════════════════════════════════════════════════════════════
 
 const BASE = 'https://www.fachschmiede.de'
-
-const CITIES = [
-  'bergkamen', 'berlin-spandau', 'bochum', 'castrop-rauxel', 'dortmund',
-  'ennepetal', 'froendenberg', 'gevelsberg', 'hagen', 'hattingen', 'herne',
-  'holzwickede', 'iserlohn', 'kamen', 'luenen', 'schwelm', 'schwerte',
-  'sprockhoevel', 'unna', 'wetter-ruhr', 'witten',
-]
-
-const TRADES = [
-  { slug: 'dachdecker', prefix: 'dach' },
-  { slug: 'elektriker', prefix: 'elek' },
-  { slug: 'garten-und-landschaftsbau', prefix: 'garten' },
-  { slug: 'klempner', prefix: 'klempner' },
-  { slug: 'maler', prefix: 'maler' },
-  { slug: 'zimmerer', prefix: 'zimm' },
-]
 
 const ARTICLES = [
   'artikel-5-anzeichen-dachsanierung',
@@ -46,24 +36,29 @@ const ARTICLES = [
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // SSOT: aktuellste Städte/Gewerke — generateCity aktualisiert system-config.js
+  // bei jeder neuen Stadt (Admin-Dashboard), diese Route liest live daraus.
+  const CITIES = getAllCities().map((c: any) => c.slug)
+  const TRADE_SLUGS: string[] = getAllTrades().map((t: any) => t.slug)
+
   const urls: MetadataRoute.Sitemap = [
     { url: `${BASE}/`, priority: 1.0, changeFrequency: 'weekly' },
   ]
 
   // Gewerk-Übersichtsseiten (/dachdecker/ etc. — [trade]/page.tsx)
-  for (const t of TRADES) {
-    urls.push({ url: `${BASE}/${t.slug}/`, priority: 0.8, changeFrequency: 'weekly' })
+  for (const slug of TRADE_SLUGS) {
+    urls.push({ url: `${BASE}/${slug}/`, priority: 0.8, changeFrequency: 'weekly' })
   }
 
   // Salespages — Geld-Seiten, saubere URLs (Rewrite → .html)
-  for (const t of TRADES) {
-    urls.push({ url: `${BASE}/sales-${t.slug}/`, priority: 0.9, changeFrequency: 'weekly' })
+  for (const slug of TRADE_SLUGS) {
+    urls.push({ url: `${BASE}/sales-${slug}/`, priority: 0.9, changeFrequency: 'weekly' })
   }
 
-  // Landing Pages: 6 Gewerke × 20 Städte (/gewerk/stadt/)
-  for (const t of TRADES) {
+  // Landing Pages: alle Gewerke × alle Städte (/gewerk/stadt/) — SSOT-anzahl
+  for (const slug of TRADE_SLUGS) {
     for (const c of CITIES) {
-      urls.push({ url: `${BASE}/${t.slug}/${c}/`, priority: 0.8, changeFrequency: 'weekly' })
+      urls.push({ url: `${BASE}/${slug}/${c}/`, priority: 0.8, changeFrequency: 'weekly' })
     }
   }
 
