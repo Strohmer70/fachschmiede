@@ -201,6 +201,7 @@ const SYSTEM_CONFIG = {
     'wetter-ruhr': { name: 'Wetter (Ruhr)', region: 'Nordrhein-Westfalen', slug: 'wetter-ruhr' },
     'witten': { name: 'Witten', region: 'Nordrhein-Westfalen', slug: 'witten' },
         'berlin-spandau': { name: 'Spandau', region: '', slug: 'berlin-spandau' },
+        'wuppertal': { name: 'Wuppertal', region: 'Nordrhein-Westfalen', slug: 'wuppertal' },
     // NEUE STÄDTE HIER EINFÜGEN
   },
 
