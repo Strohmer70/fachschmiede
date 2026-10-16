@@ -369,6 +369,9 @@ function patchSalespage(html, profile, tradeSlug, tradeLabel, tradeKey) {
   // 3) "20 von 20 Städten frei" → Zähler neu (alle Karten zählen)
   const cardCount = (out.match(/class="city-card /g) || []).length
   out = out.replace(/(\d+) von (\d+) Städten frei/, `${cardCount} von ${cardCount} Städten frei`)
+  // 3b) Hero-Badge "21 von 21 Stadt-Websites noch frei" — gleicher Zähler
+  //     (2026-10-16: vorher hardcoded → bei neuer Stadt veraltet. SSOT-Prinzip!)
+  out = out.replace(/(\d+) von (\d+) Stadt-Websites noch frei/, `${cardCount} von ${cardCount} Stadt-Websites noch frei`)
 
   return { content: out, cityCount: cardCount }
 }
