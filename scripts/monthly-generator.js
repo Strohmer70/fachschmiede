@@ -219,6 +219,26 @@ ${cityLinksBlock(tradeSlug)}
 // ─── HAUPTFUNKTION ──────────────────────────────────────────────────
 
 async function main() {
+  // ═══ GENERAL-MODUS: allgemeine Ratgeber-Artikel (regional-neutral) ═══
+  // Nutzung: node scripts/monthly-generator.js --general [--write]
+  if (process.argv.includes('--general')) {
+    console.log('🚀 GENERAL-MODUS: allgemeine Ratgeber-Artikel');
+    const { execSync } = require('child_process');
+    const writeFlag = process.argv.includes('--write') ? '--write' : '';
+    try {
+      const out = execSync(
+        `node ${path.join(__dirname, 'generate-general-article.js')} --all ${writeFlag}`,
+        { encoding: 'utf-8', stdio: 'inherit' },
+      );
+      console.log('\n🎉 GENERAL-MODUS fertig!');
+      if (!writeFlag) console.log('   (Dry-Run — mit --write wird wirklich generiert)');
+      return;
+    } catch (e) {
+      console.error('❌ General-Modus fehlgeschlagen:', e.message);
+      process.exit(1);
+    }
+  }
+
   console.log('🚀 TEMPLATE-BASIERTER Artikel-Generator');
   console.log('💰 KOSTEN: 0€ — Keine API-Aufrufe!');
   console.log(`📅 Monat: ${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);

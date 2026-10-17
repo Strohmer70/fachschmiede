@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "updated": "2026-10-17",
+  "trades": {
+    "dachdecker": [
+      {
+        "slug": "artikel-5-anzeichen-dachsanierung",
+        "tag": "Sanierung",
+        "min": 6,
+        "title": "5 Anzeichen, dass Ihr Dach saniert werden muss",
+        "desc": "Moos zwischen den Ziegeln, Fugenstaub in der Dachrinne, Tropfgeräusche im Haus: Diese fünf Anzeichen verraten, dass Ihr Dach bald eine Sanierung braucht – bevor Schäden teuer werden."
+      },
+      {
+        "slug": "artikel-dachdaemmung-foerderung",
+        "tag": "Förderung",
+        "min": 8,
+        "title": "Dachdämmung fördern lassen: Diese Zuschüsse gibt es",
+        "desc": "Zuschuss oder Kredit? Wer die Dämmung seines Dachs plant, sollte die Förderlandschaft kennen – und einen wichtigen Fehler vermeiden."
+      },
+      {
+        "slug": "artikel-sturmschaden-sofortmassnahmen",
+        "tag": "Notfall",
+        "min": 5,
+        "title": "Sturmschaden am Dach: Was Sie sofort tun sollten",
+        "desc": "Sturm über dem Dach? Die ersten zwei Stunden entscheiden. Was Sie sofort tun sollten, wen Sie anrufen und was die Versicherung braucht."
+      }
+    ],
+    "elektriker": [
+      {
+        "slug": "artikel-e-check-sicherheitspruefung",
+        "tag": "Sicherheit",
+        "min": 6,
+        "title": "E-Check: Wann lohnt sich die Sicherheitsprüfung?",
+        "desc": "Alle zehn Jahre Pflicht, oft sinnvoll früher: Was der E-Check wirklich prüft, was er kostet und wann er sich lohnt."
+      },
+      {
+        "slug": "artikel-wallbox-zuhause",
+        "tag": "E-Mobilität",
+        "min": 7,
+        "title": "Wallbox zu Hause: Das müssen Sie vor der Installation wissen",
+        "desc": "Ladeleistung, Anmeldepflicht, Kosten: Die wichtigsten Fragen rund um die private Ladestation – verständlich erklärt."
+      },
+      {
+        "slug": "artikel-smart-home-nachruesten",
+        "tag": "Smart Home",
+        "min": 7,
+        "title": "Smart Home nachrüsten: Einstieg ohne großen Umbau",
+        "desc": "Intelligentes Wohnen ohne großen Umbau: Welche Systeme sich nachrüsten lassen und wo der Elektriker helfen muss."
+      }
+    ],
+    "klempner": [
+      {
+        "slug": "artikel-rohrbruch-sofortmassnahmen",
+        "tag": "Notfall",
+        "min": 5,
+        "title": "Rohrbruch! Sofortmaßnahmen, bis der Klempner kommt",
+        "desc": "Rohrbruch! Die ersten Minuten entscheiden über den Schaden. Schritt für Schritt: Wasser abstellen, Dokumentation, Versicherung."
+      },
+      {
+        "slug": "artikel-heizungstausch-foerderung",
+        "tag": "Förderung",
+        "min": 8,
+        "title": "Heizungstausch 2026: Förderung, GEG & Kosten im Überblick",
+        "desc": "Heizungstausch 2026: Förderung, GEG & Kosten im Überblick. Welche Heizung passt zu Ihrem Haus und was bezuschusst wird."
+      },
+      {
+        "slug": "artikel-heizungs-check-winter",
+        "tag": "Pflege",
+        "min": 6,
+        "title": "Heizungs-Check vor dem Winter: 7 Punkte, die Sie jetzt prüfen sollten",
+        "desc": "7 Punkte, die Sie jetzt prüfen sollten, bevor die Heizsaison startet – damit die Anlage durch den Winter kommt."
+      },
+      {
+        "slug": "artikel-rohrreinigung-notdienst",
+        "tag": "Notfall",
+        "min": 7,
+        "title": "Rohrreinigung & Notdienst: Wann es professionelle Hilfe braucht – und was es kostet",
+        "desc": "Verstopfte Leitung, Notdienst-Kosten, Kamerainspektion: Was Sie bei Rohrproblemen wissen müssen – inklusive der Abzocke-Fallen."
+      },
+      {
+        "slug": "artikel-wasserschaden-sanierung",
+        "tag": "Notfall",
+        "min": 7,
+        "title": "Wasserschaden sanieren: Schnelle Hilfe, Kosten & die entscheidenden ersten Stunden",
+        "desc": "Die entscheidenden ersten Stunden, professionelle Trocknung, Kosten und die Versicherungs-Fallen – was Sie bei Wasserschaden wissen müssen."
+      }
+    ],
+    "maler": [
+      {
+        "slug": "artikel-fassade-streichen-kosten",
+        "tag": "Kosten",
+        "min": 7,
+        "title": "Fassade streichen: Kosten, Anstrichsysteme & der richtige Zeitpunkt",
+        "desc": "Kosten, Anstrichsysteme & der richtige Zeitpunkt: Was das Streichen der Fassade wirklich kostet und wie lange es hält."
+      },
+      {
+        "slug": "artikel-farben-raumwirkung",
+        "tag": "Gestaltung",
+        "min": 6,
+        "title": "Farben & Raumwirkung: So wählen Sie den richtigen Ton",
+        "desc": "Warm wirkt eng, kalt wirkt weit: Wie Farben Räume verändern – und wie Sie die richtigen Töne wählen."
+      },
+      {
+        "slug": "artikel-schimmel-wohnung",
+        "tag": "Gesundheit",
+        "min": 7,
+        "title": "Schimmel in der Wohnung: Ursachen, Gesundheit & nachhaltige Sanierung",
+        "desc": "Ursachen, Gesundheit & nachhaltige Sanierung: Wann reicht Wischen, wann muss der Fachmann ran?"
+      },
+      {
+        "slug": "artikel-tapezieren-techniken",
+        "tag": "Technik",
+        "min": 7,
+        "title": "Tapezieren: Vom glatten Putz zur perfekten Wand – Techniken & Profi-Tipps",
+        "desc": "Vliestapete, Rapport, Untergrund-Grundierung: Welche Tapete zu welchem Raum passt und wann der Maler die bessere Wahl ist."
+      }
+    ],
+    "zimmerer": [
+      {
+        "slug": "artikel-carport-bauen",
+        "tag": "Genehmigung",
+        "min": 7,
+        "title": "Carport bauen: Genehmigung, Kosten & die richtige Holzwahl",
+        "desc": "Genehmigung, Kosten & die richtige Holzwahl: Was Sie vor dem Carport-Bau wissen müssen – inklusive typischer Fallen."
+      },
+      {
+        "slug": "artikel-dachstuhl-sanieren",
+        "tag": "Sanierung",
+        "min": 8,
+        "title": "Dachstuhl sanieren statt abreißen: Kosten, Ablauf & Möglichkeiten",
+        "desc": "Sanieren statt abreißen: Kosten, Ablauf & Möglichkeiten, wenn der Dachstuhl alt ist, aber das Fundament stimmt."
+      },
+      {
+        "slug": "artikel-holzterrasse-pflegen",
+        "tag": "Pflege",
+        "min": 5,
+        "title": "Holzterrasse pflegen: So bleibt sie 20 Jahre schön",
+        "desc": "Ölen, säubern, schützen: Mit dieser Pflege bleibt Ihre Holzterrasse 20 Jahre schön – statt grau und rau."
+      },
+      {
+        "slug": "artikel-holzterrasse-anlegen",
+        "tag": "Anleitung",
+        "min": 7,
+        "title": "Holzterrasse anlegen: Unterkonstruktion, Holzwahl & die häufigsten Fehler",
+        "desc": "Unterkonstruktion, Holzwahl, Kosten: Wie Ihre Holzterrasse 20 Jahre hält – statt nach zwei Saisons zu wackeln."
+      }
+    ],
+    "garten-und-landschaftsbau": [
+      {
+        "slug": "artikel-gartenplanung-ideen",
+        "tag": "Planung",
+        "min": 8,
+        "title": "Gartenplanung: Vom Grundstück zum Traumgarten – Ideen, Ablauf & Kosten",
+        "desc": "Vom Grundstück zum Traumgarten: Wegeführung, Zonen, Bepflanzung – und was die Planung wirklich kostet."
+      },
+      {
+        "slug": "artikel-rasen-neuanlage",
+        "tag": "Rasen",
+        "min": 7,
+        "title": "Rasen neu anlegen: Saat, Rollrasen oder Nachsäen – Kosten & Pflege im Überblick",
+        "desc": "Saat, Rollrasen oder Nachsäen? Kosten, richtige Jahreszeit und die entscheidenden ersten Monate."
+      },
+      {
+        "slug": "artikel-terrasse-bauen",
+        "tag": "Terrasse",
+        "min": 8,
+        "title": "Terrasse bauen: Materialien, Kosten & die häufigsten Fehler vermeiden",
+        "desc": "Holz, WPC oder Naturstein: Welches Material passt, was der Bau kostet und welche Fehler Sie vermeiden sollten."
+      }
+    ]
+  }
+}

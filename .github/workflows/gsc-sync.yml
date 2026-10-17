@@ -14,9 +14,9 @@ jobs:
     steps:
       - name: Sync auslösen
         run: |
-          HTTP=$(curl -s -o /tmp/gsc-sync.json -w "%{http_code}" \
+          HTTP=$(curl -sL -o /tmp/gsc-sync.json -w "%{http_code}" \
             -H "Authorization: Bearer ${{ secrets.GSC_SYNC_SECRET }}" \
-            https://www.fachschmiede.de/api/cron/gsc-sync)
+            https://www.fachschmiede.de/api/cron/gsc-sync/)
           echo "HTTP $HTTP"
           cat /tmp/gsc-sync.json
           test "$HTTP" = "200"
