@@ -173,6 +173,11 @@ const nextConfig = {
         { source: '/artikel-smart-home-nachruesten/', destination: '/artikel-smart-home-nachruesten.html' },
         { source: '/artikel-sturmschaden-sofortmassnahmen/', destination: '/artikel-sturmschaden-sofortmassnahmen.html' },
         { source: '/artikel-wallbox-zuhause/', destination: '/artikel-wallbox-zuhause.html' },
+        { source: '/ratgeber-garten-und-landschaftsbau/', destination: '/ratgeber-garten-und-landschaftsbau.html' },
+        { source: '/ratgeber-dachdecker/', destination: '/ratgeber-dachdecker.html' },
+        { source: '/artikel-terrasse-bauen/', destination: '/artikel-terrasse-bauen.html' },
+        { source: '/artikel-rasen-neuanlage/', destination: '/artikel-rasen-neuanlage.html' },
+        { source: '/artikel-gartenplanung-ideen/', destination: '/artikel-gartenplanung-ideen.html' },
         
         // Musterseiten → echte Demoseiten (Bochum). Früher: tote Ziele (/elektriker.html etc. existierten nicht)
         { source: '/muster/dachdecker/', destination: '/stadt-dach-bochum.html' },
