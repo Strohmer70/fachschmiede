@@ -171,6 +171,7 @@ function run(tradeSlug, topicSlug) {
     fs.writeFileSync(path.join(ROOT, 'public', 'ratgeber.html'), mainHub())
 
     // Rewrite + Sitemap (idempotent)
+    // Rewrite (idempotent) — SITEMAP NICHT nötig: app/sitemap.ts liest die Registry live!
     const ncPath = path.join(ROOT, 'next.config.js')
     let nc = fs.readFileSync(ncPath, 'utf8')
     if (!nc.includes(`source: '/${artSlug}/'`)) {
@@ -179,12 +180,6 @@ function run(tradeSlug, topicSlug) {
       const rewrite = `      { source: '/${artSlug}/', destination: '/${artSlug}.html' },\n`
       nc = nc.replace(anchor, rewrite + anchor)
       fs.writeFileSync(ncPath, nc)
-    }
-    const smPath = path.join(ROOT, 'public/sitemap.xml')
-    let sm = fs.readFileSync(smPath, 'utf8')
-    if (!sm.includes(`<loc>https://www.fachschmiede.de/${artSlug}/</loc>`)) {
-      sm = sm.replace('</urlset>', `  <url><loc>https://www.fachschmiede.de/${artSlug}/</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>\n</urlset>`)
-      fs.writeFileSync(smPath, sm)
     }
   }
   console.log(`  ✓ ${artSlug} (${(html.length / 1024).toFixed(1)} KB) → Hub ${regKey} (${existing.length} Artikel) ${WRITE ? 'GESCHRIEBEN' : '(Dry-Run)'}`)

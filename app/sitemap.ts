@@ -1,5 +1,10 @@
 import type { MetadataRoute } from 'next'
 import { getAllCities, getAllTrades } from '../config/system-config.js'
+// 2026-10-17: Artikel + Ratgeber-Hubs DYNAMISCH aus lib/general-articles.json (SSOT).
+// Vorher HARDCODED → neue Artikel (Generator!) fehlten hier forever.
+// Der Generator (scripts/generate-general-article.js) pflegt die Registry;
+// diese Route liest live daraus. NIEMALS wieder hardcodieren!
+import { loadRegistry } from '../lib/ratgeber-lib'
 
 // 2026-10-16: Städte + Gewerke DYNAMISCH aus der SSOT (config/system-config.js).
 // Vorher HARDCODED → neue Städte (z.B. via Admin-Dashboard angelegt) fehlten hier
@@ -16,24 +21,6 @@ export const revalidate = 3600
 // ═══════════════════════════════════════════════════════════════════
 
 const BASE = 'https://www.fachschmiede.de'
-
-const ARTICLES = [
-  'artikel-5-anzeichen-dachsanierung',
-  'artikel-carport-bauen',
-  'artikel-dachdaemmung-foerderung',
-  'artikel-dachstuhl-sanieren',
-  'artikel-e-check-sicherheitspruefung',
-  'artikel-farben-raumwirkung',
-  'artikel-fassade-streichen-kosten',
-  'artikel-heizungs-check-winter',
-  'artikel-heizungstausch-foerderung',
-  'artikel-holzterrasse-pflegen',
-  'artikel-rohrbruch-sofortmassnahmen',
-  'artikel-schimmel-wohnung',
-  'artikel-smart-home-nachruesten',
-  'artikel-sturmschaden-sofortmassnahmen',
-  'artikel-wallbox-zuhause',
-]
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // SSOT: aktuellste Städte/Gewerke — generateCity aktualisiert system-config.js
@@ -62,14 +49,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  // Artikel
-  for (const a of ARTICLES) {
+  // Artikel — DYNAMISCH aus Registry (SSOT, gepflegt vom Generator)
+  const registry = loadRegistry()
+  const articleSlugs = new Set<string>()
+  const ratgeberHubs = new Set<string>(['ratgeber'])
+  for (const arts of Object.values(registry.trades)) {
+    for (const a of arts) articleSlugs.add(a.slug)
+  }
+  for (const regKey of Object.keys(registry.trades)) {
+    ratgeberHubs.add(`ratgeber-${regKey}`)
+  }
+  for (const a of articleSlugs) {
     urls.push({ url: `${BASE}/${a}/`, priority: 0.6, changeFrequency: 'weekly' })
   }
 
-  // Ratgeber
-  for (const r of ['ratgeber', 'ratgeber-elektriker', 'ratgeber-klempner', 'ratgeber-maler', 'ratgeber-zimmerer']) {
-    urls.push({ url: `${BASE}/${r}/`, priority: 0.6, changeFrequency: 'weekly' })
+  // Ratgeber-Hubs (Haupt-Hub + alle Gewerk-Hubs)
+  for (const r of ratgeberHubs) {
+    urls.push({ url: `${BASE}/${r}/`, priority: 0.7, changeFrequency: 'weekly' })
   }
 
   // Statische Seiten
