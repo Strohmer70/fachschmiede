@@ -203,6 +203,7 @@ const SYSTEM_CONFIG = {
         'berlin-spandau': { name: 'Spandau', region: '', slug: 'berlin-spandau' },
         'wuppertal': { name: 'Wuppertal', region: 'Nordrhein-Westfalen', slug: 'wuppertal' },
         'gera': { name: 'Gera', region: 'Thüringen', slug: 'gera' },
+        'stralsund': { name: 'Stralsund', region: 'Mecklenburg-Vorpommern', slug: 'stralsund' },
     // NEUE STÄDTE HIER EINFÜGEN
   },
 

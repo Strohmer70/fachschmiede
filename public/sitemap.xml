@@ -39,6 +39,7 @@
   <url><loc>https://www.fachschmiede.de/stadt-dach-dortmund</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-dach-ennepetal</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-dach-froendenberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/stadt-dach-gera</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-dach-gevelsberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-dach-hagen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-dach-hattingen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
@@ -61,6 +62,7 @@
   <url><loc>https://www.fachschmiede.de/stadt-elek-dortmund</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-elek-ennepetal</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-elek-froendenberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/stadt-elek-gera</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-elek-gevelsberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-elek-hagen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-elek-hattingen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
@@ -83,6 +85,7 @@
   <url><loc>https://www.fachschmiede.de/stadt-garten-dortmund</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-garten-ennepetal</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-garten-froendenberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/stadt-garten-gera</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-garten-gevelsberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-garten-hagen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-garten-hattingen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
@@ -105,6 +108,7 @@
   <url><loc>https://www.fachschmiede.de/stadt-klempner-dortmund</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-klempner-ennepetal</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-klempner-froendenberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/stadt-klempner-gera</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-klempner-gevelsberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-klempner-hagen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-klempner-hattingen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
@@ -127,6 +131,7 @@
   <url><loc>https://www.fachschmiede.de/stadt-maler-dortmund</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-maler-ennepetal</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-maler-froendenberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/stadt-maler-gera</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-maler-gevelsberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-maler-hagen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-maler-hattingen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
@@ -149,6 +154,7 @@
   <url><loc>https://www.fachschmiede.de/stadt-zimm-dortmund</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-zimm-ennepetal</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-zimm-froendenberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/stadt-zimm-gera</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-zimm-gevelsberg</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-zimm-hagen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/stadt-zimm-hattingen</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
@@ -183,6 +189,7 @@
   <url><loc>https://www.fachschmiede.de/dachdecker/schwelm/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/schwerte/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/sprockhoevel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/dachdecker/stralsund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/unna/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/dachdecker/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -206,6 +213,7 @@
   <url><loc>https://www.fachschmiede.de/elektriker/schwelm/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/schwerte/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/sprockhoevel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/elektriker/stralsund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/unna/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/elektriker/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -229,6 +237,7 @@
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/schwelm/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/schwerte/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/sprockhoevel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/stralsund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/unna/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/garten-und-landschaftsbau/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -252,6 +261,7 @@
   <url><loc>https://www.fachschmiede.de/klempner/schwelm/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/schwerte/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/sprockhoevel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/klempner/stralsund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/unna/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/klempner/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -275,6 +285,7 @@
   <url><loc>https://www.fachschmiede.de/maler/schwelm/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/schwerte/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/sprockhoevel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/maler/stralsund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/unna/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/maler/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
@@ -298,6 +309,7 @@
   <url><loc>https://www.fachschmiede.de/zimmerer/schwelm/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/schwerte/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/sprockhoevel/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.fachschmiede.de/zimmerer/stralsund/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/unna/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/wetter-ruhr/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://www.fachschmiede.de/zimmerer/witten/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
