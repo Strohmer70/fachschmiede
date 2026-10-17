@@ -176,7 +176,7 @@ function run(tradeSlug, topicSlug) {
     if (!nc.includes(`source: '/${artSlug}/'`)) {
       const anchor = `      { source: '/artikel-wallbox-zuhause/',`
       if (!nc.includes(anchor.trim())) throw new Error('Rewrite-Anchor verschoben! Bitte next.config.js prüfen.')
-      const rewrite = `      { source: '/${artSlug}/', destination: '/${artSlug}.html', permanent: true },\n`
+      const rewrite = `      { source: '/${artSlug}/', destination: '/${artSlug}.html' },\n`
       nc = nc.replace(anchor, rewrite + anchor)
       fs.writeFileSync(ncPath, nc)
     }
