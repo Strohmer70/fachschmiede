@@ -185,6 +185,7 @@ tailwind.config = {
       <button type="button" class="side-link w-full text-left" data-view="blog" onclick="showView('blog', this)"><span>📝</span> Blog-Redaktion</button>
       <button type="button" class="side-link w-full text-left" data-view="support" onclick="showView('support', this)"><span>🎧</span> Support &amp; Anfragen</button>
       <button type="button" class="side-link w-full text-left" data-view="marketing" onclick="showView('marketing', this)"><span>📣</span> Marketing</button>
+      <button type="button" class="side-link w-full text-left" data-view="seo" onclick="showView('seo', this)"><span>🚀</span> SEO-Hub</button>
       <button type="button" class="side-link w-full text-left" data-view="rechtliches" onclick="showView('rechtliches', this)"><span>⚖️</span> Rechtliches</button>
       <button type="button" class="side-link w-full text-left" data-view="einstellungen" onclick="showView('einstellungen', this)"><span>⚙️</span> Einstellungen</button>
     </nav>
@@ -1254,6 +1255,179 @@ tailwind.config = {
               </div>
             </div>
             <p class="mt-4 text-[11px] text-ink-400 italic">Empfängername, Adresse, Stadt, Gewerk und Website-Screenshot werden pro Prospekt automatisch individualisiert. Das Anschreiben kann vor dem Versand angepasst werden.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="view" id="view-seo">
+
+        <!-- Erklärung -->
+        <div class="bg-gradient-to-r from-brand-600 to-brand-500 rounded-2xl p-6 text-white">
+          <h2 class="font-black text-xl">🚀 SEO-Hub — Backlinks, Zitate &amp; Presse</h2>
+          <p class="mt-1 text-sm text-white/90 max-w-3xl">Deine Seiten brauchen Autorität von außen, um in Google zu ranken. Hier planst und trackst du alles, was fachschmiede.de stärker macht: Backlinks auf Stadtseiten und Homepage, lokale Zitate (Citations) und Pressemitteilungen. <b>Regel: Lieber 5 gute Links als 50 schlechte!</b></p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">Backlinks gesamt</p><p class="mt-2 text-3xl font-black text-ink-900" id="seoKpiTotal">0</p></p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">✅ Live / Indexiert</p><p class="mt-2 text-3xl font-black text-green-600" id="seoKpiLive">0</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">⏳ In Arbeit</p><p class="mt-2 text-3xl font-black text-amber-600" id="seoKpiPending">0</p><p class="mt-1 text-xs font-bold text-ink-400">geplant + eingereicht</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">💰 Investiert</p><p class="mt-2 text-3xl font-black text-ink-900" id="seoKpiCost">0 €</p></div>
+          <div class="bg-white rounded-2xl border border-ink-200 p-5"><p class="text-sm font-semibold text-ink-500">📍 Zitate live</p><p class="mt-2 text-3xl font-black text-brand-600" id="seoKpiCitations">0/0</p></div>
+        </div>
+
+        <!-- Tool-Leiste -->
+        <div class="bg-white rounded-2xl border border-ink-200 p-4 flex flex-wrap items-center gap-2">
+          <button id="seoTabLinks" onclick="seoSwitchTab('links')" class="bg-brand-600 text-white text-xs font-black px-4 py-2 rounded-lg transition">🔗 Backlink-Tracker</button>
+          <button id="seoTabCitations" onclick="seoSwitchTab('citations')" class="bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition">📍 Lokale Zitate</button>
+          <button id="seoTabPresse" onclick="seoSwitchTab('presse')" class="bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition">📰 Presse &amp; PR-Playbook</button>
+          <span class="ml-auto text-xs text-ink-400">Daten in Supabase-Tabellen backlinks + citations</span>
+        </div>
+
+        <!-- TAB 1: Backlink-Tracker -->
+        <div id="seoTabPaneLinks">
+          <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Neuer Backlink -->
+            <div class="bg-white rounded-2xl border border-ink-200 p-6 lg:col-span-1 h-fit">
+              <h3 class="font-black text-ink-900 text-lg">➕ Backlink eintragen</h3>
+              <div class="mt-4 space-y-3">
+                <div>
+                  <label class="block text-xs font-bold text-ink-800 mb-1">Zielseite</label>
+                  <select id="seoBlPage" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"><option value="">🏠 Homepage (fachschmiede.de)</option></select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-ink-800 mb-1">Quell-URL * <span class="font-normal text-ink-400">(wo der Link steht)</span></label>
+                  <input id="seoBlSource" type="url" placeholder="https://beispiel.de/artikel/" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-ink-800 mb-1">Anker-Text</label>
+                  <input id="seoBlAnchor" type="text" placeholder="z.B. Elektriker Lünen" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-ink-800 mb-1">Typ</label>
+                    <select id="seoBlType" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                      <option value="backlink">🔗 Backlink (allgemein)</option>
+                      <option value="citation">📍 Zitat / Citation</option>
+                      <option value="directory">📁 Branchenverzeichnis</option>
+                      <option value="press">📰 Presse / PR</option>
+                      <option value="guestpost">✍️ Gastartikel</option>
+                      <option value="social">📱 Social Profile</option>
+                      <option value="forum">💬 Forum / Community</option>
+                      <option value="other">Sonstiges</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-ink-800 mb-1">Status</label>
+                    <select id="seoBlStatus" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                      <option value="submitted">Eingereicht</option>
+                      <option value="planned">Geplant</option>
+                      <option value="live">Live</option>
+                      <option value="indexed">Indexiert (Google findet ihn)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-ink-800 mb-1">DR (Domain-Rating, 0-100)</label>
+                    <input id="seoBlDr" type="number" min="0" max="100" placeholder="z.B. 30" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-ink-800 mb-1">Kosten (€)</label>
+                    <input id="seoBlCost" type="number" min="0" step="0.01" placeholder="0" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-ink-800 mb-1">Notiz</label>
+                  <input id="seoBlNotes" type="text" placeholder="z.B. Kontakt über Fiverr, geliefert 19.10." class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <button onclick="seoAddBacklink()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-black text-sm px-4 py-3 rounded-xl transition">Backlink speichern</button>
+              </div>
+            </div>
+
+            <!-- Liste -->
+            <div class="bg-white rounded-2xl border border-ink-200 p-6 lg:col-span-2">
+              <div class="flex flex-wrap items-center gap-2 mb-4">
+                <h3 class="font-black text-ink-900 text-lg mr-auto">📋 Deine Backlinks</h3>
+                <select id="seoBlFilterStatus" onchange="seoRenderBacklinks()" class="rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-bold bg-white">
+                  <option value="">Alle Status</option><option value="indexed">✅ Indexiert</option><option value="live">🟢 Live</option><option value="submitted">⏳ Eingereicht</option><option value="planned">📅 Geplant</option><option value="lost">❌ Verloren</option><option value="rejected">🚫 Abgelehnt</option>
+                </select>
+                <select id="seoBlFilterType" onchange="seoRenderBacklinks()" class="rounded-lg border border-ink-200 px-3 py-1.5 text-xs font-bold bg-white">
+                  <option value="">Alle Typen</option><option value="backlink">Backlink</option><option value="citation">Zitat</option><option value="directory">Verzeichnis</option><option value="press">Presse</option><option value="guestpost">Gastartikel</option><option value="social">Social</option><option value="forum">Forum</option><option value="other">Sonstiges</option>
+                </select>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead><tr class="text-left text-xs font-bold text-ink-400 uppercase border-b border-ink-200">
+                    <th class="py-2 pr-3">Ziel</th><th class="py-2 pr-3">Quelle</th><th class="py-2 pr-3">Typ</th><th class="py-2 pr-3">Status</th><th class="py-2 pr-3">DR</th><th class="py-2 pr-3">€</th><th class="py-2 pr-3">Notiz</th><th class="py-2"></th>
+                  </tr></thead>
+                  <tbody id="seoBlTable"><tr><td colspan="8" class="py-8 text-center text-ink-400 text-sm">Lade…</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Lokale Zitate -->
+        <div id="seoTabPaneCitations" class="hidden">
+          <div class="grid lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl border border-ink-200 p-6">
+              <h3 class="font-black text-ink-900 text-lg">📍 Was sind Zitate?</h3>
+              <p class="mt-2 text-sm text-ink-500 leading-relaxed"><b>NAP = Name, Adresse, Telefon.</b><br>Wenn deine Betriebsdaten konsistent auf vielen Portalen stehen, vertraut Google der Seite mehr — besonders für lokale Rankings. Hier die wichtigsten deutschen Quellen abarbeiten!</p>
+              <div class="mt-4 bg-brand-50 border border-brand-200 rounded-xl p-4 text-xs text-ink-600 leading-relaxed">
+                <b>💡 Tipp:</b> Bei Rank-&amp;-Rent trägst du die Daten der <b>Plattform</b> ein (fachschmiede.de + Impressumsadresse). Konsistent bleiben überall gleich! Ein Profil pro Portal, nicht pro Stadtseite.
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-ink-200 p-6 lg:col-span-2">
+              <h3 class="font-black text-ink-900 text-lg mb-4">✅ Zitate-Checkliste</h3>
+              <div id="seoCitationsList" class="divide-y divide-ink-100"><p class="py-8 text-center text-ink-400 text-sm">Lade…</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Presse & PR -->
+        <div id="seoTabPanePresse" class="hidden">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl border border-ink-200 p-6">
+              <h3 class="font-black text-ink-900 text-lg">📰 Kostenlose Presseportale</h3>
+              <p class="mt-1 text-sm text-ink-500">Pressemitteilung schreiben → Link auf fachschmiede.de setzen. Kostenlos, dauert 30 Min pro Portal.</p>
+              <ul class="mt-4 space-y-2 text-sm text-ink-700">
+                <li class="flex gap-2"><span>1️⃣</span><span><b>openPR.de</b> — kostenlos, dofollow-Link möglich</span></li>
+                <li class="flex gap-2"><span>2️⃣</span><span><b>PresseBox.de</b> — Branchenpresse, gut für Handwerk</span></li>
+                <li class="flex gap-2"><span>3️⃣</span><span><b>kostenlose-Pressemeldungen.de</b> — einfacher Einstieg</span></li>
+                <li class="flex gap-2"><span>4️⃣</span><span><b>PR-News</b> &amp; <b>Presseportal-ähnliche</b> — mehrfach nutzbar bei echten Neuigkeiten</span></li>
+              </ul>
+              <p class="mt-4 text-xs text-ink-400 italic">Themen-Idee: „fachschmiede.de bringt Handwerksbetriebe online — neues Mietmodell für Webseiten".</p>
+            </div>
+            <div class="bg-white rounded-2xl border border-ink-200 p-6">
+              <h3 class="font-black text-ink-900 text-lg">🗞 Lokale Presse</h3>
+              <p class="mt-1 text-sm text-ink-500">Lokale Zeitungen linken oft auf regionale Projekte — ein Link von waz.de o.ä. ist Gold wert.</p>
+              <ul class="mt-4 space-y-2 text-sm text-ink-700">
+                <li class="flex gap-2"><span>•</span><span><b>Lokalredaktionen</b>: Ruhr Nachrichten, WAZ, WA — Lokalteil per E-Mail kontaktieren</span></li>
+                <li class="flex gap-2"><span>•</span><span><b>Lokalradios</b>: kleine Sender berichten gerne über neue Geschäftsmodelle</span></li>
+                <li class="flex gap-2"><span>•</span><span><b>Stadtmagazine</b> / Blogs der Stadt Lünen + Ruhrgebiets-Städte</span></li>
+                <li class="flex gap-2"><span>•</span><span><b>Wirtschaftsförderung</b> — kommunale Seiten listen neue Betriebe kostenlos!</span></li>
+              </ul>
+            </div>
+            <div class="bg-white rounded-2xl border border-ink-200 p-6">
+              <h3 class="font-black text-ink-900 text-lg">✍️ Gastartikel &amp; Branchenblogs</h3>
+              <p class="mt-1 text-sm text-ink-500">Ein echter Artikel mit Fachwert auf einem Branchenportal = stärkster Link-Typ.</p>
+              <ul class="mt-4 space-y-2 text-sm text-ink-700">
+                <li class="flex gap-2"><span>•</span><span><b>Branchenportale</b> (SHK, elektriker.org etc.) — Gastbeitrag anbieten</span></li>
+                <li class="flex gap-2"><span>•</span><span><b>Handwerks- Blogs</b> — Thema: Online-Marketing für Handwerker</span></li>
+                <li class="flex gap-2"><span>•</span><span><b>Fiverr/Contra</b> — Gastartikel-Pakete ab ~30 €, <b>Achtung:</b> Qualität prüfen!</span></li>
+              </ul>
+            </div>
+            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl border border-amber-200 p-6">
+              <h3 class="font-black text-amber-900 text-lg">⚠️ Was du NICHT tun solltest</h3>
+              <ul class="mt-4 space-y-2 text-sm text-amber-800">
+                <li>🚫 Kauf-Backlink-Spam (1000 Links für 5 €) — Google straft das ab</li>
+                <li>🚫 Kommentar-Spam in Foren — verschwendet Zeit, schadet evtl.</li>
+                <li>🚫 Linktausch-Programme — erkennbar, wertlos</li>
+                <li>🚫 PBNs (Private Blog Networks) — Risiko, lieber echte Presse!</li>
+              </ul>
+            </div>
           </div>
         </div>
 

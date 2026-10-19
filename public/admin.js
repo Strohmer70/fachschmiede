@@ -2764,3 +2764,232 @@ async function gscDisconnect() {
   else showToast('✗ Google-Verbindung fehlgeschlagen: ' + (params.get('msg') || 'unbekannter Fehler'));
   history.replaceState(null, '', location.pathname + '#google');
 })();
+
+// ═══════════════════════════════════════════════════════════════════
+// SEO-HUB (2026-10-19) — Backlink-Tracker + Lokale Zitate + PR-Playbook
+// Tabellen: backlinks + citations (Supabase). Auth via adminToken.
+// ═══════════════════════════════════════════════════════════════════
+let __seoBacklinks = [];
+let __seoCitations = [];
+let __seoPages = [];
+let __seoLoaded = false;
+
+const SEO_TYPE_LABEL = { backlink: '🔗', citation: '📍', directory: '📁', press: '📰', guestpost: '✍️', social: '📱', forum: '💬', other: '•' };
+const SEO_STATUS_LABEL = { planned: '📅 geplant', submitted: '⏳ eingereicht', live: '🟢 live', indexed: '✅ indexiert', lost: '❌ verloren', rejected: '🚫 abgelehnt' };
+const SEO_STATUS_CLS = {
+  planned: 'bg-ink-100 text-ink-500 border-ink-200',
+  submitted: 'bg-amber-100 text-amber-700 border-amber-200',
+  live: 'bg-green-100 text-green-700 border-green-200',
+  indexed: 'bg-green-100 text-green-800 border-green-300',
+  lost: 'bg-red-100 text-red-600 border-red-200',
+  rejected: 'bg-ink-100 text-ink-400 border-ink-200',
+};
+
+async function seoFetch(path, opts = {}) {
+  const r = await fetch('/api/admin/seo' + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken, ...(opts.headers || {}) },
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+  return j;
+}
+
+async function seoLoad(force = false) {
+  if (__seoLoaded && !force) return;
+  // Seiten für Ziel-Dropdown laden — URLs IMMER aus trade/city-Slugs bauen
+  // (NEVER slug.replace(/-/g,'/')! Doppel-Hyphen-Slugs wie garten-und-landschaftsbau
+  // würden zerstört werden — Präfix-Match-Regel aus MEMORY.md)
+  try {
+    const r = await fetch('/api/admin/pages', { headers: { 'Authorization': 'Bearer ' + adminToken } });
+    const j = await r.json().catch(() => ({}));
+    __seoPages = j.pages || [];
+    __seoPages.forEach(p => { p.url = seoPageUrl(p); });
+  } catch (e) { console.warn('[seo] pages laden fehlgeschlagen:', e.message); }
+  const sel = document.getElementById('seoBlPage');
+  if (sel && sel.options.length <= 1) {
+    __seoPages.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = p.title || p.slug;
+      sel.appendChild(o);
+    });
+  }
+  const [bl, cit] = await Promise.all([seoFetch('/backlinks'), seoFetch('/citations')]);
+  __seoBacklinks = bl.backlinks || [];
+  __seoCitations = cit.citations || [];
+  __seoLoaded = true;
+  seoRenderKpis();
+  seoRenderBacklinks();
+  seoRenderCitations();
+}
+
+// Sichere URL aus Page-Embeds (trade.slug + city.slug), Fallback: SSOT system-config
+function seoPageUrl(p) {
+  if (p?.trade?.slug && p?.city?.slug) return `https://www.fachschmiede.de/${p.trade.slug}/${p.city.slug}/`;
+  if (p?.url) return p.url;
+  return '';
+}
+
+function seoRenderKpis() {
+  const t = __seoBacklinks.length;
+  const live = __seoBacklinks.filter(b => b.status === 'live' || b.status === 'indexed').length;
+  const pending = __seoBacklinks.filter(b => b.status === 'submitted' || b.status === 'planned').length;
+  const cost = __seoBacklinks.reduce((s, b) => s + (parseFloat(b.cost) || 0), 0);
+  const citLive = __seoCitations.filter(c => c.status === 'live').length;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('seoKpiTotal', t);
+  set('seoKpiLive', live);
+  set('seoKpiPending', pending);
+  set('seoKpiCost', cost.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' €');
+  set('seoKpiCitations', citLive + '/' + __seoCitations.length);
+}
+
+function seoSwitchTab(name) {
+  ['Links', 'Citations', 'Presse'].forEach(t => {
+    const pane = document.getElementById('seoTabPane' + t);
+    const btn = document.getElementById('seoTab' + t);
+    if (pane) pane.classList.toggle('hidden', t.toLowerCase() !== name.toLowerCase());
+    if (btn) {
+      const on = t.toLowerCase() === name.toLowerCase();
+      btn.className = on
+        ? 'bg-brand-600 text-white text-xs font-black px-4 py-2 rounded-lg transition'
+        : 'bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition';
+    }
+  });
+}
+
+function seoPageLabel(b) {
+  if (b.page?.trade?.slug && b.page?.city?.slug) {
+    const url = `https://www.fachschmiede.de/${b.page.trade.slug}/${b.page.city.slug}/`;
+    return `<a href="${url}" target="_blank" class="text-brand-600 hover:underline font-semibold" title="${b.target_url || url}">${b.page.title || b.page.slug}</a>`;
+  }
+  if (b.page?.slug) return `<span class="text-ink-600 font-semibold" title="${b.target_url || ''}">${b.page.title || b.page.slug}</span>`;
+  if (b.landing_page_id) return `<span class="text-ink-400" title="${b.target_url || ''}">Seite ${String(b.landing_page_id).slice(0, 6)}…</span>`;
+  return `<span class="font-semibold text-ink-700" title="https://www.fachschmiede.de/">🏠 Homepage</span>`;
+}
+
+function seoRenderBacklinks() {
+  const tbody = document.getElementById('seoBlTable');
+  if (!tbody) return;
+  const fs = document.getElementById('seoBlFilterStatus')?.value || '';
+  const ft = document.getElementById('seoBlFilterType')?.value || '';
+  let list = __seoBacklinks;
+  if (fs) list = list.filter(b => b.status === fs);
+  if (ft) list = list.filter(b => b.type === ft);
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="py-10 text-center text-ink-400 text-sm">Noch keine Backlinks${fs || ft ? ' für diesen Filter' : ''} — trage den ersten oben ein! 🚀</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(b => `
+    <tr class="border-b border-ink-100 hover:bg-brand-50/40">
+      <td class="py-2.5 pr-3 text-xs">${seoPageLabel(b)}</td>
+      <td class="py-2.5 pr-3 text-xs"><a href="${b.source_url}" target="_blank" class="text-brand-600 hover:underline break-all">${b.source_url.replace(/^https?:\/\//, '').slice(0, 45)}</a>${b.anchor ? `<div class="text-[10px] text-ink-400">„${b.anchor}"</div>` : ''}</td>
+      <td class="py-2.5 pr-3 text-xs whitespace-nowrap" title="${b.type}">${SEO_TYPE_LABEL[b.type] || '•'} ${b.type}</td>
+      <td class="py-2.5 pr-3">
+        <select onchange="seoPatchBacklink('${b.id}', {status: this.value})" class="text-[11px] font-bold px-2 py-1 rounded-full border ${SEO_STATUS_CLS[b.status] || 'bg-ink-100 text-ink-500 border-ink-200'} bg-transparent cursor-pointer">
+          ${Object.keys(SEO_STATUS_LABEL).map(s => `<option value="${s}" ${s === b.status ? 'selected' : ''}>${SEO_STATUS_LABEL[s]}</option>`).join('')}
+        </select>
+      </td>
+      <td class="py-2.5 pr-3 text-xs font-bold text-ink-600">${b.dr != null ? b.dr : '–'}</td>
+      <td class="py-2.5 pr-3 text-xs text-ink-600">${parseFloat(b.cost) > 0 ? parseFloat(b.cost).toLocaleString('de-DE') + ' €' : '–'}</td>
+      <td class="py-2.5 pr-3 text-[11px] text-ink-400 max-w-[140px] truncate" title="${b.notes || ''}">${b.notes || ''}</td>
+      <td class="py-2.5"><button onclick="seoDeleteBacklink('${b.id}')" class="text-ink-300 hover:text-red-500 text-lg leading-none" title="Löschen">×</button></td>
+    </tr>`).join('');
+}
+
+async function seoAddBacklink() {
+  const sel = document.getElementById('seoBlPage');
+  const pageId = sel?.value || null;
+  const page = __seoPages.find(p => p.id === pageId);
+  const target_url = pageId ? (page.url || '') : 'https://www.fachschmiede.de/';
+  const payload = {
+    landing_page_id: pageId,
+    target_url,
+    source_url: document.getElementById('seoBlSource')?.value || '',
+    anchor: document.getElementById('seoBlAnchor')?.value || '',
+    type: document.getElementById('seoBlType')?.value || 'backlink',
+    status: document.getElementById('seoBlStatus')?.value || 'submitted',
+    dr: document.getElementById('seoBlDr')?.value || null,
+    cost: document.getElementById('seoBlCost')?.value || 0,
+    notes: document.getElementById('seoBlNotes')?.value || '',
+  };
+  if (!payload.source_url.trim()) { showToast('❌ Quell-URL fehlt!'); return; }
+  try {
+    await seoFetch('/backlinks', { method: 'POST', body: JSON.stringify(payload) });
+    showToast('✅ Backlink gespeichert!');
+    ['seoBlSource', 'seoBlAnchor', 'seoBlDr', 'seoBlCost', 'seoBlNotes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    await seoLoad(true);
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function seoPatchBacklink(id, patch) {
+  try {
+    await seoFetch('/backlinks', { method: 'PATCH', body: JSON.stringify({ id, ...patch }) });
+    const b = __seoBacklinks.find(x => x.id === id);
+    if (b) Object.assign(b, patch);
+    seoRenderKpis();
+    seoRenderBacklinks();
+    showToast('✅ Status aktualisiert');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function seoDeleteBacklink(id) {
+  if (!confirm('Backlink wirklich löschen?')) return;
+  try {
+    await seoFetch('/backlinks?id=' + encodeURIComponent(id), { method: 'DELETE' });
+    __seoBacklinks = __seoBacklinks.filter(b => b.id !== id);
+    seoRenderKpis();
+    seoRenderBacklinks();
+    showToast('🗑 Gelöscht');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+const SEO_CIT_CLS = {
+  not_started: 'bg-ink-100 text-ink-500 border-ink-200',
+  in_progress: 'bg-amber-100 text-amber-700 border-amber-200',
+  live: 'bg-green-100 text-green-700 border-green-200',
+};
+
+function seoRenderCitations() {
+  const list = document.getElementById('seoCitationsList');
+  if (!list) return;
+  if (!__seoCitations.length) {
+    list.innerHTML = '<p class="py-8 text-center text-ink-400 text-sm">Keine Zitate vorhanden.</p>';
+    return;
+  }
+  list.innerHTML = __seoCitations.map(c => `
+    <div class="py-3 flex flex-wrap items-center gap-3">
+      <div class="flex-1 min-w-[200px]">
+        <div class="font-bold text-sm text-ink-900">${c.source_url ? `<a href="${c.source_url}" target="_blank" class="hover:text-brand-600">${c.source}</a>` : c.source}
+          ${c.priority >= 85 ? '<span class="ml-1 text-[10px] font-black text-brand-600 bg-brand-100 px-1.5 py-0.5 rounded">TOP</span>' : ''}
+        </div>
+        ${c.notes ? `<div class="text-[11px] text-ink-400 mt-0.5">${c.notes}</div>` : ''}
+        <input type="url" placeholder="Profil-URL eintragen, z.B. https://gelbeseiten.de/…" value="${c.profile_url || ''}"
+          onchange="seoPatchCitation('${c.id}', {profile_url: this.value})"
+          class="mt-1.5 w-full rounded-lg border border-ink-200 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 ${c.profile_url ? 'bg-green-50 border-green-200' : ''}">
+      </div>
+      <select onchange="seoPatchCitation('${c.id}', {status: this.value})" class="text-[11px] font-bold px-2.5 py-1.5 rounded-full border ${SEO_CIT_CLS[c.status] || SEO_CIT_CLS.not_started} bg-transparent cursor-pointer">
+        <option value="not_started" ${c.status === 'not_started' ? 'selected' : ''}>○ nicht gestartet</option>
+        <option value="in_progress" ${c.status === 'in_progress' ? 'selected' : ''}>◐ in Arbeit</option>
+        <option value="live" ${c.status === 'live' ? 'selected' : ''}>● live</option>
+      </select>
+    </div>`).join('');
+}
+
+async function seoPatchCitation(id, patch) {
+  try {
+    await seoFetch('/citations', { method: 'PATCH', body: JSON.stringify({ id, ...patch }) });
+    const c = __seoCitations.find(x => x.id === id);
+    if (c) Object.assign(c, patch);
+    seoRenderKpis();
+    showToast('✅ Zitat aktualisiert');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+// showView-Hook erweitern (bestehenden Wrapper nutzen!)
+const _seoOrigShowView = showView;
+showView = function(id, el) {
+  _seoOrigShowView(id, el);
+  if (id === 'seo') { seoLoad().catch(e => showToast('❌ SEO-Hub: ' + e.message)); }
+};
