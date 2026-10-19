@@ -50,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // Artikel — DYNAMISCH aus Registry (SSOT, gepflegt vom Generator)
-  const registry = loadRegistry()
+  const registry = loadRegistry() as { trades: Record<string, { slug: string }[]> }
   const articleSlugs = new Set<string>()
   const ratgeberHubs = new Set<string>(['ratgeber'])
   for (const arts of Object.values(registry.trades)) {
@@ -59,12 +59,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const regKey of Object.keys(registry.trades)) {
     ratgeberHubs.add(`ratgeber-${regKey}`)
   }
-  for (const a of articleSlugs) {
+  // Hinweis: Set-Iteration braucht es2015-target — Array.from() ist der sichere Weg (TS-target es5-default)
+  for (const a of Array.from(articleSlugs)) {
     urls.push({ url: `${BASE}/${a}/`, priority: 0.6, changeFrequency: 'weekly' })
   }
 
   // Ratgeber-Hubs (Haupt-Hub + alle Gewerk-Hubs)
-  for (const r of ratgeberHubs) {
+  for (const r of Array.from(ratgeberHubs)) {
     urls.push({ url: `${BASE}/${r}/`, priority: 0.7, changeFrequency: 'weekly' })
   }
 
