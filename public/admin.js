@@ -445,22 +445,31 @@ function statusBadgeOf(p) {
       : '<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">✅ frei</span>');
 }
 // Google-Positions-Badge aus p.google_position (GSC-Sync, 30 Tage)
-// Zeigt: Position + Top-Keyword sichtbar; bei null-Position ehrlichen "keine Daten"-Hinweis
+// Zeigt: Position + Top-Keyword sichtbar; bei null-Position ehrlichen "keine Daten"-Hinweis.
+// ⚠ 2026-10-19: Positionsfarbe nur bei ausreichend Daten! <10 Impressionen = statistisch
+// bedeutungslos (Einzelfund) → neutrales Grau + sichtbarer Impressions-Hinweis statt grünem Top-10.
 function posBadgeOf(p) {
   const g = p.google_position;
   if (!g) return '';
+  const impr = g.impressions_30d || 0;
+  const clk = g.clicks_30d || 0;
+  const LOW_DATA = 10; // <10 Impressionen in 30 Tage = keine belastbare Aussage
   if (g.position == null) {
     const kw = g.keyword ? `<span class="text-[10px] text-ink-400 leading-tight" title="Ziel-Keyword">${g.keyword}</span>` : '';
-    return `<span class="inline-flex flex-col gap-0.5" title="In den letzten 30 Tagen keine Google-Impressionen${g.keyword ? ' für \u201E' + g.keyword + '\u201C' : ''} (Search Console). N\u00E4chster Sync: heute Nacht."><span class="text-[11px] font-black px-2 py-0.5 rounded-full border bg-ink-50 text-ink-400 border-ink-200 w-fit">– keine Impr.</span>${kw}</span>`;
+    return `<span class="inline-flex flex-col gap-0.5" title="In den letzten 30 Tagen keine Google-Impressionen${g.keyword ? ' für \u201E' + g.keyword + '\u201C' : ''} (Search Console). Nächster Sync: heute Nacht."><span class="text-[11px] font-black px-2 py-0.5 rounded-full border bg-ink-50 text-ink-400 border-ink-200 w-fit">– keine Impr.</span>${kw}</span>`;
   }
   const pos = g.position;
-  const cls = pos <= 10 ? 'bg-green-100 text-green-700 border-green-200'
+  const thin = impr < LOW_DATA;
+  const cls = thin ? 'bg-ink-100 text-ink-500 border-ink-300'
+    : pos <= 10 ? 'bg-green-100 text-green-700 border-green-200'
     : pos <= 30 ? 'bg-amber-100 text-amber-700 border-amber-200'
     : 'bg-ink-100 text-ink-500 border-ink-200';
-  const tip = `${g.clicks_30d || 0} Klicks / ${g.impressions_30d || 0} Impressionen (30 Tage)` +
+  const tip = `${clk} Klicks / ${impr} Impressionen (30 Tage)` +
+    (thin ? ' ⚠ Achtung: wenige Daten — Position ist ein Einzelfund, kein stabiles Ranking!' : '') +
     (g.checked_at ? ` · Stand: ${formatDate(g.checked_at)}` : '');
   const kw = g.keyword ? `<span class="text-[10px] text-ink-500 leading-tight" title="Top-Keyword: ${g.keyword}">${g.keyword}</span>` : '';
-  return `<span class="inline-flex flex-col gap-0.5" title="${tip}"><span class="text-[11px] font-black px-2 py-0.5 rounded-full border ${cls} w-fit">#${pos}</span>${kw}</span>`;
+  const imprLabel = thin ? `<span class="text-[10px] text-ink-400 leading-tight">nur ${impr} Impr. ⚠</span>` : '';
+  return `<span class="inline-flex flex-col gap-0.5" title="${tip}"><span class="text-[11px] font-black px-2 py-0.5 rounded-full border ${cls} w-fit">#${pos}</span>${kw}${imprLabel}</span>`;
 }
 
 function renderWebsitesView(pages, pagination) {
