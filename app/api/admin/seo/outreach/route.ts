@@ -45,8 +45,8 @@ export async function POST(req: NextRequest) {
       // 🔴 Budget-Guard: hart blockieren bei >$25/Monat (Dieter-Cap $30)
       await assertKimiBudget()
       const pitch = await generatePitch(p, b.hint || '')
-      // Geschätzte Kosten buchen (~2k In + ~800 Out Tokens ≈ $0.01)
-      await logKimiSpend(0.01, `Pitch für ${p.title}`)
+      // Geschätzte Kosten buchen (inkl. Reasoning-Tokens: ~2.5k gesamt ≈ $0.02)
+      await logKimiSpend(0.02, `Pitch für ${p.title}`)
       const { error: upErr } = await supabaseAdmin
         .from('outreach_prospects')
         .update({ pitch, updated_at: new Date().toISOString() })
@@ -164,13 +164,15 @@ Regeln:
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: 'kimi-k2-0905-preview',
+      // 🔴 Modell-Wahl: kimi-k2.6 (kimi-k2-0905-preview gibt's NICHT MEHR — "resource_not_found", Okt 2026!).
+      // Achtung: k2.6 ist Reasoning-Modell — max_tokens muss Reasoning + Content fassen.
+      model: 'kimi-k2.6',
       messages: [
         { role: 'system', content: 'Du schreibst exzellente, knappe Outreach-E-Mails auf Deutsch.' },
         { role: 'user', content: prompt },
       ],
       temperature: 0.7,
-      max_tokens: 900,
+      max_tokens: 1200,
     }),
   })
   const j = await res.json().catch(() => ({}))
