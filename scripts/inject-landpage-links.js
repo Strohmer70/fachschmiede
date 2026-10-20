@@ -68,9 +68,12 @@ function parseFile(file) {
   return { tradeSlug, citySlug: m[2] }
 }
 
+// Selbstaktualisierend: Marker vorhanden → Box komplett neu bauen (SSOT-Update,
+// z.B. neue Stadt). Kein Marker → vor <footer> einfügen.
+// Marker-Ende = das erste '</section>' NACH dem Marker (Box = genau 1 Section).
 let changed = 0
-let skipped = 0
-const errors = []
+let updated = 0
+let errors = []
 
 for (const file of fs.readdirSync(PUBLIC).filter((f) => f.startsWith('stadt-') && f.endsWith('.html'))) {
   const parsed = parseFile(file)
@@ -78,8 +81,18 @@ for (const file of fs.readdirSync(PUBLIC).filter((f) => f.startsWith('stadt-') &
   const { tradeSlug, citySlug } = parsed
   const fp = path.join(PUBLIC, file)
   const html = fs.readFileSync(fp, 'utf-8')
-  if (html.includes(MARKER(tradeSlug, citySlug))) { skipped++; continue }
+  const marker = MARKER(tradeSlug, citySlug)
   const box = boxHTML(tradeSlug, citySlug)
+  const mIdx = html.indexOf(marker)
+  if (mIdx !== -1) {
+    const sEnd = html.indexOf('</section>', mIdx)
+    if (sEnd === -1) { errors.push(`${file}: Marker ohne </section>`); continue }
+    const fresh = html.slice(0, mIdx) + box + html.slice(sEnd + '</section>'.length)
+    if (fresh === html) { continue } // bereits aktuell
+    fs.writeFileSync(fp, fresh, 'utf-8')
+    updated++
+    continue
+  }
   let idx = html.lastIndexOf('<footer')
   if (idx === -1) idx = html.lastIndexOf('</body>')
   if (idx === -1) { errors.push(`${file}: kein Anker`); continue }
@@ -87,6 +100,6 @@ for (const file of fs.readdirSync(PUBLIC).filter((f) => f.startsWith('stadt-') &
   changed++
 }
 
-console.log(`✅ ${changed} Landpages mit Link-Boxen versehen (${skipped} hatten sie schon)`)
+console.log(`✅ ${changed} neue Boxen · ${updated} aktualisiert (SSOT-Refresh)`)
 if (errors.length) console.log('⚠️  Fehler:', errors.join(' | '))
-process.exit(errors.length && !changed ? 1 : 0)
+process.exit(errors.length && !changed && !updated ? 1 : 0)
