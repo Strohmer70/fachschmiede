@@ -22,7 +22,11 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 // ─── KONFIGURATION ──────────────────────────────────────────────────
 
-const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY || 'sk-dflfmQZYslaRgqiVP8edlrh6JKG8Kepm5GkTqZkSmf7pmGgp';
+// 🔴 HARTES GELD-LIMIT ($30/Monat, Dieter-Anweisung 2026-10-20):
+// Key NUR via Env-Var! Kosten-Guardrails: max_tokens 4000 (statt 16000!), 1 Retry, 1 Artikel/Run.
+// Kosten/Artikel ≈ $0.02–0.05 → 10 Artikel/Monat ≈ $0.50. Bei Bedarf mehr: erst Dieter fragen!
+const MOONSHOT_API_KEY = process.env.MOONSHOT_API_KEY;
+if (!MOONSHOT_API_KEY) { console.error('❌ MOONSHOT_API_KEY fehlt (Env-Var setzen!)'); process.exit(1); }
 const MOONSHOT_API_URL = 'https://api.moonshot.ai/v1/chat/completions';
 const MAX_ARTICLES_PER_RUN = 1; // Safety limit — one at a time
 
@@ -143,7 +147,7 @@ function findNextMissingArticle(combinations) {
 
 // ─── KIMI API ───────────────────────────────────────────────────────
 
-async function callKimiAPI(prompt, maxRetries = 3) {
+async function callKimiAPI(prompt, maxRetries = 1) { // 🔴 GUARDRAIL: 1 Retry statt 3 — Fehler = Abbruch, kein Retry-Storm
   const body = {
     model: 'kimi-k2.6',
     messages: [
@@ -154,7 +158,7 @@ async function callKimiAPI(prompt, maxRetries = 3) {
       { role: 'user', content: prompt },
     ],
     temperature: 1,
-    max_tokens: 16000,
+    max_tokens: 4000, // 🔴 GUARDRAIL: 16000 war Geld-Verbrennung! 4000 reicht für ~1.500-Wort-Artikel
   };
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
