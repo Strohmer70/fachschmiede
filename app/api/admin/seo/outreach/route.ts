@@ -172,7 +172,7 @@ Regeln:
         { role: 'user', content: prompt },
       ],
       temperature: 1, // 🔴 k2.6 (Reasoning) erlaubt NUR temperature=1 — sonst 400!
-      max_tokens: 1200,
+      max_tokens: 6000,
     }),
   })
   const j = await res.json().catch(() => ({}))

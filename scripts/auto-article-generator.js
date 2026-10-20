@@ -182,7 +182,7 @@ async function callKimiAPI(prompt, maxRetries = 1) { // 🔴 GUARDRAIL: 1 Retry 
       { role: 'user', content: prompt },
     ],
     temperature: 1,
-    max_tokens: 4000, // 🔴 GUARDRAIL: 16000 war Geld-Verbrennung! 4000 reicht für ~1.500-Wort-Artikel
+    max_tokens: 8000, // 🔴 Reasoning-Modell! Reasoning ~3-4k + Artikel ~2k (16000 war Geld-Verbrennung, 4000 zu knapp)
   };
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
