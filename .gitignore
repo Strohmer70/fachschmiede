@@ -11,3 +11,4 @@ scripts/fix-prices.js
 .env.prod
 .env.vercel
 .backup-dedup-*
+.kimi-budget.json

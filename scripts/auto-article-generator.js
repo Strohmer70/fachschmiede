@@ -30,6 +30,30 @@ if (!MOONSHOT_API_KEY) { console.error('❌ MOONSHOT_API_KEY fehlt (Env-Var setz
 const MOONSHOT_API_URL = 'https://api.moonshot.ai/v1/chat/completions';
 const MAX_ARTICLES_PER_RUN = 1; // Safety limit — one at a time
 
+// 🔴 BUDGET-GUARD (Dieter-Cap $30/Monat): lokaler Zähler, harter Stopp bei $25
+const BUDGET_FILE = path.join(PROJECT_ROOT, '.kimi-budget.json');
+const BUDGET_LIMIT = 25;
+const ARTICLE_COST_ESTIMATE = 0.05;
+function checkBudget() {
+  const month = new Date().toISOString().slice(0, 7);
+  let spent = 0;
+  try {
+    const j = JSON.parse(fs.readFileSync(BUDGET_FILE, 'utf-8'));
+    if (j.month === month) spent = j.spent || 0;
+  } catch { /* kein File = frischer Monat */ }
+  if (spent >= BUDGET_LIMIT) {
+    console.error(`\n🔴 KIMI-BUDGET-LIMIT erreicht: ~$${spent.toFixed(2)} von $${BUDGET_LIMIT} (Dieter-Cap $30/Monat). Abbruch.`);
+    process.exit(1);
+  }
+  return { month, spent };
+}
+function logSpend(month) {
+  const { spent } = checkBudget();
+  const next = Math.round((spent + ARTICLE_COST_ESTIMATE) * 10000) / 10000;
+  fs.writeFileSync(BUDGET_FILE, JSON.stringify({ month, spent: next }));
+  console.log(`[budget] +$${ARTICLE_COST_ESTIMATE} → Monat: $${next}/${BUDGET_LIMIT}`);
+}
+
 // Trade mapping: filename prefix → { slug, name }
 const TRADE_MAP = {
   'dach':    { slug: 'dachdecker',   name: 'Dachdecker',   plural: 'Dachdecker' },
@@ -231,6 +255,7 @@ STRUKTUR:
 GIB NUR DEN ARTIKEL-TEXT ZURÜCK (keine Einleitung, keine Erklärung).`;
 
   const rawContent = await callKimiAPI(prompt);
+  logSpend(new Date().toISOString().slice(0, 7));
 
   // Parse FAQ pairs
   const faqs = [];
@@ -457,6 +482,10 @@ async function main() {
     console.error('❌ MOONSHOT_API_KEY fehlt!');
     process.exit(1);
   }
+
+  // 🔴 BUDGET-GUARD: harter Stopp bei $25/Monat (Dieter-Cap $30)
+  const budget = checkBudget();
+  console.log(`💰 Budget: $${budget.spent.toFixed(2)} / $${BUDGET_LIMIT} für ${budget.month}`);
 
   const args = process.argv.slice(2);
   let targetTrade = args[0] || null;

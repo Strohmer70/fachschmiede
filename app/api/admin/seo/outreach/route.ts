@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { checkAdminAuth } from '@/lib/admin-auth'
+import { assertKimiBudget, logKimiSpend } from '@/lib/kimi-budget'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 120 // Kimi-Call braucht bis zu ~60s
@@ -41,7 +42,11 @@ export async function POST(req: NextRequest) {
       if (!b.id) return NextResponse.json({ error: 'id erforderlich' }, { status: 400 })
       const { data: p, error } = await supabaseAdmin.from('outreach_prospects').select('*').eq('id', b.id).single()
       if (error) throw error
+      // 🔴 Budget-Guard: hart blockieren bei >$25/Monat (Dieter-Cap $30)
+      await assertKimiBudget()
       const pitch = await generatePitch(p, b.hint || '')
+      // Geschätzte Kosten buchen (~2k In + ~800 Out Tokens ≈ $0.01)
+      await logKimiSpend(0.01, `Pitch für ${p.title}`)
       const { error: upErr } = await supabaseAdmin
         .from('outreach_prospects')
         .update({ pitch, updated_at: new Date().toISOString() })
