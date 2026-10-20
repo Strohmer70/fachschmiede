@@ -2846,7 +2846,7 @@ function seoRenderKpis() {
 }
 
 function seoSwitchTab(name) {
-  ['Links', 'Citations', 'Presse'].forEach(t => {
+  ['Links', 'Citations', 'Presse', 'Rankings', 'Outreach'].forEach(t => {
     const pane = document.getElementById('seoTabPane' + t);
     const btn = document.getElementById('seoTab' + t);
     if (pane) pane.classList.toggle('hidden', t.toLowerCase() !== name.toLowerCase());
@@ -2857,6 +2857,8 @@ function seoSwitchTab(name) {
         : 'bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition';
     }
   });
+  if (name.toLowerCase() === 'rankings') seoLoadRankings();
+  if (name.toLowerCase() === 'outreach') seoLoadOutreach();
 }
 
 function seoPageLabel(b) {
@@ -2993,3 +2995,173 @@ showView = function(id, el) {
   _seoOrigShowView(id, el);
   if (id === 'seo') { seoLoad().catch(e => showToast('❌ SEO-Hub: ' + e.message)); }
 };
+
+// ═══════════ TAB: GOOGLE-RANKINGS (GSC/page_positions) ═══════════
+let __seoRankingsLoaded = false;
+
+async function seoLoadRankings(force = false) {
+  if (__seoRankingsLoaded && !force) return;
+  const tbody = document.getElementById('seoRankTable');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-ink-400 text-sm">Lade Rankings…</td></tr>';
+  try {
+    const j = await seoFetch('/rankings');
+    __seoRankingsLoaded = true;
+    const k = j.kpis || {};
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('seoRankTop10', k.top10 ?? 0);
+    set('seoRankTop30', k.top30 ?? 0);
+    set('seoRankAvg', k.avg_position != null ? k.avg_position : '–');
+    set('seoRankClicks', (k.clicks_30d ?? 0).toLocaleString('de-DE'));
+    set('seoRankImpr', (k.impressions_30d ?? 0).toLocaleString('de-DE'));
+    set('seoRankSync', k.last_sync ? new Date(k.last_sync).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'noch kein Sync');
+    const rows = j.rankings || [];
+    if (!tbody) return;
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-ink-400 text-sm">Noch keine GSC-Daten. GSC-Verbindung prüfen und Sync abwarten (läuft täglich automatisch).</td></tr>';
+      return;
+    }
+    const posCls = p => p == null ? 'text-ink-300' : p <= 10 ? 'text-green-600 font-black' : p <= 30 ? 'text-brand-600 font-bold' : 'text-ink-500';
+    tbody.innerHTML = rows.map(r => {
+      const label = r.url
+        ? `<a href="${r.url}" target="_blank" class="text-brand-600 hover:underline font-semibold">${r.trade || ''} ${r.city || ''}</a><div class="text-[10px] text-ink-400">${r.page_status || ''}</div>`
+        : `<span class="text-ink-500">${r.page_title || r.page_slug || '—'}</span>`;
+      return `<tr class="border-b border-ink-50 hover:bg-ink-25">
+        <td class="py-2 pr-3">${label}</td>
+        <td class="py-2 pr-3 text-ink-700">${r.keyword || '—'}</td>
+        <td class="py-2 pr-3 ${posCls(r.position)}">${r.position != null ? r.position : '–'}</td>
+        <td class="py-2 pr-3 text-ink-700">${r.clicks_30d ?? 0}</td>
+        <td class="py-2 pr-3 text-ink-700">${r.impressions_30d ?? 0}</td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500 text-sm">Fehler: ${e.message}</td></tr>`;
+  }
+}
+
+// ═══════════ TAB: OUTREACH-ASSISTENT ═══════════
+let __seoOutreach = [];
+let __seoOutreachLoaded = false;
+const SEO_OR_TYPE = { guestpost: '✍️ Gastartikel', press: '📰 Presse', podcast: '🎙 Podcast', blogger: '💻 Blogger', directory: '📁 Verzeichnis', other: '• Sonstiges' };
+const SEO_OR_STATUS = { research: '🔍 Recherche', contacted: '📧 Kontaktiert', replied: '💬 Antwort', approved: '✅ Freigegeben', live: '🚀 Live', rejected: '❌ Abgelehnt' };
+
+async function seoLoadOutreach(force = false) {
+  if (__seoOutreachLoaded && !force) { seoRenderOutreach(); return; }
+  const tbody = document.getElementById('seoOrTable');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-ink-400 text-sm">Lade…</td></tr>';
+  try {
+    const j = await seoFetch('/outreach');
+    __seoOutreach = j.prospects || [];
+    __seoOutreachLoaded = true;
+    seoRenderOutreach();
+  } catch (e) {
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-red-500 text-sm">Fehler: ${e.message}</td></tr>`;
+  }
+}
+
+function seoRenderOutreach() {
+  const tbody = document.getElementById('seoOrTable');
+  if (!tbody) return;
+  if (!__seoOutreach.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-ink-400 text-sm">Noch keine Ziele eingetragen. Links PR-Playbook & Backlink-Tracker liefern Ideen!</td></tr>';
+    return;
+  }
+  tbody.innerHTML = __seoOutreach.map(p => {
+    const hasPitch = !!(p.pitch || '').trim();
+    return `<tr class="border-b border-ink-50 hover:bg-ink-25 align-top">
+      <td class="py-2 pr-3">
+        <div class="font-semibold text-ink-900">${esc(p.title)}</div>
+        ${p.url ? `<a href="${esc(p.url)}" target="_blank" class="text-[11px] text-brand-600 hover:underline break-all">${esc(p.url.replace(/^https?:\/\//, ''))}</a>` : ''}
+        ${p.contact_email ? `<div class="text-[11px] text-ink-500">${esc(p.contact_name || '')} ${esc(p.contact_email)}</div>` : ''}
+        ${p.notes ? `<div class="text-[11px] text-ink-400 mt-0.5">${esc(p.notes)}</div>` : ''}
+      </td>
+      <td class="py-2 pr-3 text-ink-700 whitespace-nowrap">${SEO_OR_TYPE[p.type] || p.type}</td>
+      <td class="py-2 pr-3">
+        <select onchange="seoOrSetStatus('${p.id}', this.value)" class="text-xs rounded-lg border border-ink-200 px-2 py-1.5 bg-white">
+          ${Object.entries(SEO_OR_STATUS).map(([k, v]) => `<option value="${k}" ${p.status === k ? 'selected' : ''}>${v}</option>`).join('')}
+        </select>
+      </td>
+      <td class="py-2 pr-3">
+        <button onclick="seoGenPitch('${p.id}')" class="text-xs font-bold ${hasPitch ? 'text-green-700 border-green-300 hover:bg-green-50' : 'text-brand-700 border-brand-300 hover:bg-brand-50'} border rounded-lg px-2.5 py-1.5" title="${hasPitch ? 'Pitch anzeigen / neu generieren' : 'KI-Pitch generieren'}">${hasPitch ? '👀 Pitch' : '✨ Pitch'}</button>
+      </td>
+      <td class="py-2 pr-3"><button onclick="seoDelProspect('${p.id}')" class="text-ink-300 hover:text-red-500 text-lg" title="Löschen">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function seoAddProspect() {
+  const val = id => (document.getElementById(id)?.value || '').trim();
+  const title = val('seoOrTitle');
+  if (!title) { showToast('❌ Name des Ziels fehlt'); return; }
+  try {
+    await seoFetch('/outreach', { method: 'POST', body: JSON.stringify({
+      title,
+      url: val('seoOrUrl'),
+      type: val('seoOrType') || 'guestpost',
+      contact_name: val('seoOrContact'),
+      contact_email: val('seoOrEmail'),
+      notes: val('seoOrNotes'),
+    })});
+    ['seoOrTitle', 'seoOrUrl', 'seoOrContact', 'seoOrEmail', 'seoOrNotes'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+    showToast('✅ Ziel gespeichert');
+    seoLoadOutreach(true);
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function seoOrSetStatus(id, status) {
+  const p = __seoOutreach.find(x => x.id === id);
+  if (p) p.status = status;
+  try {
+    await seoFetch('/outreach', { method: 'PATCH', body: JSON.stringify({ id, status }) });
+    showToast('✅ Status: ' + (SEO_OR_STATUS[status] || status));
+    seoRenderOutreach();
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function seoDelProspect(id) {
+  if (!confirm('Ziel wirklich löschen?')) return;
+  try {
+    await seoFetch('/outreach?id=' + encodeURIComponent(id), { method: 'DELETE' });
+    __seoOutreach = __seoOutreach.filter(x => x.id !== id);
+    showToast('🗑 Gelöscht');
+    seoRenderOutreach();
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function seoGenPitch(id) {
+  const existing = __seoOutreach.find(x => x.id === id);
+  if (existing && (existing.pitch || '').trim() && !confirm('Es gibt schon einen Pitch. Neu generieren?')) {
+    seoShowPitchModal(existing);
+    return;
+  }
+  showToast('⚡ Finn schreibt den Pitch… (ca. 20–40s)');
+  try {
+    const j = await seoFetch('/outreach', { method: 'POST', body: JSON.stringify({ action: 'pitch', id }) });
+    if (existing) existing.pitch = j.pitch;
+    seoRenderOutreach();
+    seoShowPitchModal({ ...existing, pitch: j.pitch });
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+function seoShowPitchModal(p) {
+  document.getElementById('seoPitchModal')?.remove();
+  const modal = document.createElement('div');
+  modal.id = 'seoPitchModal';
+  modal.className = 'fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4';
+  modal.innerHTML = `<div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl">
+    <div class="flex items-start justify-between gap-3">
+      <div><h3 class="font-black text-ink-900 text-lg">✉️ Pitch: ${esc(p.title)}</h3>
+      <p class="text-xs text-ink-400 mt-0.5">Von Kimi generiert — bitte kurz durchlesen und anpassen, bevor du abschickst!</p></div>
+      <button onclick="document.getElementById('seoPitchModal').remove()" class="text-ink-400 hover:text-ink-900 text-2xl leading-none">×</button>
+    </div>
+    <pre id="seoPitchText" class="mt-4 whitespace-pre-wrap text-sm text-ink-800 bg-ink-50 rounded-xl p-4 border border-ink-100 font-sans leading-relaxed">${esc(p.pitch || '')}</pre>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button onclick="navigator.clipboard.writeText(document.getElementById('seoPitchText').textContent).then(()=>showToast('📋 Kopiert!'))" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl">📋 Kopieren</button>
+      ${p.contact_email ? `<a href="mailto:${esc(p.contact_email)}?subject=${encodeURIComponent((p.pitch || '').split('\\n')[0].replace(/^Betreff:\\s*/i, '') || 'Zusammenarbeit')}&body=${encodeURIComponent(p.pitch || '')}" class="bg-green-600 hover:bg-green-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl">✉️ In Mail-App öffnen</a>` : ''}
+      <button onclick="seoOrSetStatus('${p.id}','contacted');document.getElementById('seoPitchModal').remove()" class="border border-ink-200 text-ink-700 font-bold text-sm px-4 py-2.5 rounded-xl hover:bg-ink-50">✅ Als kontaktiert markieren</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+// HTML-Escaper (falls global nicht vorhanden)
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }

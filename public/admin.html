@@ -1282,7 +1282,9 @@ tailwind.config = {
           <button id="seoTabLinks" onclick="seoSwitchTab('links')" class="bg-brand-600 text-white text-xs font-black px-4 py-2 rounded-lg transition">🔗 Backlink-Tracker</button>
           <button id="seoTabCitations" onclick="seoSwitchTab('citations')" class="bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition">📍 Lokale Zitate</button>
           <button id="seoTabPresse" onclick="seoSwitchTab('presse')" class="bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition">📰 Presse &amp; PR-Playbook</button>
-          <span class="ml-auto text-xs text-ink-400">Daten in Supabase-Tabellen backlinks + citations</span>
+          <button id="seoTabRankings" onclick="seoSwitchTab('rankings')" class="bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition">📈 Rankings</button>
+          <button id="seoTabOutreach" onclick="seoSwitchTab('outreach')" class="bg-ink-100 text-ink-600 text-xs font-bold px-4 py-2 rounded-lg border border-ink-200 hover:border-brand-400 transition">🎯 Outreach</button>
+          <span class="ml-auto text-xs text-ink-400">Daten in Supabase: backlinks · citations · page_positions · outreach_prospects</span>
         </div>
 
         <!-- TAB 1: Backlink-Tracker -->
@@ -1427,6 +1429,84 @@ tailwind.config = {
                 <li>🚫 Linktausch-Programme — erkennbar, wertlos</li>
                 <li>🚫 PBNs (Private Blog Networks) — Risiko, lieber echte Presse!</li>
               </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: Google-Rankings (GSC) -->
+        <div id="seoTabPaneRankings" class="hidden">
+          <div class="bg-white rounded-2xl border border-ink-200 p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <h3 class="font-black text-ink-900 text-lg">📈 Google-Rankings <span class="text-ink-400 font-semibold text-sm">(letzte 30 Tage, Search Console)</span></h3>
+              <button onclick="seoLoadRankings(true)" class="text-xs font-bold text-brand-600 border border-brand-300 rounded-lg px-3 py-1.5 hover:bg-brand-50">↻ Aktualisieren</button>
+            </div>
+            <p class="mt-1 text-sm text-ink-500">Position = Ø im Google-Ranking für das Ziel-Keyword „Gewerk Stadt". Sichtbar = Seite wurde in den 30 Tagen bei dem Keyword gezeigt.</p>
+            <div class="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+              <div class="bg-ink-50 rounded-xl p-3"><p class="text-[10px] font-bold text-ink-400 uppercase">Top 10</p><p class="text-2xl font-black text-green-600" id="seoRankTop10">–</p></div>
+              <div class="bg-ink-50 rounded-xl p-3"><p class="text-[10px] font-bold text-ink-400 uppercase">Top 30</p><p class="text-2xl font-black text-brand-600" id="seoRankTop30">–</p></div>
+              <div class="bg-ink-50 rounded-xl p-3"><p class="text-[10px] font-bold text-ink-400 uppercase">Ø Position (sichtbar)</p><p class="text-2xl font-black text-ink-900" id="seoRankAvg">–</p></div>
+              <div class="bg-ink-50 rounded-xl p-3"><p class="text-[10px] font-bold text-ink-400 uppercase">Klicks 30d</p><p class="text-2xl font-black text-ink-900" id="seoRankClicks">–</p></div>
+              <div class="bg-ink-50 rounded-xl p-3"><p class="text-[10px] font-bold text-ink-400 uppercase">Impressionen 30d</p><p class="text-2xl font-black text-ink-900" id="seoRankImpr">–</p></div>
+              <div class="bg-ink-50 rounded-xl p-3"><p class="text-[10px] font-bold text-ink-400 uppercase">Letzter Sync</p><p class="text-sm font-black text-ink-900 pt-2" id="seoRankSync">–</p></div>
+            </div>
+            <div class="mt-5 overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-[10px] uppercase tracking-wide text-ink-400 border-b border-ink-100">
+                    <th class="py-2 pr-3">Seite</th>
+                    <th class="py-2 pr-3">Keyword</th>
+                    <th class="py-2 pr-3">Position</th>
+                    <th class="py-2 pr-3">Klicks</th>
+                    <th class="py-2 pr-3">Impr.</th>
+                  </tr>
+                </thead>
+                <tbody id="seoRankTable"><tr><td colspan="5" class="py-8 text-center text-ink-400 text-sm">Lade…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: Outreach-Assistent -->
+        <div id="seoTabPaneOutreach" class="hidden">
+          <div class="grid lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl border border-ink-200 p-6 lg:col-span-1 h-fit">
+              <h3 class="font-black text-ink-900 text-lg">➕ Ziel eintragen</h3>
+              <p class="mt-1 text-xs text-ink-400">Blog, Podcast, Portal — Finn schreibt den Pitch dazu mit einem Klick.</p>
+              <div class="mt-4 space-y-3">
+                <div><label class="block text-xs font-bold text-ink-800 mb-1">Name des Ziels *</label><input id="seoOrTitle" type="text" placeholder="z.B. hausjournal.net" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+                <div><label class="block text-xs font-bold text-ink-800 mb-1">URL</label><input id="seoOrUrl" type="url" placeholder="https://…" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+                <div><label class="block text-xs font-bold text-ink-800 mb-1">Typ</label>
+                  <select id="seoOrType" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="guestpost">✍️ Gastartikel</option>
+                    <option value="press">📰 Presse/PR</option>
+                    <option value="podcast">🎙 Podcast</option>
+                    <option value="blogger">💻 Blogger-Kooperation</option>
+                    <option value="directory">📁 Verzeichnis</option>
+                    <option value="other">• Sonstiges</option>
+                  </select>
+                </div>
+                <div><label class="block text-xs font-bold text-ink-800 mb-1">Ansprechpartner (optional)</label><input id="seoOrContact" type="text" placeholder="Name" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+                <div><label class="block text-xs font-bold text-ink-800 mb-1">E-Mail (optional)</label><input id="seoOrEmail" type="email" placeholder="redaktion@…" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+                <div><label class="block text-xs font-bold text-ink-800 mb-1">Notiz</label><input id="seoOrNotes" type="text" placeholder="z.B. sucht Gastbeiträge zu Handwerksthemen" class="w-full rounded-lg border border-ink-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></div>
+                <button onclick="seoAddProspect()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-black text-sm px-4 py-3 rounded-xl transition">Speichern</button>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-ink-200 p-6 lg:col-span-2">
+              <h3 class="font-black text-ink-900 text-lg">🎯 Outreach-Ziele</h3>
+              <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-[10px] uppercase tracking-wide text-ink-400 border-b border-ink-100">
+                      <th class="py-2 pr-3">Ziel</th>
+                      <th class="py-2 pr-3">Typ</th>
+                      <th class="py-2 pr-3">Status</th>
+                      <th class="py-2 pr-3">Pitch</th>
+                      <th class="py-2 pr-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="seoOrTable"><tr><td colspan="5" class="py-8 text-center text-ink-400 text-sm">Lade…</td></tr></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
