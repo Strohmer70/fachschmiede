@@ -171,7 +171,7 @@ Regeln:
         { role: 'system', content: 'Du schreibst exzellente, knappe Outreach-E-Mails auf Deutsch.' },
         { role: 'user', content: prompt },
       ],
-      temperature: 0.7,
+      temperature: 1, // 🔴 k2.6 (Reasoning) erlaubt NUR temperature=1 — sonst 400!
       max_tokens: 1200,
     }),
   })
