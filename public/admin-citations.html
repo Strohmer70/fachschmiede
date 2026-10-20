@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Citations-Abreißliste · fachschmiede.de</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif}
+  details summary::-webkit-details-marker{display:none}
+  .card.done{opacity:.55}
+  .card.done h3{text-decoration:line-through}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen">
+
+<header class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+  <div class="max-w-3xl mx-auto px-4 py-4">
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <h1 class="text-lg font-black leading-tight">🗂️ Citations-Abreißliste</h1>
+        <p class="text-xs text-slate-400">40 Verzeichnisse · ~15 Min/Tag · Ziel: lokale Sichtbarkeit</p>
+      </div>
+      <a href="/admin.html" class="text-xs bg-slate-700 hover:bg-slate-600 rounded-lg px-3 py-2 font-semibold">← Admin</a>
+    </div>
+    <div class="mt-3">
+      <div class="flex justify-between text-xs font-bold mb-1">
+        <span id="progressLabel">…</span><span id="progressPct"></span>
+      </div>
+      <div class="h-2.5 bg-slate-700 rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-amber-400 to-green-500 rounded-full transition-all duration-700" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 py-6 space-y-6">
+
+  <!-- ═══ VORBEREITUNG ═══ -->
+  <details class="bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden" open>
+    <summary class="p-4 cursor-pointer font-black text-sm flex items-center gap-2">🎒 <span>Vorbereitung (einmalig, 15 Min) — VOR dem ersten Eintrag aufklappen!</span><span class="ml-auto text-amber-500">▾</span></summary>
+    <div class="px-4 pb-4 space-y-3 text-sm">
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-900">
+        <b>NAP-Konsistenz = halber Erfolg.</b> Name, Adresse, Telefon müssen auf <b>jedem</b> Portal <b>zeichenidentisch</b> stehen. Erst kopieren, dann eintragen!
+      </div>
+      <div class="grid gap-2">
+        <div class="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2"><code class="text-xs font-bold">fachschmiede.de · Dieter Strohmer</code><button onclick="copyNAP(this,'fachschmiede.de · Dieter Strohmer')" class="text-xs bg-slate-900 text-white rounded px-2 py-1 font-bold">Kopieren</button></div>
+        <div class="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2"><code class="text-xs font-bold">Am Waldesrand 5, 58285 Gevelsberg</code><button onclick="copyNAP(this,'Am Waldesrand 5, 58285 Gevelsberg')" class="text-xs bg-slate-900 text-white rounded px-2 py-1 font-bold">Kopieren</button></div>
+        <div class="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2"><code class="text-xs font-bold">hello@fachschmiede.de</code><button onclick="copyNAP(this,'hello@fachschmiede.de')" class="text-xs bg-slate-900 text-white rounded px-2 py-1 font-bold">Kopieren</button></div>
+        <div class="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2"><code class="text-xs font-bold">https://www.fachschmiede.de</code><button onclick="copyNAP(this,'https://www.fachschmiede.de')" class="text-xs bg-slate-900 text-white rounded px-2 py-1 font-bold">Kopieren</button></div>
+      </div>
+      <details class="bg-slate-50 rounded-xl p-3">
+        <summary class="cursor-pointer font-bold text-xs">📝 Beschreibungstext zum Eintragen (ansehen/kopieren)</summary>
+        <p class="mt-2 text-xs text-slate-600 leading-relaxed">fachschmiede.de vermittelt Anfragen für Handwerksleistungen an geprüfte regionale Fachbetriebe – vom Dachdecker über Elektriker bis GaLaBau. Kostenlose Erstberatung, Festpreise, digitale Abwicklung ohne Anruf-Warteschleife.</p>
+        <button onclick="copyNAP(this,'fachschmiede.de vermittelt Anfragen für Handwerksleistungen an geprüfte regionale Fachbetriebe – vom Dachdecker über Elektriker bis GaLaBau. Kostenlose Erstberatung, Festpreise, digitale Abwicklung ohne Anruf-Warteschleife.')" class="mt-2 text-xs bg-slate-900 text-white rounded px-2 py-1 font-bold">Text kopieren</button>
+      </details>
+      <p class="text-xs text-slate-500">💡 Google-Passwort / Apple-ID / E-Mail-Postfach griffbereit halten — manche Portale wollen E-Mail-Verifizierung.</p>
+    </div>
+  </details>
+
+  <!-- ═══ PHASEN ═══ -->
+  <div id="phases"></div>
+
+  <!-- ═══ REGELN ═══ -->
+  <div class="bg-slate-900 text-slate-300 rounded-2xl p-4 text-xs leading-relaxed">
+    <p class="font-black text-white mb-2">🧠 Die 3 Regeln für maximale Wirkung</p>
+    <ol class="list-decimal ml-4 space-y-1">
+      <li><b class="text-white">Reihenfolge einhalten:</b> Google-Profil zuerst — viele Portale ziehen Daten von Google ab.</li>
+      <li><b class="text-white">Kategorie + Link setzen:</b> Überall Hauptkategorie wählen + Website-Link eintragen (dofollow-Link = SEO-Wert).</li>
+      <li><b class="text-white">Verkäufe-Geduld:</b> Portale rufen oft an und wollen Paid-Pakete verkaufen. Höflich ablehnen — der Gratis-Eintrag reicht fürs NAP-Signal.</li>
+    </ol>
+  </div>
+
+</main>
+
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-slate-900 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 z-50"></div>
+
+<script>
+const API = '/api/admin/seo/citations/';
+const token = localStorage.getItem('adminToken');
+const PHASES = [
+  { key: 'w1', title: '🔴 Woche 1 · Fundament', sub: 'Die Big 7 — wer hier fehlt, zählt für Google lokal nicht mit.', min: 100, max: 74 },
+  { key: 'w2', title: '🟡 Woche 2 · Vertrauen', sub: 'Bewertungs- & Branchenportale — die Dofollow-Links.', min: 74, max: 60 },
+  { key: 'w3', title: '🟢 Woche 3 · Breite', sub: 'Restliche Verzeichnisse + Sonderfälle — das i-Tüpfelchen.', min: 60, max: 0 },
+];
+// Zusatzinfos pro Quelle: [Aufwand Min, Kosten, Schritt-Hinweis]
+const INFO = {
+  'Google Unternehmensprofil': [25,'gratis','business.google.com → „Unternehmen hinzufügen" → Kategorie „Handwerksvermittlung/Online-Marketing". Verifizierung per Video/Postkarte — SOFORT starten, dauert Tage!'],
+  'Gelbe Seiten': [15,'Gratis-Basis','gelbeseiten.de → Firma eintragen. Verkauf ruft an → freundlich ablehnen, Basis reicht.'],
+  'Bing Places': [10,'gratis','bingplaces.com → „Import from Google Business" — 5 Minuten, fertig!'],
+  'Das Örtliche': [15,'gratis','dasoertliche.de → Firma eintragen, E-Mail bestätigen.'],
+  'Apple Business Connect': [15,'gratis','businessconnect.apple.com — zählt für Apple Maps + Siri! Apple-ID nötig.'],
+  'WLW (Wer liefert was)': [20,'Gratis-Basis','wlw.de Firmenprofil. B2B-dofollow. Anruf mit Paid-Angebot kommt fast sicher — ablehnen.'],
+  '11880.com': [15,'gratis','11880.com Firma hinzufügen, E-Mail verifizieren.'],
+  'ProvenExpert': [15,'Gratis-Basis','provenexpert.com Profil anlegen — später echte Bewertungen sammeln (Mieter-Feedback).'],
+  'werkenntdenBESTEN': [15,'gratis','werkenntdenbesten.de — Handwerker-Fokus, BESTEN-App-Reichweite.'],
+  'Yelp Deutschland': [10,'gratis','yelp.de Eintrag — Yelp importiert oft automatisch, erst SUCHE ob wir schon drin sind.'],
+  'houzz': [20,'Gratis-Basis','houzz.de Pro-Profil (Basis gratis) — Bauberater-Community, passt zu allen 6 Gewerken.'],
+  'GoYellow': [10,'gratis','goyellow.de Eintrag, Mail bestätigen.'],
+  'Cylex Deutschland': [10,'gratis','cylex.de Firmeneintrag — dofollow-Link laut Verzeichnis-Eigenschaft.'],
+  'Facebook Seite': [10,'gratis','facebook.com/pages/create → „fachschmiede.de", Website-Link setzen, Impressum rein.'],
+  'LinkedIn Unternehmensseite': [10,'gratis','linkedin.com/company/setup — Website-Link + Beschreibung.'],
+  'Das Telefonbuch': [10,'gratis','dastelefonbuch.de — oft SCHON automatisch eingetragen! Suchen → „Eintrag beantragen/ändern".'],
+  'Meinestadt.de': [10,'gratis','meinestadt.de Firmenprofil anlegen.'],
+  'Trustpilot': [10,'Gratis-Basis','de.trustpilot.com — Business-Profil gratis, starke Domain-Authority.'],
+  'Golocal': [10,'gratis','golocal.de Basis-Eintragung.'],
+  'Xing Unternehmensseite': [10,'gratis','xing.com Firmenprofil — DACH-B2B-Reichweite.'],
+  'Stadtbranchenbuch': [10,'gratis','stadtbranchenbuch.com Eintrag — Netzwerk lokaler Bücher.'],
+  'Yalwa': [5,'gratis','yalwa.de — schneller Gratis-Eintrag, international.'],
+  'Marktplatz-Mittelstand': [10,'gratis','marktplatz-mittelstand.de Firmeneintrag.'],
+  'Foursquare': [5,'gratis','foursquare.com/add_place — NAP-Signal für viele Navis/Apps.'],
+  'Instagram Profil': [5,'gratis','Business-Profil, Bio-Link auf fachschmiede.de setzen.'],
+  'anbieter.de': [10,'gratis','anbieter.de Gratis-Verzeichnis.'],
+  'OpenStreetMap': [15,'gratis','openstreetmap.org → Punkt hinzufügen. Wird von Apple Karten + zig Navis gelesen — unterschätzt!'],
+  'YouTube Kanal': [15,'gratis','Kanal „fachschmiede" + Impressum + Website-Link in Profil — Entity-Signal für Google.'],
+  'Meisterbetrieb.de': [10,'kostenpflichtig','Verlags-Verzeichnis, PAID (~ab 79€/J). Erst eintragen wenn Budget da — Gratis zuerst!'],
+  'Instagram/Facebook (organisch)': [10,'gratis','Optional: 1–2 Postings mit Impressum-Link — Verstärkt Entity.'],
+  'Wikidata / Wikipedia (nur bei Relevanz)': [0,'—','⏸️ PARKEN: braucht Encyclopädie-Relevanz + Quellen. Später, wenn Presselinks da sind.'],
+  'SHK Fachbetriebssuche (Klempner)': [0,'Mitgliedschaft nötig','⚠️ Nur für echte SHK-Betriebe (Gewerbenachweis). Strategie: dem späteren KLEMPNER-MIETER überlassen — sein Eintrag verlinkt unsere Seite!'],
+  'ZVDH Betriebssuche (Dachdecker)': [0,'Mitgliedschaft nötig','⚠️ ZV d. Dachdeckerhandwerks — nur Mitgliedsbetriebe. → DACHDECKER-Mieter eintragen lassen.'],
+  'Maler.org Betriebssuche (Maler)': [0,'Mitgliedschaft nötig','⚠️ ZV Maler & Lackierer — nur Mitglieder. → MALER-Mieter eintragen lassen.'],
+  'Galabau-Bundesverband (Gartenbau)': [0,'Mitgliedschaft nötig','⚠️ BGL-Verbandssuche — nur Mitglieder. → GARTENBAU-Mieter eintragen lassen.'],
+  'ZDH Betriebssuche (handwerk.de)': [0,'Mitgliedschaft nötig','⚠️ Zentralverband d. Deutschen Handwerks. → ggf. Mieter-Betrieb nutzen.'],
+  'elektriker.org / gewerbe-portale': [10,'gratis','Gewerk-Portale ranken selbst für „Elektriker + Stadt" — Eintrag mit Link dahinter lohnt.'],
+  'Kommunale Wirtschaftsförderung': [20,'gratis','E-Mail an Wirtschaftsförderung Gevelsberg/Lünen: „Regionales Portal, bitte in Linksammlung aufnehmen." Oft unterschätzter kostenloser Link.'],
+  'kennstdudie.de / similar portals': [10,'gratis','Niedrige Priorität — Restpublikum, wenn Zeit übrig ist.'],
+};
+const STATUS = {
+  not_started: { label: '◯ Offen', cls: 'bg-slate-100 text-slate-600 border-slate-300' },
+  in_progress: { label: '◐ Läuft', cls: 'bg-amber-100 text-amber-800 border-amber-300' },
+  live:        { label: '● Live',  cls: 'bg-green-100 text-green-800 border-green-400' },
+};
+
+let items = [];
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.remove('translate-y-24','opacity-0');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.add('translate-y-24','opacity-0'),2200)}
+function copyNAP(btn,text){navigator.clipboard.writeText(text).then(()=>{btn.textContent='✓ Kopiert!';setTimeout(()=>btn.textContent='Kopieren',1600)})}
+
+async function load(){
+  if(!token){document.getElementById('phases').innerHTML='<div class="bg-white rounded-2xl p-6 text-center text-sm">🔒 Bitte zuerst im <a class="font-bold text-blue-600 underline" href="/admin.html">Admin-Bereich anmelden</a> — dann hierher zurück.</div>';return}
+  const res = await fetch(API,{headers:{Authorization:'Bearer '+token}});
+  const data = await res.json();
+  if(!res.ok){document.getElementById('phases').innerHTML='<div class="bg-red-50 text-red-700 rounded-2xl p-4 text-sm">Fehler: '+data.error+'</div>';return}
+  items = data.citations || [];
+  render();
+}
+
+async function cycle(id, cur){
+  const order = ['not_started','in_progress','live'];
+  const next = order[(order.indexOf(cur)+1)%3];
+  const res = await fetch(API,{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({id,status:next})});
+  const data = await res.json();
+  if(res.ok){ const it = items.find(i=>i.id===id); if(it) it.status = next; render(); toast(next==='live'?'✓ Gespeichert — weiter so!':'Status: '+STATUS[next].label); }
+  else toast('✕ '+(data.error||'Fehler'));
+}
+
+function card(c){
+  const info = INFO[c.source] || [10,'gratis','Eintrag anlegen, Daten einfügen, Mail bestätigen.'];
+  const st = STATUS[c.status] || STATUS.not_started;
+  const done = c.status==='live';
+  return `<div class="card ${done?'done':''} bg-white rounded-xl border ${done?'border-green-200':'border-slate-200'} p-3.5 flex gap-3">
+    <div class="flex-1 min-w-0">
+      <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span class="text-[10px] font-black text-slate-400">P${c.priority}</span>
+        <h3 class="font-black text-sm leading-tight">${c.source}</h3>
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">⏱ ${info[0]} Min</span>
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${info[1]==='gratis'?'bg-green-50 text-green-700':'bg-purple-50 text-purple-700'}">${info[1]}</span>
+      </div>
+      <p class="mt-1 text-xs text-slate-600 leading-snug">${info[2]}</p>
+      <div class="mt-2 flex gap-2">
+        ${c.source_url?`<a href="${c.source_url}" target="_blank" rel="noopener" class="text-[11px] font-bold text-blue-600 hover:underline">Portal öffnen ↗</a>`:''}
+        ${c.profile_url?`<a href="${c.profile_url}" target="_blank" rel="noopener" class="text-[11px] font-bold text-green-600 hover:underline">Unser Profil ↗</a>`:''}
+      </div>
+    </div>
+    <button onclick="cycle('${c.id}','${c.status}')" class="self-start shrink-0 text-[11px] font-black px-2.5 py-1.5 rounded-lg border ${st.cls}">${st.label}</button>
+  </div>`;
+}
+
+function render(){
+  const done = items.filter(i=>i.status==='live').length;
+  const pct = items.length ? Math.round(done/items.length*100) : 0;
+  document.getElementById('progressLabel').textContent = `${done} von ${items.length} Live`;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('phases').innerHTML = PHASES.map(ph=>{
+    const shown = ph.max===0 ? items.filter(i=>i.priority<=ph.min) : items.filter(i=>i.priority<=ph.min&&i.priority>ph.max);
+    const d = shown.filter(i=>i.status==='live').length;
+    return `<section class="space-y-2">
+      <div class="flex items-baseline justify-between px-1">
+        <h2 class="font-black text-sm">${ph.title}</h2>
+        <span class="text-[11px] font-bold text-slate-400">${d}/${shown.length} ✓</span>
+      </div>
+      <p class="text-[11px] text-slate-500 px-1 -mt-1">${ph.sub}</p>
+      <div class="space-y-2">${shown.map(card).join('')}</div>
+    </section>`;
+  }).join('');
+}
+load();
+</script>
+</body>
+</html>
