@@ -156,7 +156,8 @@ ${hint ? 'Wichtig: ' + hint : ''}
 Regeln:
 - Max. 180 Wörter, deutscher Geschäftston — professionell, aber menschlich (kein Marketing-Kitsch)
 - Konkreter Nutzen für die GEGENSEITE in 1–2 Sätzen
-- Genau EIN klarer nächster Schritt (z.B. kurzes Telefonat vermeiden — Dieter hasst Calls → lieber E-Mail-Antwort oder Terminlink)
+- Genau EIN klarer nächster Schritt (kein Telefonat — Dieter arbeitet E-Mail-only → E-Mail-Antwort anbieten)
+- UNterschreibe IMMER mit "Dieter Strohmer, fachschmiede.de" (NICHT Finn — Finn ist nur der interne Assistent, niemals Absender)
 - Betreff-Zeile mit "Betreff:" beginnen, dann Leerzeile, dann Mailtext
 - Keine Platzhalter wie [Name] — wenn kein Ansprechpartner bekannt, neutral an "Hallo zusammen" oder "Guten Tag" adressieren`
 
