@@ -136,6 +136,19 @@ async function main() {
     })
     console.log('\nDB fertig.')
   }
+
+  // ═══ SSOT-KETTE: interne Stadt-Link-Boxen automatisch nachziehen ═══
+  // Neue Stadt muss in ALLEN Landpages verlinkt sein (und ihre eigenen
+  // Boxen bekommen). Selbstaktualisierend — nicht entfernen!
+  if (WRITE) {
+    console.log('\nStadt-Link-Boxen nachziehen...')
+    require('child_process').execSync('node ' + path.join(ROOT, 'scripts', 'inject-landpage-links.js'), { stdio: 'inherit' })
+  }
+
+  console.log('\nNÄCHSTE SCHRITTE:')
+  console.log('  1. git add -A && git commit && git push  (Deploy)')
+  console.log('  2. IndexNow-Ping / GSC-Sitemap neu einreichen')
+  console.log('  3. Artikel-SSOT: monthly-generator zieht neue Stadt automatisch mit')
 }
 
 main().catch(e => { console.error('\nFEHLER:', e.message); process.exit(1) })
