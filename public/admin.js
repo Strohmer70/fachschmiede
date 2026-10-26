@@ -1073,10 +1073,10 @@ async function loadBillingData() {
 
     // Aktive Mieten = LIVE (zahlede Mieter) · Testmieten separat (2026-10-01)
     const basisEl = document.getElementById('billBasis');
-    if (basisEl) basisEl.textContent = (stats.liveCount ?? 0) + ' × ' + (stats.standardPrice ?? 189) + ' €';
+    if (basisEl) basisEl.textContent = (stats.liveCount ?? 0) + ' × ' + (stats.standardPrice ?? 99) + ' €';
 
     const testEl = document.getElementById('billTest');
-    if (testEl) testEl.textContent = (stats.testCount ?? 0) + ' × ' + (stats.standardPrice ?? 189) + ' €';
+    if (testEl) testEl.textContent = (stats.testCount ?? 0) + ' × ' + (stats.standardPrice ?? 99) + ' €';
 
     const proEl = document.getElementById('billPro');
     // Fallback ?? 0 — Backend liefert proCount/proPrice noch nicht (war 'undefined × undefined €')
@@ -2272,7 +2272,7 @@ async function loadSettings() {
     const data = await res.json();
     if (data.success && data.pricing) {
       const p = document.getElementById('fPrice');
-      if (p) p.value = data.pricing.monthly != null ? data.pricing.monthly : 189;
+      if (p) p.value = data.pricing.monthly != null ? data.pricing.monthly : 99;
     }
   } catch (e) { /* stiller Fallback */ }
   // Zahlungsstatus (Admin-Endpunkt, prüft Vercel-Env)
@@ -2328,7 +2328,7 @@ async function loadSettings() {
 }
 
 async function savePricing() {
-  const raw = (document.getElementById('fPrice')?.value || '189').replace(',', '.').trim();
+  const raw = (document.getElementById('fPrice')?.value || '99').replace(',', '.').trim();
   const monthly = Math.round(parseFloat(raw));
   if (!isFinite(monthly) || monthly < 9 || monthly > 9999) {
     showToast('❌ Ungültiger Preis (9–9999 €).'); return;
@@ -2352,7 +2352,7 @@ function showTenantDetail(id) {
   const statusLabels = { active: 'Aktiv', trialing: 'Testphase', inactive: 'Im Aufbau', past_due: 'Zahlung überfällig', cancelled: 'Gekündigt' };
   document.getElementById('detName').textContent = t.company_name || 'Mieter';
   document.getElementById('detSub').textContent = 'Mietvertrag · ' + (statusLabels[t.subscription_status] || t.subscription_status || '—') + ' · seit ' + (t.created_at ? new Date(t.created_at).toLocaleDateString('de-DE') : '—');
-  document.getElementById('detTarif').textContent = page.monthly_price ? (page.monthly_price / 100) + ' €' : '189 €';
+  document.getElementById('detTarif').textContent = page.monthly_price ? (page.monthly_price / 100) + ' €' : '99 €';
   const leadCount = (dashboardData?.leads || []).filter(l => l.tenant_id === id).length;
   document.getElementById('detLeads').textContent = leadCount;
   const mailBtn = document.getElementById('btnTenantMail');

@@ -17,9 +17,9 @@ export async function GET() {
     return NextResponse.json({
       ok: true,
       legal: legalRow?.value || {},
-      pricing: pricingRow?.value || { monthly: 189 },
+      pricing: pricingRow?.value || { monthly: 99 },
     })
   } catch (e: any) {
-    return NextResponse.json({ ok: false, legal: {}, pricing: { monthly: 189 }, error: e.message }, { status: 500 })
+    return NextResponse.json({ ok: false, legal: {}, pricing: { monthly: 99 }, error: e.message }, { status: 500 })
   }
 }

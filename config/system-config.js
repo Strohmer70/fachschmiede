@@ -220,7 +220,7 @@ const SYSTEM_CONFIG = {
       pro: 4,
     },
     prices: {
-      monthlyBase: 18900, // in Cent
+      monthlyBase: 9900, // in Cent (2026-10-26: 189→99, Dieter-Anweisung "überall 99")
       monthlyPro: 34900,  // in Cent
     }
   }

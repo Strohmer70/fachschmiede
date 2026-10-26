@@ -21,7 +21,7 @@ function getStripe() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { landing_page_id, slug, price_cents = 18900, success_url, cancel_url } = body
+    const { landing_page_id, slug, price_cents = 9900, success_url, cancel_url } = body
 
     const stripeClient = getStripe()
     

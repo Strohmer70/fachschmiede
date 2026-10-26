@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    // Update ALL pages to 189€ (vereinfachtes Preismodell)
+    // Update ALL pages to 99€ (vereinfachtes Preismodell, 2026-10-26: 189→99)
     const { data: updated, error: err1 } = await supabaseAdmin
       .from('landing_pages')
-      .update({ monthly_price: 18900 })
+      .update({ monthly_price: 9900 })
       .select('slug, monthly_price')
 
     if (err1) throw err1
@@ -20,18 +20,18 @@ export async function GET() {
 
     if (err2) throw err2
 
-    const price189 = all?.filter(p => p.monthly_price === 18900).length || 0
-    const otherPrices = all?.filter(p => p.monthly_price !== 18900).length || 0
+    const price99 = all?.filter(p => p.monthly_price === 9900).length || 0
+    const otherPrices = all?.filter(p => p.monthly_price !== 9900).length || 0
 
     return NextResponse.json({
       success: true,
       updated: updated?.length || 0,
       breakdown: {
-        '189€ (Standard)': price189,
+        '99€ (Standard)': price99,
         'Andere Preise': otherPrices,
       },
       total: all?.length || 0,
-      message: otherPrices === 0 ? '✅ Alle Preise vereinheitlicht auf 189€!' : `⚠️ ${otherPrices} Seiten haben noch abweichende Preise`
+      message: otherPrices === 0 ? '✅ Alle Preise vereinheitlicht auf 99€!' : `⚠️ ${otherPrices} Seiten haben noch abweichende Preise`
     })
 
   } catch (error: any) {

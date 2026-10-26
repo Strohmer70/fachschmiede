@@ -84,6 +84,16 @@ export async function GET() {
       return sum + (t.rented_pages || []).reduce((s: number, p: any) => s + (p.monthly_price || 0) / 100, 0)
     }, 0)
 
+    // ── 7) Standardpreis aus platform_settings (SSOT, Fallback 99) ──
+    // 2026-10-26: Fix — war hartkodiert 189, Frontend zeigte "0 × 189 €"
+    const { data: pricingRow } = await supabaseAdmin
+      .from('platform_settings')
+      .select('value')
+      .eq('key', 'pricing')
+      .maybeSingle()
+    let standardPrice = 99
+    try { standardPrice = parseInt(pricingRow?.value?.monthly) || 99 } catch { /* Fallback 99 € */ }
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -96,7 +106,7 @@ export async function GET() {
         openInvoicesTotal: Math.round(openInvoicesTotal * 100) / 100,
         openInvoicesCount: overdueTenants.length,
         totalCount: pages.length,
-        standardPrice: 189,
+        standardPrice,
       },
       revenueByTrade: Object.values(revenueByTrade).map((t: any) => ({
         ...t,

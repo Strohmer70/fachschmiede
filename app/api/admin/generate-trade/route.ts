@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
             title: `${request.name} ${city.name}`,
             h1: `${request.name} in ${city.name}`,
             meta_description: cityContent.metaDescription,
-            monthly_price: 18900,
+            monthly_price: 9900,
             status: 'available'
           })
           .select()

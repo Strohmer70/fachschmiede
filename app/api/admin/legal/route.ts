@@ -59,7 +59,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       legal: legalRow?.value || {},
-      pricing: pricingRow?.value || { monthly: 189 },
+      pricing: pricingRow?.value || { monthly: 99 },
       tenants: tenantRows,
     })
   } catch (e: any) {

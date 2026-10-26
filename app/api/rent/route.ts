@@ -22,9 +22,9 @@ async function resolveCitySlug(lpSlug: string): Promise<string | null> {
 }
 
 const STRIPE_KEY = () => process.env.STRIPE_SECRET_KEY || ''
-const PRICE_DEFAULT = 18900 // €189/Monat in Cent (Fallback)
+const PRICE_DEFAULT = 9900 // €99/Monat in Cent (Fallback, 2026-10-26: 189→99)
 
-// 2026-10-05: System-Preis aus platform_settings (admin-configurierbar), Fallback 189 €
+// 2026-10-05: System-Preis aus platform_settings (admin-configurierbar), Fallback 99 €
 async function getSystemPriceCents(): Promise<number> {
   try {
     const { data } = await supabaseAdmin

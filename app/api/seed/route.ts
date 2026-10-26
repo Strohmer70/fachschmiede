@@ -9,7 +9,7 @@ import { SYSTEM_CONFIG } from '@/config/system-config.js'
 
 export const dynamic = 'force-dynamic'
 
-const PRICE_DEFAULT = 18900 // €189/Monat
+const PRICE_DEFAULT = 9900 // €99/Monat (2026-10-26: 189→99)
 
 function authorized(req: NextRequest): boolean {
   const key = req.nextUrl.searchParams.get('key') || req.headers.get('x-seed-key') || ''
